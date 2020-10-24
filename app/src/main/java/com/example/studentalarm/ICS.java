@@ -15,7 +15,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public class iCalenar {
+public class ICS {
     private String Version, Method, X_WR_Timezone, Calscale;
     private vTimezone vTimezone;
     private List<vEvent> vEventList;
@@ -26,7 +26,7 @@ public class iCalenar {
      *
      * @param link link to the ics file
      */
-    public iCalenar(String link) {
+    public ICS(String link) {
         vEventList = new ArrayList<>();
         run(link);
     }
