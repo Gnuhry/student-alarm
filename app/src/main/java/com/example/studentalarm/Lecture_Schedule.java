@@ -23,11 +23,27 @@ public class Lecture_Schedule {
      *
      * @param calenar the ics file object
      */
-    public Lecture_Schedule(iCalenar calenar) {
+    public Lecture_Schedule(ICS calenar) {
         lecture = new ArrayList<>();
-        for (iCalenar.vEvent ev : calenar.getvEventList())
+        for (ICS.vEvent ev : calenar.getvEventList())
             lecture.add(new Lecture(ev.getSUMMARY(), null, ev.getLOCATION(), ev.getDTSTART(), ev.getDTEND()));
         timezone = TimeZone.getDefault();//TODO Getter TimeZone iCalendar
+    }
+
+    public void addLecture(Lecture lecture){
+        this.lecture.add(lecture);
+    }
+
+    public List<Lecture> getLecture() {
+        return lecture;
+    }
+
+    public TimeZone getTimezone() {
+        return timezone;
+    }
+
+    public void setTimezone(TimeZone timezone) {
+        this.timezone = timezone;
     }
 
     /**
