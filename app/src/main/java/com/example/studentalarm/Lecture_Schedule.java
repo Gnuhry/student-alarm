@@ -61,8 +61,8 @@ public class Lecture_Schedule {
     public static class Lecture implements WeekViewDisplayable<Lecture> {
         private final String docent, location, name;
         private final Date start, end;
-        private static int id = 1;
-        private final int color;
+        private static int counter = 1;
+        private final int color, id;
 
         public Lecture(String name, String docent, String location, Date start, Date end) {
             this.name = name;
@@ -71,6 +71,7 @@ public class Lecture_Schedule {
             this.start = start;
             this.end = end;
             this.color = Color.RED;
+            this.id = counter++;
         }
 
         public Lecture(String name, String docent, String location, Date start, Date end, int color) {
@@ -80,6 +81,7 @@ public class Lecture_Schedule {
             this.start = start;
             this.end = end;
             this.color = color;
+            this.id = counter++;
         }
 
         @NotNull
@@ -103,7 +105,7 @@ public class Lecture_Schedule {
             if (this.location != null)
                 erg.setLocation(this.location);
             erg.setStyle(builder.build());
-            erg.setId(id++);
+            erg.setId(this.id);
             return erg.build();
         }
     }
