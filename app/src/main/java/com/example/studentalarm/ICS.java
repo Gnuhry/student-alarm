@@ -1,5 +1,7 @@
 package com.example.studentalarm;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -25,10 +27,14 @@ public class ICS {
      * import a ics file into an object
      *
      * @param link link to the ics file
+     * @param synchronous {true} synchronous import {false} asynchronous import
      */
-    public ICS(String link) {
+    public ICS(String link, boolean synchronous) {
         vEventList = new ArrayList<>();
-        run(link);
+        if (synchronous)
+            runSynchronous(link);
+        else
+            runAsynchronous(link);
     }
 
     /**
@@ -41,11 +47,11 @@ public class ICS {
     }
 
     /**
-     * get the ics file from the internet and parse it to an object
+     * get the ics file asynchronous from the internet and parse it to an object
      *
      * @param link web link to the ics file
      */
-    private void run(String link) {
+    private void runAsynchronous(String link) {
         Request request = new Request.Builder()
                 .url(link)
                 .build();
@@ -57,14 +63,35 @@ public class ICS {
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(Call call, Response response) {
                 try (ResponseBody responseBody = response.body()) {
                     if (!response.isSuccessful())
-                        throw new IOException("Unexpected code " + response);
+                        Log.e("ICS-Asynchronous", "Unexpected code " + response);
                     parse(responseBody.string());
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         });
+    }
+
+    /**
+     * get the ics file synchronous from the internet and parse it to an object
+     *
+     * @param link web link to the ics file
+     */
+    public void runSynchronous(String link) {
+        Request request = new Request.Builder()
+                .url(link)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful())
+                Log.e("ICS-Synchronous", "Unexpected code " + response);
+            parse(response.body().string());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -149,7 +176,7 @@ public class ICS {
                             LOCATION = s.split(":")[1];
                             break;
                         case "SUMMARY":
-                            SUMMARY = s.substring(7);
+                            SUMMARY = s.substring(8);
                             break;
                         case "DTSTART":
                             DTSTART = dformat.parse(s.split(":")[1].replace('T', '-'));
