@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/alarm"
+        android:icon="@drawable/alarm"
+        android:title="@string/alarm"
+        />
+
+    <item android:id="@+id/lecture"
+        android:icon="@drawable/today"
+        android:title="@string/lecture"
+        />
+
+    <item android:id="@+id/way"
+        android:icon="@drawable/commute"
+        android:title="@string/way"
+        />
+    <item android:id="@+id/setting"
+        android:icon="@drawable/settings"
+        android:title="@string/settings"
+        />
+</menu>
