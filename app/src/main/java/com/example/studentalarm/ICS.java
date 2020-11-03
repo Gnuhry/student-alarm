@@ -22,11 +22,12 @@ public class ICS {
     private vTimezone vTimezone;
     private List<vEvent> vEventList;
     private final OkHttpClient client = new OkHttpClient();
+    private boolean successful=false;
 
     /**
      * import a ics file into an object
      *
-     * @param link link to the ics file
+     * @param link        link to the ics file
      * @param synchronous {true} synchronous import {false} asynchronous import
      */
     public ICS(String link, boolean synchronous) {
@@ -70,6 +71,7 @@ public class ICS {
                     parse(responseBody.string());
                 } catch (IOException e) {
                     e.printStackTrace();
+                    successful=false;
                 }
             }
         });
@@ -91,6 +93,7 @@ public class ICS {
             parse(response.body().string());
         } catch (IOException e) {
             e.printStackTrace();
+            successful=false;
         }
     }
 
@@ -100,6 +103,7 @@ public class ICS {
      * @param icsFile the ics file as string
      */
     private void parse(String icsFile) {
+        successful=true;
         String[] split = icsFile.split("\\n");
         for (int findBegin = 0; findBegin < split.length; findBegin++)
             if (split[findBegin].startsWith("BEGIN:VCALENDAR")) {
@@ -142,12 +146,16 @@ public class ICS {
             }
     }
 
+    public boolean isSuccessful() {
+        return successful;
+    }
+
     /**
      * intern class to represent the timezone information
      */
-    public class vTimezone {
+    public static class vTimezone {
         public vTimezone(String[] strings) {
-
+            //not needed
         }
     }
 
