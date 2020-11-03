@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
     WeekView.SimpleAdapter<Lecture_Schedule.Lecture> adapter;
-    SimpleDateFormat format=new SimpleDateFormat("EEE dd.MM");
+    SimpleDateFormat format = new SimpleDateFormat("EEE dd.MM");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,11 +25,11 @@ public class MainActivity extends AppCompatActivity {
                 return "0" + hour + " h";
             return "" + hour + " h";
         });
-        weekview.setDateFormatter(date->format.format(date.getTime()));
-
+        weekview.setDateFormatter(date -> format.format(date.getTime()));
+        adapter.submit(Lecture_Schedule.Load(this).getAllLecture());
         Thread x = new Thread(() -> {
-            Lecture_Schedule l = new Lecture_Schedule(new ICS("http://vorlesungsplan.dhbw-mannheim.de/ical.php?uid=7758001", true));
-            adapter.submit(l.getLecture());
+            Lecture_Schedule l = Import.ICSImport("http://vorlesungsplan.dhbw-mannheim.de/ical.php?uid=7758001", this);
+            adapter.submit(l.getAllLecture());
         });
         x.start();
     }
