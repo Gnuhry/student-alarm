@@ -1,5 +1,6 @@
 package com.example.studentalarm;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 
@@ -8,6 +9,12 @@ import com.alamkanak.weekview.WeekViewEvent;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,36 +22,45 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 
-public class Lecture_Schedule {
+public class Lecture_Schedule implements Serializable {
     private TimeZone timezone;
-    private final List<Lecture> lecture;
+    private final List<Lecture> lecture, import_lecture;
 
     /**
      * Create an empty lecture schedule
      */
     public Lecture_Schedule() {
         lecture = new ArrayList<>();
+        import_lecture = new ArrayList<>();
         timezone = TimeZone.getDefault();
     }
 
     /**
-     * Create an lecture schedule with ics file import
+     * import ics file in lecture schedule
      *
-     * @param calenar the ics file object
+     * @param calendar the ics file object
      */
-    public Lecture_Schedule(ICS calenar) {
-        lecture = new ArrayList<>();
-        for (ICS.vEvent ev : calenar.getvEventList())
-            lecture.add(new Lecture(ev.getSUMMARY(), null, ev.getLOCATION(), ev.getDTSTART(), ev.getDTEND()));
+    public void ImportICS(ICS calendar) {
+        import_lecture.clear();
+        for (ICS.vEvent ev : calendar.getvEventList())
+            import_lecture.add(new Lecture(ev.getSUMMARY(), null, ev.getLOCATION(), ev.getDTSTART(), ev.getDTEND()));
         timezone = TimeZone.getDefault();//TODO Getter TimeZone iCalendar
+    }
+
+    /**
+     * get all lectures from Lecture_Schedule
+     *
+     * @return all Lectures
+     */
+    public List<Lecture> getAllLecture() {
+        List<Lecture> all = new ArrayList<>();
+        all.addAll(lecture);
+        all.addAll(import_lecture);
+        return all;
     }
 
     public void addLecture(Lecture lecture) {
         this.lecture.add(lecture);
-    }
-
-    public List<Lecture> getLecture() {
-        return lecture;
     }
 
     public TimeZone getTimezone() {
@@ -55,10 +71,50 @@ public class Lecture_Schedule {
         this.timezone = timezone;
     }
 
+    //----------------------------------------------------------------SAVE_LOAD---------------------------------------------------------
+
+    /**
+     * Save the Lecture Schedule in the internal storage of the application
+     *
+     * @param context context of the application
+     */
+    public void Save(Context context) {
+        FileOutputStream fos = null;
+        try {
+            fos = context.openFileOutput("LECTURE", Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(this);
+            oos.close();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Load the Lecture Schedule from the internal storage of the application
+     *
+     * @param context context of the application
+     */
+    public static Lecture_Schedule Load(Context context) {
+        try {
+            FileInputStream fis = context.openFileInput("LECTURE");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            Lecture_Schedule erg = (Lecture_Schedule) ois.readObject();
+            if (erg != null)
+                return erg;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new Lecture_Schedule();
+    }
+
     /**
      * inner class to represent the lecture information
      */
-    public static class Lecture implements WeekViewDisplayable<Lecture> {
+    public static class Lecture implements WeekViewDisplayable<Lecture>, Serializable {
         private final String docent, location, name;
         private final Date start, end;
         private static int counter = 1;
