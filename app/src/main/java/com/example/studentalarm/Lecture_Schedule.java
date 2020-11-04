@@ -59,6 +59,10 @@ public class Lecture_Schedule implements Serializable {
         return all;
     }
 
+    public void deleteAllImportEvents(){
+        this.import_lecture.clear();
+    }
+
     public void addLecture(Lecture lecture) {
         this.lecture.add(lecture);
     }
@@ -79,7 +83,7 @@ public class Lecture_Schedule implements Serializable {
      * @param context context of the application
      */
     public void Save(Context context) {
-        FileOutputStream fos = null;
+        FileOutputStream fos;
         try {
             fos = context.openFileOutput("LECTURE", Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -155,7 +159,7 @@ public class Lecture_Schedule implements Serializable {
             Log.d("Lecture - End Date", endCal.toString());
 
             WeekViewEvent.Builder<Lecture> erg = new WeekViewEvent.Builder<>(this);
-            erg.setTitle(this.name);
+            erg.setTitle(this.name + " - " + this.docent);
             erg.setStartTime(startCal);
             erg.setEndTime(endCal);
             if (this.location != null)

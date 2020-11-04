@@ -5,57 +5,107 @@
     android:layout_height="match_parent"
     tools:context=".SettingsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/txVBefore"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Test" />
+                android:text="@string/alarm_settings" />
 
-            <EditText
-                android:id="@+id/edtBefore"
-                android:layout_width="wrap_content"
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/swAlarmOn"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:ems="10"
-                android:inputType="number" />
+                android:text="@string/create_alarm_for_the_next_day" />
 
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/swAlarm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/alarm_in_phone_watch_app" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/swAlarmChange"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/change_alarm_if_lecture_is_changing" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textWay"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnCheckLink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/check" />
+
+                <EditText
+                    android:id="@+id/edTLink"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:autofillHints="@string/link_to_file"
+                    android:ems="10"
+                    android:hint="@string/address"
+                    android:inputType="textPersonName" />
+            </LinearLayout>
+
+            <Spinner
+                android:id="@+id/spImport"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Test2" />
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp" />
 
-            <EditText
-                android:id="@+id/edtWay"
-                android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:ems="10"
-                android:inputType="numberSigned" />
+                android:text="@string/import_settings" />
 
+            <TextView
+                android:id="@+id/txVImportDelete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/delete_all_import_events" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/swImportAuto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/automatic_daily_import" />
         </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
+
 
     </LinearLayout>
-
 </FrameLayout>
