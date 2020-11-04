@@ -9,12 +9,15 @@ public class ImportReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        SharedPreferences preferences=context.getSharedPreferences("IMPORT", Context.MODE_PRIVATE);
-        switch (preferences.getInt("MODE", 0)){
-            case Import.ImportFunction.NONE: break;
+        SharedPreferences preferences = context.getSharedPreferences("SETTINGS", Context.MODE_PRIVATE);
+        switch (preferences.getInt("Mode", 0)) {
+            case Import.ImportFunction.NONE:
+                break;
             case Import.ImportFunction.ICS:
-                Lecture_Schedule lecture_schedule=Import.ICSImport(preferences.getString("LINK",null), context);
-                //TODO check alarm
+                Lecture_Schedule lecture_schedule = Import.Import(context);
+                if (preferences.getBoolean("Alarm_Change", false)) {
+                    //TODO check alarm
+                }
                 break;
         }
 
