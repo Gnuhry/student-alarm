@@ -83,6 +83,7 @@ public class ICS {
      * @param link web link to the ics file
      */
     public void runSynchronous(String link) {
+        successful=false;
         Request request = new Request.Builder()
                 .url(link)
                 .build();
@@ -103,10 +104,10 @@ public class ICS {
      * @param icsFile the ics file as string
      */
     private void parse(String icsFile) {
-        successful=true;
         String[] split = icsFile.split("\\n");
         for (int findBegin = 0; findBegin < split.length; findBegin++)
             if (split[findBegin].startsWith("BEGIN:VCALENDAR")) {
+                successful=true;
                 for (int f = findBegin + 1; f < split.length; f++)
                     switch (split[f].split(":")[0]) {
                         case "BEGIN":

@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 public class Import {
     private AlarmManager alarmMgr;
@@ -40,21 +42,28 @@ public class Import {
         }
     }
 
+    public static Lecture_Schedule Import(Context context) {
+        Lecture_Schedule lecture_schedule = Lecture_Schedule.Load(context);
+        switch (context.getSharedPreferences("SETTINGS", Context.MODE_PRIVATE).getInt("Mode", 0)) {
+            case 0:
+                return lecture_schedule;
+            case 1:
+                return ICSImport(context, lecture_schedule);
+        }
+        return lecture_schedule;
+    }
+
     /**
      * Create an ICS Import
-     * @param link linkt to the ics file
+     *
      * @param context context of the application
      * @return the new lecture schedule
      */
-    public static Lecture_Schedule ICSImport(String link, Context context) {
-        Lecture_Schedule lecture_schedule=Lecture_Schedule.Load(context);
-        if(link==null) return lecture_schedule;
-        SharedPreferences.Editor editor = context.getSharedPreferences("IMPORT", Context.MODE_PRIVATE).edit();
-        editor.putInt("MODE", ImportFunction.ICS);
-        editor.putString("LINK", link);
-        editor.apply();
-        ICS ics=new ICS(link,true);
-        if(ics.isSuccessful()){
+    private static Lecture_Schedule ICSImport(Context context, Lecture_Schedule lecture_schedule) {
+        String link = context.getSharedPreferences("SETTINGS", Context.MODE_PRIVATE).getString("Link", null);
+        if (link == null) return lecture_schedule;
+        ICS ics = new ICS(link, true);
+        if (ics.isSuccessful()) {
             lecture_schedule.ImportICS(ics);
             lecture_schedule.Save(context);
         }
@@ -67,6 +76,7 @@ public class Import {
     public static class ImportFunction {
         public static final int NONE = 0;
         public static final int ICS = 1;
+        public static final List<String> imports = Arrays.asList("None", "ICS");
     }
 
 }
