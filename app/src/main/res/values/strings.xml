@@ -4,6 +4,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="alarm">Alarm</string>
     <string name="lecture">Lecture</string>
-    <string name="way">Way</string>
     <string name="settings">Settings</string>
+    <string name="personal">Personal</string>
 </resources>

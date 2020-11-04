@@ -31,8 +31,8 @@ public class MainActivity extends AppCompatActivity {
             } else if (itemId == R.id.lecture) {
                 openFragment(new LectureFragment());
                 return true;
-            } else if (itemId == R.id.way) {
-                openFragment(new WayFragment());
+            } else if (itemId == R.id.school) {
+                openFragment(new SchoolFragment());
                 return true;
             } else if (itemId == R.id.setting) {
                 openFragment(new SettingsFragment());

@@ -48,7 +48,7 @@ public class Import {
      */
     public static Lecture_Schedule ICSImport(String link, Context context) {
         Lecture_Schedule lecture_schedule=Lecture_Schedule.Load(context);
-        if(link==null) return null;
+        if(link==null) return lecture_schedule;
         SharedPreferences.Editor editor = context.getSharedPreferences("IMPORT", Context.MODE_PRIVATE).edit();
         editor.putInt("MODE", ImportFunction.ICS);
         editor.putString("LINK", link);
