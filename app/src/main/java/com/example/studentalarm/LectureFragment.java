@@ -2,20 +2,26 @@ package com.example.studentalarm;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.alamkanak.weekview.WeekView;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Locale;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 public class LectureFragment extends Fragment {
     WeekView.SimpleAdapter<Lecture_Schedule.Lecture> adapter;
-    SimpleDateFormat format = new SimpleDateFormat("EEE dd.MM", Locale.getDefault());
+    SimpleDateFormat format = new SimpleDateFormat("EEE dd.MM", Locale.GERMAN);
 
     public LectureFragment() {
     }
@@ -30,7 +36,7 @@ public class LectureFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lecture, container, false);
         WeekView weekview = view.findViewById(R.id.weekView);
-        adapter = new WeekView.SimpleAdapter<>();
+        adapter = new Adapter();
         weekview.setAdapter(adapter);
         weekview.setTimeFormatter(hour -> {
             if (hour < 10)
@@ -47,4 +53,15 @@ public class LectureFragment extends Fragment {
         if (getContext() != null)
             new Thread(() -> adapter.submit(Import.Import(this.getContext()).getAllLecture())).start();
     }
+
+    class Adapter extends WeekView.SimpleAdapter<Lecture_Schedule.Lecture> {
+
+        @Override
+        public void onEventClick(Lecture_Schedule.Lecture data) {
+            super.onEventClick(data);
+            new EventDialogFragment(data).show(getActivity().getSupportFragmentManager(),"dialog");
+        }
+
+    }
 }
+

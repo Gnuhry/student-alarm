@@ -23,6 +23,13 @@ import androidx.fragment.app.Fragment;
 
 public class SettingsFragment extends Fragment {
 
+
+    private SharedPreferences preferences;
+    private String oldLink, lastValidString;
+    private boolean isLink, isValidLink, oldAutoImport;
+    private Context context;
+    private int oldMode;
+
     public SettingsFragment() {
     }
 
@@ -36,17 +43,20 @@ public class SettingsFragment extends Fragment {
         return oldLink;
     }
 
+    public int getOldMode() {
+        return oldMode;
+    }
+
+    public boolean isOldAutoImport() {
+        return oldAutoImport;
+    }
+
     public boolean IsLinkIncorrect() {
         if (getContext() == null) return true;
         SharedPreferences preferences = getContext().getSharedPreferences("SETTINGS", Context.MODE_PRIVATE);
         return oldLink != null && !isValidLink && !oldLink.equals(preferences.getString("Link", null));
     }
 
-
-    private SharedPreferences preferences;
-    private String oldLink, lastValidString;
-    private boolean isLink, isValidLink;
-    private Context context;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,6 +66,8 @@ public class SettingsFragment extends Fragment {
         preferences = getContext().getSharedPreferences("SETTINGS", Context.MODE_PRIVATE);
         context = getContext();
         oldLink = preferences.getString("Link", null);
+        oldMode = preferences.getInt("Mode", 0);
+        oldAutoImport=preferences.getBoolean("Import_Auto",false);
         if (oldLink != null)
             isLink = isValidLink = true;
         initSwitch(view, R.id.swAlarmOn, "Alarm_On");
@@ -156,6 +168,6 @@ public class SettingsFragment extends Fragment {
     private void initSwitch(View view, int id, String key) {
         SwitchCompat switchcompat = view.findViewById(id);
         switchcompat.setChecked(preferences.getBoolean(key, false));
-        switchcompat.setOnCheckedChangeListener((compoundButton, b) -> preferences.edit().putBoolean(key, b).apply());
+        switchcompat.setOnCheckedChangeListener((compoundButton, b) -> preferences.edit().putBoolean(key, b).apply());//TODO Event nach Änderung der Einstellungen //Checken des Alarms und des Imports
     }
 }

@@ -144,6 +144,38 @@ public class Lecture_Schedule implements Serializable {
             this.id = counter++;
         }
 
+        public String getDocent() {
+            return docent;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Date getStart() {
+            return start;
+        }
+
+        public Date getEnd() {
+            return end;
+        }
+
+        public static int getCounter() {
+            return counter;
+        }
+
+        public int getColor() {
+            return color;
+        }
+
+        public int getId() {
+            return id;
+        }
+
         @NotNull
         @Override
         public WeekViewEvent<Lecture> toWeekViewEvent() { //TODO add Docent to Text

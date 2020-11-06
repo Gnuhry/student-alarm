@@ -43,23 +43,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/change_alarm_if_lecture_is_changing" />
+
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/import_settings" />
+
+            <Spinner
+                android:id="@+id/spImport"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btnCheckLink"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/check" />
 
                 <EditText
                     android:id="@+id/edTLink"
@@ -70,41 +86,27 @@
                     android:ems="10"
                     android:hint="@string/address"
                     android:inputType="textPersonName" />
+
+                <Button
+                    android:id="@+id/btnCheckLink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/check" />
+
             </LinearLayout>
-
-            <Spinner
-                android:id="@+id/spImport"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/import_settings" />
-
-            <TextView
-                android:id="@+id/txVImportDelete"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/delete_all_import_events" />
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/swImportAuto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/automatic_daily_import" />
+
+            <TextView
+                android:id="@+id/txVImportDelete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/delete_all_import_events" />
         </LinearLayout>
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider" />
 
 
     </LinearLayout>
