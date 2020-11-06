@@ -1,6 +1,7 @@
 package com.example.studentalarm;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -31,7 +32,13 @@ public class MainActivity extends AppCompatActivity {
                         .setTitle(getString(R.string.discard_changes))
                         .setMessage(getString(R.string.do_you_want_to_discard_the_link_changes))
                         .setPositiveButton(getString(R.string.discard), (dialogInterface, i) -> {
-                            getSharedPreferences("SETTINGS", Context.MODE_PRIVATE).edit().putString("Link", ((SettingsFragment) oldFragment).getOldLink()).apply();
+                            String value = ((SettingsFragment) oldFragment).getOldLink();
+                            SharedPreferences.Editor editor = getSharedPreferences("SETTINGS", Context.MODE_PRIVATE).edit();
+                            editor.putString("Link", value).apply();
+                            if (value == null) {
+                                editor.putInt("Mode", ((SettingsFragment) oldFragment).getOldMode()).apply();
+                                editor.putBoolean("Import_Auto", ((SettingsFragment) oldFragment).isOldAutoImport()).apply();
+                            }
                             changeFragment(item);
                             bottomNav.setSelectedItemId(item.getItemId());
                         })
