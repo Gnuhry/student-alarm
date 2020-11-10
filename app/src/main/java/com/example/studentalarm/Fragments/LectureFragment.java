@@ -1,23 +1,19 @@
-package com.example.studentalarm;
+package com.example.studentalarm.Fragments;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.alamkanak.weekview.WeekView;
-
-import org.jetbrains.annotations.NotNull;
+import com.example.studentalarm.Import.Import;
+import com.example.studentalarm.Import.Lecture_Schedule;
+import com.example.studentalarm.R;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Locale;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 public class LectureFragment extends Fragment {
     WeekView.SimpleAdapter<Lecture_Schedule.Lecture> adapter;
@@ -46,9 +42,13 @@ public class LectureFragment extends Fragment {
         weekview.setDateFormatter(date -> format.format(date.getTime()));
         if (getContext() != null)
             adapter.submit(Lecture_Schedule.Load(getContext()).getAllLecture());
+        RefreshLectureSchedule();
         return view;
     }
 
+    /**
+     * Refresh the Lecture Schedule
+     */
     private void RefreshLectureSchedule() {
         if (getContext() != null)
             new Thread(() -> adapter.submit(Import.Import(this.getContext()).getAllLecture())).start();
@@ -59,7 +59,7 @@ public class LectureFragment extends Fragment {
         @Override
         public void onEventClick(Lecture_Schedule.Lecture data) {
             super.onEventClick(data);
-            new EventDialogFragment(data).show(getActivity().getSupportFragmentManager(),"dialog");
+            new EventDialogFragment(data).show(getActivity().getSupportFragmentManager(), "dialog");
         }
 
     }

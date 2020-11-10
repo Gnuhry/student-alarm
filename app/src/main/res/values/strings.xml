@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">studentalarm</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="alarm">Alarm</string>
     <string name="lecture">Lecture</string>
     <string name="settings">Settings</string>
@@ -29,4 +28,19 @@
     <string name="do_you_want_to_delete_all_the_import_events">Do you want to delete all the import events?</string>
     <string name="yes">YES</string>
     <string name="no">NO</string>
+    <string name="status">Status</string>
+    <string name="save">Save</string>
+    <string name="none">None</string>
+    <string name="ics">ICS</string>
+    <string name="missing_checked_valid_url">Missing checked valid url</string>
+    <string name="delete_all">Delete all</string>
+    <string name="do_you_want_to_delete_all_import_events">Do you want to delete all import events?</string>
+    <string name="delete">Delete</string>
+    <string name="alarm_in_phone_app">Alarm in phone app</string>
+    <string name="if_alarm_is_set_in_phone_alarm_app_this_application_can_not_delete_it">If alarm is set in phone alarm app, this application can not delete it!</string>
+    <string name="ok">OK</string>
+    <string name="next_alarm_in">Next alarm in</string>
+    <string name="zero_time">00:00</string>
+    <string name="no_alarm_set">No alarm set</string>
+    <string name="alarm_at">Alarm at: </string>
 </resources>
