@@ -1,4 +1,4 @@
-package com.example.studentalarm;
+package com.example.studentalarm.Fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -11,11 +11,13 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 
+import com.example.studentalarm.AlarmManager;
+import com.example.studentalarm.R;
+
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 public class SchoolFragment extends Fragment {
-
-    private String m_Text;
 
     public SchoolFragment() {
     }
@@ -35,8 +37,15 @@ public class SchoolFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Init Number Dialog
+     *
+     * @param context context of the application
+     * @param title   title of the number dialog
+     * @param key     key of preference
+     */
     private void NumberDialog(Context context, String title, String key) {
-        SharedPreferences preferences = context.getSharedPreferences("ALARM", Context.MODE_PRIVATE);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(title);
         View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.number_input, (ViewGroup) getView(), false);
@@ -49,7 +58,7 @@ public class SchoolFragment extends Fragment {
             int value = Integer.parseInt(input.getText().toString());
             if (preferences.getInt(key, 0) != value) {
                 preferences.edit().putInt(key, value).apply();
-                //TODO check alarm
+                AlarmManager.UpdateNextAlarm(context);
             }
         });
         builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.cancel());
