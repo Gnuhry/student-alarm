@@ -1,14 +1,17 @@
-package com.example.studentalarm;
+package com.example.studentalarm.Import;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+
+import com.example.studentalarm.Receiver.ImportReceiver;
 
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+
+import androidx.preference.PreferenceManager;
 
 public class Import {
     private AlarmManager alarmMgr;
@@ -42,9 +45,21 @@ public class Import {
         }
     }
 
+    /**
+     * stops the timer
+     */
+    public static void StopTimer(Context context){
+        ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(context, 0, new Intent(context, ImportReceiver.class), 0));
+    }
+
+    /**
+     * Create the import
+     * @param context context of the application
+     * @return the new lecture schedule
+     */
     public static Lecture_Schedule Import(Context context) {
         Lecture_Schedule lecture_schedule = Lecture_Schedule.Load(context);
-        switch (context.getSharedPreferences("SETTINGS", Context.MODE_PRIVATE).getInt("Mode", 0)) {
+        switch (PreferenceManager.getDefaultSharedPreferences(context).getInt("Mode", 0)) {
             case 0:
                 return lecture_schedule;
             case 1:
@@ -60,7 +75,7 @@ public class Import {
      * @return the new lecture schedule
      */
     private static Lecture_Schedule ICSImport(Context context, Lecture_Schedule lecture_schedule) {
-        String link = context.getSharedPreferences("SETTINGS", Context.MODE_PRIVATE).getString("Link", null);
+        String link = PreferenceManager.getDefaultSharedPreferences(context).getString("Link", null);
         if (link == null) return lecture_schedule;
         ICS ics = new ICS(link, true);
         if (ics.isSuccessful()) {

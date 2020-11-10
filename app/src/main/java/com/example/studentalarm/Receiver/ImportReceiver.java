@@ -1,9 +1,13 @@
-package com.example.studentalarm;
+package com.example.studentalarm.Receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+
+import com.example.studentalarm.AlarmManager;
+import com.example.studentalarm.Import.Import;
+import com.example.studentalarm.Import.Lecture_Schedule;
 
 public class ImportReceiver extends BroadcastReceiver {
 
@@ -15,12 +19,9 @@ public class ImportReceiver extends BroadcastReceiver {
                 break;
             case Import.ImportFunction.ICS:
                 Lecture_Schedule lecture_schedule = Import.Import(context);
-                if (preferences.getBoolean("Alarm_Change", false)) {
-                    //TODO check alarm
-                }
+                lecture_schedule.Save(context);
+                AlarmManager.UpdateNextAlarmAfterImport(context);
                 break;
         }
-
-        //TODO https://www.tutorialspoint.com/android/android_shared_preferences.htm (https://stackoverflow.com/questions/10962344/how-to-save-data-in-an-android-app)
     }
 }

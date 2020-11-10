@@ -1,4 +1,4 @@
-package com.example.studentalarm;
+package com.example.studentalarm.Receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

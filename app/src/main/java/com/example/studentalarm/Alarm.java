@@ -8,7 +8,11 @@ import android.provider.AlarmClock;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.studentalarm.Receiver.AlarmReceiver;
+
 import java.util.Calendar;
+
+import androidx.preference.PreferenceManager;
 
 public class Alarm {
     private AlarmManager alarmMgr;
@@ -26,6 +30,7 @@ public class Alarm {
             alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             alarmIntent = PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class), 0);
             alarmMgr.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), alarmIntent);
+            PreferenceManager.getDefaultSharedPreferences(context).edit().putLong("ALARM_TIME",time.getTimeInMillis()).apply();
             Toast.makeText(context, "Alarm is set", Toast.LENGTH_SHORT).show(); //TODO show Time
             Log.d("ALARM", "Set alarm to " + time.getTimeInMillis());
         } else {
@@ -40,6 +45,13 @@ public class Alarm {
         if (alarmMgr != null) {
             alarmMgr.cancel(alarmIntent);
         }
+    }
+
+    /**
+     * cancel the alarm
+     */
+    public static void cancelAlarm(Context context){
+        ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class), 0));
     }
 
     /**
