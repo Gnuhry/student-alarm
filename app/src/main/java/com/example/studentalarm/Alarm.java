@@ -39,6 +39,7 @@ public class Alarm {
      * cancel the alarm
      */
     public static void cancelAlarm(Context context){
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putLong("ALARM_TIME",0).apply();
         ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class), 0));
     }
 
