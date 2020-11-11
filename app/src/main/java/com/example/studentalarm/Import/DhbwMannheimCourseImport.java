@@ -17,7 +17,7 @@ public class DhbwMannheimCourseImport {
     private final OkHttpClient client = new OkHttpClient();
     private boolean successful=false;
 
-    public DhbwMannheimCourseImport() {//muss in neuem Thread aufgerufen werden
+    public DhbwMannheimCourseImport() {//muss in neuem Thread aufgerufen werden new Thread(() -> {CourseNamesDHBW_Mannheim test = new CourseNamesDHBW_Mannheim();}).start();
         Log.d("Info","Aufgerufen");
         DHBWCourses=new ArrayList<>();
         runSynchronous();
@@ -33,6 +33,7 @@ public class DhbwMannheimCourseImport {
             if (!response.isSuccessful())
                 Log.e("ICS-Synchronous", "Unexpected code " + response);
             parse(response.body().string());
+            successful=true;
         } catch (IOException e) {
             e.printStackTrace();
             successful=false;
@@ -54,5 +55,9 @@ public class DhbwMannheimCourseImport {
 
             }
         }
+    }
+
+    public List<DhbwMannheimCourse> getDHBWCourses() {
+        return DHBWCourses;
     }
 }

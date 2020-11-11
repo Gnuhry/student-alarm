@@ -31,6 +31,7 @@
     <string name="save">Save</string>
     <string name="none">None</string>
     <string name="ics">ICS</string>
+    <string name="DHBWMa">DHBW Mannheim</string>
     <string name="missing_checked_valid_url">Missing checked valid url</string>
     <string name="delete_all">Delete all</string>
     <string name="do_you_want_to_delete_all_import_events">Do you want to delete all import events?</string>

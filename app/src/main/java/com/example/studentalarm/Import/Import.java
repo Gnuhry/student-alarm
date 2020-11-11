@@ -48,9 +48,9 @@ public class Import {
     public static Lecture_Schedule ImportLecture(Context context) {
         Lecture_Schedule lecture_schedule = Lecture_Schedule.Load(context);
         switch (PreferenceManager.getDefaultSharedPreferences(context).getInt("Mode", 0)) {
-            case 0:
+            case ImportFunction.NONE:
                 return lecture_schedule;
-            case 1:
+            case ImportFunction.ICS: case ImportFunction.DHBWMa:
                 return ICSImport(context, lecture_schedule);
         }
         return lecture_schedule;
@@ -79,7 +79,8 @@ public class Import {
     public static class ImportFunction {
         public static final int NONE = 0;
         public static final int ICS = 1;
-        public static final List<String> imports = Arrays.asList("None", "ICS");
+        public static final int DHBWMa = 2;
+        public static final List<String> imports = Arrays.asList("None", "ICS", "DHBW Mannheim");
     }
 
 }
