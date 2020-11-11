@@ -1,6 +1,8 @@
-package com.example.studentalarm;
+package com.example.studentalarm.Import;
 
 import android.util.Log;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -9,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -18,11 +21,11 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 public class ICS {
-    private String Version, Method, X_WR_Timezone, Calscale;
+    private String Version, Method, X_WR_Timezone, CALScale;
     private vTimezone vTimezone;
-    private List<vEvent> vEventList;
+    private final List<vEvent> vEventList;
     private final OkHttpClient client = new OkHttpClient();
-    private boolean successful=false;
+    private boolean successful = false;
 
     /**
      * import a ics file into an object
@@ -41,9 +44,9 @@ public class ICS {
     /**
      * returns all events from the ics file
      *
-     * @return list of iCalenar.events
+     * @return list of iCalendar.events
      */
-    public List<vEvent> getvEventList() {
+    public List<vEvent> getVEventList() {
         return vEventList;
     }
 
@@ -59,19 +62,22 @@ public class ICS {
 
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
             }
 
             @Override
-            public void onResponse(Call call, Response response) {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try (ResponseBody responseBody = response.body()) {
                     if (!response.isSuccessful())
                         Log.e("ICS-Asynchronous", "Unexpected code " + response);
-                    parse(responseBody.string());
+                    if (responseBody != null)
+                        parse(responseBody.string());
+                    else
+                        Log.e("ICS-Asynchronous", "No body");
                 } catch (IOException e) {
                     e.printStackTrace();
-                    successful=false;
+                    successful = false;
                 }
             }
         });
@@ -83,6 +89,7 @@ public class ICS {
      * @param link web link to the ics file
      */
     public void runSynchronous(String link) {
+        successful = false;
         Request request = new Request.Builder()
                 .url(link)
                 .build();
@@ -90,10 +97,14 @@ public class ICS {
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful())
                 Log.e("ICS-Synchronous", "Unexpected code " + response);
-            parse(response.body().string());
+            ResponseBody body = response.body();
+            if (body != null)
+                parse(body.string());
+            else
+                Log.e("ICS-Synchronous", "No body");
         } catch (IOException e) {
             e.printStackTrace();
-            successful=false;
+            successful = false;
         }
     }
 
@@ -103,10 +114,10 @@ public class ICS {
      * @param icsFile the ics file as string
      */
     private void parse(String icsFile) {
-        successful=true;
         String[] split = icsFile.split("\\n");
         for (int findBegin = 0; findBegin < split.length; findBegin++)
             if (split[findBegin].startsWith("BEGIN:VCALENDAR")) {
+                successful = true;
                 for (int f = findBegin + 1; f < split.length; f++)
                     switch (split[f].split(":")[0]) {
                         case "BEGIN":
@@ -139,7 +150,7 @@ public class ICS {
                             X_WR_Timezone = split[f].split(":")[1];
                             break;
                         case "CALSSCALE":
-                            Calscale = split[f].split(":")[1];
+                            CALScale = split[f].split(":")[1];
                             break;
                     }
                 return;
@@ -150,12 +161,32 @@ public class ICS {
         return successful;
     }
 
+    public String getVersion() {
+        return Version;
+    }
+
+    public String getMethod() {
+        return Method;
+    }
+
+    public String getX_WR_Timezone() {
+        return X_WR_Timezone;
+    }
+
+    public String getCALScale() {
+        return CALScale;
+    }
+
+    public ICS.vTimezone getvTimezone() {
+        return vTimezone;
+    }
+
     /**
      * intern class to represent the timezone information
      */
     public static class vTimezone {
-        public vTimezone(String[] strings) {
-            //not needed
+        public  vTimezone(String[] strings) {
+
         }
     }
 
@@ -164,8 +195,8 @@ public class ICS {
      */
     public static class vEvent {
         private String UID, LOCATION, SUMMARY;
-        private Date DTSTART, DTEND, DTSTAMP;
-        private final DateFormat dformat = new SimpleDateFormat("yyyyMMdd-HHmmss");
+        private Date DTStart, DTend, DTStamp;
+        private final DateFormat format = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.GERMAN);
 
         /**
          * parse the event string to an object
@@ -187,13 +218,13 @@ public class ICS {
                             SUMMARY = s.substring(8);
                             break;
                         case "DTSTART":
-                            DTSTART = dformat.parse(s.split(":")[1].replace('T', '-'));
+                            DTStart = format.parse(s.split(":")[1].replace('T', '-'));
                             break;
                         case "DTEND":
-                            DTEND = dformat.parse(s.split(":")[1].replace('T', '-'));
+                            DTend = format.parse(s.split(":")[1].replace('T', '-'));
                             break;
                         case "DTSTAMP":
-                            DTSTAMP = dformat.parse(s.split(":")[1].replace('T', '-'));
+                            DTStamp = format.parse(s.split(":")[1].replace('T', '-'));
                             break;
                     }
                 }
@@ -212,28 +243,28 @@ public class ICS {
             return SUMMARY;
         }
 
-        public Date getDTSTART() {
-            return DTSTART;
+        public Date getDTStart() {
+            return DTStart;
         }
 
-        public Date getDTEND() {
-            return DTEND;
+        public Date getDTend() {
+            return DTend;
         }
 
-        public Date getDTSTAMP() {
-            return DTSTAMP;
+        public Date getDTStamp() {
+            return DTStamp;
         }
 
-        public DateFormat getDformat() {
-            return dformat;
+        public DateFormat getFormat() {
+            return format;
         }
 
         @Override
         public String toString() {
             return "vEvent{" +
                     "SUMMARY='" + SUMMARY + '\'' +
-                    ", DTSTART=" + DTSTART +
-                    ", DTEND=" + DTEND +
+                    ", DTStart=" + DTStart +
+                    ", DTEnd=" + DTend +
                     '}';
         }
     }

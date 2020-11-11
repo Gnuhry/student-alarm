@@ -1,8 +1,7 @@
-package com.example.studentalarm;
+package com.example.studentalarm.Import;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 
 import com.alamkanak.weekview.WeekViewDisplayable;
 import com.alamkanak.weekview.WeekViewEvent;
@@ -15,11 +14,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class Lecture_Schedule implements Serializable {
@@ -42,8 +43,8 @@ public class Lecture_Schedule implements Serializable {
      */
     public void ImportICS(ICS calendar) {
         import_lecture.clear();
-        for (ICS.vEvent ev : calendar.getvEventList())
-            import_lecture.add(new Lecture(ev.getSUMMARY(), null, ev.getLOCATION(), ev.getDTSTART(), ev.getDTEND()));
+        for (ICS.vEvent ev : calendar.getVEventList())
+            import_lecture.add(new Lecture(ev.getSUMMARY(), null, ev.getLOCATION(), ev.getDTStart(), ev.getDTend()));
         timezone = TimeZone.getDefault();//TODO Getter TimeZone iCalendar
     }
 
@@ -59,6 +60,10 @@ public class Lecture_Schedule implements Serializable {
         return all;
     }
 
+    public void deleteAllImportEvents() {
+        this.import_lecture.clear();
+    }
+
     public void addLecture(Lecture lecture) {
         this.lecture.add(lecture);
     }
@@ -71,6 +76,43 @@ public class Lecture_Schedule implements Serializable {
         this.timezone = timezone;
     }
 
+    /**
+     * get the first lecture at day of date
+     * @param date day, where the lecture take place
+     * @return first lecture of the day
+     */
+    public Lecture getFirstLectureAtDate(Date date) {
+        Lecture erg = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.GERMAN);
+        if (date == null) return null;
+        for (Lecture l : getAllLecture())
+            if (l.start != null && sdf.format(date).compareTo(sdf.format(l.start)) == 0) {
+                if (erg == null)
+                    erg = l;
+                else if (l.start.before(erg.start))
+                    erg = l;
+            }
+        return erg;
+    }
+
+    /**
+     * get the next lecture after date
+     * @param date date before the next lecture
+     * @return next lecture
+     */
+    public Lecture getNextLecture(Date date) {
+        Lecture erg = null;
+        if (date == null) return null;
+        for (Lecture l : getAllLecture())
+            if (l.start != null && l.start.after(date)) {
+                if (erg == null)
+                    erg = l;
+                else if (l.start.before(erg.start))
+                    erg = l;
+            }
+        return erg;
+    }
+
     //----------------------------------------------------------------SAVE_LOAD---------------------------------------------------------
 
     /**
@@ -79,7 +121,7 @@ public class Lecture_Schedule implements Serializable {
      * @param context context of the application
      */
     public void Save(Context context) {
-        FileOutputStream fos = null;
+        FileOutputStream fos;
         try {
             fos = context.openFileOutput("LECTURE", Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -101,6 +143,8 @@ public class Lecture_Schedule implements Serializable {
             FileInputStream fis = context.openFileInput("LECTURE");
             ObjectInputStream ois = new ObjectInputStream(fis);
             Lecture_Schedule erg = (Lecture_Schedule) ois.readObject();
+            fis.close();
+            ois.close();
             if (erg != null)
                 return erg;
         } catch (IOException e) {
@@ -140,22 +184,48 @@ public class Lecture_Schedule implements Serializable {
             this.id = counter++;
         }
 
+        public String getDocent() {
+            return docent;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Date getStart() {
+            return start;
+        }
+
+        public Date getEnd() {
+            return end;
+        }
+
+        public int getId() {
+            return id;
+        }
+
         @NotNull
         @Override
-        public WeekViewEvent<Lecture> toWeekViewEvent() { //TODO add Docent to Text
+        public WeekViewEvent<Lecture> toWeekViewEvent() {
             WeekViewEvent.Style.Builder builder = new WeekViewEvent.Style.Builder();
             builder.setBackgroundColor(color);
 
+            if (start == null || end == null || name == null) return new WeekViewEvent.Builder<Lecture>().build();
             Calendar startCal = new GregorianCalendar();
             startCal.setTime(this.start);
-            Log.d("Lecture - Start Date", startCal.toString());
 
             Calendar endCal = new GregorianCalendar();
             endCal.setTime(this.end);
-            Log.d("Lecture - End Date", endCal.toString());
 
             WeekViewEvent.Builder<Lecture> erg = new WeekViewEvent.Builder<>(this);
-            erg.setTitle(this.name);
+            StringBuilder sb = new StringBuilder(this.name);
+            if (this.docent != null)
+                sb.append(" - ").append(this.docent);
+            erg.setTitle(sb.toString());
             erg.setStartTime(startCal);
             erg.setEndTime(endCal);
             if (this.location != null)

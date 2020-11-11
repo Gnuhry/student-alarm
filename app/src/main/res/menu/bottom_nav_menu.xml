@@ -10,9 +10,9 @@
         android:title="@string/lecture"
         />
 
-    <item android:id="@+id/way"
-        android:icon="@drawable/commute"
-        android:title="@string/way"
+    <item android:id="@+id/school"
+        android:icon="@drawable/school"
+        android:title="@string/personal"
         />
     <item android:id="@+id/setting"
         android:icon="@drawable/settings"
