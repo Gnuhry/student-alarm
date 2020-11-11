@@ -15,8 +15,6 @@ import java.util.Calendar;
 import androidx.preference.PreferenceManager;
 
 public class Alarm {
-    private AlarmManager alarmMgr;
-    private PendingIntent alarmIntent;
 
     /**
      * create an alarm, which going to trigger the AlarmReceiver class
@@ -24,26 +22,16 @@ public class Alarm {
      * @param time    the time, the receiver should be triggered
      * @param context context to show the toast
      */
-    public void setAlarm(Calendar time, Context context) {
-        if (alarmMgr != null) return;
+    public static void setAlarm(Calendar time, Context context) {
         if (Calendar.getInstance().before(time)) {
-            alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            alarmIntent = PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class), 0);
+            AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class), 0);
             alarmMgr.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), alarmIntent);
             PreferenceManager.getDefaultSharedPreferences(context).edit().putLong("ALARM_TIME",time.getTimeInMillis()).apply();
-            Toast.makeText(context, "Alarm is set", Toast.LENGTH_SHORT).show(); //TODO show Time
+            Toast.makeText(context, "Alarm is set", Toast.LENGTH_SHORT).show();
             Log.d("ALARM", "Set alarm to " + time.getTimeInMillis());
         } else {
             Log.e("ALARM", "Wrong Date is set for alarm. Date is before current date");
-        }
-    }
-
-    /**
-     * cancel the alarm if set
-     */
-    public void cancelAlarm() {
-        if (alarmMgr != null) {
-            alarmMgr.cancel(alarmIntent);
         }
     }
 

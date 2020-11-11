@@ -14,35 +14,23 @@ import java.util.List;
 import androidx.preference.PreferenceManager;
 
 public class Import {
-    private AlarmManager alarmMgr;
-    private PendingIntent alarmIntent;
 
     /**
      * set a daily timer for import
      *
-     * @param context contex of the application
+     * @param context context of the application
      */
-    public void SetTimer(Context context) {
-        if (alarmMgr != null) return;
+    public static void SetTimer(Context context) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, 19);
 
-        alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmIntent = PendingIntent.getBroadcast(context, 0, new Intent(context, ImportReceiver.class), 0);
+        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, new Intent(context, ImportReceiver.class), 0);
 
         alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, alarmIntent);
 
-    }
-
-    /**
-     * stops the timer
-     */
-    public void StopTimer() {
-        if (alarmMgr != null) {
-            alarmMgr.cancel(alarmIntent);
-        }
     }
 
     /**
@@ -57,7 +45,7 @@ public class Import {
      * @param context context of the application
      * @return the new lecture schedule
      */
-    public static Lecture_Schedule Import(Context context) {
+    public static Lecture_Schedule ImportLecture(Context context) {
         Lecture_Schedule lecture_schedule = Lecture_Schedule.Load(context);
         switch (PreferenceManager.getDefaultSharedPreferences(context).getInt("Mode", 0)) {
             case 0:

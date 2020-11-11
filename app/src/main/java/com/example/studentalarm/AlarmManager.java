@@ -34,8 +34,7 @@ public class AlarmManager {
                 Alarm.setPhoneAlarm(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), context);
             } else {
                 CancelNextAlarm(context);
-                Alarm alarm = new Alarm();
-                alarm.setAlarm(calendar, context);
+                Alarm.setAlarm(calendar, context);
             }
         }
     }
