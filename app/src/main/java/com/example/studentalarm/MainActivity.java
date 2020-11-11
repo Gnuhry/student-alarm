@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 public class MainActivity extends AppCompatActivity {
+    private final static String TAG = "FRAGMENT";
+    int lastId, beforeLastId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,14 +36,31 @@ public class MainActivity extends AppCompatActivity {
                 openFragment(new SettingsFragment());
             else
                 return false;
+            beforeLastId = lastId;
+            lastId = itemId;
             return true;
         });
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
+        if (fragment instanceof AlarmFragment)
+            bottomNav.setSelectedItemId(R.id.alarm);
+        else if (fragment instanceof LectureFragment)
+            bottomNav.setSelectedItemId(R.id.lecture);
+        else if (fragment instanceof SchoolFragment)
+            bottomNav.setSelectedItemId(R.id.school);
+        else if (fragment instanceof SettingsFragment)
+            bottomNav.setSelectedItemId(R.id.setting);
+    }
+
     public void openFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayout, fragment);
+        fragmentTransaction.replace(R.id.frameLayout, fragment, TAG);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
