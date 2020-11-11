@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".LectureFragment">
+    tools:context=".Fragments.LectureFragment">
 
     <com.alamkanak.weekview.WeekView
         android:id="@+id/weekView"
@@ -15,8 +15,13 @@
         app:eventTextColor="@color/white"
         app:headerPadding="12dp"
         app:hourHeight="60dp"
-        app:numberOfVisibleDays="5"
+        app:numberOfVisibleDays="6"
         app:timeColumnBackgroundColor="@color/white"
         app:timeColumnPadding="8dp"
+        app:showMidnightHour="true"
+        app:showNowLine="true"
+        app:showCurrentTimeFirst="true"
+        app:showFirstDayOfWeekFirst="true"
         app:timeColumnTextSize="12sp" />
+
 </FrameLayout>
