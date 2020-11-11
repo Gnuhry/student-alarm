@@ -34,5 +34,6 @@
         <receiver android:name=".Receiver.AlarmOffReceiver" />
         <receiver android:name=".Receiver.SnoozeReceiver" />
 
+
     </application>
 </manifest>

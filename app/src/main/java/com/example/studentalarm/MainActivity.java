@@ -1,11 +1,13 @@
 package com.example.studentalarm;
 
+import android.content.IntentFilter;
 import android.os.Bundle;
 
 import com.example.studentalarm.Fragments.AlarmFragment;
 import com.example.studentalarm.Fragments.LectureFragment;
 import com.example.studentalarm.Fragments.SchoolFragment;
 import com.example.studentalarm.Fragments.SettingsFragment;
+import com.example.studentalarm.Receiver.NetworkReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +22,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        this.registerReceiver(new NetworkReceiver(), new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+        this.registerReceiver(new NetworkReceiver(), new IntentFilter("android.net.wifi.WIFI_STATE_CHANGED"));
 
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
         openFragment(new AlarmFragment());
