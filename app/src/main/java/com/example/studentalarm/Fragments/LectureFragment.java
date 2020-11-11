@@ -51,7 +51,7 @@ public class LectureFragment extends Fragment {
      */
     private void RefreshLectureSchedule() {
         if (getContext() != null)
-            new Thread(() -> adapter.submit(Import.Import(this.getContext()).getAllLecture())).start();
+            new Thread(() -> adapter.submit(Import.ImportLecture(this.getContext()).getAllLecture())).start();
     }
 
     class Adapter extends WeekView.SimpleAdapter<Lecture_Schedule.Lecture> {
@@ -59,6 +59,7 @@ public class LectureFragment extends Fragment {
         @Override
         public void onEventClick(Lecture_Schedule.Lecture data) {
             super.onEventClick(data);
+            if(getActivity()!=null)
             new EventDialogFragment(data).show(getActivity().getSupportFragmentManager(), "dialog");
         }
 

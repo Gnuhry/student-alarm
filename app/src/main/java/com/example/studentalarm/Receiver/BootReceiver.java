@@ -20,7 +20,7 @@ public class BootReceiver extends BroadcastReceiver {
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
             SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(context);
             if(preferences.getBoolean("AUTO_IMPORT",false))
-                new Import().SetTimer(context);
+                Import.SetTimer(context);
             AlarmManager.SetNextAlarm(context);
         }
     }
