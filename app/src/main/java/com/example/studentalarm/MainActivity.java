@@ -6,7 +6,6 @@ import com.example.studentalarm.Fragments.AlarmFragment;
 import com.example.studentalarm.Fragments.LectureFragment;
 import com.example.studentalarm.Fragments.SchoolFragment;
 import com.example.studentalarm.Fragments.SettingsFragment;
-import com.example.studentalarm.Receiver.AlarmReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        (new AlarmReceiver()).onReceive(this,null);
+
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
         openFragment(new AlarmFragment());
 
