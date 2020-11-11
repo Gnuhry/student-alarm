@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">studentalarm</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="alarm">Alarm</string>
     <string name="lecture">Lecture</string>
     <string name="settings">Settings</string>
@@ -40,7 +39,8 @@
     <string name="if_alarm_is_set_in_phone_alarm_app_this_application_can_not_delete_it">If alarm is set in phone alarm app, this application can not delete it!</string>
     <string name="ok">OK</string>
     <string name="next_alarm_in">Next alarm in</string>
-    <string name="zero_time">00:00</string>
+    <string name="time">%d h - %d min</string>
+    <string name="zero_time">00 h - 00 min</string>
     <string name="no_alarm_set">No alarm set</string>
-    <string name="alarm_at">Alarm at: </string>
+    <string name="alarm_at">Alarm at: %1$s</string>
 </resources>

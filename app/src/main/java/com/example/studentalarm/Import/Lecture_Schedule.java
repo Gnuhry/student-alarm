@@ -43,8 +43,8 @@ public class Lecture_Schedule implements Serializable {
      */
     public void ImportICS(ICS calendar) {
         import_lecture.clear();
-        for (ICS.vEvent ev : calendar.getvEventList())
-            import_lecture.add(new Lecture(ev.getSUMMARY(), null, ev.getLOCATION(), ev.getDTSTART(), ev.getDTEND()));
+        for (ICS.vEvent ev : calendar.getVEventList())
+            import_lecture.add(new Lecture(ev.getSUMMARY(), null, ev.getLOCATION(), ev.getDTStart(), ev.getDTend()));
         timezone = TimeZone.getDefault();//TODO Getter TimeZone iCalendar
     }
 
@@ -143,6 +143,8 @@ public class Lecture_Schedule implements Serializable {
             FileInputStream fis = context.openFileInput("LECTURE");
             ObjectInputStream ois = new ObjectInputStream(fis);
             Lecture_Schedule erg = (Lecture_Schedule) ois.readObject();
+            fis.close();
+            ois.close();
             if (erg != null)
                 return erg;
         } catch (IOException e) {
@@ -202,25 +204,17 @@ public class Lecture_Schedule implements Serializable {
             return end;
         }
 
-        public static int getCounter() {
-            return counter;
-        }
-
-        public int getColor() {
-            return color;
-        }
-
         public int getId() {
             return id;
         }
 
         @NotNull
         @Override
-        public WeekViewEvent<Lecture> toWeekViewEvent() { //TODO add Docent to Text
+        public WeekViewEvent<Lecture> toWeekViewEvent() {
             WeekViewEvent.Style.Builder builder = new WeekViewEvent.Style.Builder();
             builder.setBackgroundColor(color);
 
-            if (start == null || end == null || name == null) return null;
+            if (start == null || end == null || name == null) return new WeekViewEvent.Builder<Lecture>().build();
             Calendar startCal = new GregorianCalendar();
             startCal.setTime(this.start);
 

@@ -18,7 +18,7 @@ public class ImportReceiver extends BroadcastReceiver {
             case Import.ImportFunction.NONE:
                 break;
             case Import.ImportFunction.ICS:
-                Lecture_Schedule lecture_schedule = Import.Import(context);
+                Lecture_Schedule lecture_schedule = Import.ImportLecture(context);
                 lecture_schedule.Save(context);
                 AlarmManager.UpdateNextAlarmAfterImport(context);
                 break;
