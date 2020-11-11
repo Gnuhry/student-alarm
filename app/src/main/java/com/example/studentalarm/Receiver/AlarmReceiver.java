@@ -52,8 +52,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.alarm)
-                .setContentTitle("Test")
-                .setContentText("HALLO HALLO HALLO")
+                .setContentTitle(context.getString(R.string.app_name))
+                .setContentText(context.getString(R.string.alarm))
 //                .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK), 0))
                 .addAction(R.drawable.alarm, "Snooze", PendingIntent.getBroadcast(context, 0, snoozeIntent, 0))
                 .addAction(R.drawable.alarm, "Alarm Off", PendingIntent.getBroadcast(context, 0, alarmOffIntent, 0))
