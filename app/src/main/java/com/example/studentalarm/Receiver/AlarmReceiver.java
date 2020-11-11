@@ -33,8 +33,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         Log.d("Alarm Bell", "Alarm just fired");
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION); //TODO set sound
         mp = MediaPlayer.create(context.getApplicationContext(), alarmSound);
-        mp.setLooping(true);
-        setNotification(context);
+        if (NotificationManagerCompat.from(context).areNotificationsEnabled()){
+            setNotification(context);
+            mp.setLooping(true);
+        }
         mp.start();
     }
 

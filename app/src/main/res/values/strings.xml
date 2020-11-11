@@ -43,4 +43,6 @@
     <string name="zero_time">00 h - 00 min</string>
     <string name="no_alarm_set">No alarm set</string>
     <string name="alarm_at">Alarm at: %1$s</string>
+    <string name="notification_permission_missing">Notification permission missing</string>
+    <string name="notification_permission_are_missing_without_them_the_alarm_will_not_work_properly">Notification permissions are missing. Without them the alarm will not work properly</string>
 </resources>
