@@ -39,6 +39,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         alarm_on.setOnPreferenceChangeListener((preference, newValue) -> {
             alarm_phone.setEnabled((Boolean) newValue);
             alarm_change.setEnabled((Boolean) newValue);
+            getPreferenceManager().getSharedPreferences().edit().putBoolean("ALARM_ON",(Boolean)newValue).apply();
             if ((Boolean) newValue) AlarmManager.SetNextAlarm(getContext());
             else AlarmManager.CancelNextAlarm(getContext());
             return true;
