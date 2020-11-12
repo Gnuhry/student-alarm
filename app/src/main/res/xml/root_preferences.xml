@@ -55,10 +55,12 @@
             android:entryValues="@array/language"
             android:key="LANGUAGE"
             android:title="@string/language"
+            android:icon="@drawable/language"
             app:useSimpleSummaryProvider="true" />
 
         <Preference
             android:key="RESET"
+            android:icon="@drawable/replay"
             app:title="@string/reset" />
     </PreferenceCategory>
 
