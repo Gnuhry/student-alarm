@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.studentalarm.Import.Lecture_Schedule;
+import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -47,7 +48,7 @@ public class AlarmFragment extends Fragment {
                     .setCancelable(true)
                     .show();
         }
-        long time = PreferenceManager.getDefaultSharedPreferences(getContext()).getLong("ALARM_TIME", 0);
+        long time = PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_TIME, 0);
         if (time != 0 && time > Calendar.getInstance().getTimeInMillis()) {
             TextView txVTimer = view.findViewById(R.id.txVCountdown);
             timer = new CountDownTimer(time - Calendar.getInstance().getTimeInMillis(), 1000) {

@@ -27,7 +27,7 @@ public class Alarm {
             AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class), 0);
             alarmMgr.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), alarmIntent);
-            PreferenceManager.getDefaultSharedPreferences(context).edit().putLong("ALARM_TIME",time.getTimeInMillis()).apply();
+            PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_TIME,time.getTimeInMillis()).apply();
             Toast.makeText(context, "Alarm is set", Toast.LENGTH_SHORT).show();
             Log.d("ALARM", "Set alarm to " + time.getTimeInMillis());
         } else {
@@ -39,7 +39,7 @@ public class Alarm {
      * cancel the alarm
      */
     public static void cancelAlarm(Context context){
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putLong("ALARM_TIME",0).apply();
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_TIME,0).apply();
         ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class), 0));
     }
 

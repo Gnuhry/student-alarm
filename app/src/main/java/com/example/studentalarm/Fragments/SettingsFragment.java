@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.example.studentalarm.AlarmManager;
 import com.example.studentalarm.Import.Import;
 import com.example.studentalarm.Import.Lecture_Schedule;
+import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -23,15 +24,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
-        boolean bool = getPreferenceManager().getSharedPreferences().getBoolean("ALARM_ON", false);
+        boolean bool = getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_ON, false);
 
         //---------------Init----------------------------------
-        alarm_on = findPreference("ALARM_ON");
-        alarm_phone = findPreference("ALARM_PHONE");
-        alarm_change = findPreference("ALARM_CHANGE");
-        auto_import = findPreference("AUTO_IMPORT");
+        alarm_on = findPreference(PreferenceKeys.ALARM_ON);
+        alarm_phone = findPreference(PreferenceKeys.ALARM_PHONE);
+        alarm_change = findPreference(PreferenceKeys.ALARM_CHANGE);
+        auto_import = findPreference(PreferenceKeys.AUTO_IMPORT);
         import_ = findPreference("IMPORT");
-        import_delete_all = findPreference("IMPORT_DELETE_ALL");
+        import_delete_all = findPreference(PreferenceKeys.IMPORT_DELETE_ALL);
 
         if (alarm_on == null || alarm_phone == null || alarm_change == null || auto_import == null || import_ == null || import_delete_all == null)
             return;
@@ -39,7 +40,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         alarm_on.setOnPreferenceChangeListener((preference, newValue) -> {
             alarm_phone.setEnabled((Boolean) newValue);
             alarm_change.setEnabled((Boolean) newValue);
-            getPreferenceManager().getSharedPreferences().edit().putBoolean("ALARM_ON",(Boolean)newValue).apply();
+            getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.ALARM_ON,(Boolean)newValue).apply();
             if ((Boolean) newValue) AlarmManager.SetNextAlarm(getContext());
             else AlarmManager.CancelNextAlarm(getContext());
             return true;
@@ -50,10 +51,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             if (getContext() == null) return false;
             if ((Boolean) newValue)
                 new MaterialAlertDialogBuilder(getContext())
-                        .setTitle(R.string.alarm_in_phone_app)
+                        .setTitle(R.string.alarm_in_phone_watch_app)
                         .setMessage(R.string.if_alarm_is_set_in_phone_alarm_app_this_application_can_not_delete_it)
                         .setPositiveButton(R.string.ok, (dialogInterface, i) -> {
-                            getPreferenceManager().getSharedPreferences().edit().putBoolean("ALARM_PHONE", true).apply();
+                            getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.ALARM_PHONE, true).apply();
                             Reload();
                             AlarmManager.UpdateNextAlarm(getContext());
                         })
@@ -61,7 +62,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         .setCancelable(true)
                         .show();
             else {
-                PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putBoolean("ALARM_PHONE", (Boolean) newValue).apply();
+                PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putBoolean(PreferenceKeys.ALARM_PHONE, (Boolean) newValue).apply();
                 AlarmManager.UpdateNextAlarm(getContext());
                 return false;
             }
@@ -72,10 +73,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         import_.setSummaryProvider(preference -> {
             SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
-            int mode = preferences.getInt("Mode", Import.ImportFunction.NONE);
+            int mode = preferences.getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE);
             StringBuilder sb = new StringBuilder(Import.ImportFunction.imports.get(mode));
             if (mode == Import.ImportFunction.ICS)
-                sb.append(" - ").append(preferences.getString("Link", null));
+                sb.append(" - ").append(preferences.getString(PreferenceKeys.LINK, null));
             return sb.toString();
         });
         import_.setOnPreferenceClickListener(preference -> {
@@ -86,7 +87,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-        if (getPreferenceManager().getSharedPreferences().getInt("Mode", Import.ImportFunction.NONE) == Import.ImportFunction.NONE)
+        if (getPreferenceManager().getSharedPreferences().getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) == Import.ImportFunction.NONE)
             auto_import.setEnabled(false);
         auto_import.setOnPreferenceChangeListener((preference, newValue) -> {
             if (getContext() == null) return false;
