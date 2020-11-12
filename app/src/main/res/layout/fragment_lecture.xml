@@ -6,22 +6,42 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.LectureFragment">
 
-    <com.alamkanak.weekview.WeekView
-        android:id="@+id/weekView"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:columnGap="8dp"
-        app:dayBackgroundColor="@color/white"
-        app:eventTextColor="@color/white"
-        app:headerPadding="12dp"
-        app:hourHeight="60dp"
-        app:numberOfVisibleDays="6"
-        app:timeColumnBackgroundColor="@color/white"
-        app:timeColumnPadding="8dp"
-        app:showMidnightHour="true"
-        app:showNowLine="true"
-        app:showCurrentTimeFirst="true"
-        app:showFirstDayOfWeekFirst="true"
-        app:timeColumnTextSize="12sp" />
+        android:layout_height="match_parent">
 
+        <FrameLayout
+            android:id="@+id/fLLecture"
+            android:layout_width="match_parent"
+            android:layout_height="0sp"
+            app:layout_constraintBottom_toTopOf="@id/LLLecture"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/LLLecture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <Button
+                android:id="@+id/btnWeekly"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Weekly" />
+
+            <Button
+                android:id="@+id/btnMonthly"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Monthly" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

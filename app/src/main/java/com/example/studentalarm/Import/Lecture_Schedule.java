@@ -17,6 +17,8 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -57,6 +59,7 @@ public class Lecture_Schedule implements Serializable {
         List<Lecture> all = new ArrayList<>();
         all.addAll(lecture);
         all.addAll(import_lecture);
+        Collections.sort(all);
         return all;
     }
 
@@ -115,6 +118,7 @@ public class Lecture_Schedule implements Serializable {
         return erg;
     }
 
+
     //----------------------------------------------------------------SAVE_LOAD---------------------------------------------------------
 
     /**
@@ -160,7 +164,7 @@ public class Lecture_Schedule implements Serializable {
     /**
      * inner class to represent the lecture information
      */
-    public static class Lecture implements WeekViewDisplayable<Lecture>, Serializable {
+    public static class Lecture implements WeekViewDisplayable<Lecture>, Serializable, Comparable<Lecture>{
         private final String docent, location, name;
         private final Date start, end;
         private static int counter = 1;
@@ -236,6 +240,11 @@ public class Lecture_Schedule implements Serializable {
             erg.setStyle(builder.build());
             erg.setId(this.id);
             return erg.build();
+        }
+
+        @Override
+        public int compareTo(Lecture lecture) {
+            return start.compareTo(lecture.start);
         }
     }
 }
