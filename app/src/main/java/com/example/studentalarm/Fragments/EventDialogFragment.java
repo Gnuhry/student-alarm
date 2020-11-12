@@ -19,7 +19,7 @@ import androidx.fragment.app.DialogFragment;
 
 public class EventDialogFragment extends DialogFragment {
     private final Lecture_Schedule.Lecture data;
-    private final SimpleDateFormat format=new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.GERMAN);
+    private final SimpleDateFormat format=new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.GERMAN); //TODO add internationalization
 
     public EventDialogFragment(Lecture_Schedule.Lecture data) {
         this.data = data;
