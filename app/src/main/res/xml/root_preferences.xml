@@ -16,6 +16,18 @@
             android:enabled="false"
             android:key="ALARM_CHANGE"
             android:title="@string/change_alarm_if_lecture_is_changing" />
+        <EditTextPreference
+            android:defaultValue="5"
+            android:key="SNOOZE"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/snooze_duration" />
+        <ListPreference
+            android:entries="@array/ringtone"
+            android:entryValues="@array/ringtone"
+            android:key="RINGTONE"
+            android:title="@string/ringtone"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Import">
@@ -26,9 +38,30 @@
             android:defaultValue="false"
             android:key="AUTO_IMPORT"
             android:title="@string/automatic_daily_import" />
+        <EditTextPreference
+            android:defaultValue="19:00"
+            android:key="IMPORT_TIME"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/import_time" />
         <Preference
             android:key="IMPORT_DELETE_ALL"
             app:title="@string/delete_all_import_events" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="General">
+
+        <ListPreference
+            android:entries="@array/language"
+            android:entryValues="@array/language"
+            android:key="LANGUAGE"
+            android:title="@string/language"
+            android:icon="@drawable/language"
+            app:useSimpleSummaryProvider="true" />
+
+        <Preference
+            android:key="RESET"
+            android:icon="@drawable/replay"
+            app:title="@string/reset" />
     </PreferenceCategory>
 
 </PreferenceScreen>

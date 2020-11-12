@@ -12,10 +12,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
+import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.preference.PreferenceManager;
 
 import static android.app.Notification.EXTRA_NOTIFICATION_ID;
 
@@ -31,17 +33,20 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("Alarm Bell", "Alarm just fired");
-        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION); //TODO set sound
-        mp = MediaPlayer.create(context.getApplicationContext(), alarmSound);
-        if (NotificationManagerCompat.from(context).areNotificationsEnabled()){
+        mp = GetMediaPlayer(context);
+        if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
             setNotification(context);
             mp.setLooping(true);
         }
         mp.start();
     }
 
+    /**
+     * create notification to publish alarm
+     *
+     * @param context context of application
+     */
     private void setNotification(Context context) {
-
         Intent snoozeIntent = new Intent(context, SnoozeReceiver.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             snoozeIntent.putExtra(EXTRA_NOTIFICATION_ID, 0);
@@ -55,15 +60,19 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(context.getString(R.string.alarm))
 //                .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK), 0))
-                .addAction(R.drawable.alarm, "Snooze", PendingIntent.getBroadcast(context, 0, snoozeIntent, 0))
-                .addAction(R.drawable.alarm, "Alarm Off", PendingIntent.getBroadcast(context, 0, alarmOffIntent, 0))
+                .addAction(R.drawable.alarm, context.getString(R.string.snooze), PendingIntent.getBroadcast(context, 0, snoozeIntent, 0))
+                .addAction(R.drawable.alarm, context.getString(R.string.alarm_off), PendingIntent.getBroadcast(context, 0, alarmOffIntent, 0))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
         createNotificationChannel(context);
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build());
     }
 
+    /**
+     * Create notification channel to publish
+     *
+     * @param context context of the application
+     */
     private void createNotificationChannel(Context context) {
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = context.getString(R.string.alarm);
             String description = context.getString(R.string.alarm);
@@ -72,6 +81,23 @@ public class AlarmReceiver extends BroadcastReceiver {
             channel.setDescription(description);
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    /**
+     * Get the media player with the ringtone set in settings
+     *
+     * @param context context of the application
+     * @return ringtone to play
+     */
+    private MediaPlayer GetMediaPlayer(Context context) {
+        switch (PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.RINGTONE, PreferenceKeys.DEFAULT_RINGTONE)) {
+            case "didudeldudu":
+                return MediaPlayer.create(context.getApplicationContext(), R.raw.didudeldudu);
+            case "DEFAULT":
+            default:
+                Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                return MediaPlayer.create(context.getApplicationContext(), alarmSound);
         }
     }
 }

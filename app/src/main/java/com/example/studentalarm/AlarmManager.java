@@ -18,24 +18,46 @@ public class AlarmManager {
      * @param context context of the application
      */
     public static void SetNextAlarm(Context context) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (preferences.getBoolean(PreferenceKeys.ALARM_ON, false)) {
+        if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.ALARM_ON, false)) {
             Calendar calendar = Calendar.getInstance();
-            Lecture_Schedule.Lecture firstToday = Lecture_Schedule.Load(context).getFirstLectureAtDate(calendar.getTime());
-            Calendar calendar2 = Calendar.getInstance();
-            calendar2.setTime(firstToday.getStart());
-            if (calendar2.before(calendar))
-                firstToday = Lecture_Schedule.Load(context).getFirstLectureAtDate(getNextDay());
-            calendar.setTime(firstToday.getStart());
-            calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.BEFORE, 0));
-            calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.WAY, 0));
-            calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.AFTER, 0));
-            if (preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false)) {
-                Alarm.setPhoneAlarm(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), context);
-            } else {
-                CancelNextAlarm(context);
-                Alarm.setAlarm(calendar, context);
+            Lecture_Schedule.Lecture first1 = Lecture_Schedule.Load(context).getFirstLectureAtDate(calendar.getTime());
+            if (first1 != null) {
+                Calendar calendar2 = Calendar.getInstance();
+                calendar2.setTime(first1.getStart());
+                if (calendar2.after(calendar)) {
+                    SetAlarm(first1.getStart(), context);
+                    return;
+                }
             }
+            Lecture_Schedule.Lecture first2 = Lecture_Schedule.Load(context).getFirstLectureAtDate(getNextDay());
+            if (first2 != null) {
+                SetAlarm(first2.getStart(), context);
+                return;
+            }
+            Lecture_Schedule.Lecture first3 = Lecture_Schedule.Load(context).getNextLecture(calendar.getTime());
+            if (first3 != null)
+                SetAlarm(first3.getStart(), context);
+        }
+    }
+
+    /**
+     * Set the alarm at date
+     *
+     * @param date    date where the alarm should trigger
+     * @param context context of the application
+     */
+    private static void SetAlarm(Date date, Context context) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.BEFORE, 0));
+        calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.WAY, 0));
+        calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.AFTER, 0));
+        if (preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false))
+            Alarm.setPhoneAlarm(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), context);
+        else {
+            CancelNextAlarm(context);
+            Alarm.setAlarm(calendar, context);
         }
     }
 

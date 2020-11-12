@@ -1,7 +1,12 @@
 package com.example.studentalarm;
 
 import android.content.IntentFilter;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 
 import com.example.studentalarm.Fragments.AlarmFragment;
 import com.example.studentalarm.Fragments.LectureFragment;
@@ -10,13 +15,17 @@ import com.example.studentalarm.Fragments.SettingsFragment;
 import com.example.studentalarm.Receiver.NetworkReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.Locale;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = "FRAGMENT";
     int lastId, beforeLastId;
+    public static BottomNavigationView bottomNav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +35,11 @@ public class MainActivity extends AppCompatActivity {
         this.registerReceiver(new NetworkReceiver(), new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
         this.registerReceiver(new NetworkReceiver(), new IntentFilter("android.net.wifi.WIFI_STATE_CHANGED"));
 
-        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
+        bottomNav = findViewById(R.id.bottomNav);
+
+        if (PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceKeys.LANGUAGE, null) == null)
+            PreferenceKeys.Default(this);
+
         openFragment(new AlarmFragment());
 
         bottomNav.setOnNavigationItemSelectedListener(item -> {
@@ -45,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
             lastId = itemId;
             return true;
         });
-
     }
 
     @Override
@@ -63,11 +75,15 @@ public class MainActivity extends AppCompatActivity {
             bottomNav.setSelectedItemId(R.id.setting);
     }
 
+    /**
+     * open a fragment
+     *
+     * @param fragment the fragment to open
+     */
     public void openFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frameLayout, fragment, TAG);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
-
     }
 }
