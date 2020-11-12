@@ -185,7 +185,7 @@ public class ICS {
      * intern class to represent the timezone information
      */
     public static class vTimezone {
-        public  vTimezone(String[] strings) {
+        public vTimezone(String[] strings) {
 
         }
     }

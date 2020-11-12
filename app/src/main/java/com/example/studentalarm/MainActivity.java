@@ -35,10 +35,10 @@ public class MainActivity extends AppCompatActivity {
         this.registerReceiver(new NetworkReceiver(), new IntentFilter("android.net.wifi.WIFI_STATE_CHANGED"));
 
         bottomNav = findViewById(R.id.bottomNav);
-        String s = PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceKeys.LANGUAGE, null);
-        if (s == null)
-            PreferenceManager.getDefaultSharedPreferences(this).edit().putString(PreferenceKeys.LANGUAGE, "EN").apply();
-        else if (!s.equals("EN")) {
+
+        PreferenceKeys.Default(this);
+        String s = PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceKeys.LANGUAGE, PreferenceKeys.DEFAULT_LANGUAGE);
+        if (!s.equals(PreferenceKeys.DEFAULT_LANGUAGE)) {
             Resources resources = getResources();
             DisplayMetrics dm = resources.getDisplayMetrics();
             Configuration config = resources.getConfiguration();
@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
             bottomNav.getMenu().clear();
             bottomNav.inflateMenu(R.menu.bottom_nav_menu);
         }
+
+
         openFragment(new AlarmFragment());
 
         bottomNav.setOnNavigationItemSelectedListener(item -> {
@@ -88,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * open a fragment
+     *
      * @param fragment the fragment to open
      */
     public void openFragment(Fragment fragment) {

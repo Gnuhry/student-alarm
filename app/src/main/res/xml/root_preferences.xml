@@ -22,6 +22,12 @@
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/snooze_duration" />
+        <ListPreference
+            android:entries="@array/ringtone"
+            android:entryValues="@array/ringtone"
+            android:key="RINGTONE"
+            android:title="@string/ringtone"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Import">

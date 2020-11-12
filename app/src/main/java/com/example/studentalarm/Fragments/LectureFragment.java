@@ -35,7 +35,7 @@ public class LectureFragment extends Fragment {
         weekview.setTimeFormatter(hour -> {
             if (hour < 10)
                 return "0" + hour + " h";
-            return "" + hour + " h";
+            return hour + " h";
         });
         weekview.setDateFormatter(date -> new SimpleDateFormat("EEE dd.MM", getResources().getConfiguration().locale).format(date.getTime()));
         if (getContext() != null)
@@ -57,8 +57,8 @@ public class LectureFragment extends Fragment {
         @Override
         public void onEventClick(Lecture_Schedule.Lecture data) {
             super.onEventClick(data);
-            if(getActivity()!=null)
-            new EventDialogFragment(data).show(getActivity().getSupportFragmentManager(), "dialog");
+            if (getActivity() != null)
+                new EventDialogFragment(data).show(getActivity().getSupportFragmentManager(), "dialog");
         }
 
     }

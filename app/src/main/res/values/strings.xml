@@ -39,13 +39,17 @@
     <string name="yes">YES</string>
     <string name="no">NO</string>
     <string name="missing_events">Missing events</string>
+    <string name="ringtone">Ringtone</string>
 
     <!--Alarm-->
     <string name="next_alarm_in">Next alarm in</string>
     <string name="time">%d h - %d min</string>
     <string name="zero_time">00 h - 00 min</string>
-    <string name="no_alarm_set">No alarm set or alarm in phonewatch app</string>
+    <string name="no_alarm_set">No alarm set or alarm in phone watch app</string>
     <string name="alarm_at">Alarm at: %1$s</string>
+    <string name="snooze">Snooze</string>
+    <string name="alarm_off">Alarm Off</string>
+    <string name="alarm_is_set">Alarm is set</string>
 
     <!--Notification permission-->
     <string name="notification_permission_missing">Notification permission missing</string>
@@ -63,5 +67,6 @@
     <string name="status">Status</string>
     <string name="ok">OK</string>
     <string name="number">number</string>
+
 
 </resources>
