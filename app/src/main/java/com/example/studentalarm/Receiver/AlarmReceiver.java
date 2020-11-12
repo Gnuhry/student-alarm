@@ -65,8 +65,8 @@ public class AlarmReceiver extends BroadcastReceiver {
     private void createNotificationChannel(Context context) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Alarm";//context.getString(R.string.channel_name);
-            String description = "Alarm";//context.getString(R.string.channel_description);
+            CharSequence name = context.getString(R.string.alarm);
+            String description = context.getString(R.string.alarm);
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);

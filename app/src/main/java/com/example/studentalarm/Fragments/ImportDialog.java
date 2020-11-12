@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.studentalarm.Import.ICS;
 import com.example.studentalarm.Import.Import;
+import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
 
 import androidx.annotation.NonNull;
@@ -40,7 +41,7 @@ public class ImportDialog extends Dialog {
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        switch (preferences.getInt("Mode", Import.ImportFunction.NONE)) {
+        switch (preferences.getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE)) {
             case Import.ImportFunction.NONE:
                 ((RadioButton) findViewById(R.id.rBtnNone)).setChecked(true);
                 break;
@@ -50,7 +51,7 @@ public class ImportDialog extends Dialog {
                 break;
         }
         ((RadioButton) findViewById(R.id.rBtnICS)).setOnCheckedChangeListener((compoundButton, b) -> findViewById(R.id.LLLink).setVisibility(b ? View.VISIBLE : View.GONE));
-        String s_import = preferences.getString("Link", null);
+        String s_import = preferences.getString(PreferenceKeys.LINK, null);
         if (s_import != null) {
             lastValidString = s_import;
             isValid = true;
@@ -76,13 +77,13 @@ public class ImportDialog extends Dialog {
         findViewById(R.id.btnSave).setOnClickListener(view1 -> {
             if (((RadioButton) findViewById(R.id.rBtnICS)).isChecked()) {
                 if (isValid) {
-                    preferences.edit().putInt("Mode", Import.ImportFunction.ICS).apply();
-                    preferences.edit().putString("Link", ((EditText) findViewById(R.id.edTLink)).getText().toString()).apply();
+                    preferences.edit().putInt(PreferenceKeys.MODE, Import.ImportFunction.ICS).apply();
+                    preferences.edit().putString(PreferenceKeys.LINK, ((EditText) findViewById(R.id.edTLink)).getText().toString()).apply();
                     this.cancel();
                 } else
                     Toast.makeText(getContext(), R.string.missing_checked_valid_url, Toast.LENGTH_SHORT).show();
             } else if (((RadioButton) findViewById(R.id.rBtnNone)).isChecked()) {
-                preferences.edit().putInt("Mode", Import.ImportFunction.NONE).apply();
+                preferences.edit().putInt(PreferenceKeys.MODE, Import.ImportFunction.NONE).apply();
                 this.cancel();
             }
         });
