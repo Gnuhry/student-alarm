@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.example.studentalarm.AlarmManager;
+import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
 
 import androidx.fragment.app.Fragment;
@@ -31,9 +32,9 @@ public class SchoolFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_school, container, false);
-        view.findViewById(R.id.txVBefore).setOnClickListener(v -> NumberDialog(getContext(), "Before", "BEFORE"));
-        view.findViewById(R.id.txtWay).setOnClickListener(v -> NumberDialog(getContext(), "Way", "WAY"));
-        view.findViewById(R.id.txtAfter).setOnClickListener(v -> NumberDialog(getContext(), "After", "AFTER"));
+        view.findViewById(R.id.txVBefore).setOnClickListener(v -> NumberDialog(getContext(), getString(R.string.before), PreferenceKeys.BEFORE));
+        view.findViewById(R.id.txtWay).setOnClickListener(v -> NumberDialog(getContext(), getString(R.string.way), PreferenceKeys.WAY));
+        view.findViewById(R.id.txtAfter).setOnClickListener(v -> NumberDialog(getContext(), getString(R.string.after), PreferenceKeys.AFTER));
         return view;
     }
 
