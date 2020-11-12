@@ -8,10 +8,13 @@
     <!--Settings-->
     <string name="alarm_in_phone_watch_app">Alarm in phone watch app</string>
     <string name="change_alarm_if_lecture_is_changing">Change alarm, if lecture is changing</string>
-    <string name="create_alarm_for_the_next_day">Create Alarm for the next day</string>
+    <string name="create_alarm_for_the_next_day">Create alarm for the next day</string>
     <string name="if_alarm_is_set_in_phone_alarm_app_this_application_can_not_delete_it">If alarm is set in phone alarm app, this application can not delete it!</string>
+    <string name="snooze_duration">Snooze duration</string>
 
     <string name="import_settings">Import Settings</string>
+    <string name="import_">Import</string>
+    <string name="import_time">Import time</string>
     <string name="link_to_file">Link to file</string>
     <string name="automatic_daily_import">Automatic daily import</string>
     <string name="address">http://www.</string>
@@ -26,14 +29,27 @@
     <string name="ics">ICS</string>
     <string name="delete_all">Delete all</string>
     <string name="delete">Delete</string>
-    <string name="import_">Import</string>
+    <string name="wrong_time_format">Wrong time format</string>
+    <string name="hh_mm">HH:mm</string>
+    <string name="_time">%1$s</string>
+    <string name="_min">%1$s min</string>
+    <string name="language">Language</string>
+    <string name="reset">Reset</string>
+    <string name="do_you_want_to_reset_this_application">Do you want to reset this application?</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="missing_events">Missing events</string>
+    <string name="ringtone">Ringtone</string>
 
     <!--Alarm-->
     <string name="next_alarm_in">Next alarm in</string>
     <string name="time">%d h - %d min</string>
     <string name="zero_time">00 h - 00 min</string>
-    <string name="no_alarm_set">No alarm set</string>
+    <string name="no_alarm_set">No alarm set or alarm in phone watch app</string>
     <string name="alarm_at">Alarm at: %1$s</string>
+    <string name="snooze">Snooze</string>
+    <string name="alarm_off">Alarm Off</string>
+    <string name="alarm_is_set">Alarm is set</string>
 
     <!--Notification permission-->
     <string name="notification_permission_missing">Notification permission missing</string>

@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.studentalarm.Import.Lecture_Schedule;
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -22,7 +21,6 @@ import androidx.preference.PreferenceManager;
 
 public class AlarmFragment extends Fragment {
 
-    private final SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.GERMAN);
     private CountDownTimer timer;
 
     public AlarmFragment() {
@@ -40,11 +38,11 @@ public class AlarmFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_alarm, container, false);
         if (getContext() == null) return view;
-        if(!NotificationManagerCompat.from(getContext()).areNotificationsEnabled()){
+        if (!NotificationManagerCompat.from(getContext()).areNotificationsEnabled()) {
             new MaterialAlertDialogBuilder(getContext())
                     .setTitle(R.string.notification_permission_missing)
                     .setMessage(R.string.notification_permission_are_missing_without_them_the_alarm_will_not_work_properly)
-                    .setPositiveButton(R.string.ok,null)
+                    .setPositiveButton(R.string.ok, null)
                     .setCancelable(true)
                     .show();
         }
@@ -64,7 +62,7 @@ public class AlarmFragment extends Fragment {
                     txVTimer.setText(R.string.zero_time);
                 }
             }.start();
-            ((TextView) view.findViewById(R.id.txVAlarm)).setText(getString(R.string.alarm_at, format.format(time)));
+            ((TextView) view.findViewById(R.id.txVAlarm)).setText(getString(R.string.alarm_at, new SimpleDateFormat("HH:mm", Locale.GERMAN).format(time)));
         } else {
             ((TextView) view.findViewById(R.id.textView4)).setText(R.string.no_alarm_set);
         }

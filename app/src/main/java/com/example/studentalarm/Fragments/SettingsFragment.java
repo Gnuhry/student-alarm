@@ -1,16 +1,29 @@
 package com.example.studentalarm.Fragments;
 
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
+import android.util.DisplayMetrics;
+import android.widget.Toast;
 
 import com.example.studentalarm.AlarmManager;
 import com.example.studentalarm.Import.Import;
 import com.example.studentalarm.Import.Lecture_Schedule;
+import com.example.studentalarm.MainActivity;
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
@@ -19,12 +32,14 @@ import androidx.preference.SwitchPreference;
 public class SettingsFragment extends PreferenceFragmentCompat {
 
     SwitchPreference alarm_on, alarm_phone, alarm_change, auto_import;
-    Preference import_, import_delete_all;
+    Preference import_, import_delete_all, reset;
+    EditTextPreference snooze, import_time;
+    ListPreference language, ringtone;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
-        boolean bool = getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_ON, false);
+        boolean bool = getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_ON, false), bool2 = bool && !getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_PHONE, false);
 
         //---------------Init----------------------------------
         alarm_on = findPreference(PreferenceKeys.ALARM_ON);
@@ -33,16 +48,34 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         auto_import = findPreference(PreferenceKeys.AUTO_IMPORT);
         import_ = findPreference("IMPORT");
         import_delete_all = findPreference(PreferenceKeys.IMPORT_DELETE_ALL);
+        snooze = findPreference(PreferenceKeys.SNOOZE);
+        import_time = findPreference(PreferenceKeys.IMPORT_TIME);
+        language = findPreference(PreferenceKeys.LANGUAGE);
+        reset = findPreference("RESET");
+        ringtone = findPreference(PreferenceKeys.RINGTONE);
 
-        if (alarm_on == null || alarm_phone == null || alarm_change == null || auto_import == null || import_ == null || import_delete_all == null)
+        if (alarm_on == null || alarm_phone == null || alarm_change == null || auto_import == null || import_ == null || import_delete_all == null || snooze == null || import_time == null || reset == null || ringtone == null)
             return;
 
         alarm_on.setOnPreferenceChangeListener((preference, newValue) -> {
-            alarm_phone.setEnabled((Boolean) newValue);
-            alarm_change.setEnabled((Boolean) newValue);
-            getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.ALARM_ON,(Boolean)newValue).apply();
-            if ((Boolean) newValue) AlarmManager.SetNextAlarm(getContext());
-            else AlarmManager.CancelNextAlarm(getContext());
+
+            if ((Boolean) newValue) {
+                if (getContext() != null && Lecture_Schedule.Load(getContext()).getAllLecture().size() == 0) {
+                    Toast.makeText(getContext(), R.string.missing_events, Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.ALARM_ON, (Boolean) newValue).apply();
+                AlarmManager.SetNextAlarm(getContext());
+            } else {
+                getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.ALARM_ON, (Boolean) newValue).apply();
+                AlarmManager.CancelNextAlarm(getContext());
+            }
+            boolean bool3 = (Boolean) newValue;
+            alarm_phone.setEnabled(bool3);
+            bool3 &= !getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_PHONE, false);
+            alarm_change.setEnabled(bool3);
+            snooze.setEnabled(bool3);
+            ringtone.setEnabled(bool3);
             return true;
         });
 
@@ -62,14 +95,23 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         .setCancelable(true)
                         .show();
             else {
+                alarm_change.setEnabled(true);
+                snooze.setEnabled(true);
+                ringtone.setEnabled(true);
+                if (getContext() == null) return false;
                 PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putBoolean(PreferenceKeys.ALARM_PHONE, (Boolean) newValue).apply();
                 AlarmManager.UpdateNextAlarm(getContext());
-                return false;
+                return true;
             }
             return false;
         });
+        alarm_change.setEnabled(bool2);
 
-        alarm_change.setEnabled(bool);
+        snooze.setEnabled(bool2);
+        snooze.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
+        snooze.setSummaryProvider(preference -> getString(R.string._min, preference.getSharedPreferences().getString(PreferenceKeys.SNOOZE, PreferenceKeys.DEFAULT_SNOOZE)));
+
+        ringtone.setEnabled(bool2);
 
         import_.setSummaryProvider(preference -> {
             SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
@@ -91,8 +133,33 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             auto_import.setEnabled(false);
         auto_import.setOnPreferenceChangeListener((preference, newValue) -> {
             if (getContext() == null) return false;
+            import_time.setEnabled((Boolean) newValue);
             if ((Boolean) newValue) Import.SetTimer(getContext());
             else Import.StopTimer(getContext());
+            return true;
+        });
+
+        import_time.setEnabled(getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.AUTO_IMPORT, false));
+        import_time.setSummaryProvider(preference -> getString(R.string._time, preference.getSharedPreferences().getString(PreferenceKeys.IMPORT_TIME, PreferenceKeys.DEFAULT_IMPORT_TIME)));
+        import_time.setOnBindEditTextListener(editText -> {
+            editText.setInputType(InputType.TYPE_CLASS_DATETIME);
+            editText.setHint(R.string.hh_mm);
+        });
+
+        import_time.setOnPreferenceChangeListener((preference, newValue) -> {
+            SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.GERMAN);
+            String value = (String) newValue;
+            if (value.length() != 5) {
+                Toast.makeText(getContext(), getString(R.string.wrong_time_format), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+            format.setLenient(false);
+            try {
+                format.parse(value.trim());
+            } catch (ParseException pe) {
+                Toast.makeText(getContext(), getString(R.string.wrong_time_format), Toast.LENGTH_SHORT).show();
+                return false;
+            }
             return true;
         });
 
@@ -101,16 +168,65 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             new MaterialAlertDialogBuilder(getContext())
                     .setTitle(R.string.delete_all)
                     .setMessage(R.string.do_you_want_to_delete_all_import_events)
-                    .setPositiveButton(R.string.delete, (dialogInterface, i) -> {
-                        Lecture_Schedule l = Lecture_Schedule.Load(getContext());
-                        l.deleteAllImportEvents();
-                        l.Save(getContext());
-                    })
+                    .setPositiveButton(R.string.delete, (dialogInterface, i) -> removeImportLecture())
                     .setNegativeButton(getString(R.string.cancel), null)
                     .setCancelable(true)
                     .show();
             return true;
         });
+
+        language.setOnPreferenceChangeListener((preference, newValue) -> {
+            ChangeLanguage((String) newValue);
+            return true;
+        });
+
+        reset.setOnPreferenceClickListener(preference -> {
+            if (getContext() == null) return false;
+            new MaterialAlertDialogBuilder(getContext())
+                    .setTitle(R.string.reset)
+                    .setMessage(R.string.do_you_want_to_reset_this_application)
+                    .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
+                        String lan = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(PreferenceKeys.LANGUAGE, PreferenceKeys.DEFAULT_LANGUAGE), lan2 = PreferenceKeys.Reset(getContext());
+                        if (!lan2.equals(lan))
+                            ChangeLanguage(lan2);
+                        removeImportLecture();
+                        Reload();
+                    })
+                    .setNegativeButton(R.string.no, null)
+                    .setCancelable(true)
+                    .show();
+            return true;
+        });
+    }
+
+    /**
+     * change the application language
+     *
+     * @param newValue new language code
+     */
+    private void ChangeLanguage(String newValue) {
+        Resources resources = getResources();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        Configuration config = resources.getConfiguration();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            config.setLocale(new Locale(newValue.toLowerCase()));
+        } else {
+            config.locale = new Locale(newValue.toLowerCase());
+        }
+        resources.updateConfiguration(config, dm);
+        MainActivity.bottomNav.getMenu().clear();
+        MainActivity.bottomNav.inflateMenu(R.menu.bottom_nav_menu);
+        MainActivity.bottomNav.setSelectedItemId(R.id.setting);
+    }
+
+    /**
+     * remove all import lecture events
+     */
+    private void removeImportLecture() {
+        if (getContext() == null) return;
+        Lecture_Schedule l = Lecture_Schedule.Load(getContext());
+        l.deleteAllImportEvents();
+        l.Save(getContext());
     }
 
     /**

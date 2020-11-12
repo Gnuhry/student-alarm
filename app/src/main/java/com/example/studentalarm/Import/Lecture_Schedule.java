@@ -78,6 +78,7 @@ public class Lecture_Schedule implements Serializable {
 
     /**
      * get the first lecture at day of date
+     *
      * @param date day, where the lecture take place
      * @return first lecture of the day
      */
@@ -97,6 +98,7 @@ public class Lecture_Schedule implements Serializable {
 
     /**
      * get the next lecture after date
+     *
      * @param date date before the next lecture
      * @return next lecture
      */
@@ -214,7 +216,8 @@ public class Lecture_Schedule implements Serializable {
             WeekViewEvent.Style.Builder builder = new WeekViewEvent.Style.Builder();
             builder.setBackgroundColor(color);
 
-            if (start == null || end == null || name == null) return new WeekViewEvent.Builder<Lecture>().build();
+            if (start == null || end == null || name == null)
+                return new WeekViewEvent.Builder<Lecture>().build();
             Calendar startCal = new GregorianCalendar();
             startCal.setTime(this.start);
 
