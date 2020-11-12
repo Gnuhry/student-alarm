@@ -11,13 +11,11 @@ import com.example.studentalarm.Import.Lecture_Schedule;
 import com.example.studentalarm.R;
 
 import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import androidx.fragment.app.Fragment;
 
 public class LectureFragment extends Fragment {
     WeekView.SimpleAdapter<Lecture_Schedule.Lecture> adapter;
-    SimpleDateFormat format = new SimpleDateFormat("EEE dd.MM", Locale.GERMAN);
 
     public LectureFragment() {
     }
@@ -39,7 +37,7 @@ public class LectureFragment extends Fragment {
                 return "0" + hour + " h";
             return "" + hour + " h";
         });
-        weekview.setDateFormatter(date -> format.format(date.getTime()));
+        weekview.setDateFormatter(date -> new SimpleDateFormat("EEE dd.MM", getResources().getConfiguration().locale).format(date.getTime()));
         if (getContext() != null)
             adapter.submit(Lecture_Schedule.Load(getContext()).getAllLecture());
         RefreshLectureSchedule();

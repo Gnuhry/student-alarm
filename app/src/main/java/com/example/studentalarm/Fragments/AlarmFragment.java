@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.studentalarm.Import.Lecture_Schedule;
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -22,7 +21,6 @@ import androidx.preference.PreferenceManager;
 
 public class AlarmFragment extends Fragment {
 
-    private final SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.GERMAN);
     private CountDownTimer timer;
 
     public AlarmFragment() {
@@ -64,7 +62,7 @@ public class AlarmFragment extends Fragment {
                     txVTimer.setText(R.string.zero_time);
                 }
             }.start();
-            ((TextView) view.findViewById(R.id.txVAlarm)).setText(getString(R.string.alarm_at, format.format(time)));
+            ((TextView) view.findViewById(R.id.txVAlarm)).setText(getString(R.string.alarm_at, new SimpleDateFormat("HH:mm", Locale.GERMAN).format(time)));
         } else {
             ((TextView) view.findViewById(R.id.textView4)).setText(R.string.no_alarm_set);
         }

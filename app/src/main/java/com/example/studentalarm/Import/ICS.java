@@ -177,7 +177,7 @@ public class ICS {
         return CALScale;
     }
 
-    public ICS.vTimezone getvTimezone() {
+    public ICS.vTimezone getVTimezone() {
         return vTimezone;
     }
 
