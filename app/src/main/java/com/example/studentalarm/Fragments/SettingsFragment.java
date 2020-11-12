@@ -81,9 +81,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         alarm_phone.setEnabled(bool);
         alarm_phone.setOnPreferenceChangeListener((preference, newValue) -> {
-            alarm_change.setEnabled(!(Boolean) newValue);
-            snooze.setEnabled(!(Boolean) newValue);
-            ringtone.setEnabled(!(Boolean) newValue);
             if (getContext() == null) return false;
             if ((Boolean) newValue)
                 new MaterialAlertDialogBuilder(getContext())
@@ -98,9 +95,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         .setCancelable(true)
                         .show();
             else {
+                alarm_change.setEnabled(true);
+                snooze.setEnabled(true);
+                ringtone.setEnabled(true);
+                if (getContext() == null) return false;
                 PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putBoolean(PreferenceKeys.ALARM_PHONE, (Boolean) newValue).apply();
                 AlarmManager.UpdateNextAlarm(getContext());
-                return false;
+                return true;
             }
             return false;
         });
@@ -185,10 +186,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     .setTitle(R.string.reset)
                     .setMessage(R.string.do_you_want_to_reset_this_application)
                     .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
-                        PreferenceKeys.Reset(getContext());
+                        String lan = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(PreferenceKeys.LANGUAGE, PreferenceKeys.DEFAULT_LANGUAGE), lan2 = PreferenceKeys.Reset(getContext());
+                        if (!lan2.equals(lan))
+                            ChangeLanguage(lan2);
                         removeImportLecture();
-                        if (!PreferenceManager.getDefaultSharedPreferences(getContext()).getString(PreferenceKeys.LANGUAGE, PreferenceKeys.DEFAULT_LANGUAGE).equals(PreferenceKeys.DEFAULT_LANGUAGE))
-                            ChangeLanguage(PreferenceKeys.DEFAULT_LANGUAGE);
                         Reload();
                     })
                     .setNegativeButton(R.string.no, null)

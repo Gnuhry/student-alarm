@@ -2,6 +2,9 @@ package com.example.studentalarm;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+
+import java.util.Locale;
 
 import androidx.preference.PreferenceManager;
 
@@ -27,20 +30,33 @@ public class PreferenceKeys {
     public static final String DEFAULT_SNOOZE = "5";
     public static final String DEFAULT_IMPORT_TIME = "19:00";
 
-    public static void Reset(Context context) {
+    public static String Reset(Context context) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().clear().apply();
-        Default(context);
+        return Default(context);
     }
 
-    public static void Default(Context context) {
+    public static String Default(Context context) {
+        String erg = DEFAULT_LANGUAGE(context);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (preferences.getString(PreferenceKeys.RINGTONE, null) == null)
             preferences.edit().putString(PreferenceKeys.RINGTONE, DEFAULT_RINGTONE).apply();
         if (preferences.getString(PreferenceKeys.LANGUAGE, null) == null)
-            preferences.edit().putString(PreferenceKeys.LANGUAGE, DEFAULT_LANGUAGE).apply();
+            preferences.edit().putString(PreferenceKeys.LANGUAGE, erg).apply();
         if (preferences.getString(PreferenceKeys.SNOOZE, null) == null)
             preferences.edit().putString(PreferenceKeys.SNOOZE, DEFAULT_SNOOZE).apply();
         if (preferences.getString(PreferenceKeys.IMPORT_TIME, null) == null)
             preferences.edit().putString(PreferenceKeys.IMPORT_TIME, DEFAULT_IMPORT_TIME).apply();
+        return erg;
+    }
+
+    public static String DEFAULT_LANGUAGE(Context context) {
+        String s = Locale.getDefault().getLanguage();
+        Log.d("LANGUAGE", s);
+        for (String language : context.getResources().getStringArray(R.array.language)) {
+            if (s.toUpperCase().equals(language.toUpperCase())) {
+                return s.toUpperCase();
+            }
+        }
+        return DEFAULT_LANGUAGE;
     }
 }

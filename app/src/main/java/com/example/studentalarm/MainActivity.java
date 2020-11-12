@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import com.example.studentalarm.Fragments.AlarmFragment;
 import com.example.studentalarm.Fragments.LectureFragment;
@@ -36,22 +37,8 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNav = findViewById(R.id.bottomNav);
 
-        PreferenceKeys.Default(this);
-        String s = PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceKeys.LANGUAGE, PreferenceKeys.DEFAULT_LANGUAGE);
-        if (!s.equals(PreferenceKeys.DEFAULT_LANGUAGE)) {
-            Resources resources = getResources();
-            DisplayMetrics dm = resources.getDisplayMetrics();
-            Configuration config = resources.getConfiguration();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                config.setLocale(new Locale(s.toLowerCase()));
-            } else {
-                config.locale = new Locale(s.toLowerCase());
-            }
-            resources.updateConfiguration(config, dm);
-            bottomNav.getMenu().clear();
-            bottomNav.inflateMenu(R.menu.bottom_nav_menu);
-        }
-
+        if (PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceKeys.LANGUAGE, null) == null)
+            PreferenceKeys.Default(this);
 
         openFragment(new AlarmFragment());
 
