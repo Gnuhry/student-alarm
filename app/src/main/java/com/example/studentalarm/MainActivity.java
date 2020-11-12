@@ -1,21 +1,15 @@
 package com.example.studentalarm;
 
 import android.content.IntentFilter;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
 
 import com.example.studentalarm.Fragments.AlarmFragment;
 import com.example.studentalarm.Fragments.LectureFragment;
 import com.example.studentalarm.Fragments.SchoolFragment;
 import com.example.studentalarm.Fragments.SettingsFragment;
+import com.example.studentalarm.Fragments.WeeklyFragment;
 import com.example.studentalarm.Receiver.NetworkReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import java.util.Locale;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -67,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
         if (fragment instanceof AlarmFragment)
             bottomNav.setSelectedItemId(R.id.alarm);
-        else if (fragment instanceof LectureFragment)
+        else if (fragment instanceof WeeklyFragment)
             bottomNav.setSelectedItemId(R.id.lecture);
         else if (fragment instanceof SchoolFragment)
             bottomNav.setSelectedItemId(R.id.school);
