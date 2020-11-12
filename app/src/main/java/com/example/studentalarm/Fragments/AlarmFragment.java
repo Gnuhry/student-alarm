@@ -38,11 +38,11 @@ public class AlarmFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_alarm, container, false);
         if (getContext() == null) return view;
-        if(!NotificationManagerCompat.from(getContext()).areNotificationsEnabled()){
+        if (!NotificationManagerCompat.from(getContext()).areNotificationsEnabled()) {
             new MaterialAlertDialogBuilder(getContext())
                     .setTitle(R.string.notification_permission_missing)
                     .setMessage(R.string.notification_permission_are_missing_without_them_the_alarm_will_not_work_properly)
-                    .setPositiveButton(R.string.ok,null)
+                    .setPositiveButton(R.string.ok, null)
                     .setCancelable(true)
                     .show();
         }

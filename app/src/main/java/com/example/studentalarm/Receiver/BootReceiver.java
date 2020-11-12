@@ -19,8 +19,8 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
-            SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(context);
-            if(preferences.getBoolean(PreferenceKeys.AUTO_IMPORT,false))
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            if (preferences.getBoolean(PreferenceKeys.AUTO_IMPORT, false))
                 Import.SetTimer(context);
             AlarmManager.SetNextAlarm(context);
         }

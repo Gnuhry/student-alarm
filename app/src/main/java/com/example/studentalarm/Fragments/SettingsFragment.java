@@ -34,12 +34,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     SwitchPreference alarm_on, alarm_phone, alarm_change, auto_import;
     Preference import_, import_delete_all, reset;
     EditTextPreference snooze, import_time;
-    ListPreference language;
+    ListPreference language, ringtone;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
-        boolean bool = getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_ON, false);
+        boolean bool = getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_ON, false), bool2 = bool && !getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_PHONE, false);
 
         //---------------Init----------------------------------
         alarm_on = findPreference(PreferenceKeys.ALARM_ON);
@@ -52,27 +52,38 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         import_time = findPreference(PreferenceKeys.IMPORT_TIME);
         language = findPreference(PreferenceKeys.LANGUAGE);
         reset = findPreference("RESET");
+        ringtone = findPreference(PreferenceKeys.RINGTONE);
 
-        if (alarm_on == null || alarm_phone == null || alarm_change == null || auto_import == null || import_ == null || import_delete_all == null || snooze == null || import_time == null || reset == null)
+        if (alarm_on == null || alarm_phone == null || alarm_change == null || auto_import == null || import_ == null || import_delete_all == null || snooze == null || import_time == null || reset == null || ringtone == null)
             return;
 
         alarm_on.setOnPreferenceChangeListener((preference, newValue) -> {
-            alarm_phone.setEnabled((Boolean) newValue);
-            alarm_change.setEnabled((Boolean) newValue);
-            snooze.setEnabled((Boolean) newValue);
-            getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.ALARM_ON, (Boolean) newValue).apply();
+
             if ((Boolean) newValue) {
                 if (getContext() != null && Lecture_Schedule.Load(getContext()).getAllLecture().size() == 0) {
                     Toast.makeText(getContext(), R.string.missing_events, Toast.LENGTH_SHORT).show();
                     return false;
                 }
+                getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.ALARM_ON, (Boolean) newValue).apply();
                 AlarmManager.SetNextAlarm(getContext());
-            } else AlarmManager.CancelNextAlarm(getContext());
+            } else {
+                getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.ALARM_ON, (Boolean) newValue).apply();
+                AlarmManager.CancelNextAlarm(getContext());
+            }
+            boolean bool3 = (Boolean) newValue;
+            alarm_phone.setEnabled(bool3);
+            bool3 &= !getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_PHONE, false);
+            alarm_change.setEnabled(bool3);
+            snooze.setEnabled(bool3);
+            ringtone.setEnabled(bool3);
             return true;
         });
 
         alarm_phone.setEnabled(bool);
         alarm_phone.setOnPreferenceChangeListener((preference, newValue) -> {
+            alarm_change.setEnabled(!(Boolean) newValue);
+            snooze.setEnabled(!(Boolean) newValue);
+            ringtone.setEnabled(!(Boolean) newValue);
             if (getContext() == null) return false;
             if ((Boolean) newValue)
                 new MaterialAlertDialogBuilder(getContext())
@@ -93,12 +104,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
             return false;
         });
-        alarm_change.setEnabled(bool);
+        alarm_change.setEnabled(bool2);
 
-        snooze.setEnabled(bool);
+        snooze.setEnabled(bool2);
         snooze.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
-        snooze.setSummaryProvider(preference -> getString(R.string._min, preference.getSharedPreferences().getString(PreferenceKeys.SNOOZE, "5")));
+        snooze.setSummaryProvider(preference -> getString(R.string._min, preference.getSharedPreferences().getString(PreferenceKeys.SNOOZE, PreferenceKeys.DEFAULT_SNOOZE)));
 
+        ringtone.setEnabled(bool2);
 
         import_.setSummaryProvider(preference -> {
             SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
@@ -127,7 +139,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         import_time.setEnabled(getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.AUTO_IMPORT, false));
-        import_time.setSummaryProvider(preference -> getString(R.string._time, preference.getSharedPreferences().getString(PreferenceKeys.IMPORT_TIME, "19:00")));
+        import_time.setSummaryProvider(preference -> getString(R.string._time, preference.getSharedPreferences().getString(PreferenceKeys.IMPORT_TIME, PreferenceKeys.DEFAULT_IMPORT_TIME)));
         import_time.setOnBindEditTextListener(editText -> {
             editText.setInputType(InputType.TYPE_CLASS_DATETIME);
             editText.setHint(R.string.hh_mm);
@@ -163,18 +175,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         language.setOnPreferenceChangeListener((preference, newValue) -> {
-            Resources resources = getResources();
-            DisplayMetrics dm = resources.getDisplayMetrics();
-            Configuration config = resources.getConfiguration();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                config.setLocale(new Locale(((String) newValue).toLowerCase()));
-            } else {
-                config.locale = new Locale(((String) newValue).toLowerCase());
-            }
-            resources.updateConfiguration(config, dm);
-            MainActivity.bottomNav.getMenu().clear();
-            MainActivity.bottomNav.inflateMenu(R.menu.bottom_nav_menu);
-            MainActivity.bottomNav.setSelectedItemId(R.id.setting);
+            ChangeLanguage((String) newValue);
             return true;
         });
 
@@ -184,8 +185,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     .setTitle(R.string.reset)
                     .setMessage(R.string.do_you_want_to_reset_this_application)
                     .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
-                        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().clear().apply();
+                        PreferenceKeys.Reset(getContext());
                         removeImportLecture();
+                        if (!PreferenceManager.getDefaultSharedPreferences(getContext()).getString(PreferenceKeys.LANGUAGE, PreferenceKeys.DEFAULT_LANGUAGE).equals(PreferenceKeys.DEFAULT_LANGUAGE))
+                            ChangeLanguage(PreferenceKeys.DEFAULT_LANGUAGE);
                         Reload();
                     })
                     .setNegativeButton(R.string.no, null)
@@ -195,6 +198,29 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
     }
 
+    /**
+     * change the application language
+     *
+     * @param newValue new language code
+     */
+    private void ChangeLanguage(String newValue) {
+        Resources resources = getResources();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        Configuration config = resources.getConfiguration();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            config.setLocale(new Locale(newValue.toLowerCase()));
+        } else {
+            config.locale = new Locale(newValue.toLowerCase());
+        }
+        resources.updateConfiguration(config, dm);
+        MainActivity.bottomNav.getMenu().clear();
+        MainActivity.bottomNav.inflateMenu(R.menu.bottom_nav_menu);
+        MainActivity.bottomNav.setSelectedItemId(R.id.setting);
+    }
+
+    /**
+     * remove all import lecture events
+     */
     private void removeImportLecture() {
         if (getContext() == null) return;
         Lecture_Schedule l = Lecture_Schedule.Load(getContext());

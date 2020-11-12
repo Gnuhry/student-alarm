@@ -18,7 +18,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.d("ALARM", "Snooze");
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MINUTE, Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.SNOOZE, "5")));
+        calendar.add(Calendar.MINUTE, Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.SNOOZE, PreferenceKeys.DEFAULT_SNOOZE)));
         Alarm.setAlarm(calendar, context);
         NotificationManagerCompat.from(context).cancel(AlarmReceiver.NOTIFICATION_ID);
         if (AlarmReceiver.mp != null) {

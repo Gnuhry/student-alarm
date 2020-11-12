@@ -24,7 +24,7 @@ public class Import {
     public static void SetTimer(Context context) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        String[] time = PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.IMPORT_TIME, "19:00").split(":");
+        String[] time = PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.IMPORT_TIME, PreferenceKeys.DEFAULT_IMPORT_TIME).split(":");
         calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time[0]));
         calendar.set(Calendar.MINUTE, Integer.parseInt(time[1]));
 

@@ -37,11 +37,15 @@
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
     <string name="missing_events">Events fehlen</string>
+    <string name="ringtone">Klingelton</string>
     <string name="next_alarm_in">Nächster Alarm in</string>
     <string name="time">%d h - %d min</string>
     <string name="zero_time">00 h - 00 min</string>
     <string name="no_alarm_set">Kein Wecker ist gesetzt oder der Wecker ist in der Handy Uhr App</string>
     <string name="alarm_at">Wecker um: %1$s Uhr</string>
+    <string name="snooze">Schlummern</string>
+    <string name="alarm_off">Wecker aus</string>
+    <string name="alarm_is_set">Alarm ist gesetzt</string>
     <string name="notification_permission_missing">Benachrichtigungsberechtigung fehlt</string>
     <string name="notification_permission_are_missing_without_them_the_alarm_will_not_work_properly">Benachrichtigungsberechtigung fehlen. Ohne diese wird der Alarm nicht richtig angezeigt</string>
     <string name="wake_up_earlier">Früher aufstehen</string>

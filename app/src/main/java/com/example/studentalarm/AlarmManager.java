@@ -42,7 +42,8 @@ public class AlarmManager {
 
     /**
      * Set the alarm at date
-     * @param date date where the alarm should trigger
+     *
+     * @param date    date where the alarm should trigger
      * @param context context of the application
      */
     private static void SetAlarm(Date date, Context context) {
