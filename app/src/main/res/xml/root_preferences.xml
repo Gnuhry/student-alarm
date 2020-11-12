@@ -21,14 +21,14 @@
     <PreferenceCategory app:title="Import">
         <Preference
             android:key="IMPORT"
-            app:title="Import" />
+            app:title="@string/import_" />
         <SwitchPreference
             android:defaultValue="false"
             android:key="AUTO_IMPORT"
-            android:title="Automatic import" />
+            android:title="@string/automatic_daily_import" />
         <Preference
             android:key="IMPORT_DELETE_ALL"
-            app:title="Delete all Import events" />
+            app:title="@string/delete_all_import_events" />
     </PreferenceCategory>
 
 </PreferenceScreen>

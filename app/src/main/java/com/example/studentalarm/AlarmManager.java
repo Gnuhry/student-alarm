@@ -19,7 +19,7 @@ public class AlarmManager {
      */
     public static void SetNextAlarm(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (preferences.getBoolean("ALARM_ON", false)) {
+        if (preferences.getBoolean(PreferenceKeys.ALARM_ON, false)) {
             Calendar calendar = Calendar.getInstance();
             Lecture_Schedule.Lecture firstToday = Lecture_Schedule.Load(context).getFirstLectureAtDate(calendar.getTime());
             Calendar calendar2 = Calendar.getInstance();
@@ -27,10 +27,10 @@ public class AlarmManager {
             if (calendar2.before(calendar))
                 firstToday = Lecture_Schedule.Load(context).getFirstLectureAtDate(getNextDay());
             calendar.setTime(firstToday.getStart());
-            calendar.add(Calendar.MINUTE, -preferences.getInt("BEFORE", 0));
-            calendar.add(Calendar.MINUTE, -preferences.getInt("WAY", 0));
-            calendar.add(Calendar.MINUTE, -preferences.getInt("AFTER", 0));
-            if (preferences.getBoolean("ALARM_PHONE", false)) {
+            calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.BEFORE, 0));
+            calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.WAY, 0));
+            calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.AFTER, 0));
+            if (preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false)) {
                 Alarm.setPhoneAlarm(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), context);
             } else {
                 CancelNextAlarm(context);
@@ -56,7 +56,7 @@ public class AlarmManager {
      */
     public static void UpdateNextAlarmAfterImport(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (!preferences.getBoolean("ALARM_CHANGE", false)) return;
+        if (!preferences.getBoolean(PreferenceKeys.ALARM_CHANGE, false)) return;
         SetNextAlarm(context);
     }
 
