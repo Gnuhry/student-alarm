@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:columnGap="8dp"
-            app:dayBackgroundColor="@color/white"
+            app:dayBackgroundColor="?android:attr/colorBackground"
             app:eventTextColor="@color/white"
             app:headerPadding="12dp"
             app:hourHeight="60dp"
@@ -24,7 +24,7 @@
             app:showFirstDayOfWeekFirst="true"
             app:showMidnightHour="true"
             app:showNowLine="true"
-            app:timeColumnBackgroundColor="@color/white"
+            app:timeColumnBackgroundColor="?android:attr/colorBackground"
             app:timeColumnPadding="8dp"
             app:timeColumnTextSize="12sp" />
 
