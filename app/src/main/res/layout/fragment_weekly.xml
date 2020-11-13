@@ -6,22 +6,50 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.WeeklyFragment">
 
-    <com.alamkanak.weekview.WeekView
-        android:id="@+id/weekView"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:columnGap="8dp"
-        app:dayBackgroundColor="@color/white"
-        app:eventTextColor="@color/white"
-        app:headerPadding="12dp"
-        app:hourHeight="60dp"
-        app:numberOfVisibleDays="6"
-        app:timeColumnBackgroundColor="@color/white"
-        app:timeColumnPadding="8dp"
-        app:showMidnightHour="true"
-        app:showNowLine="true"
-        app:showCurrentTimeFirst="true"
-        app:showFirstDayOfWeekFirst="true"
-        app:timeColumnTextSize="12sp" />
+        android:layout_height="match_parent">
+
+        <com.alamkanak.weekview.WeekView
+            android:id="@+id/weekView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:columnGap="8dp"
+            app:dayBackgroundColor="@color/white"
+            app:eventTextColor="@color/white"
+            app:headerPadding="12dp"
+            app:hourHeight="60dp"
+            app:numberOfVisibleDays="6"
+            app:showCurrentTimeFirst="true"
+            app:showFirstDayOfWeekFirst="true"
+            app:showMidnightHour="true"
+            app:showNowLine="true"
+            app:timeColumnBackgroundColor="@color/white"
+            app:timeColumnPadding="8dp"
+            app:timeColumnTextSize="12sp" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabToday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:contentDescription="@string/refresh"
+            android:src="@drawable/today"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabRefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:contentDescription="@string/refresh"
+            android:src="@drawable/replay"
+            app:fabSize="mini"
+            app:layout_constraintBottom_toTopOf="@+id/fabToday"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

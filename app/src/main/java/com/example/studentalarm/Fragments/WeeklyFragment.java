@@ -12,8 +12,10 @@ import com.example.studentalarm.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class WeeklyFragment extends Fragment {
     WeekView.SimpleAdapter<Lecture_Schedule.Lecture> adapter;
@@ -42,6 +44,8 @@ public class WeeklyFragment extends Fragment {
         if (getContext() != null)
             adapter.submit(Lecture_Schedule.Load(getContext()).getAllLecture());
         RefreshLectureSchedule();
+        view.findViewById(R.id.fabRefresh).setOnClickListener(view1 -> RefreshLectureSchedule());
+        view.findViewById(R.id.fabToday).setOnClickListener(view1 -> weekview.goToDate(Calendar.getInstance()));
         return view;
     }
 

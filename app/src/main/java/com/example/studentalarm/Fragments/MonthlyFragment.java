@@ -4,19 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.example.studentalarm.Import.Lecture_Schedule;
 import com.example.studentalarm.R;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MonthlyFragment extends Fragment {
 
+    private static LectureAdapter adapter;
 
     public MonthlyFragment() {
     }
@@ -38,13 +29,21 @@ public class MonthlyFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_montly, container, false);
         if (getContext() == null) return view;
-        LectureAdapter adapter = new LectureAdapter(Lecture_Schedule.Load(getContext()).getAllLecture(), getContext());
+        LoadData(view);
+
+        view.findViewById(R.id.fabRefresh).setOnClickListener(view1 -> LoadData(view1.getRootView()));
+        view.findViewById(R.id.fabToday).setOnClickListener(view1 -> ((RecyclerView) view.findViewById(R.id.rVEvents)).scrollToPosition(adapter.getPositionToday()));
+        return view;
+    }
+
+    private void LoadData(View view) {
+        if (getContext() == null) return;
         RecyclerView rv = view.findViewById(R.id.rVEvents);
+        adapter = new LectureAdapter(Lecture_Schedule.Load(getContext()).getAllLecture(), getContext());
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(adapter);
         rv.scrollToPosition(adapter.getPositionToday());
-        return view;
     }
 }
 
