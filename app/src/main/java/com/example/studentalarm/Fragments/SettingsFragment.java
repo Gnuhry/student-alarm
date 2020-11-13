@@ -1,5 +1,6 @@
 package com.example.studentalarm.Fragments;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -176,7 +177,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         language.setOnPreferenceChangeListener((preference, newValue) -> {
-            ChangeLanguage((String) newValue);
+            if (getContext() == null) return false;
+            ChangeLanguage((String) newValue, getContext());
+            MainActivity.bottomNav.setSelectedItemId(R.id.setting);
             return true;
         });
 
@@ -187,8 +190,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     .setMessage(R.string.do_you_want_to_reset_this_application)
                     .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
                         String lan = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(PreferenceKeys.LANGUAGE, PreferenceKeys.DEFAULT_LANGUAGE), lan2 = PreferenceKeys.Reset(getContext());
-                        if (!lan2.equals(lan))
-                            ChangeLanguage(lan2);
+                        if (!lan2.equals(lan)) {
+                            ChangeLanguage(lan2, getContext());
+                            MainActivity.bottomNav.setSelectedItemId(R.id.setting);
+                        }
                         removeImportLecture();
                         Reload();
                     })
@@ -204,8 +209,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      *
      * @param newValue new language code
      */
-    private void ChangeLanguage(String newValue) {
-        Resources resources = getResources();
+    public static void ChangeLanguage(String newValue, Context context) {
+        Resources resources = context.getResources();
         DisplayMetrics dm = resources.getDisplayMetrics();
         Configuration config = resources.getConfiguration();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -216,7 +221,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         resources.updateConfiguration(config, dm);
         MainActivity.bottomNav.getMenu().clear();
         MainActivity.bottomNav.inflateMenu(R.menu.bottom_nav_menu);
-        MainActivity.bottomNav.setSelectedItemId(R.id.setting);
     }
 
     /**
