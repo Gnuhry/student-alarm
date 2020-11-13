@@ -14,36 +14,31 @@
             android:id="@+id/fLLecture"
             android:layout_width="match_parent"
             android:layout_height="0sp"
-            app:layout_constraintBottom_toTopOf="@id/LLLecture"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tLLecture">
 
         </FrameLayout>
 
-        <LinearLayout
-            android:id="@+id/LLLecture"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tLLecture"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <Button
-                android:id="@+id/btnWeekly"
-                style="@style/Widget.AppCompat.ButtonBar"
+            <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/weekly" />
 
-            <Button
-                android:id="@+id/btnMonthly"
-                style="@style/Widget.AppCompat.ButtonBar"
+            <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/monthly" />
-        </LinearLayout>
+                android:text="@string/eventList" />
+
+        </com.google.android.material.tabs.TabLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

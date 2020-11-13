@@ -55,7 +55,9 @@
     <string name="way">Weg</string>
     <string name="after">Später</string>
     <string name="weekly">Wöchentlich</string>
-    <string name="monthly">Monatlich</string>
+    <string name="eventList">Eventliste</string>
+    <string name="refresh">Neuladen</string>
+    <string name="go_to_today">Heute</string>
     <string name="status">Status</string>
     <string name="ok">Ok</string>
     <string name="number">Zahl</string>
