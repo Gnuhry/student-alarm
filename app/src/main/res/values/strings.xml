@@ -63,12 +63,15 @@
     <string name="way">Way</string>
     <string name="after">After</string>
 
+    <!--Lecture-->
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
+
     <!---->
     <string name="status">Status</string>
     <string name="ok">OK</string>
     <string name="number">number</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 
 </resources>

@@ -31,17 +31,19 @@
 
             <Button
                 android:id="@+id/btnWeekly"
+                style="@style/Widget.AppCompat.ButtonBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Weekly" />
+                android:text="@string/weekly" />
 
             <Button
                 android:id="@+id/btnMonthly"
+                style="@style/Widget.AppCompat.ButtonBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Monthly" />
+                android:text="@string/monthly" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

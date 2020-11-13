@@ -31,8 +31,12 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNav = findViewById(R.id.bottomNav);
 
-        if (PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceKeys.LANGUAGE, null) == null)
+        String lan = PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceKeys.LANGUAGE, null);
+        if (lan == null)
             PreferenceKeys.Default(this);
+        else if (!lan.equals(PreferenceKeys.DEFAULT_LANGUAGE(this))) {
+            SettingsFragment.ChangeLanguage(lan, this);
+        }
 
         openFragment(new AlarmFragment());
 
