@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.studentalarm.R;
+import com.google.android.material.tabs.TabLayout;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -28,8 +29,30 @@ public class LectureFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lecture, container, false);
-        view.findViewById(R.id.btnWeekly).setOnClickListener(view1 -> openFragment(new WeeklyFragment()));
-        view.findViewById(R.id.btnMonthly).setOnClickListener(view1 -> openFragment(new MonthlyFragment()));
+        TabLayout layout=(TabLayout) view.findViewById(R.id.tLLecture);
+        layout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case 0:
+                        openFragment(new WeeklyFragment());
+                        break;
+                    case 1:
+                        openFragment(new MonthlyFragment());
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
         openFragment(new WeeklyFragment());
         return view;
     }
