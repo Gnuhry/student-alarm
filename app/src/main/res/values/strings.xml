@@ -65,13 +65,14 @@
 
     <!--Lecture-->
     <string name="weekly">Weekly</string>
-    <string name="monthly">Monthly</string>
+    <string name="eventList">EventList</string>
+    <string name="refresh">Refresh</string>
+    <string name="go_to_today">Go to today</string>
 
     <!---->
     <string name="status">Status</string>
     <string name="ok">OK</string>
     <string name="number">number</string>
-
 
 
 </resources>
