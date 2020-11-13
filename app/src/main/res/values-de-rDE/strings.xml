@@ -54,6 +54,8 @@
     <string name="before">Früher</string>
     <string name="way">Weg</string>
     <string name="after">Später</string>
+    <string name="weekly">Wöchentlich</string>
+    <string name="monthly">Monatlich</string>
     <string name="status">Status</string>
     <string name="ok">Ok</string>
     <string name="number">Zahl</string>
