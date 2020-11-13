@@ -24,9 +24,9 @@ import androidx.recyclerview.widget.RecyclerView;
 public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHolder> {
     private final List<Lecture_Schedule.Lecture> lecture;
     private int positionToday = -1;
-    public static final SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.GERMAN), format2 = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
+    public static final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
     private static SimpleDateFormat day_of_week_name;
-    private static DateFormat day;
+    private static DateFormat day, time;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView title, from, detail, until, date;
@@ -47,10 +47,11 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
     public LectureAdapter(List<Lecture_Schedule.Lecture> lecture, Context context) {
         day_of_week_name = new SimpleDateFormat("EEEE", context.getResources().getConfiguration().locale);
         day = DateFormat.getDateInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
+        time = DateFormat.getTimeInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
         this.lecture = new ArrayList<>();
         String formatS = "01.01.1900", format2S;
         for (Lecture_Schedule.Lecture l : lecture) {
-            format2S = format2.format(l.getStart());
+            format2S = format.format(l.getStart());
             if (!format2S.equals(formatS)) {
                 formatS = format2S;
                 Calendar calendar = Calendar.getInstance();
@@ -79,10 +80,10 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
             viewHolder.LLEvent.setVisibility(View.VISIBLE);
             viewHolder.date.setVisibility(View.GONE);
             viewHolder.title.setText(l.getName());
-            viewHolder.from.setText(format.format(l.getStart()));
+            viewHolder.from.setText(CutTime(time.format(l.getStart())));
             boolean aa = l.getDocent() != null, ab = l.getLocation() != null;
             viewHolder.detail.setText(aa && ab ? l.getDocent() + " - " + l.getLocation() : aa ? l.getDocent() : ab ? l.getLocation() : null);
-            viewHolder.until.setText(format.format(l.getEnd()));
+            viewHolder.until.setText(CutTime(time.format(l.getEnd())));
         } else {
             viewHolder.LLEvent.setVisibility(View.GONE);
             viewHolder.date.setVisibility(View.VISIBLE);
@@ -97,5 +98,16 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
 
     public int getPositionToday() {
         return positionToday == -1 ? 0 : positionToday;
+    }
+
+    private String CutTime(String time) {
+        StringBuilder erg = new StringBuilder();
+        String[] help = time.split(":");
+        erg.append(help[0]).append(":").append(help[1]);
+        if (time.contains("AM"))
+            erg.append(" AM");
+        else if (time.contains("PM"))
+            erg.append(" PM");
+        return erg.toString();
     }
 }
