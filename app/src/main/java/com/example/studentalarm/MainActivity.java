@@ -3,22 +3,16 @@ package com.example.studentalarm;
 import android.content.IntentFilter;
 import android.os.Bundle;
 
-import com.example.studentalarm.Fragments.AlarmFragment;
-import com.example.studentalarm.Fragments.LectureFragment;
-import com.example.studentalarm.Fragments.SchoolFragment;
 import com.example.studentalarm.Fragments.SettingsFragment;
-import com.example.studentalarm.Fragments.WeeklyFragment;
 import com.example.studentalarm.Receiver.NetworkReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 import androidx.preference.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity {
-    private final static String TAG = "FRAGMENT";
-    int lastId, beforeLastId;
     public static BottomNavigationView bottomNav;
 
     @Override
@@ -31,57 +25,15 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNav = findViewById(R.id.bottomNav);
 
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment_);
+        if (navHostFragment != null)
+            NavigationUI.setupWithNavController(bottomNav, navHostFragment.getNavController());
+
         String lan = PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceKeys.LANGUAGE, null);
         if (lan == null)
             PreferenceKeys.Default(this);
-        else if (!lan.equals(PreferenceKeys.DEFAULT_LANGUAGE(this))) {
+        else if (!lan.equals(PreferenceKeys.DEFAULT_LANGUAGE(this)))
             SettingsFragment.ChangeLanguage(lan, this);
-        }
-
-        openFragment(new AlarmFragment());
-
-        bottomNav.setOnNavigationItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.alarm)
-                openFragment(new AlarmFragment());
-            else if (itemId == R.id.lecture)
-                openFragment(new LectureFragment());
-            else if (itemId == R.id.school)
-                openFragment(new SchoolFragment());
-            else if (itemId == R.id.setting)
-                openFragment(new SettingsFragment());
-            else
-                return false;
-            beforeLastId = lastId;
-            lastId = itemId;
-            return true;
-        });
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
-        if (fragment instanceof AlarmFragment)
-            bottomNav.setSelectedItemId(R.id.alarm);
-        else if (fragment instanceof WeeklyFragment)
-            bottomNav.setSelectedItemId(R.id.lecture);
-        else if (fragment instanceof SchoolFragment)
-            bottomNav.setSelectedItemId(R.id.school);
-        else if (fragment instanceof SettingsFragment)
-            bottomNav.setSelectedItemId(R.id.setting);
-    }
-
-    /**
-     * open a fragment
-     *
-     * @param fragment the fragment to open
-     */
-    public void openFragment(Fragment fragment) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayout, fragment, TAG);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
     }
 }

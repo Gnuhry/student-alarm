@@ -22,7 +22,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -179,7 +179,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         language.setOnPreferenceChangeListener((preference, newValue) -> {
             if (getContext() == null) return false;
             ChangeLanguage((String) newValue, getContext());
-            MainActivity.bottomNav.setSelectedItemId(R.id.setting);
+            Reload();
             return true;
         });
 
@@ -190,10 +190,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     .setMessage(R.string.do_you_want_to_reset_this_application)
                     .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
                         String lan = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(PreferenceKeys.LANGUAGE, PreferenceKeys.DEFAULT_LANGUAGE), lan2 = PreferenceKeys.Reset(getContext());
-                        if (!lan2.equals(lan)) {
+                        if (!lan2.equals(lan))
                             ChangeLanguage(lan2, getContext());
-                            MainActivity.bottomNav.setSelectedItemId(R.id.setting);
-                        }
                         removeImportLecture();
                         Reload();
                     })
@@ -238,10 +236,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      */
     private void Reload() {
         if (getActivity() == null) return;
-        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayout, new SettingsFragment());
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_);
+        if (navHostFragment != null)
+            navHostFragment.getNavController().navigate(R.id.settingsFragment_);
     }
 
 }
