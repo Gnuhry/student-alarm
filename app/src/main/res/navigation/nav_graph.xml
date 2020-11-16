@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/alarmFragment_">
+    <fragment
+        android:id="@+id/alarmFragment_"
+        android:name="com.example.studentalarm.Fragments.AlarmFragment"
+        android:label="fragment_alarm"
+        tools:layout="@layout/fragment_alarm" />
+    <fragment
+        android:id="@+id/settingsFragment_"
+        android:name="com.example.studentalarm.Fragments.SettingsFragment"
+        android:label="SettingsFragment" />
+    <fragment
+        android:id="@+id/lectureFragment_"
+        android:name="com.example.studentalarm.Fragments.LectureFragment"
+        android:label="fragment_lecture"
+        tools:layout="@layout/fragment_lecture" />
+    <fragment
+        android:id="@+id/schoolFragment_"
+        android:name="com.example.studentalarm.Fragments.SchoolFragment"
+        android:label="fragment_school"
+        tools:layout="@layout/fragment_school" />
+</navigation>
