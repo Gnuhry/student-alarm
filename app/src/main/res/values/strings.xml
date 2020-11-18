@@ -73,6 +73,8 @@
     <string name="status">Status</string>
     <string name="ok">OK</string>
     <string name="number">number</string>
+    <string name="theme">Theme</string>
+    <string name="add_event">Add event</string>
 
 
 </resources>

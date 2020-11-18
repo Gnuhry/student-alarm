@@ -6,6 +6,7 @@ import android.util.Log;
 
 import java.util.Locale;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
 public class PreferenceKeys {
@@ -30,11 +31,24 @@ public class PreferenceKeys {
     public static final String DEFAULT_SNOOZE = "5";
     public static final String DEFAULT_IMPORT_TIME = "19:00";
 
+    /**
+     * Reset the settings
+     *
+     * @param context context of application
+     * @return language
+     */
     public static String Reset(Context context) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().clear().apply();
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         return Default(context);
     }
 
+    /**
+     * set the settings default
+     *
+     * @param context context of application
+     * @return language
+     */
     public static String Default(Context context) {
         String erg = DEFAULT_LANGUAGE(context);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -49,6 +63,12 @@ public class PreferenceKeys {
         return erg;
     }
 
+    /**
+     * Get default language
+     *
+     * @param context context of application
+     * @return default language
+     */
     public static String DEFAULT_LANGUAGE(Context context) {
         String s = Locale.getDefault().getLanguage();
         Log.d("LANGUAGE", s);
