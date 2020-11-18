@@ -18,7 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -212,6 +211,10 @@ public class Lecture_Schedule implements Serializable {
 
         public int getId() {
             return id;
+        }
+
+        public int getColor() {
+            return color;
         }
 
         @NotNull

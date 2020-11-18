@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.example.studentalarm.Import.Lecture_Schedule;
@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHolder> {
@@ -27,10 +28,12 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
     public static final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
     private static SimpleDateFormat day_of_week_name;
     private static DateFormat day, time;
+    private static FragmentActivity activity;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public final TextView title, from, detail, until, date;
-        public final LinearLayout LLEvent;
+        private final TextView title, from, detail, until, date;
+        private final TableLayout TLEvent;
+        private final View barrier, colorLine;
 
         public ViewHolder(View view) {
             super(view);
@@ -39,12 +42,15 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
             detail = view.findViewById(R.id.MEventDetail);
             until = view.findViewById(R.id.MEventUntil);
             date = view.findViewById(R.id.txVDate);
-            LLEvent = view.findViewById(R.id.LLEvent);
+            TLEvent = view.findViewById(R.id.TLEvent);
+            barrier = view.findViewById(R.id.barrier);
+            colorLine = view.findViewById(R.id.colorLine);
         }
     }
 
 
-    public LectureAdapter(List<Lecture_Schedule.Lecture> lecture, Context context) {
+    public LectureAdapter(List<Lecture_Schedule.Lecture> lecture, Context context, FragmentActivity ac) {
+        activity = ac;
         day_of_week_name = new SimpleDateFormat("EEEE", context.getResources().getConfiguration().locale);
         day = DateFormat.getDateInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
         time = DateFormat.getTimeInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
@@ -67,39 +73,57 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
     @NotNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.monthly_event_fragment, viewGroup, false);
-
-        return new ViewHolder(view);
+        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.monthly_event_fragment, viewGroup, false));
     }
 
     @Override
     public void onBindViewHolder(@NotNull ViewHolder viewHolder, final int position) {
         Lecture_Schedule.Lecture l = lecture.get(position);
         if (l.getName() != null) {
-            viewHolder.LLEvent.setVisibility(View.VISIBLE);
+            viewHolder.TLEvent.setVisibility(View.VISIBLE);
+            viewHolder.barrier.setVisibility(View.GONE);
             viewHolder.date.setVisibility(View.GONE);
             viewHolder.title.setText(l.getName());
             viewHolder.from.setText(CutTime(time.format(l.getStart())));
             boolean aa = l.getDocent() != null, ab = l.getLocation() != null;
             viewHolder.detail.setText(aa && ab ? l.getDocent() + " - " + l.getLocation() : aa ? l.getDocent() : ab ? l.getLocation() : null);
             viewHolder.until.setText(CutTime(time.format(l.getEnd())));
+            viewHolder.colorLine.setBackgroundColor(l.getColor());
+            viewHolder.TLEvent.setOnClickListener(view -> new EventDialogFragment(l).show(activity.getSupportFragmentManager(), "dialog"));
         } else {
-            viewHolder.LLEvent.setVisibility(View.GONE);
+            viewHolder.TLEvent.setVisibility(View.GONE);
+            viewHolder.barrier.setVisibility(View.VISIBLE);
             viewHolder.date.setVisibility(View.VISIBLE);
             viewHolder.date.setText(String.format("%s %s", day_of_week_name.format(l.getStart()), day.format(l.getStart())));
         }
     }
 
+
+    /**
+     * Get the amount of lecture
+     *
+     * @return lecture amount
+     */
     @Override
     public int getItemCount() {
         return lecture.size();
     }
 
+    /**
+     * Get the position, where the element with the date of today is
+     *
+     * @return position of today
+     */
     public int getPositionToday() {
         return positionToday == -1 ? 0 : positionToday;
     }
 
+    /**
+     * Format time to am/pm format
+     *
+     * @param time time to format
+     * @return time format to am/pm format
+     */
     private String CutTime(String time) {
         StringBuilder erg = new StringBuilder();
         String[] help = time.split(":");

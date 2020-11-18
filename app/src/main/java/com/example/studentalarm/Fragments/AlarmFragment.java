@@ -23,29 +23,25 @@ public class AlarmFragment extends Fragment {
 
     private CountDownTimer timer;
 
-    public AlarmFragment() {
-
-    }
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_alarm, container, false);
         if (getContext() == null) return view;
-        if (!NotificationManagerCompat.from(getContext()).areNotificationsEnabled()) {
-            new MaterialAlertDialogBuilder(getContext())
-                    .setTitle(R.string.notification_permission_missing)
-                    .setMessage(R.string.notification_permission_are_missing_without_them_the_alarm_will_not_work_properly)
-                    .setPositiveButton(R.string.ok, null)
-                    .setCancelable(true)
-                    .show();
-        }
+
+        CheckNotification();
+        SetTimer(view);
+
+        return view;
+    }
+
+    /**
+     * Set the timer to show when the alarm is going to trigger
+     *
+     * @param view view to display the timer
+     */
+    private void SetTimer(View view) {
+        if (getContext() == null) return;
         long time = PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_TIME, 0);
         if (time != 0 && time > Calendar.getInstance().getTimeInMillis()) {
             TextView txVTimer = view.findViewById(R.id.txVCountdown);
@@ -66,9 +62,27 @@ public class AlarmFragment extends Fragment {
         } else {
             ((TextView) view.findViewById(R.id.textView4)).setText(R.string.no_alarm_set);
         }
-        return view;
     }
 
+    /**
+     * Check if needed notification are given
+     * if not, pop up a dialog and ask
+     */
+    private void CheckNotification() {
+        if (getContext() == null) return;
+        if (!NotificationManagerCompat.from(getContext()).areNotificationsEnabled()) {
+            new MaterialAlertDialogBuilder(getContext())
+                    .setTitle(R.string.notification_permission_missing)
+                    .setMessage(R.string.notification_permission_are_missing_without_them_the_alarm_will_not_work_properly)
+                    .setPositiveButton(R.string.ok, null)
+                    .setCancelable(true)
+                    .show();
+        }
+    }
+
+    /**
+     * If change fragment, the countdown can stop
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();

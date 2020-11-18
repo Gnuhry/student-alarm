@@ -27,7 +27,6 @@ import androidx.preference.PreferenceManager;
 public class ImportDialog extends Dialog {
 
     private boolean isValid = false;
-    private SharedPreferences preferences;
     private String lastValidString;
 
     public ImportDialog(@NonNull Context context) {
@@ -39,7 +38,7 @@ public class ImportDialog extends Dialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_import);
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         switch (preferences.getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE)) {
             case Import.ImportFunction.NONE:

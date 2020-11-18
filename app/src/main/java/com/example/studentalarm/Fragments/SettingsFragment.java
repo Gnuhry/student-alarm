@@ -1,5 +1,6 @@
 package com.example.studentalarm.Fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -13,15 +14,16 @@ import android.widget.Toast;
 import com.example.studentalarm.AlarmManager;
 import com.example.studentalarm.Import.Import;
 import com.example.studentalarm.Import.Lecture_Schedule;
-import com.example.studentalarm.MainActivity;
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
@@ -32,30 +34,26 @@ import androidx.preference.SwitchPreference;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
-    SwitchPreference alarm_on, alarm_phone, alarm_change, auto_import;
-    Preference import_, import_delete_all, reset;
-    EditTextPreference snooze, import_time;
-    ListPreference language, ringtone;
-
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
         boolean bool = getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_ON, false), bool2 = bool && !getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_PHONE, false);
 
         //---------------Init----------------------------------
-        alarm_on = findPreference(PreferenceKeys.ALARM_ON);
-        alarm_phone = findPreference(PreferenceKeys.ALARM_PHONE);
-        alarm_change = findPreference(PreferenceKeys.ALARM_CHANGE);
-        auto_import = findPreference(PreferenceKeys.AUTO_IMPORT);
-        import_ = findPreference("IMPORT");
-        import_delete_all = findPreference(PreferenceKeys.IMPORT_DELETE_ALL);
-        snooze = findPreference(PreferenceKeys.SNOOZE);
-        import_time = findPreference(PreferenceKeys.IMPORT_TIME);
-        language = findPreference(PreferenceKeys.LANGUAGE);
-        reset = findPreference("RESET");
-        ringtone = findPreference(PreferenceKeys.RINGTONE);
+        SwitchPreference alarm_on = findPreference(PreferenceKeys.ALARM_ON),
+                alarm_phone = findPreference(PreferenceKeys.ALARM_PHONE),
+                alarm_change = findPreference(PreferenceKeys.ALARM_CHANGE),
+                auto_import = findPreference(PreferenceKeys.AUTO_IMPORT);
+        Preference import_ = findPreference("IMPORT"),
+                import_delete_all = findPreference(PreferenceKeys.IMPORT_DELETE_ALL),
+                reset = findPreference("RESET");
+        EditTextPreference snooze = findPreference(PreferenceKeys.SNOOZE),
+                import_time = findPreference(PreferenceKeys.IMPORT_TIME);
+        ListPreference language = findPreference(PreferenceKeys.LANGUAGE),
+                ringtone = findPreference(PreferenceKeys.RINGTONE),
+                theme = findPreference("THEME");
 
-        if (alarm_on == null || alarm_phone == null || alarm_change == null || auto_import == null || import_ == null || import_delete_all == null || snooze == null || import_time == null || reset == null || ringtone == null)
+        if (alarm_on == null || alarm_phone == null || alarm_change == null || auto_import == null || import_ == null || import_delete_all == null || snooze == null || import_time == null || reset == null || ringtone == null || language == null || theme == null)
             return;
 
         alarm_on.setOnPreferenceChangeListener((preference, newValue) -> {
@@ -178,8 +176,25 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         language.setOnPreferenceChangeListener((preference, newValue) -> {
             if (getContext() == null) return false;
-            ChangeLanguage((String) newValue, getContext());
+            ChangeLanguage((String) newValue, getContext(), getActivity());
             Reload();
+            return true;
+        });
+
+        theme.setOnPreferenceChangeListener((preference, newValue) -> {
+            int mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
+            switch ((String) newValue) {
+                case "Default":
+                    mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
+                    break;
+                case "Light":
+                    mode = AppCompatDelegate.MODE_NIGHT_NO;
+                    break;
+                case "Dark":
+                    mode = AppCompatDelegate.MODE_NIGHT_YES;
+                    break;
+            }
+            AppCompatDelegate.setDefaultNightMode(mode);
             return true;
         });
 
@@ -191,7 +206,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
                         String lan = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(PreferenceKeys.LANGUAGE, PreferenceKeys.DEFAULT_LANGUAGE), lan2 = PreferenceKeys.Reset(getContext());
                         if (!lan2.equals(lan))
-                            ChangeLanguage(lan2, getContext());
+                            ChangeLanguage(lan2, getContext(), getActivity());
                         removeImportLecture();
                         Reload();
                     })
@@ -207,7 +222,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      *
      * @param newValue new language code
      */
-    public static void ChangeLanguage(String newValue, Context context) {
+    public void ChangeLanguage(String newValue, Context context, Activity activity) {
         Resources resources = context.getResources();
         DisplayMetrics dm = resources.getDisplayMetrics();
         Configuration config = resources.getConfiguration();
@@ -217,8 +232,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             config.locale = new Locale(newValue.toLowerCase());
         }
         resources.updateConfiguration(config, dm);
-        MainActivity.bottomNav.getMenu().clear();
-        MainActivity.bottomNav.inflateMenu(R.menu.bottom_nav_menu);
+        BottomNavigationView bottomNav = activity.findViewById(R.id.bottomNav);
+        bottomNav.getMenu().clear();
+        bottomNav.inflateMenu(R.menu.bottom_nav_menu);
     }
 
     /**

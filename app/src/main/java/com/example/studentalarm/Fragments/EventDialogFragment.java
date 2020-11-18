@@ -35,16 +35,6 @@ public class EventDialogFragment extends DialogFragment {
         ((TextView) view.findViewById(R.id.txVLocation)).setText(data.getLocation());
         ((TextView) view.findViewById(R.id.txVStartDate)).setText(format.format(data.getStart()));
         ((TextView) view.findViewById(R.id.txVEndDate)).setText(format.format(data.getEnd()));
-
         return view;
     }
-
-
-    @NotNull
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        return super.onCreateDialog(savedInstanceState);
-    }
-
-
 }
