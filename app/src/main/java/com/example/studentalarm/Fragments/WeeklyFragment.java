@@ -17,10 +17,13 @@ import java.util.Calendar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
-public class WeeklyFragment extends Fragment {
+public class WeeklyFragment extends Fragment implements ReloadLecture {
     private WeekView.SimpleAdapter<Lecture_Schedule.Lecture> adapter;
-    private SimpleDateFormat format;
-    private DateFormat date;
+    private ReloadLecture lecture;
+
+    public WeeklyFragment() {
+        lecture = this;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,8 @@ public class WeeklyFragment extends Fragment {
         InitAppBar(weekview, this.getActivity().findViewById(R.id.my_toolbar));
         InitWeekView(weekview);
         RefreshLectureSchedule();
+
+        view.findViewById(R.id.fabAdd).setOnClickListener(view1 -> new EventDialogFragment(null, Lecture_Schedule.Load(getContext()), (ReloadLecture) this).show(getActivity().getSupportFragmentManager(), "dialog"));
         return view;
     }
 
@@ -46,12 +51,12 @@ public class WeeklyFragment extends Fragment {
      * @param weekView weekView to control
      */
     private void InitWeekView(WeekView weekView) {
-        format = new SimpleDateFormat("E", getResources().getConfiguration().locale);
-        date = DateFormat.getDateInstance(DateFormat.SHORT, getResources().getConfiguration().locale);
+        SimpleDateFormat format = new SimpleDateFormat("E", getResources().getConfiguration().locale);
+        DateFormat dateformat = DateFormat.getDateInstance(DateFormat.SHORT, getResources().getConfiguration().locale);
         adapter = new Adapter();
         weekView.setAdapter(adapter);
         weekView.setTimeFormatter(hour -> getResources().getConfiguration().locale.getLanguage().equals("en") ? (hour == 12 ? "12 pm" : (hour > 21 ? (hour - 12) + " pm" : (hour > 12 ? "0" + (hour - 12) + " pm" : (hour >= 10 ? hour + " am" : "0" + hour + " am")))) : hour >= 10 ? hour + " h" : "0" + hour + " h");
-        weekView.setDateFormatter(date -> String.format("%s %s", format.format(date.getTime()), this.date.format(date.getTime())));
+        weekView.setDateFormatter(date -> String.format("%s %s", format.format(date.getTime()), dateformat.format(date.getTime())));
         if (getContext() == null) return;
         adapter.submit(Lecture_Schedule.Load(getContext()).getAllLecture());
     }
@@ -77,7 +82,7 @@ public class WeeklyFragment extends Fragment {
     /**
      * Refresh the Lecture Schedule
      */
-    private void RefreshLectureSchedule() {
+    public void RefreshLectureSchedule() {
         if (getContext() != null)
             new Thread(() -> adapter.submit(Import.ImportLecture(this.getContext()).getAllLecture())).start();
     }
@@ -88,7 +93,7 @@ public class WeeklyFragment extends Fragment {
         public void onEventClick(Lecture_Schedule.Lecture data) {
             super.onEventClick(data);
             if (getActivity() != null)
-                new EventDialogFragment(data).show(getActivity().getSupportFragmentManager(), "dialog");
+                new EventDialogFragment(data, Lecture_Schedule.Load(getContext()), (ReloadLecture) lecture).show(getActivity().getSupportFragmentManager(), "dialog");
         }
 
     }
