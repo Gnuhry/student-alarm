@@ -18,7 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -46,7 +45,7 @@ public class Lecture_Schedule implements Serializable {
     public void ImportICS(ICS calendar) {
         import_lecture.clear();
         for (ICS.vEvent ev : calendar.getVEventList())
-            import_lecture.add(new Lecture(ev.getSUMMARY(), null, ev.getLOCATION(), ev.getDTStart(), ev.getDTend()));
+            import_lecture.add(new Lecture(ev.getSUMMARY(), null, ev.getLOCATION(), ev.getDTStart(), ev.getDTend(), true));
         timezone = TimeZone.getDefault();//TODO Getter TimeZone iCalendar
     }
 
@@ -161,16 +160,24 @@ public class Lecture_Schedule implements Serializable {
         return new Lecture_Schedule();
     }
 
+    public void removeLecture(Lecture data) {
+        int id1 = lecture.indexOf(data), id2 = import_lecture.indexOf(data);
+        if (id1 >= 0) lecture.remove(id1);
+        if (id2 >= 0) import_lecture.remove(id2);
+    }
+
     /**
      * inner class to represent the lecture information
      */
-    public static class Lecture implements WeekViewDisplayable<Lecture>, Serializable, Comparable<Lecture>{
-        private final String docent, location, name;
-        private final Date start, end;
+    public static class Lecture implements WeekViewDisplayable<Lecture>, Serializable, Comparable<Lecture> {
+        private String docent, location, name;
+        private Date start, end;
         private static int counter = 1;
-        private final int color, id;
+        private int color;
+        private final int id;
+        private final boolean isImport;
 
-        public Lecture(String name, String docent, String location, Date start, Date end) {
+        public Lecture(String name, String docent, String location, Date start, Date end, boolean isImport) {
             this.name = name;
             this.docent = docent;
             this.location = location;
@@ -178,9 +185,10 @@ public class Lecture_Schedule implements Serializable {
             this.end = end;
             this.color = Color.RED;
             this.id = counter++;
+            this.isImport = isImport;
         }
 
-        public Lecture(String name, String docent, String location, Date start, Date end, int color) {
+        public Lecture(String name, String docent, String location, Date start, Date end, boolean isImport, int color) {
             this.name = name;
             this.docent = docent;
             this.location = location;
@@ -188,6 +196,7 @@ public class Lecture_Schedule implements Serializable {
             this.end = end;
             this.color = color;
             this.id = counter++;
+            this.isImport = isImport;
         }
 
         public String getDocent() {
@@ -212,6 +221,38 @@ public class Lecture_Schedule implements Serializable {
 
         public int getId() {
             return id;
+        }
+
+        public int getColor() {
+            return color;
+        }
+
+        public boolean isImport() {
+            return isImport;
+        }
+
+        public void setDocent(String docent) {
+            this.docent = docent;
+        }
+
+        public void setLocation(String location) {
+            this.location = location;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void setStart(Date start) {
+            this.start = start;
+        }
+
+        public void setEnd(Date end) {
+            this.end = end;
+        }
+
+        public void setColor(int color) {
+            this.color = color;
         }
 
         @NotNull
@@ -240,6 +281,14 @@ public class Lecture_Schedule implements Serializable {
             erg.setStyle(builder.build());
             erg.setId(this.id);
             return erg.build();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Lecture lecture = (Lecture) o;
+            return id == lecture.id;
         }
 
         @Override

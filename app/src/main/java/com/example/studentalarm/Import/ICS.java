@@ -259,6 +259,7 @@ public class ICS {
             return format;
         }
 
+        @NotNull
         @Override
         public String toString() {
             return "vEvent{" +
