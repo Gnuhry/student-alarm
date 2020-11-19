@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
@@ -235,6 +236,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         BottomNavigationView bottomNav = activity.findViewById(R.id.bottomNav);
         bottomNav.getMenu().clear();
         bottomNav.inflateMenu(R.menu.bottom_nav_menu);
+        Toolbar toolbar = activity.findViewById(R.id.my_toolbar);
+        toolbar.getMenu().clear();
+        toolbar.inflateMenu(R.menu.lecture);
     }
 
     /**

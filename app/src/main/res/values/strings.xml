@@ -40,6 +40,7 @@
     <string name="no">NO</string>
     <string name="missing_events">Missing events</string>
     <string name="ringtone">Ringtone</string>
+    <string name="theme">Theme</string>
 
     <!--Alarm-->
     <string name="next_alarm_in">Next alarm in</string>
@@ -68,12 +69,6 @@
     <string name="eventList">EventList</string>
     <string name="refresh">Refresh</string>
     <string name="go_to_today">Go to today</string>
-
-    <!---->
-    <string name="status">Status</string>
-    <string name="ok">OK</string>
-    <string name="number">number</string>
-    <string name="theme">Theme</string>
     <string name="add_event">Add event</string>
     <string name="time">Time</string>
     <string name="event">Event</string>
@@ -86,8 +81,8 @@
     <string name="do_you_want_to_dismiss_all_your_changes">Do you want to dismiss all your changes</string>
     <string name="dismiss">Dismiss</string>
     <string name="color">Color</string>
-    <string name="red">red</string>
-    <string name="blue">blue</string>
+    <string name="red">Red</string>
+    <string name="blue">Blue</string>
     <string name="green">Green</string>
     <string name="yellow">Yellow</string>
     <string name="update">Update</string>
@@ -95,5 +90,8 @@
     <string name="end_must_start_after_begin">End must start after begin</string>
     <string name="wrong">Wrong</string>
 
-
+    <!---->
+    <string name="status">Status</string>
+    <string name="ok">OK</string>
+    <string name="number">number</string>
 </resources>
