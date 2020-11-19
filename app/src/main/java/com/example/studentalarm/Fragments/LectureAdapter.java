@@ -29,6 +29,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
     private static SimpleDateFormat day_of_week_name;
     private static DateFormat day, time;
     private static FragmentActivity activity;
+    private static ReloadLecture reloadLecture;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView title, from, detail, until, date;
@@ -49,14 +50,15 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
     }
 
 
-    public LectureAdapter(List<Lecture_Schedule.Lecture> lecture, Context context, FragmentActivity ac) {
+    public LectureAdapter(Lecture_Schedule lecture_schedule, Context context, FragmentActivity ac, ReloadLecture reloadLecture_) {
+        reloadLecture = reloadLecture_;
         activity = ac;
         day_of_week_name = new SimpleDateFormat("EEEE", context.getResources().getConfiguration().locale);
         day = DateFormat.getDateInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
         time = DateFormat.getTimeInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
         this.lecture = new ArrayList<>();
         String formatS = "01.01.1900", format2S;
-        for (Lecture_Schedule.Lecture l : lecture) {
+        for (Lecture_Schedule.Lecture l : lecture_schedule.getAllLecture()) {
             format2S = format.format(l.getStart());
             if (!format2S.equals(formatS)) {
                 formatS = format2S;
@@ -64,7 +66,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
                 calendar.setTime(l.getStart());
                 if (positionToday == -1 && calendar.after(Calendar.getInstance()))
                     positionToday = this.lecture.size();
-                this.lecture.add(new Lecture_Schedule.Lecture(null, null, null, l.getStart(), null));
+                this.lecture.add(new Lecture_Schedule.Lecture(null, null, null, l.getStart(), null, false));
             }
             this.lecture.add(l);
         }
@@ -89,7 +91,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
             viewHolder.detail.setText(aa && ab ? l.getDocent() + " - " + l.getLocation() : aa ? l.getDocent() : ab ? l.getLocation() : null);
             viewHolder.until.setText(CutTime(time.format(l.getEnd())));
             viewHolder.colorLine.setBackgroundColor(l.getColor());
-            viewHolder.TLEvent.setOnClickListener(view -> new EventDialogFragment(l).show(activity.getSupportFragmentManager(), "dialog"));
+            viewHolder.TLEvent.setOnClickListener(view -> new EventDialogFragment(l, Lecture_Schedule.Load(view.getContext()), reloadLecture).show(activity.getSupportFragmentManager(), "dialog"));
         } else {
             viewHolder.TLEvent.setVisibility(View.GONE);
             viewHolder.barrier.setVisibility(View.VISIBLE);

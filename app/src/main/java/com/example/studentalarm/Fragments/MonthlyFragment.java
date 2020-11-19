@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MonthlyFragment extends Fragment {
+public class MonthlyFragment extends Fragment implements ReloadLecture {
 
     private static LectureAdapter adapter;
 
@@ -24,6 +24,8 @@ public class MonthlyFragment extends Fragment {
         if (getContext() == null || getActivity() == null) return view;
         LoadData(view);
         InitAppBar(this.getActivity().findViewById(R.id.my_toolbar), (RecyclerView) view.findViewById(R.id.rVEvents));
+
+        view.findViewById(R.id.fabAdd).setOnClickListener(view1 -> new EventDialogFragment(null, Lecture_Schedule.Load(getContext()), (ReloadLecture) this).show(getActivity().getSupportFragmentManager(), "dialog"));
         return view;
     }
 
@@ -38,24 +40,34 @@ public class MonthlyFragment extends Fragment {
             rv.scrollToPosition(adapter.getPositionToday());
             return true;
         });
-        toolbar.getMenu().getItem(1).setOnMenuItemClickListener(menuItem -> LoadData(rv.getRootView()));
+        toolbar.getMenu().getItem(1).setOnMenuItemClickListener(menuItem -> {
+            RefreshLectureSchedule();
+            return true;
+        });
     }
 
     /**
      * Load the date and display in recyclerview
      *
      * @param view view to display
-     * @return {true} if context is not null {false} if context is null
      */
-    private boolean LoadData(View view) {
-        if (getContext() == null) return false;
+    private void LoadData(View view) {
+        if (getContext() == null) return;
         RecyclerView rv = view.findViewById(R.id.rVEvents);
-        adapter = new LectureAdapter(Lecture_Schedule.Load(getContext()).getAllLecture(), getContext(), getActivity());
+        adapter = new LectureAdapter(Lecture_Schedule.Load(getContext()), getContext(), getActivity(), this);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(adapter);
         rv.scrollToPosition(adapter.getPositionToday());
-        return true;
+    }
+
+    /**
+     * Refresh the Lecture Schedule
+     */
+    @Override
+    public void RefreshLectureSchedule() {
+        if (getView() != null)
+            LoadData(((RecyclerView) getView().findViewById(R.id.rVEvents)).getRootView());
     }
 }
 
