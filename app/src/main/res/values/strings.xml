@@ -40,10 +40,11 @@
     <string name="no">NO</string>
     <string name="missing_events">Missing events</string>
     <string name="ringtone">Ringtone</string>
+    <string name="theme">Theme</string>
 
     <!--Alarm-->
     <string name="next_alarm_in">Next alarm in</string>
-    <string name="time">%d h - %d min</string>
+    <string name="time_format">%d h - %d min</string>
     <string name="zero_time">00 h - 00 min</string>
     <string name="no_alarm_set">No alarm set or alarm in phone watch app</string>
     <string name="alarm_at">Alarm at: %1$s</string>
@@ -68,11 +69,29 @@
     <string name="eventList">EventList</string>
     <string name="refresh">Refresh</string>
     <string name="go_to_today">Go to today</string>
+    <string name="add_event">Add event</string>
+    <string name="time">Time</string>
+    <string name="event">Event</string>
+    <string name="add">Add</string>
+    <string name="title">Title</string>
+    <string name="docent">Docent</string>
+    <string name="location">Location</string>
+    <string name="begin">Begin</string>
+    <string name="end">End</string>
+    <string name="do_you_want_to_dismiss_all_your_changes">Do you want to dismiss all your changes</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="color">Color</string>
+    <string name="red">Red</string>
+    <string name="blue">Blue</string>
+    <string name="green">Green</string>
+    <string name="yellow">Yellow</string>
+    <string name="update">Update</string>
+    <string name="missing">Missing</string>
+    <string name="end_must_start_after_begin">End must start after begin</string>
+    <string name="wrong">Wrong</string>
 
     <!---->
     <string name="status">Status</string>
     <string name="ok">OK</string>
     <string name="number">number</string>
-
-
 </resources>

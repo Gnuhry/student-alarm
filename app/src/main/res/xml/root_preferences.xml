@@ -2,20 +2,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory app:title="Alarm">
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="ALARM_ON"
-            android:title="@string/create_alarm_for_the_next_day" />
-        <SwitchPreference
-            android:defaultValue="false"
-            android:enabled="false"
-            android:key="ALARM_PHONE"
-            android:title="@string/alarm_in_phone_watch_app" />
-        <SwitchPreference
-            android:defaultValue="false"
-            android:enabled="false"
-            android:key="ALARM_CHANGE"
-            android:title="@string/change_alarm_if_lecture_is_changing" />
         <EditTextPreference
             android:defaultValue="5"
             android:key="SNOOZE"
@@ -28,16 +14,23 @@
             android:key="RINGTONE"
             android:title="@string/ringtone"
             app:useSimpleSummaryProvider="true" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:enabled="false"
+            android:key="ALARM_CHANGE"
+            android:title="@string/change_alarm_if_lecture_is_changing" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="ALARM_ON"
+            android:title="@string/create_alarm_for_the_next_day" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:enabled="false"
+            android:key="ALARM_PHONE"
+            android:title="@string/alarm_in_phone_watch_app" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Import">
-        <Preference
-            android:key="IMPORT"
-            app:title="@string/import_" />
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="AUTO_IMPORT"
-            android:title="@string/automatic_daily_import" />
         <EditTextPreference
             android:defaultValue="19:00"
             android:key="IMPORT_TIME"
@@ -45,22 +38,38 @@
             android:singleLine="true"
             android:title="@string/import_time" />
         <Preference
+            android:key="IMPORT"
+            app:title="@string/import_" />
+        <Preference
             android:key="IMPORT_DELETE_ALL"
             app:title="@string/delete_all_import_events" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="AUTO_IMPORT"
+            android:title="@string/automatic_daily_import" />
     </PreferenceCategory>
     <PreferenceCategory android:title="General">
 
         <ListPreference
             android:entries="@array/language"
             android:entryValues="@array/language"
+            android:icon="@drawable/language"
             android:key="LANGUAGE"
             android:title="@string/language"
-            android:icon="@drawable/language"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            android:defaultValue="Default"
+            android:entries="@array/theme"
+            android:entryValues="@array/theme"
+            android:key="THEME"
+            android:title="@string/theme"
+            android:icon="@drawable/palette"
             app:useSimpleSummaryProvider="true" />
 
         <Preference
-            android:key="RESET"
             android:icon="@drawable/replay"
+            android:key="RESET"
             app:title="@string/reset" />
     </PreferenceCategory>
 
