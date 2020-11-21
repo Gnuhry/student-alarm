@@ -1,4 +1,4 @@
-package com.example.studentalarm.Fragments;
+package com.example.studentalarm.fragments;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -15,8 +15,8 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.studentalarm.Import.ICS;
-import com.example.studentalarm.Import.Import;
+import com.example.studentalarm.import_.ICS;
+import com.example.studentalarm.import_.Import;
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
 

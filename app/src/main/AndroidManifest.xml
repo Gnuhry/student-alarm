@@ -24,15 +24,15 @@
             </intent-filter>
         </activity>
         <receiver
-            android:name=".Receiver.BootReceiver"
+            android:name=".receiver.BootReceiver"
             android:enabled="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".Receiver.AlarmOffReceiver" />
-        <receiver android:name=".Receiver.SnoozeReceiver" />
+        <receiver android:name=".receiver.AlarmOffReceiver" />
+        <receiver android:name=".receiver.SnoozeReceiver" />
 
 
     </application>

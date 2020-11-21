@@ -1,4 +1,4 @@
-package com.example.studentalarm.Receiver;
+package com.example.studentalarm.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.example.studentalarm.AlarmManager;
-import com.example.studentalarm.Import.Import;
+import com.example.studentalarm.import_.Import;
 import com.example.studentalarm.PreferenceKeys;
 
 import androidx.preference.PreferenceManager;
