@@ -1,4 +1,4 @@
-package com.example.studentalarm.Fragments;
+package com.example.studentalarm.fragments;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,8 +12,8 @@ import android.util.DisplayMetrics;
 import android.widget.Toast;
 
 import com.example.studentalarm.AlarmManager;
-import com.example.studentalarm.Import.Import;
-import com.example.studentalarm.Import.Lecture_Schedule;
+import com.example.studentalarm.import_.Import;
+import com.example.studentalarm.import_.Lecture_Schedule;
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;

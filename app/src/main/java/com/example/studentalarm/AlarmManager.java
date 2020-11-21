@@ -3,7 +3,7 @@ package com.example.studentalarm;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.example.studentalarm.Import.Lecture_Schedule;
+import com.example.studentalarm.import_.Lecture_Schedule;
 
 import java.util.Calendar;
 import java.util.Date;

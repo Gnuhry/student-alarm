@@ -1,11 +1,11 @@
-package com.example.studentalarm.Fragments;
+package com.example.studentalarm.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.studentalarm.Import.Lecture_Schedule;
+import com.example.studentalarm.import_.Lecture_Schedule;
 import com.example.studentalarm.R;
 
 import androidx.appcompat.widget.Toolbar;
@@ -23,9 +23,9 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
         View view = inflater.inflate(R.layout.fragment_montly, container, false);
         if (getContext() == null || getActivity() == null) return view;
         LoadData(view);
-        InitAppBar(this.getActivity().findViewById(R.id.my_toolbar), (RecyclerView) view.findViewById(R.id.rVEvents));
+        InitAppBar(this.getActivity().findViewById(R.id.my_toolbar), view.findViewById(R.id.rVEvents));
 
-        view.findViewById(R.id.fabAdd).setOnClickListener(view1 -> new EventDialogFragment(null, Lecture_Schedule.Load(getContext()), (ReloadLecture) this).show(getActivity().getSupportFragmentManager(), "dialog"));
+        view.findViewById(R.id.fabAdd).setOnClickListener(view1 -> new EventDialogFragment(null, Lecture_Schedule.Load(getContext()), this).show(getActivity().getSupportFragmentManager(), "dialog"));
         return view;
     }
 
@@ -67,7 +67,7 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
     @Override
     public void RefreshLectureSchedule() {
         if (getView() != null)
-            LoadData(((RecyclerView) getView().findViewById(R.id.rVEvents)).getRootView());
+            LoadData(getView().findViewById(R.id.rVEvents).getRootView());
     }
 }
 

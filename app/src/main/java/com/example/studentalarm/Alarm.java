@@ -8,7 +8,7 @@ import android.provider.AlarmClock;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.studentalarm.Receiver.AlarmReceiver;
+import com.example.studentalarm.receiver.AlarmReceiver;
 
 import java.util.Calendar;
 
