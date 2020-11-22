@@ -61,11 +61,11 @@ public class ImportDialog extends Dialog {
                 break;
             case Import.ImportFunction.DHBWMa:
                 ((RadioButton) findViewById(R.id.rBtnDHBWMa)).setChecked(true);
-                findViewById(R.id.spDHBWMaCourse).setVisibility(View.VISIBLE);
+                findViewById(R.id.LLDHBWMaCourse).setVisibility(View.VISIBLE);
                 break;
         }
         ((RadioButton) findViewById(R.id.rBtnICS)).setOnCheckedChangeListener((compoundButton, b) -> findViewById(R.id.LLLink).setVisibility(b ? View.VISIBLE : View.GONE));
-        ((RadioButton) findViewById(R.id.rBtnDHBWMa)).setOnCheckedChangeListener((compoundButton, b) -> findViewById(R.id.spDHBWMaCourse).setVisibility(b ? View.VISIBLE : View.GONE));
+        ((RadioButton) findViewById(R.id.rBtnDHBWMa)).setOnCheckedChangeListener((compoundButton, b) -> findViewById(R.id.LLDHBWMaCourse).setVisibility(b ? View.VISIBLE : View.GONE));
         String s_import = preferences.getString("Link", null);
         if (s_import != null) {
             lastValidString = s_import;

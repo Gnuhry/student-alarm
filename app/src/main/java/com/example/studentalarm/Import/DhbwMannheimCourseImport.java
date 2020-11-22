@@ -49,7 +49,7 @@ public class DhbwMannheimCourseImport {
                     if (option.contains("label")&&option.contains("value")){
                         Log.d("HTMLZeilenanalyse", "Zeilensegment ausgewählt: SUCCESS" + option);
                         String[] course = option.split("\"");// Log beim Anlegen DhbwMannheimCourse
-                        DHBWCourses.add(new DhbwMannheimCourse(course[1],course[3]));
+                        DHBWCourses.add(new DhbwMannheimCourse("TEST",course[1],course[3]));
                     }
                 }
 
