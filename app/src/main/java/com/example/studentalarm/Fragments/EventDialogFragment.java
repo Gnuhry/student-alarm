@@ -183,6 +183,27 @@ public class EventDialogFragment extends DialogFragment {
             } else
                 title.setError(null);
 
+            boolean error2 = false;
+            if (txVBegin.getTag() == null) {
+                begin.setError(getString(R.string.missing));
+                txVBegin.setError(getString(R.string.missing));
+                error2 = true;
+            } else {
+                begin.setError(null);
+                txVBegin.setError(null);
+            }
+
+            if (txVEnd.getTag() == null) {
+                end.setError(getString(R.string.missing));
+                txVEnd.setError(getString(R.string.missing));
+                error2 = true;
+            } else {
+                end.setError(null);
+                txVEnd.setError(null);
+            }
+
+            if (error2) return; //Catch null Pointer Error
+
             Date dBegin = convertDate(txVBegin.getText().toString(), (Integer) txVBegin.getTag()),
                     dEnd = convertDate(txVEnd.getText().toString(), (Integer) txVEnd.getTag());
             if (dBegin == null) {
@@ -262,18 +283,8 @@ public class EventDialogFragment extends DialogFragment {
         title.setText(data.getName());
         docent.setText(data.getDocent());
         location.setText(data.getLocation());
-        SetDateTime(txVBegin, dPBegin, begin);
-        SetDateTime(txVEnd, dPEnd, end);
-        spinner.setSelection(colors.indexOf(new EventColor(data.getColor())));
-    }
-
-    /**
-     * set data, for views, who only visible if date is not an import
-     */
-    private void InitDataChangeable() {
         begin.setText(formatTime(data.getStart()));
         end.setText(formatTime(data.getEnd()));
-        delete.setVisibility(View.VISIBLE);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(data.getStart());
         dPBegin.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), (datePicker, i, i1, i2) -> {
@@ -283,6 +294,16 @@ public class EventDialogFragment extends DialogFragment {
         });
         calendar.setTime(data.getEnd());
         dPEnd.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), (datePicker, i, i1, i2) -> SetDateTime(txVEnd, dPEnd, end));
+        SetDateTime(txVBegin, dPBegin, begin);
+        SetDateTime(txVEnd, dPEnd, end);
+        spinner.setSelection(colors.indexOf(new EventColor(data.getColor())));
+    }
+
+    /**
+     * set data, for views, who only visible if date is not an import
+     */
+    private void InitDataChangeable() {
+        delete.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -364,10 +385,6 @@ public class EventDialogFragment extends DialogFragment {
         text.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (i == 4)
-                    text.setTag(true);
-                else if (i < 4)
-                    text.setTag(false);
             }
 
             @Override
@@ -388,16 +405,18 @@ public class EventDialogFragment extends DialogFragment {
                 if (without.length() == 4) { //XX:XX
                     editable.replace(0, editable.length(), without);
                     editable.insert(2, ":");
-                    CheckMinute(editable, 3);
+                    CheckMinute(editable, 3, true);
                     CheckHour(editable);
+                    SetDateTime(textView, datePicker, text);
                 } else if (without.length() == 3) {//X:XX
                     editable.replace(0, editable.length(), without);
                     editable.insert(1, ":");
-                    CheckMinute(editable, 2);
+                    if (CheckMinute(editable, 2, false))
+                        SetDateTime(textView, datePicker, text);
                 } else if (without.length() == 2 && pos >= 0) {//XX
                     editable.replace(0, editable.length(), without);
                 }
-                SetDateTime(textView, datePicker, text);
+                text.setTag(editable.length() >= 5);
                 working = false;
             }
 
@@ -407,10 +426,12 @@ public class EventDialogFragment extends DialogFragment {
                     editable.replace(0, 1, "0");
             }
 
-            private void CheckMinute(Editable editable, int pos) {
+            private boolean CheckMinute(Editable editable, int pos, boolean change) {
                 String minute = editable.toString().substring(pos);
-                if (Integer.parseInt(minute) >= 60)
+                boolean erg = Integer.parseInt(minute) >= 60;
+                if (erg && change)
                     editable.replace(pos, pos + 1, "0");
+                return !erg;
             }
         });
         text.setOnKeyListener((view, i, keyEvent) -> {
