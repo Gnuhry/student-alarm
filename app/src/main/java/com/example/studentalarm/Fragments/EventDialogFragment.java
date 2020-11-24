@@ -1,5 +1,6 @@
 package com.example.studentalarm.Fragments;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -9,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -397,24 +399,29 @@ public class EventDialogFragment extends DialogFragment {
                 working = true;
                 String text_ = editable.toString();
                 String without = text_;
-                int pos = text_.indexOf(":");
-                if (pos >= 0) {
-                    String[] help = text_.split(":");
-                    without = help[0] + help[1];
-                }
-                if (without.length() == 4) { //XX:XX
-                    editable.replace(0, editable.length(), without);
-                    editable.insert(2, ":");
-                    CheckMinute(editable, 3, true);
-                    CheckHour(editable);
-                    SetDateTime(textView, datePicker, text);
-                } else if (without.length() == 3) {//X:XX
-                    editable.replace(0, editable.length(), without);
-                    editable.insert(1, ":");
-                    if (CheckMinute(editable, 2, false))
+                if (text_.contains(":"))
+                    without = text_.replace(":", "");
+                switch (without.length()) {
+                    case 4:  //XX:XX
+                        editable.replace(0, editable.length(), without);
+                        editable.insert(2, ":");
+                        CheckMinute(editable, 3, true);
+                        CheckHour(editable);
                         SetDateTime(textView, datePicker, text);
-                } else if (without.length() == 2 && pos >= 0) {//XX
-                    editable.replace(0, editable.length(), without);
+                        break;
+                    case 3: //X:XX
+                        editable.replace(0, editable.length(), without);
+                        editable.insert(1, ":");
+                        if (CheckMinute(editable, 2, false))
+                            SetDateTime(textView, datePicker, text);
+                        break;
+                    case 2: //XX
+                    case 1:
+                        editable.replace(0, editable.length(), without);
+                        break;
+                    case 0:
+                        editable.clear();
+                        break;
                 }
                 text.setTag(editable.length() >= 5);
                 working = false;
@@ -434,6 +441,13 @@ public class EventDialogFragment extends DialogFragment {
                 return !erg;
             }
         });
+        text.setOnEditorActionListener((textView1, i, keyEvent) -> {
+            if (keyEvent != null) return false;
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+            return true;
+        });
+        //Won't work on virtual keyboard
         text.setOnKeyListener((view, i, keyEvent) -> {
             Log.d("KeyListener", keyEvent.toString());
             switch (keyEvent.getKeyCode()) {
