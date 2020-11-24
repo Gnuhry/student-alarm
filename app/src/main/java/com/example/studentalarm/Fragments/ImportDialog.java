@@ -17,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.studentalarm.DhbwMannheimCategory;
 import com.example.studentalarm.DhbwMannheimCourse;
 import com.example.studentalarm.Import.DhbwMannheimCourseImport;
 import com.example.studentalarm.Import.ICS;
@@ -27,7 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 
-public class ImportDialog extends Dialog {
+public class ImportDialog extends Dialog implements OnItemSelectedListener {
 
     private boolean isValid = false;
     private SharedPreferences preferences;
@@ -37,6 +38,7 @@ public class ImportDialog extends Dialog {
         super(context);
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,10 +47,14 @@ public class ImportDialog extends Dialog {
         preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         new Thread(() -> {
-            ArrayAdapter<DhbwMannheimCourse> adapter = new ArrayAdapter<>(getContext(),
+            ArrayAdapter<DhbwMannheimCategory> categoryadapter = new ArrayAdapter<>(getContext(),
                     android.R.layout.simple_spinner_item, new DhbwMannheimCourseImport().getDHBWCourses());
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            findViewById(R.id.spDHBWMaCourse).post(() -> ((Spinner)findViewById(R.id.spDHBWMaCourse)).setAdapter(adapter));
+            categoryadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner)findViewById(R.id.spDHBWMaCourseCategory)).setAdapter(categoryadapter));
+                //findViewById(R.id.spDHBWMaCourse).post(() -> ((Spinner)findViewById(R.id.spDHBWMaCourse)).setAdapter(adapter));
+
+            //einfügen Zwiter spinner
+
         }).start();
 
         switch (preferences.getInt("Mode", Import.ImportFunction.NONE)) {
@@ -62,6 +68,7 @@ public class ImportDialog extends Dialog {
             case Import.ImportFunction.DHBWMa:
                 ((RadioButton) findViewById(R.id.rBtnDHBWMa)).setChecked(true);
                 findViewById(R.id.LLDHBWMaCourse).setVisibility(View.VISIBLE);
+
                 break;
         }
         ((RadioButton) findViewById(R.id.rBtnICS)).setOnCheckedChangeListener((compoundButton, b) -> findViewById(R.id.LLLink).setVisibility(b ? View.VISIBLE : View.GONE));

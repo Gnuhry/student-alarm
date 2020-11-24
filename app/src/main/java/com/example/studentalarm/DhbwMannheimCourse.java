@@ -5,23 +5,18 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 public class DhbwMannheimCourse {
-    private String CourseCategory;
     private String CourseName;
     private String CourseISCID;
-    public DhbwMannheimCourse(String CourseCategory, String CourseName, String CourseISCID){
-        this.CourseCategory=CourseCategory;
+    public DhbwMannheimCourse(String CourseName, String CourseISCID){
         this.CourseName=CourseName;
         this.CourseISCID=CourseISCID;
-        Log.d("Course", "Neu Angelegt Kategorie: "+CourseCategory+ " Kursname:" + CourseName +" ISCKursID:"+CourseISCID);
+        Log.d("Course", "Neu Angelegt Kursname:" + CourseName +" ISCKursID:"+CourseISCID);
     }
     public String getCourseID(){
         return this.CourseISCID;
     }
     public String getCourseName(){
         return this.CourseName;
-    }
-    public String getCourseCategory() {
-        return CourseCategory;
     }
 
     @NonNull
