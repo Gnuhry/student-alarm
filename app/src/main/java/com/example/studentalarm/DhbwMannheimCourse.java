@@ -20,7 +20,6 @@ public class DhbwMannheimCourse {
     public String getCourseName(){
         return this.CourseName;
     }
-
     public String getCourseCategory() {
         return CourseCategory;
     }

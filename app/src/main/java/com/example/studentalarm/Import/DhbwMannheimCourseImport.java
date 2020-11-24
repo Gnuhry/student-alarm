@@ -45,11 +45,14 @@ public class DhbwMannheimCourseImport {
         for (String importrow : CourseFile.split("\\n")) {
             if (importrow.contains("<form id=\"class_form\" >")) {
                 Log.d("HTMLAnalyse", "Relevante Zeile suchen: SUCCESS " + importrow);
-                for (String option: importrow.split("<option|>")){
-                    if (option.contains("label")&&option.contains("value")){
-                        Log.d("HTMLZeilenanalyse", "Zeilensegment ausgewählt: SUCCESS" + option);
-                        String[] course = option.split("\"");// Log beim Anlegen DhbwMannheimCourse
-                        DHBWCourses.add(new DhbwMannheimCourse("TEST",course[1],course[3]));
+                for (String optgroup: importrow.split("<optgroup")) {
+                    String[] coursecategory = optgroup.split("\"");// speichert zusätzlichen Array um Category herauszufinden
+                    for (String option : importrow.split("<option|>")) {
+                        if (option.contains("label") && option.contains("value")) {
+                            Log.d("HTMLZeilenanalyse", "Zeilensegment ausgewählt: SUCCESS" + option);
+                            String[] course = option.split("\"");// Log beim Anlegen DhbwMannheimCourse
+                            DHBWCourses.add(new DhbwMannheimCourse(coursecategory[1], course[1], course[3]));
+                        }
                     }
                 }
 
