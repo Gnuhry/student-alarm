@@ -12,10 +12,10 @@ import android.util.DisplayMetrics;
 import android.widget.Toast;
 
 import com.example.studentalarm.AlarmManager;
-import com.example.studentalarm.import_.Import;
-import com.example.studentalarm.import_.Lecture_Schedule;
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
+import com.example.studentalarm.import_.Import;
+import com.example.studentalarm.import_.Lecture_Schedule;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -123,7 +123,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
         import_.setOnPreferenceClickListener(preference -> {
             if (getContext() == null) return false;
-            ImportDialog importDialog = new ImportDialog(this.getContext());
+            ImportDialog importDialog = new ImportDialog(this.getContext(), getActivity());
             importDialog.setOnCancelListener(dialogInterface -> Reload());
             importDialog.show();
             return true;
