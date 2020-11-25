@@ -442,7 +442,7 @@ public class EventDialogFragment extends DialogFragment {
             }
         });
         text.setOnEditorActionListener((textView1, i, keyEvent) -> {
-            if (keyEvent != null) return false;
+            if (keyEvent != null || getActivity() == null) return false;
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
             return true;
