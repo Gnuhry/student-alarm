@@ -31,6 +31,13 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Import">
+        <Preference
+            android:key="IMPORT"
+            app:title="@string/import_" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="AUTO_IMPORT"
+            android:title="@string/automatic_daily_import" />
         <EditTextPreference
             android:defaultValue="19:00"
             android:key="IMPORT_TIME"
@@ -38,15 +45,8 @@
             android:singleLine="true"
             android:title="@string/import_time" />
         <Preference
-            android:key="IMPORT"
-            app:title="@string/import_" />
-        <Preference
             android:key="IMPORT_DELETE_ALL"
             app:title="@string/delete_all_import_events" />
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="AUTO_IMPORT"
-            android:title="@string/automatic_daily_import" />
     </PreferenceCategory>
     <PreferenceCategory android:title="General">
 
