@@ -1,4 +1,4 @@
-package com.example.studentalarm.Fragments;
+package com.example.studentalarm.fragments;
 
 public interface ReloadLecture {
     /**

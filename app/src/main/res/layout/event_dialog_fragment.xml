@@ -194,6 +194,7 @@
                     android:layout_height="wrap_content"
                     android:autofillHints="@string/hh_mm"
                     android:ems="5"
+                    android:maxLength="5"
                     android:gravity="end"
                     android:hint="@string/hh_mm"
                     android:inputType="time" />
@@ -275,6 +276,7 @@
                     android:layout_height="wrap_content"
                     android:autofillHints="@string/hh_mm"
                     android:ems="5"
+                    android:maxLength="5"
                     android:gravity="end"
                     android:hint="@string/hh_mm"
                     android:inputType="time" />

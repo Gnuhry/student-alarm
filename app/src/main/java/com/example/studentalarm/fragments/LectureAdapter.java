@@ -1,4 +1,4 @@
-package com.example.studentalarm.Fragments;
+package com.example.studentalarm.fragments;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
-import com.example.studentalarm.Import.Lecture_Schedule;
+import com.example.studentalarm.import_.Lecture_Schedule;
 import com.example.studentalarm.R;
 
 import org.jetbrains.annotations.NotNull;
