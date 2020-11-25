@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import com.example.studentalarm.R;
 import com.google.android.material.tabs.TabLayout;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -15,10 +16,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 public class LectureFragment extends Fragment {
 
+    @NonNull
     private final static String TAG = "LECTURE_FRAGMENT";
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lecture, container, false);
         if (getActivity() == null) return view;
@@ -29,7 +31,7 @@ public class LectureFragment extends Fragment {
 
         ((TabLayout) view.findViewById(R.id.tLLecture)).addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) {
+            public void onTabSelected(@NonNull TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 0:
                         openFragment(new WeeklyFragment());
@@ -58,7 +60,7 @@ public class LectureFragment extends Fragment {
      *
      * @param fragment the fragment to open
      */
-    public void openFragment(Fragment fragment) {
+    public void openFragment(@NonNull Fragment fragment) {
         if (getActivity() == null) return;
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fLLecture, fragment, TAG);

@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 public class Import {
@@ -21,7 +22,7 @@ public class Import {
      *
      * @param context context of the application
      */
-    public static void SetTimer(Context context) {
+    public static void SetTimer(@NonNull Context context) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         String[] time = PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.IMPORT_TIME, PreferenceKeys.DEFAULT_IMPORT_TIME).split(":");
@@ -39,7 +40,7 @@ public class Import {
     /**
      * stops the timer
      */
-    public static void StopTimer(Context context) {
+    public static void StopTimer(@NonNull Context context) {
         ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(context, 0, new Intent(context, ImportReceiver.class), 0));
     }
 
@@ -49,7 +50,8 @@ public class Import {
      * @param context context of the application
      * @return the new lecture schedule
      */
-    public static Lecture_Schedule ImportLecture(Context context) {
+    @NonNull
+    public static Lecture_Schedule ImportLecture(@NonNull Context context) {
         Lecture_Schedule lecture_schedule = Lecture_Schedule.Load(context);
         switch (PreferenceManager.getDefaultSharedPreferences(context).getInt(PreferenceKeys.MODE, 0)) {
             case 0:
@@ -66,7 +68,8 @@ public class Import {
      * @param context context of the application
      * @return the new lecture schedule
      */
-    private static Lecture_Schedule ICSImport(Context context, Lecture_Schedule lecture_schedule) {
+    @NonNull
+    private static Lecture_Schedule ICSImport(@NonNull Context context, @NonNull Lecture_Schedule lecture_schedule) {
         String link = PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.LINK, null);
         if (link == null) return lecture_schedule;
         ICS ics = new ICS(link, true);
@@ -83,6 +86,7 @@ public class Import {
     public static class ImportFunction {
         public static final int NONE = 0;
         public static final int ICS = 1;
+        @NonNull
         public static final List<String> imports = Arrays.asList("None", "ICS");
     }
 
