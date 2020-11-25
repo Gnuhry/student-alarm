@@ -1,15 +1,19 @@
 package com.example.studentalarm.fragments;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEntity;
+import com.example.studentalarm.PreferenceKeys;
+import com.example.studentalarm.R;
 import com.example.studentalarm.import_.Import;
 import com.example.studentalarm.import_.Lecture_Schedule;
-import com.example.studentalarm.R;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -20,6 +24,7 @@ import java.util.GregorianCalendar;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 public class WeeklyFragment extends Fragment implements ReloadLecture {
     private WeekView.SimpleAdapter<Lecture_Schedule.Lecture> adapter;
@@ -88,7 +93,26 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
      */
     public void RefreshLectureSchedule() {
         if (getContext() != null)
-            new Thread(() -> adapter.submitList(Import.ImportLecture(this.getContext()).getAllLecture())).start();
+            if (PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) != Import.ImportFunction.NONE)
+                if (getActivity() != null) {
+                    ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+                    if (cm.getActiveNetworkInfo() == null || !cm.getActiveNetworkInfo().isConnected())
+                        Toast.makeText(getContext(), R.string.no_connection, Toast.LENGTH_SHORT).show();
+                    else
+                        new Thread(() -> {
+                            Import.ImportLecture(this.getContext()).Save(getContext());
+                            LoadData();
+                        }).start();
+                }
+        LoadData();
+    }
+
+    /**
+     * Load the date and display in weekView
+     */
+    private void LoadData() {
+        if (getContext() == null) return;
+        adapter.submitList(Lecture_Schedule.Load(getContext()).getAllLecture());
     }
 
     class Adapter extends WeekView.SimpleAdapter<Lecture_Schedule.Lecture> {
@@ -104,7 +128,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
         @Override
         public WeekViewEntity onCreateEntity(Lecture_Schedule.Lecture item) {
 
-            WeekViewEntity.Style.Builder builder=new WeekViewEntity.Style.Builder();
+            WeekViewEntity.Style.Builder builder = new WeekViewEntity.Style.Builder();
             builder.setBackgroundColor(item.getColor());
 
             Calendar startCal = new GregorianCalendar();
