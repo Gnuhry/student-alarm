@@ -45,7 +45,7 @@
                 android:layout_weight="1"
                 android:text="@string/time_earlier" />
 
-        </LinearLayout>
+      </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

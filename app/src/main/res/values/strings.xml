@@ -95,4 +95,6 @@
     <string name="ok">OK</string>
     <string name="number">number</string>
     <string name="no_connection">No connection</string>
+   <string name="DHBWMa">DHBW Mannheim</string>
+<string name="coursecategory">Course Category</string>
 </resources>

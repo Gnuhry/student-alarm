@@ -9,7 +9,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.studentalarm.receiver.AlarmReceiver;
-
 import java.util.Calendar;
 
 import androidx.preference.PreferenceManager;
