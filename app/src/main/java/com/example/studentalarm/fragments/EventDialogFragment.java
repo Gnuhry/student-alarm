@@ -111,7 +111,7 @@ public class EventDialogFragment extends DialogFragment {
         cancel.setOnClickListener(view -> {
             if (cancel_direct)
                 this.dismiss();
-            else if (getContext() != null) {
+            else if (getContext() != null)
                 new MaterialAlertDialogBuilder(getContext())
                         .setTitle(R.string.dismiss)
                         .setMessage(R.string.do_you_want_to_dismiss_all_your_changes)
@@ -119,7 +119,6 @@ public class EventDialogFragment extends DialogFragment {
                         .setNegativeButton(R.string.no, null)
                         .setCancelable(true)
                         .show();
-            }
         });
     }
 

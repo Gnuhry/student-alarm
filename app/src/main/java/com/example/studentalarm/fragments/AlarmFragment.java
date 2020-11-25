@@ -59,9 +59,8 @@ public class AlarmFragment extends Fragment {
                 }
             }.start();
             ((TextView) view.findViewById(R.id.txVAlarm)).setText(getString(R.string.alarm_at, new SimpleDateFormat("HH:mm", Locale.GERMAN).format(time)));
-        } else {
+        } else
             ((TextView) view.findViewById(R.id.textView4)).setText(R.string.no_alarm_set);
-        }
     }
 
     /**
@@ -69,15 +68,13 @@ public class AlarmFragment extends Fragment {
      * if not, pop up a dialog and ask
      */
     private void CheckNotification() {
-        if (getContext() == null) return;
-        if (!NotificationManagerCompat.from(getContext()).areNotificationsEnabled()) {
+        if (getContext() != null && !NotificationManagerCompat.from(getContext()).areNotificationsEnabled())
             new MaterialAlertDialogBuilder(getContext())
                     .setTitle(R.string.notification_permission_missing)
                     .setMessage(R.string.notification_permission_are_missing_without_them_the_alarm_will_not_work_properly)
                     .setPositiveButton(R.string.ok, null)
                     .setCancelable(true)
                     .show();
-        }
     }
 
     /**

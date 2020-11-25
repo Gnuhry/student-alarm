@@ -21,7 +21,6 @@ public class PreferenceKeys {
     public static final String AUTO_IMPORT = "AUTO_IMPORT";
     public static final String ALARM_TIME = "ALARM_TIME";
     public static final String SNOOZE = "SNOOZE";
-    public static final String IMPORT_DELETE_ALL = "IMPORT_DELETE_ALL";
     public static final String IMPORT_TIME = "IMPORT_TIME";
     public static final String LANGUAGE = "LANGUAGE";
     public static final String RINGTONE = "RINGTONE";

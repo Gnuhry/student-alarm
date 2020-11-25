@@ -17,9 +17,9 @@
     <string name="automatic_daily_import">Automatischer täglischer Import</string>
     <string name="address">http://www.</string>
     <string name="string_is_not_a_valid_url">Eingabe ist keine validierte URL</string>
-    <string name="delete_all_import_events">Lösche alle importierte Events</string>
+    <string name="delete_all_events">Lösche alle Events</string>
     <string name="missing_checked_valid_url">Validierung der URL fehlt</string>
-    <string name="do_you_want_to_delete_all_import_events">Möchten Sie alle importierte Events löschen?</string>
+    <string name="do_you_want_to_delete_this_events">Möchten Sie diese Events löschen?</string>
     <string name="cancel">Abbrechen</string>
     <string name="check">Prüfen</string>
     <string name="save">Speichern</string>
@@ -39,6 +39,9 @@
     <string name="missing_events">Events fehlen</string>
     <string name="ringtone">Klingelton</string>
     <string name="theme">Theme</string>
+    <string name="normal_events">Normale Ereignisse</string>
+    <string name="import_events">Importierte Ereignisse</string>
+    <string name="which_events_do_you_want_to_delete">Welche Ereignisse möchten Sie löschen?</string>
     <string name="next_alarm_in">Nächster Alarm in</string>
     <string name="time_format">%d h - %d min</string>
     <string name="zero_time">00 h - 00 min</string>
