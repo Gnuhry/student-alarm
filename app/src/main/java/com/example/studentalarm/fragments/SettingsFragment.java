@@ -69,7 +69,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 AlarmManager.SetNextAlarm(getContext());
             } else {
                 getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.ALARM_ON, (Boolean) newValue).apply();
-                AlarmManager.CancelNextAlarm(getContext());
+                if (getContext() != null)
+                    AlarmManager.CancelNextAlarm(getContext());
             }
             boolean bool3 = (Boolean) newValue;
             alarm_phone.setEnabled(bool3);
@@ -171,7 +172,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         language.setOnPreferenceChangeListener((preference, newValue) -> {
-            if (getContext() == null) return false;
+            if (getContext() == null || getActivity() == null) return false;
             ChangeLanguage((String) newValue, getContext(), getActivity());
             Reload();
             return true;
@@ -195,7 +196,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         reset.setOnPreferenceClickListener(preference -> {
-            if (getContext() == null) return false;
+            if (getContext() == null || getActivity() == null) return false;
             new MaterialAlertDialogBuilder(getContext())
                     .setTitle(R.string.reset)
                     .setMessage(R.string.do_you_want_to_reset_this_application)
