@@ -71,7 +71,7 @@ public class ImportDialog extends Dialog {
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
+            public void afterTextChanged(@NonNull Editable editable) {
                 isValid = editable.toString().equals(lastValidString);
                 ((ImageView) findViewById(R.id.imgStatus)).setImageResource(isValid ? R.drawable.right : R.drawable.question_mark);
             }

@@ -23,6 +23,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.fragment.NavHostFragment;
@@ -217,7 +218,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      *
      * @param newValue new language code
      */
-    public void ChangeLanguage(String newValue, Context context, Activity activity) {
+    public void ChangeLanguage(@NonNull String newValue, @NonNull Context context, @NonNull Activity activity) {
         Resources resources = context.getResources();
         DisplayMetrics dm = resources.getDisplayMetrics();
         Configuration config = resources.getConfiguration();

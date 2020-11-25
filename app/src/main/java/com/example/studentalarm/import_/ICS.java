@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -24,7 +25,7 @@ public class ICS {
     private String Version, Method, X_WR_Timezone, CALScale;
     private vTimezone vTimezone;
     private final List<vEvent> vEventList;
-    private final OkHttpClient client = new OkHttpClient();
+    private final OkHttpClient client;
     private boolean successful = false;
 
     /**
@@ -33,7 +34,8 @@ public class ICS {
      * @param link        link to the ics file
      * @param synchronous {true} synchronous import {false} asynchronous import
      */
-    public ICS(String link, boolean synchronous) {
+    public ICS(@NonNull String link, boolean synchronous) {
+        client = new OkHttpClient();
         vEventList = new ArrayList<>();
         if (synchronous)
             runSynchronous(link);
@@ -46,6 +48,7 @@ public class ICS {
      *
      * @return list of iCalendar.events
      */
+    @NonNull
     public List<vEvent> getVEventList() {
         return vEventList;
     }
@@ -55,7 +58,7 @@ public class ICS {
      *
      * @param link web link to the ics file
      */
-    private void runAsynchronous(String link) {
+    private void runAsynchronous(@NonNull String link) {
         Request request = new Request.Builder()
                 .url(link)
                 .build();
@@ -88,7 +91,7 @@ public class ICS {
      *
      * @param link web link to the ics file
      */
-    public void runSynchronous(String link) {
+    public void runSynchronous(@NonNull String link) {
         successful = false;
         Request request = new Request.Builder()
                 .url(link)
@@ -113,7 +116,7 @@ public class ICS {
      *
      * @param icsFile the ics file as string
      */
-    private void parse(String icsFile) {
+    private void parse(@NonNull String icsFile) {
         String[] split = icsFile.split("\\n");
         for (int findBegin = 0; findBegin < split.length; findBegin++)
             if (split[findBegin].startsWith("BEGIN:VCALENDAR")) {
@@ -204,7 +207,7 @@ public class ICS {
          * @param strings strings with information of one event
          * @throws ParseException Exception if date string has the wrong format
          */
-        public vEvent(String[] strings) throws ParseException {
+        public vEvent(@NonNull String[] strings) throws ParseException {
             for (String s : strings) {
                 if (s.split(":").length > 1) {
                     switch (s.split(":")[0]) {

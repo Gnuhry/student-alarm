@@ -13,6 +13,7 @@ import com.example.studentalarm.R;
 import com.example.studentalarm.import_.Import;
 import com.example.studentalarm.import_.Lecture_Schedule;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
@@ -21,10 +22,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MonthlyFragment extends Fragment implements ReloadLecture {
 
-    private static LectureAdapter adapter;
+    private int position_today;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_montly, container, false);
         if (getContext() == null || getActivity() == null) return view;
@@ -41,9 +42,9 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
      * @param toolbar the appbar
      * @param rv      the recyclerview to manage
      */
-    private void InitAppBar(Toolbar toolbar, RecyclerView rv) {
+    private void InitAppBar(@NonNull Toolbar toolbar, @NonNull RecyclerView rv) {
         toolbar.getMenu().getItem(0).setOnMenuItemClickListener(menuItem -> {
-            rv.scrollToPosition(adapter.getPositionToday());
+            rv.scrollToPosition(position_today);
             return true;
         });
         toolbar.getMenu().getItem(1).setOnMenuItemClickListener(menuItem -> {
@@ -57,14 +58,15 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
      *
      * @param view view to display
      */
-    private void LoadData(View view) {
+    private void LoadData(@NonNull View view) {
         if (getContext() == null) return;
         RecyclerView rv = view.findViewById(R.id.rVEvents);
-        adapter = new LectureAdapter(Lecture_Schedule.Load(getContext()), getContext(), getActivity(), this);
+        LectureAdapter adapter = new LectureAdapter(Lecture_Schedule.Load(getContext()), getContext(), getActivity(), this);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(adapter);
         rv.scrollToPosition(adapter.getPositionToday());
+        position_today = adapter.getPositionToday();
     }
 
     /**
@@ -82,7 +84,7 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
                         new Thread(() -> {
                             Import.ImportLecture(this.getContext()).Save(getContext());
                             if (getView() != null)
-                                LoadData(getView().findViewById(R.id.rVEvents).getRootView());
+                                getView().findViewById(R.id.rVEvents).post(() -> LoadData(getView().findViewById(R.id.rVEvents).getRootView()));
                         }).start();
                 }
 

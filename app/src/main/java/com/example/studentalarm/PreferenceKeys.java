@@ -6,29 +6,30 @@ import android.util.Log;
 
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
 public class PreferenceKeys {
-    public static final String MODE = "Mode";
-    public static final String LINK = "Link";
-    public static final String BEFORE = "BEFORE";
-    public static final String WAY = "WAY";
-    public static final String AFTER = "AFTER";
-    public static final String ALARM_ON = "ALARM_ON";
-    public static final String ALARM_PHONE = "ALARM_PHONE";
-    public static final String ALARM_CHANGE = "ALARM_CHANGE";
-    public static final String AUTO_IMPORT = "AUTO_IMPORT";
-    public static final String ALARM_TIME = "ALARM_TIME";
-    public static final String SNOOZE = "SNOOZE";
-    public static final String IMPORT_TIME = "IMPORT_TIME";
-    public static final String LANGUAGE = "LANGUAGE";
-    public static final String RINGTONE = "RINGTONE";
+    @NonNull public static final String MODE = "Mode";
+    @NonNull public static final String LINK = "Link";
+    @NonNull public static final String BEFORE = "BEFORE";
+    @NonNull public static final String WAY = "WAY";
+    @NonNull public static final String AFTER = "AFTER";
+    @NonNull  public static final String ALARM_ON = "ALARM_ON";
+    @NonNull public static final String ALARM_PHONE = "ALARM_PHONE";
+    @NonNull  public static final String ALARM_CHANGE = "ALARM_CHANGE";
+    @NonNull  public static final String AUTO_IMPORT = "AUTO_IMPORT";
+    @NonNull   public static final String ALARM_TIME = "ALARM_TIME";
+    @NonNull  public static final String SNOOZE = "SNOOZE";
+    @NonNull  public static final String IMPORT_TIME = "IMPORT_TIME";
+    @NonNull  public static final String LANGUAGE = "LANGUAGE";
+    @NonNull  public static final String RINGTONE = "RINGTONE";
 
-    public static final String DEFAULT_RINGTONE = "Default";
-    public static final String DEFAULT_LANGUAGE = "EN";
-    public static final String DEFAULT_SNOOZE = "5";
-    public static final String DEFAULT_IMPORT_TIME = "19:00";
+    @NonNull  public static final String DEFAULT_RINGTONE = "Default";
+    @NonNull  public static final String DEFAULT_LANGUAGE = "EN";
+    @NonNull  public static final String DEFAULT_SNOOZE = "5";
+    @NonNull  public static final String DEFAULT_IMPORT_TIME = "19:00";
 
     /**
      * Reset the settings
@@ -36,7 +37,8 @@ public class PreferenceKeys {
      * @param context context of application
      * @return language
      */
-    public static String Reset(Context context) {
+    @NonNull
+    public static String Reset(@NonNull Context context) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().clear().apply();
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         return Default(context);
@@ -48,7 +50,8 @@ public class PreferenceKeys {
      * @param context context of application
      * @return language
      */
-    public static String Default(Context context) {
+    @NonNull
+    public static String Default(@NonNull Context context) {
         String erg = DEFAULT_LANGUAGE(context);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (preferences.getString(PreferenceKeys.RINGTONE, null) == null)
@@ -68,7 +71,8 @@ public class PreferenceKeys {
      * @param context context of application
      * @return default language
      */
-    public static String DEFAULT_LANGUAGE(Context context) {
+    @NonNull
+    public static String DEFAULT_LANGUAGE(@NonNull Context context) {
         String s = Locale.getDefault().getLanguage();
         Log.d("LANGUAGE", s);
         for (String language : context.getResources().getStringArray(R.array.language)) {
