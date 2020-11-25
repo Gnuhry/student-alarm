@@ -1,10 +1,7 @@
-package com.example.studentalarm.Import;
+package com.example.studentalarm.import_;
 
 import android.content.Context;
 import android.graphics.Color;
-
-import com.alamkanak.weekview.WeekViewDisplayable;
-import com.alamkanak.weekview.WeekViewEvent;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -16,16 +13,12 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 public class Lecture_Schedule implements Serializable {
-    private TimeZone timezone;
     private final List<Lecture> lecture, import_lecture;
 
     /**
@@ -34,7 +27,6 @@ public class Lecture_Schedule implements Serializable {
     public Lecture_Schedule() {
         lecture = new ArrayList<>();
         import_lecture = new ArrayList<>();
-        timezone = TimeZone.getDefault();
     }
 
     /**
@@ -42,11 +34,10 @@ public class Lecture_Schedule implements Serializable {
      *
      * @param calendar the ics file object
      */
-    public void ImportICS(ICS calendar) {
+    public void ImportICS(@NotNull ICS calendar) {
         import_lecture.clear();
         for (ICS.vEvent ev : calendar.getVEventList())
             import_lecture.add(new Lecture(ev.getSUMMARY(), null, ev.getLOCATION(), ev.getDTStart(), ev.getDTend(), true));
-        timezone = TimeZone.getDefault();//TODO Getter TimeZone iCalendar
     }
 
     /**
@@ -62,20 +53,36 @@ public class Lecture_Schedule implements Serializable {
         return all;
     }
 
+    /**
+     * delete all import events
+     */
     public void deleteAllImportEvents() {
         this.import_lecture.clear();
+    }
+
+    /**
+     * delete all not import events
+     */
+    public void deleteAllNotImportEvents() {
+        this.lecture.clear();
+    }
+
+    /**
+     * delete all events. import and not import
+     */
+    public void deleteAllEvents() {
+        this.import_lecture.clear();
+        this.lecture.clear();
     }
 
     public void addLecture(Lecture lecture) {
         this.lecture.add(lecture);
     }
 
-    public TimeZone getTimezone() {
-        return timezone;
-    }
-
-    public void setTimezone(TimeZone timezone) {
-        this.timezone = timezone;
+    public void removeLecture(Lecture data) {
+        int id1 = lecture.indexOf(data), id2 = import_lecture.indexOf(data);
+        if (id1 >= 0) lecture.remove(id1);
+        if (id2 >= 0) import_lecture.remove(id2);
     }
 
     /**
@@ -160,16 +167,10 @@ public class Lecture_Schedule implements Serializable {
         return new Lecture_Schedule();
     }
 
-    public void removeLecture(Lecture data) {
-        int id1 = lecture.indexOf(data), id2 = import_lecture.indexOf(data);
-        if (id1 >= 0) lecture.remove(id1);
-        if (id2 >= 0) import_lecture.remove(id2);
-    }
-
     /**
      * inner class to represent the lecture information
      */
-    public static class Lecture implements WeekViewDisplayable<Lecture>, Serializable, Comparable<Lecture> {
+    public static class Lecture implements Serializable, Comparable<Lecture> {
         private String docent, location, name;
         private Date start, end;
         private static int counter = 1;
@@ -253,34 +254,6 @@ public class Lecture_Schedule implements Serializable {
 
         public void setColor(int color) {
             this.color = color;
-        }
-
-        @NotNull
-        @Override
-        public WeekViewEvent<Lecture> toWeekViewEvent() {
-            WeekViewEvent.Style.Builder builder = new WeekViewEvent.Style.Builder();
-            builder.setBackgroundColor(color);
-
-            if (start == null || end == null || name == null)
-                return new WeekViewEvent.Builder<Lecture>().build();
-            Calendar startCal = new GregorianCalendar();
-            startCal.setTime(this.start);
-
-            Calendar endCal = new GregorianCalendar();
-            endCal.setTime(this.end);
-
-            WeekViewEvent.Builder<Lecture> erg = new WeekViewEvent.Builder<>(this);
-            StringBuilder sb = new StringBuilder(this.name);
-            if (this.docent != null)
-                sb.append(" - ").append(this.docent);
-            erg.setTitle(sb.toString());
-            erg.setStartTime(startCal);
-            erg.setEndTime(endCal);
-            if (this.location != null)
-                erg.setLocation(this.location);
-            erg.setStyle(builder.build());
-            erg.setId(this.id);
-            return erg.build();
         }
 
         @Override

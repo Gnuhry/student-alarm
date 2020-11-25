@@ -1,4 +1,4 @@
-package com.example.studentalarm.Import;
+package com.example.studentalarm.import_;
 
 import android.util.Log;
 
