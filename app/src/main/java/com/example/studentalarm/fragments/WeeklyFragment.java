@@ -58,7 +58,6 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
         SimpleDateFormat format = new SimpleDateFormat("E", getResources().getConfiguration().locale);
         DateFormat dateformat = DateFormat.getDateInstance(DateFormat.SHORT, getResources().getConfiguration().locale);
         adapter = new Adapter();
-        weekView.enableEmojiProcessing();
         weekView.setAdapter(adapter);
         weekView.setTimeFormatter(hour -> getResources().getConfiguration().locale.getLanguage().equals("en") ? (hour == 12 ? "12 pm" : (hour > 21 ? (hour - 12) + " pm" : (hour > 12 ? "0" + (hour - 12) + " pm" : (hour >= 10 ? hour + " am" : "0" + hour + " am")))) : hour >= 10 ? hour + " h" : "0" + hour + " h");
         weekView.setDateFormatter(date -> String.format("%s %s", format.format(date.getTime()), dateformat.format(date.getTime())));
