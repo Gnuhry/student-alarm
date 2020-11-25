@@ -1,18 +1,13 @@
 package com.example.studentalarm;
 
 import android.content.IntentFilter;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 
-import com.example.studentalarm.Fragments.SettingsFragment;
-import com.example.studentalarm.Receiver.NetworkReceiver;
+import com.example.studentalarm.fragments.SettingsFragment;
+import com.example.studentalarm.receiver.NetworkReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import androidx.preference.PreferenceManager;

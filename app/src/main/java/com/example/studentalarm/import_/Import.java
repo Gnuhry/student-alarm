@@ -1,4 +1,4 @@
-package com.example.studentalarm.Import;
+package com.example.studentalarm.import_;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.example.studentalarm.PreferenceKeys;
-import com.example.studentalarm.Receiver.ImportReceiver;
+import com.example.studentalarm.receiver.ImportReceiver;
 
 import java.util.Arrays;
 import java.util.Calendar;
