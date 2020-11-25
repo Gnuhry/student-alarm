@@ -1,5 +1,6 @@
-package com.example.studentalarm.Fragments;
+package com.example.studentalarm.fragments;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -9,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -16,7 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.studentalarm.Import.Lecture_Schedule;
+import com.example.studentalarm.import_.Lecture_Schedule;
 import com.example.studentalarm.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -183,6 +185,27 @@ public class EventDialogFragment extends DialogFragment {
             } else
                 title.setError(null);
 
+            boolean error2 = false;
+            if (txVBegin.getTag() == null) {
+                begin.setError(getString(R.string.missing));
+                txVBegin.setError(getString(R.string.missing));
+                error2 = true;
+            } else {
+                begin.setError(null);
+                txVBegin.setError(null);
+            }
+
+            if (txVEnd.getTag() == null) {
+                end.setError(getString(R.string.missing));
+                txVEnd.setError(getString(R.string.missing));
+                error2 = true;
+            } else {
+                end.setError(null);
+                txVEnd.setError(null);
+            }
+
+            if (error2) return; //Catch null Pointer Error
+
             Date dBegin = convertDate(txVBegin.getText().toString(), (Integer) txVBegin.getTag()),
                     dEnd = convertDate(txVEnd.getText().toString(), (Integer) txVEnd.getTag());
             if (dBegin == null) {
@@ -262,18 +285,8 @@ public class EventDialogFragment extends DialogFragment {
         title.setText(data.getName());
         docent.setText(data.getDocent());
         location.setText(data.getLocation());
-        SetDateTime(txVBegin, dPBegin, begin);
-        SetDateTime(txVEnd, dPEnd, end);
-        spinner.setSelection(colors.indexOf(new EventColor(data.getColor())));
-    }
-
-    /**
-     * set data, for views, who only visible if date is not an import
-     */
-    private void InitDataChangeable() {
         begin.setText(formatTime(data.getStart()));
         end.setText(formatTime(data.getEnd()));
-        delete.setVisibility(View.VISIBLE);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(data.getStart());
         dPBegin.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), (datePicker, i, i1, i2) -> {
@@ -283,6 +296,16 @@ public class EventDialogFragment extends DialogFragment {
         });
         calendar.setTime(data.getEnd());
         dPEnd.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), (datePicker, i, i1, i2) -> SetDateTime(txVEnd, dPEnd, end));
+        SetDateTime(txVBegin, dPBegin, begin);
+        SetDateTime(txVEnd, dPEnd, end);
+        spinner.setSelection(colors.indexOf(new EventColor(data.getColor())));
+    }
+
+    /**
+     * set data, for views, who only visible if date is not an import
+     */
+    private void InitDataChangeable() {
+        delete.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -364,10 +387,6 @@ public class EventDialogFragment extends DialogFragment {
         text.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (i == 4)
-                    text.setTag(true);
-                else if (i < 4)
-                    text.setTag(false);
             }
 
             @Override
@@ -380,24 +399,31 @@ public class EventDialogFragment extends DialogFragment {
                 working = true;
                 String text_ = editable.toString();
                 String without = text_;
-                int pos = text_.indexOf(":");
-                if (pos >= 0) {
-                    String[] help = text_.split(":");
-                    without = help[0] + help[1];
+                if (text_.contains(":"))
+                    without = text_.replace(":", "");
+                switch (without.length()) {
+                    case 4:  //XX:XX
+                        editable.replace(0, editable.length(), without);
+                        editable.insert(2, ":");
+                        CheckMinute(editable, 3, true);
+                        CheckHour(editable);
+                        SetDateTime(textView, datePicker, text);
+                        break;
+                    case 3: //X:XX
+                        editable.replace(0, editable.length(), without);
+                        editable.insert(1, ":");
+                        if (CheckMinute(editable, 2, false))
+                            SetDateTime(textView, datePicker, text);
+                        break;
+                    case 2: //XX
+                    case 1:
+                        editable.replace(0, editable.length(), without);
+                        break;
+                    case 0:
+                        editable.clear();
+                        break;
                 }
-                if (without.length() == 4) { //XX:XX
-                    editable.replace(0, editable.length(), without);
-                    editable.insert(2, ":");
-                    CheckMinute(editable, 3);
-                    CheckHour(editable);
-                } else if (without.length() == 3) {//X:XX
-                    editable.replace(0, editable.length(), without);
-                    editable.insert(1, ":");
-                    CheckMinute(editable, 2);
-                } else if (without.length() == 2 && pos >= 0) {//XX
-                    editable.replace(0, editable.length(), without);
-                }
-                SetDateTime(textView, datePicker, text);
+                text.setTag(editable.length() >= 5);
                 working = false;
             }
 
@@ -407,12 +433,21 @@ public class EventDialogFragment extends DialogFragment {
                     editable.replace(0, 1, "0");
             }
 
-            private void CheckMinute(Editable editable, int pos) {
+            private boolean CheckMinute(Editable editable, int pos, boolean change) {
                 String minute = editable.toString().substring(pos);
-                if (Integer.parseInt(minute) >= 60)
+                boolean erg = Integer.parseInt(minute) >= 60;
+                if (erg && change)
                     editable.replace(pos, pos + 1, "0");
+                return !erg;
             }
         });
+        text.setOnEditorActionListener((textView1, i, keyEvent) -> {
+            if (keyEvent != null || getActivity() == null) return false;
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+            return true;
+        });
+        //Won't work on virtual keyboard
         text.setOnKeyListener((view, i, keyEvent) -> {
             Log.d("KeyListener", keyEvent.toString());
             switch (keyEvent.getKeyCode()) {

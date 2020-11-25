@@ -6,21 +6,21 @@
     app:startDestination="@id/alarmFragment_">
     <fragment
         android:id="@+id/alarmFragment_"
-        android:name="com.example.studentalarm.Fragments.AlarmFragment"
+        android:name="com.example.studentalarm.fragments.AlarmFragment"
         android:label="fragment_alarm"
         tools:layout="@layout/fragment_alarm" />
     <fragment
         android:id="@+id/settingsFragment_"
-        android:name="com.example.studentalarm.Fragments.SettingsFragment"
+        android:name="com.example.studentalarm.fragments.SettingsFragment"
         android:label="SettingsFragment" />
     <fragment
         android:id="@+id/lectureFragment_"
-        android:name="com.example.studentalarm.Fragments.LectureFragment"
+        android:name="com.example.studentalarm.fragments.LectureFragment"
         android:label="fragment_lecture"
         tools:layout="@layout/fragment_lecture" />
     <fragment
         android:id="@+id/schoolFragment_"
-        android:name="com.example.studentalarm.Fragments.SchoolFragment"
+        android:name="com.example.studentalarm.fragments.SchoolFragment"
         android:label="fragment_school"
         tools:layout="@layout/fragment_school" />
 </navigation>

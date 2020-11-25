@@ -1,4 +1,4 @@
-package com.example.studentalarm.Receiver;
+package com.example.studentalarm.receiver;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;

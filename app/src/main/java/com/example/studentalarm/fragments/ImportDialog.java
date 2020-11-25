@@ -1,8 +1,10 @@
-package com.example.studentalarm.Fragments;
+package com.example.studentalarm.fragments;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,8 +17,8 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.studentalarm.Import.ICS;
-import com.example.studentalarm.Import.Import;
+import com.example.studentalarm.import_.ICS;
+import com.example.studentalarm.import_.Import;
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
 
@@ -28,9 +30,11 @@ public class ImportDialog extends Dialog {
 
     private boolean isValid = false;
     private String lastValidString;
+    private final Activity activity;
 
-    public ImportDialog(@NonNull Context context) {
+    public ImportDialog(@NonNull Context context, Activity activity) {
         super(context);
+        this.activity = activity;
     }
 
     @Override
@@ -93,6 +97,11 @@ public class ImportDialog extends Dialog {
             String text = ((EditText) findViewById(R.id.edTLink)).getText().toString();
             if (!URLUtil.isValidUrl(text)) {
                 Toast.makeText(getContext(), R.string.string_is_not_a_valid_url, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (cm.getActiveNetworkInfo() == null || !cm.getActiveNetworkInfo().isConnected()) {
+                Toast.makeText(getContext(), R.string.no_connection, Toast.LENGTH_SHORT).show();
                 return;
             }
             findViewById(R.id.btnCheckLink).setEnabled(false);
