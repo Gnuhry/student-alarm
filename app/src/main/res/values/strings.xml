@@ -44,4 +44,6 @@
     <string name="zero_time">00 h - 00 min</string>
     <string name="no_alarm_set">No alarm set</string>
     <string name="alarm_at">Alarm at: %1$s</string>
+    <string name="coursecategory">Course Category</string>
+
 </resources>

@@ -1,9 +1,9 @@
-package com.example.studentalarm.Import;
+package com.example.studentalarm.dhbw_mannheim;
 
 import android.util.Log;
 
-import com.example.studentalarm.DhbwMannheimCategory;
-import com.example.studentalarm.DhbwMannheimCourse;
+import com.example.studentalarm.dhbw_mannheim.CourseCategory;
+import com.example.studentalarm.dhbw_mannheim.Course;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,13 +13,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class DhbwMannheimCourseImport {
-    private List<DhbwMannheimCategory> DHBWCoursecategory;
-    private List<DhbwMannheimCourse> tempDHBWCourses;
+public class CourseImport {
+    private List<CourseCategory> DHBWCoursecategory;
+    private List<Course> tempDHBWCourses;
     private final OkHttpClient client = new OkHttpClient();
     private boolean successful=false;
 
-    public DhbwMannheimCourseImport() {//muss in neuem Thread aufgerufen werden new Thread(() -> {CourseNamesDHBW_Mannheim test = new CourseNamesDHBW_Mannheim();}).start();
+    public CourseImport() {//muss in neuem Thread aufgerufen werden new Thread(() -> {CourseNamesDHBW_Mannheim test = new CourseNamesDHBW_Mannheim();}).start();
         Log.d("Info","Aufgerufen");
         runSynchronous();
     }
@@ -50,15 +50,18 @@ public class DhbwMannheimCourseImport {
                 Log.d("HTMLAnalyse", "Relevante Zeile suchen: SUCCESS " + importrow);
                 for (String optgroup: importrow.split("<optgroup")) {
                     String[] coursecategory = optgroup.split("\"");// speichert zusätzlichen Array um Category herauszufinden
-
-                    for (String option : importrow.split("<option|>")) {
-                        if (option.contains("label") && option.contains("value")) {
-                            Log.d("HTMLZeilenanalyse", "Zeilensegment ausgewählt: SUCCESS" + option);
-                            String[] course = option.split("\"");// Log beim Anlegen DhbwMannheimCourse
-                            tempDHBWCourses.add(new DhbwMannheimCourse(course[1], course[3]));
+                    tempDHBWCourses=new ArrayList<>(); //.clear funktioniert hier nicht
+                    if (!coursecategory[1].equals("class_form")) {
+                        for (String option : optgroup.split("<option|>")) {
+                            if (option.contains("label") && option.contains("value")) {
+                                Log.d("HTMLZeilenanalyse", "Zeilensegment ausgewählt: SUCCESS" + option);
+                                String[] course = option.split("\"");// Log beim Anlegen DhbwMannheimCourse
+                                tempDHBWCourses.add(new Course(course[1], course[3]));
+                            }
                         }
-                        DHBWCoursecategory.add(new DhbwMannheimCategory(coursecategory[1],tempDHBWCourses));
-                        tempDHBWCourses=new ArrayList<>();
+                        DHBWCoursecategory.add(new CourseCategory(coursecategory[1],tempDHBWCourses));
+                    }else{
+                        DHBWCoursecategory.add(new CourseCategory("@string/coursecategory",tempDHBWCourses));
                     }
                 }
 
@@ -66,7 +69,7 @@ public class DhbwMannheimCourseImport {
         }
     }
 
-    public List<DhbwMannheimCategory> getDHBWCourses() {
+    public List<CourseCategory> getDHBWCourses() {
         return DHBWCoursecategory;
     }
 }

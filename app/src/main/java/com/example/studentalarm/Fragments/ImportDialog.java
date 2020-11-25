@@ -6,9 +6,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.URLUtil;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -17,9 +19,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.studentalarm.DhbwMannheimCategory;
-import com.example.studentalarm.DhbwMannheimCourse;
-import com.example.studentalarm.Import.DhbwMannheimCourseImport;
+import com.example.studentalarm.dhbw_mannheim.CourseCategory;
+import com.example.studentalarm.dhbw_mannheim.Course;
+import com.example.studentalarm.dhbw_mannheim.CourseImport;
 import com.example.studentalarm.Import.ICS;
 import com.example.studentalarm.Import.Import;
 import com.example.studentalarm.R;
@@ -28,7 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 
-public class ImportDialog extends Dialog implements OnItemSelectedListener {
+public class ImportDialog extends Dialog{
 
     private boolean isValid = false;
     private SharedPreferences preferences;
@@ -47,13 +49,28 @@ public class ImportDialog extends Dialog implements OnItemSelectedListener {
         preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         new Thread(() -> {
-            ArrayAdapter<DhbwMannheimCategory> categoryadapter = new ArrayAdapter<>(getContext(),
-                    android.R.layout.simple_spinner_item, new DhbwMannheimCourseImport().getDHBWCourses());
+            ArrayAdapter<CourseCategory> categoryadapter = new ArrayAdapter<>(getContext(),
+                    android.R.layout.simple_spinner_item, new CourseImport().getDHBWCourses());
             categoryadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner)findViewById(R.id.spDHBWMaCourseCategory)).setAdapter(categoryadapter));
-                //findViewById(R.id.spDHBWMaCourse).post(() -> ((Spinner)findViewById(R.id.spDHBWMaCourse)).setAdapter(adapter));
+            ((Spinner)findViewById(R.id.spDHBWMaCourseCategory)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {//Funktioniert aus nicht erkennbaren gründen nicht wenn direkt View by Id verwendet wird
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    Log.d("Spinner Course", "adview:" + adapterView.getItemAtPosition(1) + " view :" + view + " i " + i + " l " + l+"  Coursecat: "+adapterView.getItemAtPosition(i));
+                    ArrayAdapter<Course> courseadapter = new ArrayAdapter<>(getContext(),
+                            android.R.layout.simple_spinner_item, ((CourseCategory)adapterView.getItemAtPosition(i)).getDHBWCourses());
+                    courseadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    for (Course course:((CourseCategory)adapterView.getItemAtPosition(i)).getDHBWCourses()){
+                        Log.d("Spinnerelement Course","Kurs:: "+ course);
+                    }
+                    findViewById(R.id.spDHBWMaCourse).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourse)).setAdapter(courseadapter));
+                }
 
-            //einfügen Zwiter spinner
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
 
         }).start();
 
@@ -109,7 +126,7 @@ public class ImportDialog extends Dialog implements OnItemSelectedListener {
                 this.cancel();
             }else if (((RadioButton) findViewById(R.id.rBtnDHBWMa)).isChecked()) {
                 preferences.edit().putInt("Mode", Import.ImportFunction.DHBWMa).apply();
-                preferences.edit().putString("Link", "http://vorlesungsplan.dhbw-mannheim.de/ical.php?uid="+((DhbwMannheimCourse)((Spinner) findViewById(R.id.spDHBWMaCourse)).getSelectedItem()).getCourseID()).apply();
+                preferences.edit().putString("Link", "http://vorlesungsplan.dhbw-mannheim.de/ical.php?uid="+((Course)((Spinner) findViewById(R.id.spDHBWMaCourse)).getSelectedItem()).getCourseID()).apply();
                 this.cancel();
             }
         });

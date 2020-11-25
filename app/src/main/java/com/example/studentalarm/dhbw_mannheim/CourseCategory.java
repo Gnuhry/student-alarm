@@ -1,27 +1,31 @@
-package com.example.studentalarm;
+package com.example.studentalarm.dhbw_mannheim;
+
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import java.lang.reflect.Array;
+import com.example.studentalarm.dhbw_mannheim.Course;
+
 import java.util.List;
 
-public class DhbwMannheimCategory {
+public class CourseCategory {
 
     private String CourseCategory;
-    private List<DhbwMannheimCourse> DHBWCoursesCategory;
+    private List<Course> DHBWCoursesCategory;
 
-    public DhbwMannheimCategory(String CourseCategory, List<DhbwMannheimCourse> Courses){
+    public CourseCategory(String CourseCategory, List<Course> Courses){
+        Log.d("CourseCategory", "Neu Angelegt Courscategory:" + CourseCategory);
         this.CourseCategory=CourseCategory;
         this.DHBWCoursesCategory=Courses;
     }
     public String getCourseCategory() {
         return CourseCategory;
     }
-    public void add(DhbwMannheimCourse Course){
+    public void add(Course Course){
         DHBWCoursesCategory.add(Course);
     }
 
-    public List<DhbwMannheimCourse> getDHBWCourses() {
+    public List<Course> getDHBWCourses() {
         return DHBWCoursesCategory;
     }
     @NonNull
