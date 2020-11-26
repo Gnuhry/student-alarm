@@ -35,9 +35,9 @@ public class DeleteLectureDialog extends Dialog {
                             if (getContext() == null) return;
                             Lecture_Schedule schedule = Lecture_Schedule.Load(getContext());
                             if (normal)
-                                schedule.deleteAllNotImportEvents();
+                                schedule.clearNormalEvents();
                             if (import_)
-                                schedule.deleteAllImportEvents();
+                                schedule.clearImportEvents();
                             schedule.Save(getContext());
                             this.cancel();
                         })
