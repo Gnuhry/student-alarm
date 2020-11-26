@@ -2,6 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory app:title="Alarm">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="ALARM_ON"
+            android:title="@string/create_alarm_for_the_next_day" />
         <EditTextPreference
             android:defaultValue="5"
             android:key="SNOOZE"
@@ -19,10 +23,6 @@
             android:enabled="false"
             android:key="ALARM_CHANGE"
             android:title="@string/change_alarm_if_lecture_is_changing" />
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="ALARM_ON"
-            android:title="@string/create_alarm_for_the_next_day" />
         <SwitchPreference
             android:defaultValue="false"
             android:enabled="false"

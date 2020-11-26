@@ -3,20 +3,22 @@ package com.example.studentalarm.import_;
 import android.content.Context;
 import android.graphics.Color;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
+import java.util.TimeZone;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,10 +40,22 @@ public class Lecture_Schedule implements Serializable {
      *
      * @param calendar the ics file object
      */
-    public void ImportICS(@NotNull ICS calendar) {
+    @NonNull
+    public Lecture_Schedule ImportICS(@NonNull ICS calendar) {
         import_lecture.clear();
-        for (ICS.vEvent ev : calendar.getVEventList())
-            import_lecture.add(new Lecture(ev.getSUMMARY(), null, ev.getLOCATION(), ev.getDTStart(), ev.getDTend(), true));
+        if (calendar.getVEventList() != null)
+            for (ICS.vEvent ev : calendar.getVEventList()) {
+                try {
+                    if (ev.SUMMARY != null && ev.LOCATION != null && ev.DTStart != null && ev.DTend != null) {
+                        Date start = ICS.stringToDate(ev.DTStart), end = ICS.stringToDate(ev.DTend);
+                        if (start != null && end != null)
+                            import_lecture.add(new Lecture(true).setName(ev.SUMMARY).setLocation(ev.LOCATION).setStart(start).setEnd(end));
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        return this;
     }
 
     /**
@@ -61,72 +75,68 @@ public class Lecture_Schedule implements Serializable {
     /**
      * delete all import events
      */
-    public void deleteAllImportEvents() {
+    public void clearImportEvents() {
         this.import_lecture.clear();
     }
 
     /**
      * delete all not import events
      */
-    public void deleteAllNotImportEvents() {
+    public void clearNormalEvents() {
         this.lecture.clear();
     }
 
     /**
      * delete all events. import and not import
      */
-    public void deleteAllEvents() {
+    public void clearEvents() {
         this.import_lecture.clear();
         this.lecture.clear();
     }
 
-    public void addLecture(Lecture lecture) {
+    public void addLecture(@NonNull Lecture lecture) {
         this.lecture.add(lecture);
     }
 
-    public void removeLecture(Lecture data) {
+    public void removeLecture(@NonNull Lecture data) {
         int id1 = lecture.indexOf(data), id2 = import_lecture.indexOf(data);
         if (id1 >= 0) lecture.remove(id1);
         if (id2 >= 0) import_lecture.remove(id2);
     }
 
     /**
-     * get the first lecture at day of date
+     * get the next lecture, at least starting tomorrow 00:00:00:00
      *
-     * @param date day, where the lecture take place
-     * @return first lecture of the day
-     */
-    @Nullable
-    public Lecture getFirstLectureAtDate(@NotNull Date date) {
-        Lecture erg = null;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.GERMAN);
-        for (Lecture l : getAllLecture())
-            if (l.start != null && sdf.format(date).compareTo(sdf.format(l.start)) == 0) {
-                if (erg == null)
-                    erg = l;
-                else if (l.start.before(erg.start))
-                    erg = l;
-            }
-        return erg;
-    }
-
-    /**
-     * get the next lecture after date
-     *
-     * @param date date before the next lecture
      * @return next lecture
      */
     @Nullable
-    public Lecture getNextLecture(@NonNull Date date) {
-        Lecture erg = null;
+    public Lecture getNextFirstDayLecture() {
+        boolean first = true;
+        Lecture help = new Lecture(false).setStart(getDayAddDay(1)), help2 = new Lecture(false).setStart(getDayAddDay(0));
         for (Lecture l : getAllLecture())
-            if (l.start != null && l.start.after(date)) {
-                if (erg == null)
-                    erg = l;
-                else if (l.start.before(erg.start))
-                    erg = l;
-            }
-        return erg;
+            if (l.compareTo(help2) >= 0 && first) {
+                first = false;
+                if (l.start.after(Calendar.getInstance().getTime()))
+                    return l;
+            } else if (l.compareTo(help) >= 0)
+                return l;
+        return null;
+    }
+
+    /**
+     * get the next day at 00:00:00:00
+     *
+     * @return next day as date
+     */
+    @NonNull
+    private static Date getDayAddDay(int addDay) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, addDay);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
     }
 
 
@@ -180,28 +190,11 @@ public class Lecture_Schedule implements Serializable {
         private String docent, location, name;
         private Date start, end;
         private static int counter = 1;
-        private int color;
+        private int color = Color.RED;
         private final int id;
         private final boolean isImport;
 
-        public Lecture(String name, String docent, String location, Date start, Date end, boolean isImport) {
-            this.name = name;
-            this.docent = docent;
-            this.location = location;
-            this.start = start;
-            this.end = end;
-            this.color = Color.RED;
-            this.id = counter++;
-            this.isImport = isImport;
-        }
-
-        public Lecture(String name, String docent, String location, Date start, Date end, boolean isImport, int color) {
-            this.name = name;
-            this.docent = docent;
-            this.location = location;
-            this.start = start;
-            this.end = end;
-            this.color = color;
+        public Lecture(boolean isImport) {
             this.id = counter++;
             this.isImport = isImport;
         }
@@ -218,12 +211,14 @@ public class Lecture_Schedule implements Serializable {
             return name;
         }
 
+        @NonNull
         public Date getStart() {
-            return start;
+            return new Date(start.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
         }
 
+        @NonNull
         public Date getEnd() {
-            return end;
+            return new Date(end.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
         }
 
         public int getId() {
@@ -238,28 +233,40 @@ public class Lecture_Schedule implements Serializable {
             return isImport;
         }
 
-        public void setDocent(String docent) {
+        @NonNull
+        public Lecture setDocent(@NonNull String docent) {
             this.docent = docent;
+            return this;
         }
 
-        public void setLocation(String location) {
+        @NonNull
+        public Lecture setLocation(@NonNull String location) {
             this.location = location;
+            return this;
         }
 
-        public void setName(String name) {
+        @NonNull
+        public Lecture setName(@NonNull String name) {
             this.name = name;
+            return this;
         }
 
-        public void setStart(Date start) {
+        @NonNull
+        public Lecture setStart(@NonNull Date start) {
             this.start = start;
+            return this;
         }
 
-        public void setEnd(Date end) {
+        @NonNull
+        public Lecture setEnd(@NonNull Date end) {
             this.end = end;
+            return this;
         }
 
-        public void setColor(int color) {
+        @NonNull
+        public Lecture setColor(int color) {
             this.color = color;
+            return this;
         }
 
         @Override

@@ -18,8 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.studentalarm.import_.Lecture_Schedule;
 import com.example.studentalarm.R;
+import com.example.studentalarm.import_.Lecture_Schedule;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.DateFormat;
@@ -30,6 +30,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -234,21 +235,21 @@ public class EventDialogFragment extends DialogFragment {
             }
 
             if (create) {
-                schedule.addLecture(new Lecture_Schedule.Lecture(title.getText().toString(),
-                        docent.getText().toString(),
-                        location.getText().toString(),
-                        dBegin,
-                        dEnd,
-                        false, ((EventColor) spinner.getSelectedItem()).getColor()));
+                schedule.addLecture(new Lecture_Schedule.Lecture(false).setName(title.getText().toString())
+                        .setDocent(docent.getText().toString())
+                        .setLocation(location.getText().toString())
+                        .setStart(new Date(dBegin.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)))
+                        .setEnd(new Date(dEnd.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)))
+                        .setColor(((EventColor) spinner.getSelectedItem()).getColor()));
             } else {
                 List<Lecture_Schedule.Lecture> help = schedule.getAllLecture();
-                Lecture_Schedule.Lecture data = help.get(help.indexOf(this.data));
-                data.setName(title.getText().toString());
-                data.setDocent(docent.getText().toString());
-                data.setLocation(location.getText().toString());
-                data.setStart(dBegin);
-                data.setEnd(dEnd);
-                data.setColor(((EventColor) spinner.getSelectedItem()).getColor());
+                help.get(help.indexOf(this.data))
+                        .setName(title.getText().toString())
+                        .setDocent(docent.getText().toString())
+                        .setLocation(location.getText().toString())
+                        .setStart(new Date(dBegin.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)))
+                        .setEnd(new Date(dEnd.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)))
+                        .setColor(((EventColor) spinner.getSelectedItem()).getColor());
             }
             schedule.Save(getContext());
             this.dismiss();

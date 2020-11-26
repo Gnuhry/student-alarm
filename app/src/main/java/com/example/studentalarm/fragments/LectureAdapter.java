@@ -10,8 +10,6 @@ import android.widget.TextView;
 import com.example.studentalarm.import_.Lecture_Schedule;
 import com.example.studentalarm.R;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -69,20 +67,20 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
                 calendar.setTime(l.getStart());
                 if (positionToday == -1 && calendar.after(Calendar.getInstance()))
                     positionToday = this.lecture.size();
-                this.lecture.add(new Lecture_Schedule.Lecture(null, null, null, l.getStart(), null, false));
+                this.lecture.add(new Lecture_Schedule.Lecture(false).setStart(l.getStart()));
             }
             this.lecture.add(l);
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.monthly_event_fragment, viewGroup, false));
     }
 
     @Override
-    public void onBindViewHolder(@NotNull ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
         Lecture_Schedule.Lecture l = lecture.get(position);
         if (l.getName() != null) {
             viewHolder.TLEvent.setVisibility(View.VISIBLE);

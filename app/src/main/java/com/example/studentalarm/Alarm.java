@@ -25,9 +25,7 @@ public class Alarm {
      */
     public static void setAlarm(@NonNull Calendar time, @NonNull Context context) {
         if (Calendar.getInstance().before(time)) {
-            AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class), 0);
-            alarmMgr.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), alarmIntent);
+            ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class), 0));
             PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_TIME, time.getTimeInMillis()).apply();
             Toast.makeText(context, R.string.alarm_is_set, Toast.LENGTH_SHORT).show();
             Log.d("ALARM", "Set alarm to " + time.getTimeInMillis());
