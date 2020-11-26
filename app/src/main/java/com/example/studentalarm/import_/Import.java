@@ -86,8 +86,9 @@ public class Import {
     public static class ImportFunction {
         public static final int NONE = 0;
         public static final int ICS = 1;
+        public static final int DHBWMa = 2;
         @NonNull
-        public static final List<String> imports = Arrays.asList("None", "ICS");
+        public static final List<String> imports = Arrays.asList("None", "ICS","DHBWMa");
     }
 
 }

@@ -86,4 +86,6 @@
     <string name="ok">Ok</string>
     <string name="number">Zahl</string>
     <string name="no_connection">Keine Verbindung</string>
+    <string name="DHBWMa">DHBW Mannheim</string>
+
 </resources>

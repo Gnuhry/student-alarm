@@ -44,6 +44,7 @@
     <string name="normal_events">Normal events</string>
     <string name="import_events">Import events</string>
     <string name="which_events_do_you_want_to_delete">Which events do you want to delete?</string>
+    <string name="DHBWMa">DHBW Mannheim</string>
 
     <!--Alarm-->
     <string name="next_alarm_in">Next alarm in</string>
