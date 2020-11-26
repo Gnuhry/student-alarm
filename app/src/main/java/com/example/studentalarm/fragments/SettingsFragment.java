@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.studentalarm.AlarmManager;
@@ -118,6 +119,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         import_.setSummaryProvider(preference -> {
             SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
             int mode = preferences.getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE);
+            Log.d("set-frag-array","int: "+mode+" Array: "+Import.ImportFunction.imports);
             StringBuilder sb = new StringBuilder(Import.ImportFunction.imports.get(mode));
             if (mode == Import.ImportFunction.ICS)
                 sb.append(" - ").append(preferences.getString(PreferenceKeys.LINK, null));

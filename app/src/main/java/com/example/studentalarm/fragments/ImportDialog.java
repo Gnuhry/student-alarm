@@ -8,15 +8,22 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.URLUtil;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.studentalarm.dhbw_mannheim.Course;
+import com.example.studentalarm.dhbw_mannheim.CourseCategory;
+import com.example.studentalarm.dhbw_mannheim.CourseImport;
 import com.example.studentalarm.import_.ICS;
 import com.example.studentalarm.import_.Import;
 import com.example.studentalarm.PreferenceKeys;
@@ -24,6 +31,8 @@ import com.example.studentalarm.R;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
+
+import static com.example.studentalarm.import_.Import.ImportFunction.DHBWMa;
 
 
 public class ImportDialog extends Dialog {
@@ -44,6 +53,32 @@ public class ImportDialog extends Dialog {
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
+        new Thread(() -> {
+            ArrayAdapter<CourseCategory> categoryadapter = new ArrayAdapter<>(getContext(),
+                    android.R.layout.simple_spinner_item, new CourseImport().getDHBWCourses());
+            categoryadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner)findViewById(R.id.spDHBWMaCourseCategory)).setAdapter(categoryadapter));
+            ((Spinner)findViewById(R.id.spDHBWMaCourseCategory)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {//Funktioniert aus nicht erkennbaren gründen nicht wenn direkt View by Id verwendet wird
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    Log.d("Spinner Course", "adview:" + adapterView.getItemAtPosition(1) + " view :" + view + " i " + i + " l " + l+"  Coursecat: "+adapterView.getItemAtPosition(i));
+                    ArrayAdapter<Course> courseadapter = new ArrayAdapter<>(getContext(),
+                            android.R.layout.simple_spinner_item, ((CourseCategory)adapterView.getItemAtPosition(i)).getDHBWCourses());
+                    courseadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    for (Course course:((CourseCategory)adapterView.getItemAtPosition(i)).getDHBWCourses()){
+                        Log.d("Spinnerelement Course","Kurs:: "+ course);
+                    }
+                    findViewById(R.id.spDHBWMaCourse).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourse)).setAdapter(courseadapter));
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+
+        }).start();
+
         switch (preferences.getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE)) {
             case Import.ImportFunction.NONE:
                 ((RadioButton) findViewById(R.id.rBtnNone)).setChecked(true);
@@ -52,8 +87,13 @@ public class ImportDialog extends Dialog {
                 ((RadioButton) findViewById(R.id.rBtnICS)).setChecked(true);
                 findViewById(R.id.LLLink).setVisibility(View.VISIBLE);
                 break;
+            case DHBWMa:
+                ((RadioButton) findViewById(R.id.rBtnDHBWMa)).setChecked(true);
+                findViewById(R.id.LLDHBWMaCourse).setVisibility(View.VISIBLE);
+                break;
         }
         ((RadioButton) findViewById(R.id.rBtnICS)).setOnCheckedChangeListener((compoundButton, b) -> findViewById(R.id.LLLink).setVisibility(b ? View.VISIBLE : View.GONE));
+        ((RadioButton) findViewById(R.id.rBtnDHBWMa)).setOnCheckedChangeListener((compoundButton, b) -> findViewById(R.id.LLDHBWMaCourse).setVisibility(b ? View.VISIBLE : View.GONE));
         String s_import = preferences.getString(PreferenceKeys.LINK, null);
         if (s_import != null) {
             lastValidString = s_import;
@@ -88,7 +128,10 @@ public class ImportDialog extends Dialog {
             } else if (((RadioButton) findViewById(R.id.rBtnNone)).isChecked()) {
                 preferences.edit().putInt(PreferenceKeys.MODE, Import.ImportFunction.NONE).apply();
                 this.cancel();
-            }
+            }else if (((RadioButton) findViewById(R.id.rBtnDHBWMa)).isChecked()) {
+                preferences.edit().putInt("Mode", DHBWMa).apply();
+                preferences.edit().putString("Link", "http://vorlesungsplan.dhbw-mannheim.de/ical.php?uid="+((Course)((Spinner) findViewById(R.id.spDHBWMaCourse)).getSelectedItem()).getCourseID()).apply();
+                this.cancel();}
         });
 
         findViewById(R.id.btnCancel).setOnClickListener(view1 -> this.cancel());
