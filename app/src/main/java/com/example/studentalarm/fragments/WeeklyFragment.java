@@ -15,8 +15,6 @@ import com.example.studentalarm.R;
 import com.example.studentalarm.import_.Import;
 import com.example.studentalarm.import_.Lecture_Schedule;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -126,7 +124,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
                 new EventDialogFragment(data, Lecture_Schedule.Load(getContext()), lecture).show(getActivity().getSupportFragmentManager(), "dialog");
         }
 
-        @NotNull
+        @NonNull
         @Override
         public WeekViewEntity onCreateEntity(@NonNull Lecture_Schedule.Lecture item) {
 

@@ -14,6 +14,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
+import biweekly.component.VEvent;
 
 public class Import {
 
@@ -72,9 +73,9 @@ public class Import {
     private static Lecture_Schedule ICSImport(@NonNull Context context, @NonNull Lecture_Schedule lecture_schedule) {
         String link = PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.LINK, null);
         if (link == null) return lecture_schedule;
-        ICS ics = new ICS(link, true);
-        if (ics.isSuccessful()) {
-            lecture_schedule.ImportICS(ics);
+        List<VEvent> list = ICS.loadSynchronous(link);
+        if (list != null) {
+            lecture_schedule.ImportICS(list);
             lecture_schedule.Save(context);
         }
         return lecture_schedule;

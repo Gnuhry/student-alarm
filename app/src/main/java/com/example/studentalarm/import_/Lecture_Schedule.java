@@ -3,8 +3,6 @@ package com.example.studentalarm.import_;
 import android.content.Context;
 import android.graphics.Color;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,6 +18,7 @@ import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import biweekly.component.VEvent;
 
 public class Lecture_Schedule implements Serializable {
     @NonNull
@@ -36,12 +35,12 @@ public class Lecture_Schedule implements Serializable {
     /**
      * import ics file in lecture schedule
      *
-     * @param calendar the ics file object
+     * @param list list of VEvents
      */
-    public void ImportICS(@NotNull ICS calendar) {
+    public void ImportICS(@NonNull List<VEvent> list) {
         import_lecture.clear();
-        for (ICS.vEvent ev : calendar.getVEventList())
-            import_lecture.add(new Lecture(ev.getSUMMARY(), null, ev.getLOCATION(), ev.getDTStart(), ev.getDTend(), true));
+        for (VEvent ev : list)
+            import_lecture.add(new Lecture(ev.getSummary().getValue(), null, ev.getLocation().getValue(), ev.getDateStart().getValue(), ev.getDateEnd().getValue(), true));
     }
 
     /**
@@ -97,7 +96,7 @@ public class Lecture_Schedule implements Serializable {
      * @return first lecture of the day
      */
     @Nullable
-    public Lecture getFirstLectureAtDate(@NotNull Date date) {
+    public Lecture getFirstLectureAtDate(@NonNull Date date) {
         Lecture erg = null;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.GERMAN);
         for (Lecture l : getAllLecture())
@@ -127,6 +126,15 @@ public class Lecture_Schedule implements Serializable {
                     erg = l;
             }
         return erg;
+    }
+
+    /**
+     * remove all import lecture events from save
+     */
+    public static void removeAllEventsLecture(@NonNull Context context) {
+        Lecture_Schedule l = Lecture_Schedule.Load(context);
+        l.deleteAllEvents();
+        l.Save(context);
     }
 
 

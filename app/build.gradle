@@ -46,5 +46,5 @@ dependencies {
     implementation 'com.github.thellmund.Android-Week-View:core:5.2.1'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'com.github.bumptech.glide:glide:4.9.0'
-
+    implementation 'net.sf.biweekly:biweekly:0.6.5'
 }

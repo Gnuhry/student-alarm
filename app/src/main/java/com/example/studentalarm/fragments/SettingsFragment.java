@@ -204,7 +204,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         String lan = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(PreferenceKeys.LANGUAGE, PreferenceKeys.DEFAULT_LANGUAGE), lan2 = PreferenceKeys.Reset(getContext());
                         if (!lan2.equals(lan))
                             ChangeLanguage(lan2, getContext(), getActivity());
-                        removeAllEventsLecture();
+                        Lecture_Schedule.removeAllEventsLecture(getContext());
                         Reload();
                     })
                     .setNegativeButton(R.string.no, null)
@@ -235,16 +235,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Toolbar toolbar = activity.findViewById(R.id.my_toolbar);
         toolbar.getMenu().clear();
         toolbar.inflateMenu(R.menu.lecture);
-    }
-
-    /**
-     * remove all import lecture events
-     */
-    private void removeAllEventsLecture() {
-        if (getContext() == null) return;
-        Lecture_Schedule l = Lecture_Schedule.Load(getContext());
-        l.deleteAllEvents();
-        l.Save(getContext());
     }
 
     /**

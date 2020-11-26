@@ -17,10 +17,11 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.studentalarm.import_.ICS;
-import com.example.studentalarm.import_.Import;
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
+import com.example.studentalarm.import_.ICS;
+import com.example.studentalarm.import_.Import;
+import com.example.studentalarm.import_.Lecture_Schedule;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
@@ -82,6 +83,7 @@ public class ImportDialog extends Dialog {
                 if (isValid) {
                     preferences.edit().putInt(PreferenceKeys.MODE, Import.ImportFunction.ICS).apply();
                     preferences.edit().putString(PreferenceKeys.LINK, ((EditText) findViewById(R.id.edTLink)).getText().toString()).apply();
+                    Lecture_Schedule.removeAllEventsLecture(getContext());
                     this.cancel();
                 } else
                     Toast.makeText(getContext(), R.string.missing_checked_valid_url, Toast.LENGTH_SHORT).show();
@@ -108,7 +110,7 @@ public class ImportDialog extends Dialog {
             ImageView imageView = findViewById(R.id.imgStatus);
             Glide.with(getContext()).load(R.drawable.sandglass).into(imageView);
             new Thread(() -> {
-                isValid = new ICS(text, true).isSuccessful();
+                isValid = ICS.loadSynchronous(text) != null;
                 findViewById(R.id.btnCheckLink).post(() -> findViewById(R.id.btnCheckLink).setEnabled(true));
                 ((ImageView) findViewById(R.id.imgStatus)).setImageResource(isValid ? R.drawable.right : R.drawable.cross);
                 if (isValid) lastValidString = text;

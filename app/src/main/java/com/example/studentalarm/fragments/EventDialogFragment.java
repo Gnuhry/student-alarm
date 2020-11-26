@@ -18,8 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.studentalarm.import_.Lecture_Schedule;
 import com.example.studentalarm.R;
+import com.example.studentalarm.import_.Lecture_Schedule;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.DateFormat;
@@ -30,6 +30,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -246,8 +247,8 @@ public class EventDialogFragment extends DialogFragment {
                 data.setName(title.getText().toString());
                 data.setDocent(docent.getText().toString());
                 data.setLocation(location.getText().toString());
-                data.setStart(dBegin);
-                data.setEnd(dEnd);
+                data.setStart(AddTimeZone(dBegin));
+                data.setEnd(AddTimeZone(dEnd));
                 data.setColor(((EventColor) spinner.getSelectedItem()).getColor());
             }
             schedule.Save(getContext());
@@ -275,6 +276,20 @@ public class EventDialogFragment extends DialogFragment {
                 CBegin.setVisibility(View.GONE);
             }
         });
+    }
+
+    /**
+     * Add phone timeZone to date
+     *
+     * @param date date to add the timezone
+     * @return date
+     */
+    @NonNull
+    private Date AddTimeZone(@NonNull Date date) {
+        Calendar calendar = Calendar.getInstance(Locale.getDefault());
+        calendar.setTime(date);
+        calendar.setTimeZone(TimeZone.getDefault());
+        return calendar.getTime();
     }
 
     /**
