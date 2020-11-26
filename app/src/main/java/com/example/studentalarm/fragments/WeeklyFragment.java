@@ -1,12 +1,9 @@
 package com.example.studentalarm.fragments;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEntity;
@@ -14,8 +11,6 @@ import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
 import com.example.studentalarm.import_.Import;
 import com.example.studentalarm.import_.Lecture_Schedule;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -96,16 +91,12 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
     public void RefreshLectureSchedule() {
         if (getContext() != null)
             if (PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) != Import.ImportFunction.NONE)
-                if (getActivity() != null) {
-                    ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-                    if (cm.getActiveNetworkInfo() == null || !cm.getActiveNetworkInfo().isConnected())
-                        Toast.makeText(getContext(), R.string.no_connection, Toast.LENGTH_SHORT).show();
-                    else
+                if (getActivity() != null)
+                    if (Import.CheckConnection(getActivity(), getContext()))
                         new Thread(() -> {
-                            Import.ImportLecture(this.getContext()).Save(getContext());
+                            Import.ImportLecture(this.getContext());
                             LoadData();
                         }).start();
-                }
         LoadData();
     }
 
@@ -126,10 +117,9 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
                 new EventDialogFragment(data, Lecture_Schedule.Load(getContext()), lecture).show(getActivity().getSupportFragmentManager(), "dialog");
         }
 
-        @NotNull
+        @NonNull
         @Override
         public WeekViewEntity onCreateEntity(@NonNull Lecture_Schedule.Lecture item) {
-
             WeekViewEntity.Style.Builder builder = new WeekViewEntity.Style.Builder();
             builder.setBackgroundColor(item.getColor());
 

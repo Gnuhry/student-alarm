@@ -6,7 +6,8 @@ import android.content.Intent;
 
 import com.example.studentalarm.AlarmManager;
 import com.example.studentalarm.import_.Import;
-import com.example.studentalarm.import_.Lecture_Schedule;
+
+import androidx.annotation.NonNull;
 
 import androidx.annotation.NonNull;
 
@@ -14,8 +15,7 @@ public class ImportReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(@NonNull Context context, Intent intent) {
-        Lecture_Schedule lecture_schedule = Import.ImportLecture(context);
-        lecture_schedule.Save(context);
+        Import.ImportLecture(context);
         AlarmManager.UpdateNextAlarmAfterImport(context);
     }
 }
