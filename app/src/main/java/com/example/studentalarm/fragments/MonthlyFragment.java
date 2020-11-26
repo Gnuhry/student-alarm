@@ -1,12 +1,9 @@
 package com.example.studentalarm.fragments;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
@@ -14,6 +11,7 @@ import com.example.studentalarm.import_.Import;
 import com.example.studentalarm.import_.Lecture_Schedule;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
@@ -76,20 +74,16 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
     public void RefreshLectureSchedule() {
         if (getContext() != null)
             if (PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) != Import.ImportFunction.NONE)
-                if (getActivity() != null) {
-                    ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-                    if (cm.getActiveNetworkInfo() == null || !cm.getActiveNetworkInfo().isConnected())
-                        Toast.makeText(getContext(), R.string.no_connection, Toast.LENGTH_SHORT).show();
-                    else
+                if (getActivity() != null)
+                    if (Import.CheckConnection(getActivity(), getContext()))
                         new Thread(() -> {
-                            Import.ImportLecture(this.getContext()).Save(getContext());
+                            Import.ImportLecture(this.getContext());
                             if (getView() != null)
                                 getView().findViewById(R.id.rVEvents).post(() -> LoadData(getView().findViewById(R.id.rVEvents).getRootView()));
                         }).start();
-                }
 
         if (getView() != null)
-            LoadData(getView().findViewById(R.id.rVEvents).getRootView());
+            LoadData(getView().findViewById(R.id.rVEvents).getRootView(), false);
     }
 }
 

@@ -204,7 +204,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     .setMessage(R.string.do_you_want_to_reset_this_application)
                     .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
                         String lan = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(PreferenceKeys.LANGUAGE, PreferenceKeys.DEFAULT_LANGUAGE), lan2 = PreferenceKeys.Reset(getContext());
-                        if (!lan2.equals(lan))
+                        if (!lan2.equals(lan) && getActivity() != null)
                             ChangeLanguage(lan2, getContext(), getActivity());
                         removeAllEventsLecture();
                         Reload();
@@ -245,7 +245,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private void removeAllEventsLecture() {
         if (getContext() == null) return;
         Lecture_Schedule l = Lecture_Schedule.Load(getContext());
-        l.deleteAllEvents();
+        l.clearEvents();
         l.Save(getContext());
     }
 

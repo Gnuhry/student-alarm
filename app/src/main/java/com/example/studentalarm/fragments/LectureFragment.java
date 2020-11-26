@@ -11,7 +11,6 @@ import com.google.android.material.tabs.TabLayout;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 
 public class LectureFragment extends Fragment {
@@ -61,11 +60,13 @@ public class LectureFragment extends Fragment {
      * @param fragment the fragment to open
      */
     public void openFragment(@NonNull Fragment fragment) {
-        if (getActivity() == null) return;
-        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fLLecture, fragment, TAG);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        if (getActivity() != null)
+            getActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fLLecture, fragment, TAG)
+                    .addToBackStack(null)
+                    .commit();
     }
 
     /**
