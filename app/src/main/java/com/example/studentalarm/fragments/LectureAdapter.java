@@ -25,6 +25,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
     @NonNull
     private final List<Lecture_Schedule.Lecture> lecture;
     private int positionToday = -1;
+    @NonNull
     public static final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
     private static SimpleDateFormat day_of_week_name;
     private static DateFormat day, time;

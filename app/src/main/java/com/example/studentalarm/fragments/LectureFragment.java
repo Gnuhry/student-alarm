@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 
 public class LectureFragment extends Fragment {
 
+    @NonNull
     private final static String TAG = "LECTURE_FRAGMENT";
 
     @Override

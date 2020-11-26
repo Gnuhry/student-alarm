@@ -196,7 +196,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         reset.setOnPreferenceClickListener(preference -> {
-            if (getContext() == null) return false;
+            if (getContext() == null || getActivity() == null) return false;
             new MaterialAlertDialogBuilder(getContext())
                     .setTitle(R.string.reset)
                     .setMessage(R.string.do_you_want_to_reset_this_application)
