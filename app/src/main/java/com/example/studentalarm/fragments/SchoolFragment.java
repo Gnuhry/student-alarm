@@ -15,6 +15,7 @@ import com.example.studentalarm.AlarmManager;
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
@@ -29,7 +30,7 @@ public class SchoolFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_school, container, false);
         view.findViewById(R.id.txVBefore).setOnClickListener(v -> NumberDialog(getContext(), getString(R.string.before), PreferenceKeys.BEFORE));
