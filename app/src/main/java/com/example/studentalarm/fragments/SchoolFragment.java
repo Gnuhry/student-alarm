@@ -15,6 +15,7 @@ import com.example.studentalarm.AlarmManager;
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
@@ -29,9 +30,10 @@ public class SchoolFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_school, container, false);
+        if (getContext() == null) return view;
         view.findViewById(R.id.txVBefore).setOnClickListener(v -> NumberDialog(getContext(), getString(R.string.before), PreferenceKeys.BEFORE));
         view.findViewById(R.id.txtWay).setOnClickListener(v -> NumberDialog(getContext(), getString(R.string.way), PreferenceKeys.WAY));
         view.findViewById(R.id.txtAfter).setOnClickListener(v -> NumberDialog(getContext(), getString(R.string.after), PreferenceKeys.AFTER));
@@ -45,7 +47,7 @@ public class SchoolFragment extends Fragment {
      * @param title   title of the number dialog
      * @param key     key of preference
      */
-    private void NumberDialog(Context context, String title, String key) {
+    private void NumberDialog(@NonNull Context context, String title, String key) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(title);

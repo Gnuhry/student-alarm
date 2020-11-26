@@ -18,7 +18,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 public class Lecture_Schedule implements Serializable {
+    @NonNull
     private final List<Lecture> lecture, import_lecture;
 
     /**
@@ -45,6 +49,7 @@ public class Lecture_Schedule implements Serializable {
      *
      * @return all Lectures
      */
+    @NonNull
     public List<Lecture> getAllLecture() {
         List<Lecture> all = new ArrayList<>();
         all.addAll(lecture);
@@ -91,10 +96,10 @@ public class Lecture_Schedule implements Serializable {
      * @param date day, where the lecture take place
      * @return first lecture of the day
      */
-    public Lecture getFirstLectureAtDate(Date date) {
+    @Nullable
+    public Lecture getFirstLectureAtDate(@NotNull Date date) {
         Lecture erg = null;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.GERMAN);
-        if (date == null) return null;
         for (Lecture l : getAllLecture())
             if (l.start != null && sdf.format(date).compareTo(sdf.format(l.start)) == 0) {
                 if (erg == null)
@@ -111,9 +116,9 @@ public class Lecture_Schedule implements Serializable {
      * @param date date before the next lecture
      * @return next lecture
      */
-    public Lecture getNextLecture(Date date) {
+    @Nullable
+    public Lecture getNextLecture(@NonNull Date date) {
         Lecture erg = null;
-        if (date == null) return null;
         for (Lecture l : getAllLecture())
             if (l.start != null && l.start.after(date)) {
                 if (erg == null)
@@ -132,7 +137,7 @@ public class Lecture_Schedule implements Serializable {
      *
      * @param context context of the application
      */
-    public void Save(Context context) {
+    public void Save(@NonNull Context context) {
         FileOutputStream fos;
         try {
             fos = context.openFileOutput("LECTURE", Context.MODE_PRIVATE);
@@ -150,7 +155,8 @@ public class Lecture_Schedule implements Serializable {
      *
      * @param context context of the application
      */
-    public static Lecture_Schedule Load(Context context) {
+    @NonNull
+    public static Lecture_Schedule Load(@NonNull Context context) {
         try {
             FileInputStream fis = context.openFileInput("LECTURE");
             ObjectInputStream ois = new ObjectInputStream(fis);
@@ -257,7 +263,7 @@ public class Lecture_Schedule implements Serializable {
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(@Nullable Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Lecture lecture = (Lecture) o;
@@ -265,7 +271,7 @@ public class Lecture_Schedule implements Serializable {
         }
 
         @Override
-        public int compareTo(Lecture lecture) {
+        public int compareTo(@NonNull Lecture lecture) {
             return start.compareTo(lecture.start);
         }
     }

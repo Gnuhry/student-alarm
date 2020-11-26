@@ -22,12 +22,14 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 public class WeeklyFragment extends Fragment implements ReloadLecture {
     private WeekView.SimpleAdapter<Lecture_Schedule.Lecture> adapter;
+    @NonNull
     private final ReloadLecture lecture;
 
     public WeeklyFragment() {
@@ -40,7 +42,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_weekly, container, false);
         if (getContext() == null || getActivity() == null) return view;
@@ -59,7 +61,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
      *
      * @param weekView weekView to control
      */
-    private void InitWeekView(WeekView weekView) {
+    private void InitWeekView(@NonNull WeekView weekView) {
         SimpleDateFormat format = new SimpleDateFormat("E", getResources().getConfiguration().locale);
         DateFormat dateformat = DateFormat.getDateInstance(DateFormat.SHORT, getResources().getConfiguration().locale);
         adapter = new Adapter();
@@ -76,7 +78,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
      * @param weekView weekView to control
      * @param toolbar  the appbar
      */
-    private void InitAppBar(WeekView weekView, Toolbar toolbar) {
+    private void InitAppBar(@NonNull WeekView weekView, @NonNull Toolbar toolbar) {
         toolbar.getMenu().getItem(0).setOnMenuItemClickListener(menuItem -> {
             weekView.scrollToDate(Calendar.getInstance());
             return true;
@@ -126,7 +128,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
 
         @NotNull
         @Override
-        public WeekViewEntity onCreateEntity(Lecture_Schedule.Lecture item) {
+        public WeekViewEntity onCreateEntity(@NonNull Lecture_Schedule.Lecture item) {
 
             WeekViewEntity.Style.Builder builder = new WeekViewEntity.Style.Builder();
             builder.setBackgroundColor(item.getColor());

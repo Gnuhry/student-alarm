@@ -46,7 +46,7 @@
             android:title="@string/import_time" />
         <Preference
             android:key="IMPORT_DELETE_ALL"
-            app:title="@string/delete_all_import_events" />
+            app:title="@string/delete_all_events" />
     </PreferenceCategory>
     <PreferenceCategory android:title="General">
 
