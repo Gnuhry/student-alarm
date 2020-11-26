@@ -1,12 +1,9 @@
 package com.example.studentalarm.fragments;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEntity;
@@ -15,19 +12,19 @@ import com.example.studentalarm.R;
 import com.example.studentalarm.import_.Import;
 import com.example.studentalarm.import_.Lecture_Schedule;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 public class WeeklyFragment extends Fragment implements ReloadLecture {
     private WeekView.SimpleAdapter<Lecture_Schedule.Lecture> adapter;
+    @NonNull
     private final ReloadLecture lecture;
 
     public WeeklyFragment() {
@@ -40,7 +37,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_weekly, container, false);
         if (getContext() == null || getActivity() == null) return view;
@@ -59,7 +56,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
      *
      * @param weekView weekView to control
      */
-    private void InitWeekView(WeekView weekView) {
+    private void InitWeekView(@NonNull WeekView weekView) {
         SimpleDateFormat format = new SimpleDateFormat("E", getResources().getConfiguration().locale);
         DateFormat dateformat = DateFormat.getDateInstance(DateFormat.SHORT, getResources().getConfiguration().locale);
         adapter = new Adapter();
@@ -76,7 +73,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
      * @param weekView weekView to control
      * @param toolbar  the appbar
      */
-    private void InitAppBar(WeekView weekView, Toolbar toolbar) {
+    private void InitAppBar(@NonNull WeekView weekView, @NonNull Toolbar toolbar) {
         toolbar.getMenu().getItem(0).setOnMenuItemClickListener(menuItem -> {
             weekView.scrollToDate(Calendar.getInstance());
             return true;
@@ -94,16 +91,12 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
     public void RefreshLectureSchedule() {
         if (getContext() != null)
             if (PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) != Import.ImportFunction.NONE)
-                if (getActivity() != null) {
-                    ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-                    if (cm.getActiveNetworkInfo() == null || !cm.getActiveNetworkInfo().isConnected())
-                        Toast.makeText(getContext(), R.string.no_connection, Toast.LENGTH_SHORT).show();
-                    else
+                if (getActivity() != null)
+                    if (Import.CheckConnection(getActivity(), getContext()))
                         new Thread(() -> {
-                            Import.ImportLecture(this.getContext()).Save(getContext());
+                            Import.ImportLecture(this.getContext());
                             LoadData();
                         }).start();
-                }
         LoadData();
     }
 
@@ -124,10 +117,9 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
                 new EventDialogFragment(data, Lecture_Schedule.Load(getContext()), lecture).show(getActivity().getSupportFragmentManager(), "dialog");
         }
 
-        @NotNull
+        @NonNull
         @Override
-        public WeekViewEntity onCreateEntity(Lecture_Schedule.Lecture item) {
-
+        public WeekViewEntity onCreateEntity(@NonNull Lecture_Schedule.Lecture item) {
             WeekViewEntity.Style.Builder builder = new WeekViewEntity.Style.Builder();
             builder.setBackgroundColor(item.getColor());
 

@@ -6,6 +6,7 @@ import android.util.Log;
 
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
@@ -36,7 +37,8 @@ public class PreferenceKeys {
      * @param context context of application
      * @return language
      */
-    public static String Reset(Context context) {
+    @NonNull
+    public static String Reset(@NonNull Context context) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().clear().apply();
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         return Default(context);
@@ -48,7 +50,8 @@ public class PreferenceKeys {
      * @param context context of application
      * @return language
      */
-    public static String Default(Context context) {
+    @NonNull
+    public static String Default(@NonNull Context context) {
         String erg = DEFAULT_LANGUAGE(context);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (preferences.getString(PreferenceKeys.RINGTONE, null) == null)
@@ -68,7 +71,8 @@ public class PreferenceKeys {
      * @param context context of application
      * @return default language
      */
-    public static String DEFAULT_LANGUAGE(Context context) {
+    @NonNull
+    public static String DEFAULT_LANGUAGE(@NonNull Context context) {
         String s = Locale.getDefault().getLanguage();
         Log.d("LANGUAGE", s);
         for (String language : context.getResources().getStringArray(R.array.language)) {

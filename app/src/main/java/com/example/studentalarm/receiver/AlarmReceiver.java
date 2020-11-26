@@ -15,6 +15,7 @@ import android.util.Log;
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
@@ -31,7 +32,7 @@ public class AlarmReceiver extends BroadcastReceiver {
      * triggered if it's time to play an alarm
      */
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(@NonNull Context context, Intent intent) {
         Log.d("Alarm Bell", "Alarm just fired");
         mp = GetMediaPlayer(context);
         if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
@@ -46,7 +47,7 @@ public class AlarmReceiver extends BroadcastReceiver {
      *
      * @param context context of application
      */
-    private void setNotification(Context context) {
+    private void setNotification(@NonNull Context context) {
         Intent snoozeIntent = new Intent(context, SnoozeReceiver.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             snoozeIntent.putExtra(EXTRA_NOTIFICATION_ID, 0);
@@ -72,7 +73,7 @@ public class AlarmReceiver extends BroadcastReceiver {
      *
      * @param context context of the application
      */
-    private void createNotificationChannel(Context context) {
+    private void createNotificationChannel(@NonNull Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = context.getString(R.string.alarm);
             String description = context.getString(R.string.alarm);
@@ -90,7 +91,7 @@ public class AlarmReceiver extends BroadcastReceiver {
      * @param context context of the application
      * @return ringtone to play
      */
-    private MediaPlayer GetMediaPlayer(Context context) {
+    private MediaPlayer GetMediaPlayer(@NonNull Context context) {
         switch (PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.RINGTONE, PreferenceKeys.DEFAULT_RINGTONE)) {
             case "didudeldudu":
                 return MediaPlayer.create(context.getApplicationContext(), R.raw.didudeldudu);

@@ -1,18 +1,17 @@
 package com.example.studentalarm.fragments;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
 import com.example.studentalarm.import_.Import;
 import com.example.studentalarm.import_.Lecture_Schedule;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
@@ -21,10 +20,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MonthlyFragment extends Fragment implements ReloadLecture {
 
+    @Nullable
     private static LectureAdapter adapter;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_montly, container, false);
         if (getContext() == null || getActivity() == null) return view;
@@ -41,9 +41,10 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
      * @param toolbar the appbar
      * @param rv      the recyclerview to manage
      */
-    private void InitAppBar(Toolbar toolbar, RecyclerView rv) {
+    private void InitAppBar(@NonNull Toolbar toolbar, @NonNull RecyclerView rv) {
         toolbar.getMenu().getItem(0).setOnMenuItemClickListener(menuItem -> {
-            rv.scrollToPosition(adapter.getPositionToday());
+            if (adapter != null)
+                rv.scrollToPosition(adapter.getPositionToday());
             return true;
         });
         toolbar.getMenu().getItem(1).setOnMenuItemClickListener(menuItem -> {
@@ -57,14 +58,23 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
      *
      * @param view view to display
      */
-    private void LoadData(View view) {
+    private void LoadData(@NonNull View view, boolean thread) {
         if (getContext() == null) return;
         RecyclerView rv = view.findViewById(R.id.rVEvents);
         adapter = new LectureAdapter(Lecture_Schedule.Load(getContext()), getContext(), getActivity(), this);
-        rv.setHasFixedSize(true);
-        rv.setLayoutManager(new LinearLayoutManager(getContext()));
-        rv.setAdapter(adapter);
-        rv.scrollToPosition(adapter.getPositionToday());
+        if (thread)
+            rv.post(() -> {
+                rv.setHasFixedSize(true);
+                rv.setLayoutManager(new LinearLayoutManager(getContext()));
+                rv.setAdapter(adapter);
+                rv.scrollToPosition(adapter.getPositionToday());
+            });
+        else {
+            rv.setHasFixedSize(true);
+            rv.setLayoutManager(new LinearLayoutManager(getContext()));
+            rv.setAdapter(adapter);
+            rv.scrollToPosition(adapter.getPositionToday());
+        }
     }
 
     /**
@@ -74,20 +84,16 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
     public void RefreshLectureSchedule() {
         if (getContext() != null)
             if (PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) != Import.ImportFunction.NONE)
-                if (getActivity() != null) {
-                    ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-                    if (cm.getActiveNetworkInfo() == null || !cm.getActiveNetworkInfo().isConnected())
-                        Toast.makeText(getContext(), R.string.no_connection, Toast.LENGTH_SHORT).show();
-                    else
+                if (getActivity() != null)
+                    if (Import.CheckConnection(getActivity(), getContext()))
                         new Thread(() -> {
-                            Import.ImportLecture(this.getContext()).Save(getContext());
+                            Import.ImportLecture(this.getContext());
                             if (getView() != null)
-                                LoadData(getView().findViewById(R.id.rVEvents).getRootView());
+                                LoadData(getView().findViewById(R.id.rVEvents).getRootView(), true);
                         }).start();
-                }
 
         if (getView() != null)
-            LoadData(getView().findViewById(R.id.rVEvents).getRootView());
+            LoadData(getView().findViewById(R.id.rVEvents).getRootView(), false);
     }
 }
 

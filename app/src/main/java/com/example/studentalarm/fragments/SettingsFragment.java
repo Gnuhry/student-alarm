@@ -23,6 +23,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.fragment.NavHostFragment;
@@ -68,7 +69,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 AlarmManager.SetNextAlarm(getContext());
             } else {
                 getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.ALARM_ON, (Boolean) newValue).apply();
-                AlarmManager.CancelNextAlarm(getContext());
+                if (getContext() != null)
+                    AlarmManager.CancelNextAlarm(getContext());
             }
             boolean bool3 = (Boolean) newValue;
             alarm_phone.setEnabled(bool3);
@@ -170,7 +172,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         language.setOnPreferenceChangeListener((preference, newValue) -> {
-            if (getContext() == null) return false;
+            if (getContext() == null || getActivity() == null) return false;
             ChangeLanguage((String) newValue, getContext(), getActivity());
             Reload();
             return true;
@@ -200,7 +202,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     .setMessage(R.string.do_you_want_to_reset_this_application)
                     .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
                         String lan = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(PreferenceKeys.LANGUAGE, PreferenceKeys.DEFAULT_LANGUAGE), lan2 = PreferenceKeys.Reset(getContext());
-                        if (!lan2.equals(lan))
+                        if (!lan2.equals(lan) && getActivity() != null)
                             ChangeLanguage(lan2, getContext(), getActivity());
                         removeAllEventsLecture();
                         Reload();
@@ -217,7 +219,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      *
      * @param newValue new language code
      */
-    public void ChangeLanguage(String newValue, Context context, Activity activity) {
+    public void ChangeLanguage(@NonNull String newValue, @NonNull Context context, @NonNull Activity activity) {
         Resources resources = context.getResources();
         DisplayMetrics dm = resources.getDisplayMetrics();
         Configuration config = resources.getConfiguration();
@@ -241,7 +243,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private void removeAllEventsLecture() {
         if (getContext() == null) return;
         Lecture_Schedule l = Lecture_Schedule.Load(getContext());
-        l.deleteAllEvents();
+        l.clearEvents();
         l.Save(getContext());
     }
 

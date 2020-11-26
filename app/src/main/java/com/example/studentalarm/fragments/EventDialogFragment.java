@@ -18,8 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.studentalarm.import_.Lecture_Schedule;
 import com.example.studentalarm.R;
+import com.example.studentalarm.import_.Lecture_Schedule;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.DateFormat;
@@ -30,6 +30,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -50,6 +51,7 @@ public class EventDialogFragment extends DialogFragment {
     private DatePicker dPBegin, dPEnd;
     private TextView txVBegin, txVEnd, add, cancel, delete;
     private Spinner spinner;
+    @NonNull
     private final List<EventColor> colors;
 
     public EventDialogFragment(Lecture_Schedule.Lecture data, Lecture_Schedule schedule, ReloadLecture lecture) {
@@ -65,7 +67,7 @@ public class EventDialogFragment extends DialogFragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.event_dialog_fragment, container, false);
         title = view.findViewById(R.id.edTTitle);
@@ -233,21 +235,21 @@ public class EventDialogFragment extends DialogFragment {
             }
 
             if (create) {
-                schedule.addLecture(new Lecture_Schedule.Lecture(title.getText().toString(),
-                        docent.getText().toString(),
-                        location.getText().toString(),
-                        dBegin,
-                        dEnd,
-                        false, ((EventColor) spinner.getSelectedItem()).getColor()));
+                schedule.addLecture(new Lecture_Schedule.Lecture(false).setName(title.getText().toString())
+                        .setDocent(docent.getText().toString())
+                        .setLocation(location.getText().toString())
+                        .setStart(new Date(dBegin.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)))
+                        .setEnd(new Date(dEnd.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)))
+                        .setColor(((EventColor) spinner.getSelectedItem()).getColor()));
             } else {
                 List<Lecture_Schedule.Lecture> help = schedule.getAllLecture();
-                Lecture_Schedule.Lecture data = help.get(help.indexOf(this.data));
-                data.setName(title.getText().toString());
-                data.setDocent(docent.getText().toString());
-                data.setLocation(location.getText().toString());
-                data.setStart(dBegin);
-                data.setEnd(dEnd);
-                data.setColor(((EventColor) spinner.getSelectedItem()).getColor());
+                help.get(help.indexOf(this.data))
+                        .setName(title.getText().toString())
+                        .setDocent(docent.getText().toString())
+                        .setLocation(location.getText().toString())
+                        .setStart(new Date(dBegin.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)))
+                        .setEnd(new Date(dEnd.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)))
+                        .setColor(((EventColor) spinner.getSelectedItem()).getColor());
             }
             schedule.Save(getContext());
             this.dismiss();
@@ -313,8 +315,8 @@ public class EventDialogFragment extends DialogFragment {
      * @param date date to format
      * @return date as formatted date string
      */
-    private String formatDate(Date date) {
-        if (date == null) return null;
+    @NonNull
+    private String formatDate(@NonNull Date date) {
         SimpleDateFormat format = new SimpleDateFormat("E", getResources().getConfiguration().locale);
         DateFormat dateformat = DateFormat.getDateInstance(DateFormat.MEDIUM, getResources().getConfiguration().locale);
         return String.format("%s %s", format.format(date.getTime()), dateformat.format(date.getTime()));
@@ -326,7 +328,8 @@ public class EventDialogFragment extends DialogFragment {
      * @param string string to convert
      * @return the date of the string
      */
-    private Date convertDate(String string, int pos) {
+    @Nullable
+    private Date convertDate(@NonNull String string, int pos) {
         DateFormat dateformat = DateFormat.getDateInstance(DateFormat.MEDIUM, getResources().getConfiguration().locale);
         Calendar calendar = Calendar.getInstance(), calendar1 = Calendar.getInstance();
         try {
@@ -351,8 +354,8 @@ public class EventDialogFragment extends DialogFragment {
      * @param date date to format
      * @return date as formatted time string
      */
-    private String formatTime(Date date) {
-        if (date == null) return null;
+    @NonNull
+    private String formatTime(@NonNull Date date) {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.getDefault());
         return format.format(date);
     }
@@ -364,7 +367,7 @@ public class EventDialogFragment extends DialogFragment {
      * @param datePicker datePicker where the date is from
      * @param editText   editText where the time is from
      */
-    private void SetDateTime(TextView textView, DatePicker datePicker, EditText editText) {
+    private void SetDateTime(@NonNull TextView textView, @NonNull DatePicker datePicker, @NonNull EditText editText) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, datePicker.getYear());
         calendar.set(Calendar.MONTH, datePicker.getMonth());
@@ -381,7 +384,7 @@ public class EventDialogFragment extends DialogFragment {
      * @param datePicker datePicker to get date to show in textView
      * @param textView   textView to show date time
      */
-    private void InitTimeEditText(EditText text, DatePicker datePicker, TextView textView) {
+    private void InitTimeEditText(@NonNull EditText text, @NonNull DatePicker datePicker, @NonNull TextView textView) {
         text.setTag(false);
         text.addTextChangedListener(new TextWatcher() {
             @Override
@@ -393,7 +396,7 @@ public class EventDialogFragment extends DialogFragment {
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
+            public void afterTextChanged(@NonNull Editable editable) {
                 if (working) return;
                 working = true;
                 String text_ = editable.toString();
@@ -426,13 +429,13 @@ public class EventDialogFragment extends DialogFragment {
                 working = false;
             }
 
-            private void CheckHour(Editable editable) {
+            private void CheckHour(@NonNull Editable editable) {
                 String hour = editable.toString().substring(0, 2);
                 if (Integer.parseInt(hour) >= 24)
                     editable.replace(0, 1, "0");
             }
 
-            private boolean CheckMinute(Editable editable, int pos, boolean change) {
+            private boolean CheckMinute(@NonNull Editable editable, int pos, boolean change) {
                 String minute = editable.toString().substring(pos);
                 boolean erg = Integer.parseInt(minute) >= 60;
                 if (erg && change)

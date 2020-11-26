@@ -10,12 +10,13 @@ import com.example.studentalarm.PreferenceKeys;
 
 import java.util.Calendar;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
 public class SnoozeReceiver extends BroadcastReceiver {
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(@NonNull Context context, Intent intent) {
         Log.d("ALARM", "Snooze");
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MINUTE, Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.SNOOZE, PreferenceKeys.DEFAULT_SNOOZE)));

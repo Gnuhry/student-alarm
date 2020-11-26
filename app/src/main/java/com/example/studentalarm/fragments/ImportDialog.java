@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,10 +16,12 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.studentalarm.import_.ICS;
-import com.example.studentalarm.import_.Import;
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
+import com.example.studentalarm.import_.ICS;
+import com.example.studentalarm.import_.Import;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
@@ -71,7 +72,7 @@ public class ImportDialog extends Dialog {
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
+            public void afterTextChanged(@NonNull Editable editable) {
                 isValid = editable.toString().equals(lastValidString);
                 ((ImageView) findViewById(R.id.imgStatus)).setImageResource(isValid ? R.drawable.right : R.drawable.question_mark);
             }
@@ -99,16 +100,15 @@ public class ImportDialog extends Dialog {
                 Toast.makeText(getContext(), R.string.string_is_not_a_valid_url, Toast.LENGTH_SHORT).show();
                 return;
             }
-            ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
-            if (cm.getActiveNetworkInfo() == null || !cm.getActiveNetworkInfo().isConnected()) {
-                Toast.makeText(getContext(), R.string.no_connection, Toast.LENGTH_SHORT).show();
-                return;
-            }
+            if (!Import.CheckConnection(activity, getContext())) return;
             findViewById(R.id.btnCheckLink).setEnabled(false);
             ImageView imageView = findViewById(R.id.imgStatus);
             Glide.with(getContext()).load(R.drawable.sandglass).into(imageView);
             new Thread(() -> {
-                isValid = new ICS(text, true).isSuccessful();
+                String icsFile = Import.runSynchronous(text);
+                if (icsFile == null) return;
+                List<ICS.vEvent> list = new ICS(icsFile).getVEventList();
+                isValid = list == null || list.isEmpty();
                 findViewById(R.id.btnCheckLink).post(() -> findViewById(R.id.btnCheckLink).setEnabled(true));
                 ((ImageView) findViewById(R.id.imgStatus)).setImageResource(isValid ? R.drawable.right : R.drawable.cross);
                 if (isValid) lastValidString = text;

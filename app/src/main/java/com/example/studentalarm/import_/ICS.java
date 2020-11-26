@@ -2,43 +2,52 @@ package com.example.studentalarm.import_;
 
 import android.util.Log;
 
-import org.jetbrains.annotations.NotNull;
+import org.dmfs.rfc5545.DateTime;
+import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException;
+import org.dmfs.rfc5545.recur.RecurrenceRule;
+import org.dmfs.rfc5545.recur.RecurrenceRuleIterator;
 
-import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class ICS {
-    private String Version, Method, X_WR_Timezone, CALScale;
-    private vTimezone vTimezone;
-    private final List<vEvent> vEventList;
-    private final OkHttpClient client = new OkHttpClient();
-    private boolean successful = false;
+    private static final String Begin_VCalendar = "BEGIN:VCALENDAR";
+    private static final String Begin_VTimezone = "BEGIN:VTIMEZONE";
+    private static final String End_VTimezone = "END:VTIMEZONE";
+    private static final String Begin_VEvent = "BEGIN:VEVENT";
+    private static final String End_VEvent = "END:VEVENT";
+    private static final String VEvent_UID = "UID";
+    private static final String VEvent_Location = "LOCATION";
+    private static final String VEvent_Summary = "SUMMARY";
+    private static final String VEvent_DtStamp = "DTSTAMP";
+    private static final String VEvent_DtStart = "DTSTART";
+    private static final String VEvent_DtEnd = "DTEND";
+    private static final String Begin_Timezone_DayLight = "BEGIN:DAYLIGHT";
+    private static final String End_Timezone_DayLight = "END:DAYLIGHT";
+    private static final String Begin_Timezone_Standard = "BEGIN:STANDARD";
+    private static final String End_Timezone_Standard = "END:STANDARD";
+    private static final String Timezone_RRule = "RRULE";
+    private static final String Timezone_TZOffsetTo = "TZOFFSETTO";
 
-    /**
-     * import a ics file into an object
-     *
-     * @param link        link to the ics file
-     * @param synchronous {true} synchronous import {false} asynchronous import
-     */
-    public ICS(String link, boolean synchronous) {
+
+    @NonNull
+    private final List<vEvent> vEventList;
+    @NonNull
+    private final List<vTimezone> vTimezone;
+    private final int year = 1950;
+
+    public ICS(@NonNull String icsFile) {
         vEventList = new ArrayList<>();
-        if (synchronous)
-            runSynchronous(link);
-        else
-            runAsynchronous(link);
+        vTimezone = new ArrayList<>();
+        parse(icsFile);
     }
 
     /**
@@ -46,66 +55,80 @@ public class ICS {
      *
      * @return list of iCalendar.events
      */
+    @Nullable
     public List<vEvent> getVEventList() {
+        try {
+            return getVEventListWithUTCTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (InvalidRecurrenceRuleException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * returns all events from the ics file with teh UTC time
+     *
+     * @return list of iCalendar.events
+     */
+    @NonNull
+    private List<vEvent> getVEventListWithUTCTime() throws ParseException, InvalidRecurrenceRuleException {
+        for (vEvent event : vEventList) {
+            if (event.DTStart != null && event.DTend != null) {
+                event.DTStart = setTimeZones(event.DTStart);
+                event.DTend = setTimeZones(event.DTend);
+            }
+        }
         return vEventList;
     }
 
-    /**
-     * get the ics file asynchronous from the internet and parse it to an object
-     *
-     * @param link web link to the ics file
-     */
-    private void runAsynchronous(String link) {
-        Request request = new Request.Builder()
-                .url(link)
-                .build();
+    @Nullable
+    private String setTimeZones(@NonNull String s_date) throws ParseException, InvalidRecurrenceRuleException {
+        if (vTimezone.size() > 1) {
+            boolean normal = true;
+            List<DateTime> standard = getDatesTimeZone(vTimezone.get(0)),
+                    standard2 = getDatesTimeZone(vTimezone.get(1));
+            Calendar calendar = Calendar.getInstance(),
+                    calendar1 = Calendar.getInstance(),
+                    calendar2 = Calendar.getInstance();
+            Date date = (stringToDate(s_date));
+            if (date == null) return null;
+            calendar.setTime(date);
+            int year = calendar.get(Calendar.YEAR) - this.year;
+            calendar1.setTimeInMillis(standard.get(year).getTimestamp());
+            calendar2.setTimeInMillis(standard2.get(year).getTimestamp());
 
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
+            if (calendar1.after(calendar2)) {
+                Calendar calendar3 = calendar1;
+                calendar1 = calendar2;
+                calendar2 = calendar3;
+                normal = false;
             }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) {
-                try (ResponseBody responseBody = response.body()) {
-                    if (!response.isSuccessful())
-                        Log.e("ICS-Asynchronous", "Unexpected code " + response);
-                    if (responseBody != null)
-                        parse(responseBody.string());
-                    else
-                        Log.e("ICS-Asynchronous", "No body");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    successful = false;
-                }
+            String offset = vTimezone.get((calendar.after(calendar1) && calendar.before(calendar2)) ? normal ? 0 : 1 : normal ? 1 : 0).TZOffsetTo;
+            int hour = Integer.parseInt(offset.substring(1, 3)), minute = Integer.parseInt(offset.substring(3, 5));
+            if (offset.charAt(0) == '-') {
+                hour *= -1;
+                minute *= -1;
             }
-        });
+            calendar.add(Calendar.HOUR_OF_DAY, -hour);
+            calendar.add(Calendar.MINUTE, -minute);
+            return new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault()).format(calendar.getTime());
+        }
+        return null;
     }
 
-    /**
-     * get the ics file synchronous from the internet and parse it to an object
-     *
-     * @param link web link to the ics file
-     */
-    public void runSynchronous(String link) {
-        successful = false;
-        Request request = new Request.Builder()
-                .url(link)
-                .build();
-
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful())
-                Log.e("ICS-Synchronous", "Unexpected code " + response);
-            ResponseBody body = response.body();
-            if (body != null)
-                parse(body.string());
-            else
-                Log.e("ICS-Synchronous", "No body");
-        } catch (IOException e) {
-            e.printStackTrace();
-            successful = false;
+    @NonNull
+    private List<DateTime> getDatesTimeZone(@NonNull vTimezone timezone) throws InvalidRecurrenceRuleException {
+        List<DateTime> dateTimes = new ArrayList<>();
+        RecurrenceRule rule = new RecurrenceRule(timezone.rule);
+        int year = this.year;
+        RecurrenceRuleIterator it = rule.iterator(new DateTime(year, 0, 1));
+        while (it.hasNext() && year <= Calendar.getInstance().get(Calendar.YEAR)) {
+            dateTimes.add(it.nextDateTime());
+            year = dateTimes.get(dateTimes.size() - 1).getYear();
         }
+        return dateTimes;
     }
 
     /**
@@ -113,161 +136,94 @@ public class ICS {
      *
      * @param icsFile the ics file as string
      */
-    private void parse(String icsFile) {
-        String[] split = icsFile.split("\\n");
-        for (int findBegin = 0; findBegin < split.length; findBegin++)
-            if (split[findBegin].startsWith("BEGIN:VCALENDAR")) {
-                successful = true;
-                for (int f = findBegin + 1; f < split.length; f++)
-                    switch (split[f].split(":")[0]) {
-                        case "BEGIN":
-                            List<String> strings = new ArrayList<>();
-                            switch (split[f].split(":")[1]) {
-                                case "VEVENT":
-                                    while (!split[++f].equals("END:VEVENT"))
-                                        strings.add(split[f]);
-                                    try {
-                                        vEventList.add(new vEvent(strings.toArray(new String[0])));
-                                    } catch (ParseException ex) { //WRONG DATE
-                                        ex.printStackTrace();
-                                    }
-                                    break;
-
-                                case "VTIMEZONE":
-                                    while (!split[++f].equals("END:VTIMEZONE"))
-                                        strings.add(split[f]);
-                                    vTimezone = new vTimezone(strings.toArray(new String[0]));
-                                    break;
-                            }
-                            break;
-                        case "VERSION":
-                            Version = split[f].split(":")[1];
-                            break;
-                        case "METHOD":
-                            Method = split[f].split(":")[1];
-                            break;
-                        case "X-WR-TIMEZONE":
-                            X_WR_Timezone = split[f].split(":")[1];
-                            break;
-                        case "CALSSCALE":
-                            CALScale = split[f].split(":")[1];
-                            break;
-                    }
-                return;
-            }
+    private void parse(@NonNull String icsFile) {
+        int id = icsFile.indexOf(Begin_VCalendar);
+        if (id < 0) return;
+        String icsFile_ = icsFile.substring(id + Begin_VCalendar.length());
+        id = icsFile_.indexOf(Begin_VTimezone);
+        int id2 = icsFile_.indexOf(End_VTimezone);
+        if (id >= 0 && id2 >= 0) {
+            String timeZone = icsFile_.substring(id + Begin_VTimezone.length(), id2);
+            id = timeZone.indexOf(Begin_Timezone_DayLight);
+            id2 = timeZone.indexOf(End_Timezone_DayLight);
+            vTimezone.add(new vTimezone(timeZone.substring(id + Begin_Timezone_DayLight.length(), id2).split("\\n")));
+            id = timeZone.indexOf(Begin_Timezone_Standard, id2);
+            id2 = timeZone.indexOf(End_Timezone_Standard, id2);
+            vTimezone.add(new vTimezone(timeZone.substring(id + Begin_Timezone_Standard.length(), id2).split("\\n")));
+            icsFile_ = icsFile_.substring(id2 + End_VTimezone.length());
+        }
+        id = icsFile_.indexOf(Begin_VEvent);
+        id2 = icsFile_.indexOf(End_VEvent, id);
+        while (id >= 0 && id2 >= 0) {
+            Log.d(id + "", "" + id2);
+            vEventList.add(new vEvent(icsFile_.substring(id + Begin_VEvent.length(), id2).split("\\n")));
+            id = icsFile_.indexOf(Begin_VEvent, id2);
+            id2 = icsFile_.indexOf(End_VEvent, id);
+        }
     }
 
-    public boolean isSuccessful() {
-        return successful;
+    @Nullable
+    public static Date stringToDate(@NonNull String string) throws ParseException {
+        return new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault()).parse(string.replace("T", "-"));
     }
 
-    public String getVersion() {
-        return Version;
-    }
-
-    public String getMethod() {
-        return Method;
-    }
-
-    public String getX_WR_Timezone() {
-        return X_WR_Timezone;
-    }
-
-    public String getCALScale() {
-        return CALScale;
-    }
-
-    public ICS.vTimezone getVTimezone() {
-        return vTimezone;
-    }
 
     /**
      * intern class to represent the timezone information
      */
     public static class vTimezone {
-        public vTimezone(String[] strings) {
+        public String DTStart, TZOffsetTo, rule;
 
+        public vTimezone(@NonNull String[] strings) {
+            for (String s : strings)
+                if (s.split(":").length > 1)
+                    switch (s.split(":")[0]) {
+                        case VEvent_DtStart:
+                            DTStart = s.split(":")[1];
+                            break;
+                        case Timezone_TZOffsetTo:
+                            TZOffsetTo = s.split(":")[1];
+                            break;
+                        case Timezone_RRule:
+                            rule = s.split(":")[1];
+                            break;
+                    }
         }
     }
+
 
     /**
      * intern class to represent the event information
      */
     public static class vEvent {
-        private String UID, LOCATION, SUMMARY;
-        private Date DTStart, DTend, DTStamp;
-        private final DateFormat format = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.GERMAN);
+        @Nullable
+        public String UID, LOCATION, SUMMARY, DTStart, DTend, DTStamp;
 
-        /**
-         * parse the event string to an object
-         *
-         * @param strings strings with information of one event
-         * @throws ParseException Exception if date string has the wrong format
-         */
-        public vEvent(String[] strings) throws ParseException {
-            for (String s : strings) {
-                if (s.split(":").length > 1) {
+        public vEvent(@NonNull String[] strings) {
+            for (String s : strings)
+                if (s.split(":").length > 1)
                     switch (s.split(":")[0]) {
-                        case "UID":
+                        case VEvent_UID:
                             UID = s.split(":")[1];
                             break;
-                        case "LOCATION":
+                        case VEvent_Location:
                             LOCATION = s.split(":")[1];
                             break;
-                        case "SUMMARY":
+                        case VEvent_Summary:
                             SUMMARY = s.substring(8);
                             break;
-                        case "DTSTART":
-                            DTStart = format.parse(s.split(":")[1].replace('T', '-'));
+                        case VEvent_DtStart:
+                            DTStart = s.split(":")[1];
                             break;
-                        case "DTEND":
-                            DTend = format.parse(s.split(":")[1].replace('T', '-'));
+                        case VEvent_DtEnd:
+                            DTend = s.split(":")[1];
                             break;
-                        case "DTSTAMP":
-                            DTStamp = format.parse(s.split(":")[1].replace('T', '-'));
+                        case VEvent_DtStamp:
+                            DTStamp = s.split(":")[1];
                             break;
                     }
-                }
-            }
-        }
-
-        public String getUID() {
-            return UID;
-        }
-
-        public String getLOCATION() {
-            return LOCATION;
-        }
-
-        public String getSUMMARY() {
-            return SUMMARY;
-        }
-
-        public Date getDTStart() {
-            return DTStart;
-        }
-
-        public Date getDTend() {
-            return DTend;
-        }
-
-        public Date getDTStamp() {
-            return DTStamp;
-        }
-
-        public DateFormat getFormat() {
-            return format;
-        }
-
-        @NotNull
-        @Override
-        public String toString() {
-            return "vEvent{" +
-                    "SUMMARY='" + SUMMARY + '\'' +
-                    ", DTStart=" + DTStart +
-                    ", DTEnd=" + DTend +
-                    '}';
         }
     }
+
 
 }
