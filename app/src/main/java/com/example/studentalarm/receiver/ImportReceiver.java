@@ -9,8 +9,6 @@ import com.example.studentalarm.import_.Import;
 
 import androidx.annotation.NonNull;
 
-import androidx.annotation.NonNull;
-
 public class ImportReceiver extends BroadcastReceiver {
 
     @Override

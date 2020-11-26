@@ -11,7 +11,6 @@ import com.example.studentalarm.import_.Import;
 import com.example.studentalarm.import_.Lecture_Schedule;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
@@ -21,15 +20,16 @@ import androidx.recyclerview.widget.RecyclerView;
 public class MonthlyFragment extends Fragment implements ReloadLecture {
 
     private int position_today;
+    private View view;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_montly, container, false);
         if (getContext() == null || getActivity() == null) return view;
+        this.view = view;
         RefreshLectureSchedule();
         InitAppBar(this.getActivity().findViewById(R.id.my_toolbar), view.findViewById(R.id.rVEvents));
-
         view.findViewById(R.id.fabAdd).setOnClickListener(view1 -> new EventDialogFragment(null, Lecture_Schedule.Load(getContext()), this).show(getActivity().getSupportFragmentManager(), "dialog"));
         return view;
     }
@@ -82,8 +82,8 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
                                 getView().findViewById(R.id.rVEvents).post(() -> LoadData(getView().findViewById(R.id.rVEvents).getRootView()));
                         }).start();
 
-        if (getView() != null)
-            LoadData(getView().findViewById(R.id.rVEvents).getRootView());
+        if (view != null)
+            LoadData(view.findViewById(R.id.rVEvents).getRootView());
     }
 }
 
