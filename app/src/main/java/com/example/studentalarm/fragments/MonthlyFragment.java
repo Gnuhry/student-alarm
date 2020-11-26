@@ -20,8 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MonthlyFragment extends Fragment implements ReloadLecture {
 
-    @Nullable
-    private static LectureAdapter adapter;
+    private int position_today;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -43,8 +42,7 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
      */
     private void InitAppBar(@NonNull Toolbar toolbar, @NonNull RecyclerView rv) {
         toolbar.getMenu().getItem(0).setOnMenuItemClickListener(menuItem -> {
-            if (adapter != null)
-                rv.scrollToPosition(adapter.getPositionToday());
+            rv.scrollToPosition(position_today);
             return true;
         });
         toolbar.getMenu().getItem(1).setOnMenuItemClickListener(menuItem -> {
@@ -58,23 +56,15 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
      *
      * @param view view to display
      */
-    private void LoadData(@NonNull View view, boolean thread) {
+    private void LoadData(@NonNull View view) {
         if (getContext() == null) return;
         RecyclerView rv = view.findViewById(R.id.rVEvents);
-        adapter = new LectureAdapter(Lecture_Schedule.Load(getContext()), getContext(), getActivity(), this);
-        if (thread)
-            rv.post(() -> {
-                rv.setHasFixedSize(true);
-                rv.setLayoutManager(new LinearLayoutManager(getContext()));
-                rv.setAdapter(adapter);
-                rv.scrollToPosition(adapter.getPositionToday());
-            });
-        else {
-            rv.setHasFixedSize(true);
-            rv.setLayoutManager(new LinearLayoutManager(getContext()));
-            rv.setAdapter(adapter);
-            rv.scrollToPosition(adapter.getPositionToday());
-        }
+        LectureAdapter adapter = new LectureAdapter(Lecture_Schedule.Load(getContext()), getContext(), getActivity(), this);
+        rv.setHasFixedSize(true);
+        rv.setLayoutManager(new LinearLayoutManager(getContext()));
+        rv.setAdapter(adapter);
+        rv.scrollToPosition(adapter.getPositionToday());
+        position_today = adapter.getPositionToday();
     }
 
     /**
@@ -89,7 +79,7 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
                         new Thread(() -> {
                             Import.ImportLecture(this.getContext());
                             if (getView() != null)
-                                LoadData(getView().findViewById(R.id.rVEvents).getRootView(), true);
+                                getView().findViewById(R.id.rVEvents).post(() -> LoadData(getView().findViewById(R.id.rVEvents).getRootView()));
                         }).start();
 
         if (getView() != null)

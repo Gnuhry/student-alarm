@@ -160,6 +160,7 @@ public class ICS {
             id = icsFile_.indexOf(Begin_VEvent, id2);
             id2 = icsFile_.indexOf(End_VEvent, id);
         }
+
     }
 
     @Nullable

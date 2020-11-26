@@ -20,6 +20,9 @@ import java.util.TimeZone;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 public class Lecture_Schedule implements Serializable {
     @NonNull
     private final List<Lecture> lecture, import_lecture;
