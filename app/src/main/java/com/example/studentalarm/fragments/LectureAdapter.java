@@ -19,12 +19,15 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHolder> {
+    @NonNull
     private final List<Lecture_Schedule.Lecture> lecture;
     private int positionToday = -1;
+    @NonNull
     public static final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
     private static SimpleDateFormat day_of_week_name;
     private static DateFormat day, time;
@@ -36,7 +39,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
         private final TableLayout TLEvent;
         private final View barrier, colorLine;
 
-        public ViewHolder(View view) {
+        public ViewHolder(@NonNull View view) {
             super(view);
             title = view.findViewById(R.id.MEventTitle);
             from = view.findViewById(R.id.MEventFrom);
@@ -50,7 +53,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
     }
 
 
-    public LectureAdapter(Lecture_Schedule lecture_schedule, Context context, FragmentActivity ac, ReloadLecture reloadLecture_) {
+    public LectureAdapter(@NonNull Lecture_Schedule lecture_schedule, @NonNull Context context, FragmentActivity ac, ReloadLecture reloadLecture_) {
         reloadLecture = reloadLecture_;
         activity = ac;
         day_of_week_name = new SimpleDateFormat("EEEE", context.getResources().getConfiguration().locale);
@@ -74,7 +77,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
 
     @NotNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.monthly_event_fragment, viewGroup, false));
     }
 
@@ -126,7 +129,8 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
      * @param time time to format
      * @return time format to am/pm format
      */
-    private String CutTime(String time) {
+    @NonNull
+    private String CutTime(@NonNull String time) {
         StringBuilder erg = new StringBuilder();
         String[] help = time.split(":");
         erg.append(help[0]).append(":").append(help[1]);

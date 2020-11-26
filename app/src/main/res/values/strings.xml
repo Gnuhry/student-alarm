@@ -19,9 +19,9 @@
     <string name="automatic_daily_import">Automatic daily import</string>
     <string name="address">http://www.</string>
     <string name="string_is_not_a_valid_url">String is not a valid URL</string>
-    <string name="delete_all_import_events">Delete all import events</string>
+    <string name="delete_all_events">Delete all events</string>
     <string name="missing_checked_valid_url">Missing checked valid url</string>
-    <string name="do_you_want_to_delete_all_import_events">Do you want to delete all import events?</string>
+    <string name="do_you_want_to_delete_this_events">Do you want to delete this events?</string>
     <string name="cancel">@android:string/cancel</string>
     <string name="check">Check</string>
     <string name="save">Save</string>
@@ -41,6 +41,9 @@
     <string name="missing_events">Missing events</string>
     <string name="ringtone">Ringtone</string>
     <string name="theme">Theme</string>
+    <string name="normal_events">Normal events</string>
+    <string name="import_events">Import events</string>
+    <string name="which_events_do_you_want_to_delete">Which events do you want to delete?</string>
 
     <!--Alarm-->
     <string name="next_alarm_in">Next alarm in</string>

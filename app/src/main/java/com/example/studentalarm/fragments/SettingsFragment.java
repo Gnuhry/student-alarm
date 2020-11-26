@@ -23,6 +23,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.fragment.NavHostFragment;
@@ -46,7 +47,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 alarm_change = findPreference(PreferenceKeys.ALARM_CHANGE),
                 auto_import = findPreference(PreferenceKeys.AUTO_IMPORT);
         Preference import_ = findPreference("IMPORT"),
-                import_delete_all = findPreference(PreferenceKeys.IMPORT_DELETE_ALL),
+                import_delete_all = findPreference("IMPORT_DELETE_ALL"),
                 reset = findPreference("RESET");
         EditTextPreference snooze = findPreference(PreferenceKeys.SNOOZE),
                 import_time = findPreference(PreferenceKeys.IMPORT_TIME);
@@ -68,7 +69,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 AlarmManager.SetNextAlarm(getContext());
             } else {
                 getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.ALARM_ON, (Boolean) newValue).apply();
-                AlarmManager.CancelNextAlarm(getContext());
+                if (getContext() != null)
+                    AlarmManager.CancelNextAlarm(getContext());
             }
             boolean bool3 = (Boolean) newValue;
             alarm_phone.setEnabled(bool3);
@@ -164,19 +166,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         import_delete_all.setOnPreferenceClickListener(preference -> {
-            if (getContext() == null) return false;
-            new MaterialAlertDialogBuilder(getContext())
-                    .setTitle(R.string.delete_all)
-                    .setMessage(R.string.do_you_want_to_delete_all_import_events)
-                    .setPositiveButton(R.string.delete, (dialogInterface, i) -> removeImportLecture())
-                    .setNegativeButton(getString(R.string.cancel), null)
-                    .setCancelable(true)
-                    .show();
+            if (getContext() != null)
+                new DeleteLectureDialog(getContext()).show();
             return true;
         });
 
         language.setOnPreferenceChangeListener((preference, newValue) -> {
-            if (getContext() == null) return false;
+            if (getContext() == null || getActivity() == null) return false;
             ChangeLanguage((String) newValue, getContext(), getActivity());
             Reload();
             return true;
@@ -200,7 +196,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         reset.setOnPreferenceClickListener(preference -> {
-            if (getContext() == null) return false;
+            if (getContext() == null || getActivity() == null) return false;
             new MaterialAlertDialogBuilder(getContext())
                     .setTitle(R.string.reset)
                     .setMessage(R.string.do_you_want_to_reset_this_application)
@@ -208,7 +204,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         String lan = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(PreferenceKeys.LANGUAGE, PreferenceKeys.DEFAULT_LANGUAGE), lan2 = PreferenceKeys.Reset(getContext());
                         if (!lan2.equals(lan))
                             ChangeLanguage(lan2, getContext(), getActivity());
-                        removeImportLecture();
+                        removeAllEventsLecture();
                         Reload();
                     })
                     .setNegativeButton(R.string.no, null)
@@ -223,7 +219,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      *
      * @param newValue new language code
      */
-    public void ChangeLanguage(String newValue, Context context, Activity activity) {
+    public void ChangeLanguage(@NonNull String newValue, @NonNull Context context, @NonNull Activity activity) {
         Resources resources = context.getResources();
         DisplayMetrics dm = resources.getDisplayMetrics();
         Configuration config = resources.getConfiguration();
@@ -244,10 +240,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     /**
      * remove all import lecture events
      */
-    private void removeImportLecture() {
+    private void removeAllEventsLecture() {
         if (getContext() == null) return;
         Lecture_Schedule l = Lecture_Schedule.Load(getContext());
-        l.deleteAllImportEvents();
+        l.deleteAllEvents();
         l.Save(getContext());
     }
 

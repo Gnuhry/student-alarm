@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
@@ -24,7 +25,7 @@ public class AlarmFragment extends Fragment {
     private CountDownTimer timer;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_alarm, container, false);
         if (getContext() == null) return view;
@@ -40,7 +41,7 @@ public class AlarmFragment extends Fragment {
      *
      * @param view view to display the timer
      */
-    private void SetTimer(View view) {
+    private void SetTimer(@NonNull View view) {
         if (getContext() == null) return;
         long time = PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_TIME, 0);
         if (time != 0 && time > Calendar.getInstance().getTimeInMillis()) {
@@ -59,9 +60,8 @@ public class AlarmFragment extends Fragment {
                 }
             }.start();
             ((TextView) view.findViewById(R.id.txVAlarm)).setText(getString(R.string.alarm_at, new SimpleDateFormat("HH:mm", Locale.GERMAN).format(time)));
-        } else {
+        } else
             ((TextView) view.findViewById(R.id.textView4)).setText(R.string.no_alarm_set);
-        }
     }
 
     /**
@@ -69,15 +69,13 @@ public class AlarmFragment extends Fragment {
      * if not, pop up a dialog and ask
      */
     private void CheckNotification() {
-        if (getContext() == null) return;
-        if (!NotificationManagerCompat.from(getContext()).areNotificationsEnabled()) {
+        if (getContext() != null && !NotificationManagerCompat.from(getContext()).areNotificationsEnabled())
             new MaterialAlertDialogBuilder(getContext())
                     .setTitle(R.string.notification_permission_missing)
                     .setMessage(R.string.notification_permission_are_missing_without_them_the_alarm_will_not_work_properly)
                     .setPositiveButton(R.string.ok, null)
                     .setCancelable(true)
                     .show();
-        }
     }
 
     /**
