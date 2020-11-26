@@ -83,7 +83,7 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
                         }).start();
 
         if (getView() != null)
-            LoadData(getView().findViewById(R.id.rVEvents).getRootView(), false);
+            LoadData(getView().findViewById(R.id.rVEvents).getRootView());
     }
 }
 
