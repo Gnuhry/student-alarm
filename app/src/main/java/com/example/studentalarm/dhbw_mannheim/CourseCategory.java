@@ -3,10 +3,11 @@ package com.example.studentalarm.dhbw_mannheim;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.List;
 
-public class CourseCategory {
+public class CourseCategory{
     private String CourseCategory;
     private List<Course> DHBWCoursesCategory;
 
@@ -29,5 +30,10 @@ public class CourseCategory {
     @Override
     public String toString() {
         return CourseCategory;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return CourseCategory.equals(obj);
     }
 }

@@ -16,6 +16,10 @@ public class Course {
         return this.CourseISCID;
     }
 
+    public String getCourseName() {
+        return CourseName;
+    }
+
     @NonNull
     @Override
     public String toString() {

@@ -57,7 +57,7 @@ public class ImportDialog extends Dialog {
                     android.R.layout.simple_spinner_item, new CourseImport().getDHBWCourses());
             categoryadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner)findViewById(R.id.spDHBWMaCourseCategory)).setAdapter(categoryadapter));
-            ((Spinner)findViewById(R.id.spDHBWMaCourseCategory)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {//Funktioniert aus nicht erkennbaren gründen nicht wenn direkt View by Id verwendet wird
+            ((Spinner)findViewById(R.id.spDHBWMaCourseCategory)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     Log.d("Spinner Course", "adview:" + adapterView.getItemAtPosition(1) + " view :" + view + " i " + i + " l " + l+"  Coursecat: "+adapterView.getItemAtPosition(i));
@@ -65,7 +65,7 @@ public class ImportDialog extends Dialog {
                             android.R.layout.simple_spinner_item, ((CourseCategory)adapterView.getItemAtPosition(i)).getDHBWCourses());
                     courseadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     for (Course course:((CourseCategory)adapterView.getItemAtPosition(i)).getDHBWCourses()){
-                        Log.d("Spinnerelement Course","Kurs:: "+ course);
+                        Log.d("Spinnerelement Course","Course: "+ course);
                     }
                     findViewById(R.id.spDHBWMaCourse).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourse)).setAdapter(courseadapter));
                 }
@@ -75,6 +75,8 @@ public class ImportDialog extends Dialog {
 
                 }
             });
+
+            //findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner)findViewById(R.id.spDHBWMaCourseCategory)).setSelection(categoryadapter.getPosition(new CourseCategory(preferences.getString(PreferenceKeys.DHBWMANNHEIMCOURSECATEGORY,null),null))));
 
         }).start();
 
@@ -130,8 +132,10 @@ public class ImportDialog extends Dialog {
             }else if (((RadioButton) findViewById(R.id.rBtnDHBWMa)).isChecked() && (((Spinner) findViewById(R.id.spDHBWMaCourse)).getSelectedItem()) instanceof Course) {
                 preferences.edit().putInt("Mode", Import.ImportFunction.DHBWMa).apply();
                 preferences.edit().putString("Link", "http://vorlesungsplan.dhbw-mannheim.de/ical.php?uid="+((Course)((Spinner) findViewById(R.id.spDHBWMaCourse)).getSelectedItem()).getCourseID()).apply();
-                preferences.edit().putString("DHBWMANNHEIMCOURSE",((Course)((Spinner) findViewById(R.id.spDHBWMaCourse)).getSelectedItem()).getCourseID()).apply();
+                preferences.edit().putString("DHBWMANNHEIMCOURSE",((Course)((Spinner) findViewById(R.id.spDHBWMaCourse)).getSelectedItem()).getCourseName()).apply();
                 preferences.edit().putString("DHBWMANNHEIMCOURSECATEGORY",((CourseCategory)((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).getSelectedItem()).getCourseCategory()).apply();
+                Log.d("Change Preference","DHBWMANNHEIMCOURSE: "+preferences.getString("DHBWMANNHEIMCOURSE","Error"));
+                Log.d("Change Preference","DHBWMANNHEIMCOURSECATEGORY: "+preferences.getString("DHBWMANNHEIMCOURSECATEGORY","Error"));
                 Log.d("Change Preference","ISC LINK "+preferences.getString("Link","Error"));
                 this.cancel();}
         });
