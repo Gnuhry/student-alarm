@@ -65,7 +65,7 @@ public class Import {
         switch (PreferenceManager.getDefaultSharedPreferences(context).getInt(PreferenceKeys.MODE, 0)) {
             case ImportFunction.NONE:
                 return;
-            case ImportFunction.ICS:
+            case ImportFunction.ICS: case ImportFunction.DHBWMa:
                 String link = PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.LINK, null);
                 if (link == null) return;
                 String icsFile = runSynchronous(link);
@@ -122,8 +122,9 @@ public class Import {
     public static class ImportFunction {
         public static final int NONE = 0;
         public static final int ICS = 1;
+        public static final int DHBWMa = 2;
         @NonNull
-        public static final List<String> imports = Arrays.asList("None", "ICS");
+        public static final List<String> imports = Arrays.asList("None", "ICS","DHBWMa");
     }
 
 }

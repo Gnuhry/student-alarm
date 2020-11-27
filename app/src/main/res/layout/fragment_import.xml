@@ -95,7 +95,35 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/ics" />
+
+                <RadioButton
+                    android:id="@+id/rBtnDHBWMa"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/DHBWMa" />
             </RadioGroup>
+
+            <LinearLayout
+                android:id="@+id/LLDHBWMaCourse"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@+id/radioGroup"
+                app:layout_constraintTop_toBottomOf="@+id/radioGroup">
+
+                <Spinner
+                    android:id="@+id/spDHBWMaCourseCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4" />
+
+                <Spinner
+                    android:id="@+id/spDHBWMaCourse"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"/>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/textView2"
