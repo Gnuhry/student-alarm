@@ -47,7 +47,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 alarm_change = findPreference(PreferenceKeys.ALARM_CHANGE),
                 auto_import = findPreference(PreferenceKeys.AUTO_IMPORT);
         Preference import_ = findPreference("IMPORT"),
-                import_delete_all = findPreference("IMPORT_DELETE_ALL"),
+                import_delete_all = findPreference("EVENT_DELETE_ALL"),
+                export = findPreference("EXPORT"),
                 reset = findPreference("RESET");
         EditTextPreference snooze = findPreference(PreferenceKeys.SNOOZE),
                 import_time = findPreference(PreferenceKeys.IMPORT_TIME);
@@ -55,7 +56,19 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 ringtone = findPreference(PreferenceKeys.RINGTONE),
                 theme = findPreference("THEME");
 
-        if (alarm_on == null || alarm_phone == null || alarm_change == null || auto_import == null || import_ == null || import_delete_all == null || snooze == null || import_time == null || reset == null || ringtone == null || language == null || theme == null)
+        if (alarm_on == null ||
+                alarm_phone == null ||
+                alarm_change == null ||
+                auto_import == null ||
+                import_ == null ||
+                import_delete_all == null ||
+                snooze == null ||
+                import_time == null ||
+                reset == null ||
+                ringtone == null ||
+                language == null ||
+                theme == null ||
+                export == null)
             return;
 
         alarm_on.setOnPreferenceChangeListener((preference, newValue) -> {
@@ -171,6 +184,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             return true;
         });
 
+        export.setOnPreferenceClickListener(preference -> {
+            if (getContext() != null && getActivity() != null)
+                new ExportLectureDialog(getContext(), getActivity()).show();
+            return true;
+        });
+
         language.setOnPreferenceChangeListener((preference, newValue) -> {
             if (getContext() == null || getActivity() == null) return false;
             ChangeLanguage((String) newValue, getContext(), getActivity());
@@ -241,10 +260,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      * remove all import lecture events
      */
     private void removeAllEventsLecture() {
-        if (getContext() == null) return;
-        Lecture_Schedule l = Lecture_Schedule.Load(getContext());
-        l.clearEvents();
-        l.Save(getContext());
+        if (getContext() != null)
+            Lecture_Schedule.Load(getContext()).clearEvents().Save(getContext());
     }
 
     /**
