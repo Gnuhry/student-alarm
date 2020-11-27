@@ -16,12 +16,14 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
 
 public class Export {
 
-    public static void ExportToICS(Context context, Activity activity, List<Lecture_Schedule.Lecture> list) {
+    public static void ExportToICS(@NonNull Context context, @NonNull Activity activity, @NonNull List<Lecture_Schedule.Lecture> list) {
         Log.d("Export", "Start");
         try {
             List<ICS.vEvent> erg = new ArrayList<>();
@@ -45,7 +47,8 @@ public class Export {
         }
     }
 
-    private static File WriteFile(Context context, String text) throws IOException {
+    @Nullable
+    private static File WriteFile(@NonNull Context context, @NonNull String text) throws IOException {
         File documentsPath = new File(context.getFilesDir(), "share/");
         if (!documentsPath.exists() && !documentsPath.mkdir()) return null;
 
@@ -61,7 +64,7 @@ public class Export {
         return file;
     }
 
-    private static void Share(Context context, File file, Activity activity) {
+    private static void Share(@NonNull Context context, @NonNull File file, @NonNull Activity activity) {
         Uri uri = FileProvider.getUriForFile(context, "com.example.studentalarm.fileprovider", file);
         Intent intent = ShareCompat.IntentBuilder.from(activity)
                 .setType("*/*")
@@ -73,7 +76,7 @@ public class Export {
         context.startActivity(intent);
     }
 
-    public static boolean DeleteAll(Context context) {
+    public static boolean DeleteAll(@NonNull Context context) {
         boolean erg = true;
         File folder = new File(context.getFilesDir(), "share");
         File[] filesInFolder = folder.listFiles();
