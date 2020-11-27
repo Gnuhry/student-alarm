@@ -10,6 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 public class NetworkReceiver extends BroadcastReceiver {
+    /**
+     * triggered if phone has connection
+     */
     @Override
     public void onReceive(@NonNull Context context, Intent intent) {
         if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.AUTO_IMPORT, false))

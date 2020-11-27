@@ -11,6 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationManagerCompat;
 
 public class AlarmOffReceiver extends BroadcastReceiver {
+    /**
+     * triggered when alarm should be turn off
+     */
     @Override
     public void onReceive(@NonNull Context context, Intent intent) {
         Log.d("ALARM", "OFF");
