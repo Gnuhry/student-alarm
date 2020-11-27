@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
-public class CourseCategory{
+public class CourseCategory implements Comparable<String>{
     private String CourseCategory;
     private List<Course> DHBWCoursesCategory;
 
@@ -33,7 +33,7 @@ public class CourseCategory{
     }
 
     @Override
-    public boolean equals(@Nullable Object obj) {
-        return CourseCategory.equals(obj);
+    public int compareTo(String o) {
+        return CourseCategory.compareTo(o);
     }
 }
