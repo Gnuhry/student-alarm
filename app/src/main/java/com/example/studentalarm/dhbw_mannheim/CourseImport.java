@@ -1,6 +1,7 @@
 package com.example.studentalarm.dhbw_mannheim;
 
 import android.util.Log;
+import android.content.SharedPreferences;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,6 +10,10 @@ import java.util.List;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import com.example.studentalarm.R;
+import androidx.preference.Preference;
+
+
 
 public class CourseImport {
 
@@ -59,7 +64,7 @@ public class CourseImport {
                         }
                         DHBWCoursecategory.add(new CourseCategory(coursecategory[1],tempDHBWCourses));
                     }else{
-                        DHBWCoursecategory.add(new CourseCategory("@string/coursecategory",tempDHBWCourses));
+                        DHBWCoursecategory.add(new CourseCategory("Course Category",tempDHBWCourses)); //muss noch als variabler zugriff realisiert werden
                     }
                 }
 

@@ -27,8 +27,8 @@ public class PreferenceKeys {
             IMPORT_TIME = "IMPORT_TIME",
             LANGUAGE = "LANGUAGE",
             RINGTONE = "RINGTONE",
-            DHBWMANNHEIMCOURSECATEGORY = "",
-            DHBWMANNHEIMCOURSE = "",
+            DHBWMANNHEIMCOURSECATEGORY = "DHBWMANNHEIMCOURSECATEGORY",
+            DHBWMANNHEIMCOURSE = "DHBWMANNHEIMCOURSE",
 
             DEFAULT_RINGTONE = "Default",
             DEFAULT_LANGUAGE = "EN",
