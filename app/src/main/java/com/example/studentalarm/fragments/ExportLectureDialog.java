@@ -20,7 +20,9 @@ import androidx.annotation.NonNull;
 
 public class ExportLectureDialog extends Dialog {
 
+    @NonNull
     private final Context context;
+    @NonNull
     private final Activity activity;
 
     public ExportLectureDialog(@NonNull Context context, @NonNull Activity activity) {

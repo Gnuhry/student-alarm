@@ -130,7 +130,7 @@ public class ICS {
     }
 
     @NonNull
-    private List<DateTime> getDatesTimeZone(@NonNull vTimezone timezone, Calendar start) throws InvalidRecurrenceRuleException {
+    private List<DateTime> getDatesTimeZone(@NonNull vTimezone timezone, @NonNull Calendar start) throws InvalidRecurrenceRuleException {
         List<DateTime> dateTimes = new ArrayList<>();
         RecurrenceRule rule = new RecurrenceRule(timezone.rule);
         RecurrenceRuleIterator it = rule.iterator(new DateTime(start.getTimeInMillis()));
@@ -178,7 +178,8 @@ public class ICS {
         return new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault()).parse(string.replace("T", "-"));
     }
 
-    public static String ExportToICS(List<vEvent> events) {
+    @NonNull
+    public static String ExportToICS(@NonNull List<vEvent> events) {
         StringBuilder erg = new StringBuilder(Begin_VCalendar).append("\n")
                 .append(Version).append("\n")
                 .append(Method).append("\n")

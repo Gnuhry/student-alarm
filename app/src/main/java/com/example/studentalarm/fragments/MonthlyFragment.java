@@ -12,6 +12,7 @@ import com.example.studentalarm.import_.Import;
 import com.example.studentalarm.import_.Lecture_Schedule;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class MonthlyFragment extends Fragment implements ReloadLecture {
 
     private int position_today;
+    @Nullable
     private View view;
 
     @Override
