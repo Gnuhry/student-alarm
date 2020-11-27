@@ -130,10 +130,10 @@ public class ImportDialog extends Dialog {
                 preferences.edit().putInt(PreferenceKeys.MODE, Import.ImportFunction.NONE).apply();
                 this.cancel();
             }else if (((RadioButton) findViewById(R.id.rBtnDHBWMa)).isChecked() && (((Spinner) findViewById(R.id.spDHBWMaCourse)).getSelectedItem()) instanceof Course) {
-                preferences.edit().putInt("Mode", Import.ImportFunction.DHBWMa).apply();
-                preferences.edit().putString("Link", "http://vorlesungsplan.dhbw-mannheim.de/ical.php?uid="+((Course)((Spinner) findViewById(R.id.spDHBWMaCourse)).getSelectedItem()).getCourseID()).apply();
-                preferences.edit().putString("DHBWMANNHEIMCOURSE",((Course)((Spinner) findViewById(R.id.spDHBWMaCourse)).getSelectedItem()).getCourseName()).apply();
-                preferences.edit().putString("DHBWMANNHEIMCOURSECATEGORY",((CourseCategory)((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).getSelectedItem()).getCourseCategory()).apply();
+                preferences.edit().putInt(PreferenceKeys.MODE, Import.ImportFunction.DHBWMa).apply();
+                preferences.edit().putString(PreferenceKeys.LINK, "http://vorlesungsplan.dhbw-mannheim.de/ical.php?uid="+((Course)((Spinner) findViewById(R.id.spDHBWMaCourse)).getSelectedItem()).getCourseID()).apply();
+                preferences.edit().putString(PreferenceKeys.DHBW_MANNHEIM_COURSE,((Course)((Spinner) findViewById(R.id.spDHBWMaCourse)).getSelectedItem()).getCourseName()).apply();
+                preferences.edit().putString(PreferenceKeys.DHBW_MANNHEIM_COURSE_CATEGORY",((CourseCategory)((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).getSelectedItem()).getCourseCategory()).apply();
                 Log.d("Change Preference","DHBWMANNHEIMCOURSE: "+preferences.getString("DHBWMANNHEIMCOURSE","Error"));
                 Log.d("Change Preference","DHBWMANNHEIMCOURSECATEGORY: "+preferences.getString("DHBWMANNHEIMCOURSECATEGORY","Error"));
                 Log.d("Change Preference","ISC LINK "+preferences.getString("Link","Error"));
