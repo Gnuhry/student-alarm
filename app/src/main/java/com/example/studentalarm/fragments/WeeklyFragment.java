@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEntity;
+import com.example.studentalarm.AlarmManager;
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
 import com.example.studentalarm.import_.Import;
@@ -45,7 +46,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
 
         InitAppBar(weekview, this.getActivity().findViewById(R.id.my_toolbar));
         InitWeekView(weekview);
-        RefreshLectureSchedule();
+        LoadData();
 
         view.findViewById(R.id.fabAdd).setOnClickListener(view1 -> new EventDialogFragment(null, Lecture_Schedule.Load(getContext()), this).show(getActivity().getSupportFragmentManager(), "dialog"));
         return view;
@@ -95,6 +96,8 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
                     if (Import.CheckConnection(getActivity(), getContext()))
                         new Thread(() -> {
                             Import.ImportLecture(this.getContext());
+                            if (getView() != null)
+                                getView().post(() -> AlarmManager.UpdateNextAlarm(this.getContext()));
                             LoadData();
                         }).start();
         LoadData();
@@ -103,7 +106,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
     /**
      * Load the date and display in weekView
      */
-    private void LoadData() {
+    public void LoadData() {
         if (getContext() == null) return;
         adapter.submitList(Lecture_Schedule.Load(getContext()).getAllLecture());
     }

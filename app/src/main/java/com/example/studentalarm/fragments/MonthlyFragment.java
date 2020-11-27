@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.studentalarm.AlarmManager;
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
 import com.example.studentalarm.import_.Import;
@@ -28,7 +29,7 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
         View view = inflater.inflate(R.layout.fragment_montly, container, false);
         if (getContext() == null || getActivity() == null) return view;
         this.view = view;
-        RefreshLectureSchedule();
+        LoadData();
         InitAppBar(this.getActivity().findViewById(R.id.my_toolbar), view.findViewById(R.id.rVEvents));
         view.findViewById(R.id.fabAdd).setOnClickListener(view1 -> new EventDialogFragment(null, Lecture_Schedule.Load(getContext()), this).show(getActivity().getSupportFragmentManager(), "dialog"));
         return view;
@@ -53,11 +54,12 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
 
     /**
      * Load the date and display in recyclerview
-     *
-     * @param view view to display
      */
-    private void LoadData(@NonNull View view) {
+    @Override
+    public void LoadData() {
         if (getContext() == null) return;
+        if (view == null && getView() == null) return;
+        if (view == null && getView() != null) view = getView();
         RecyclerView rv = view.findViewById(R.id.rVEvents);
         LectureAdapter adapter = new LectureAdapter(Lecture_Schedule.Load(getContext()), getContext(), getActivity(), this);
         rv.setHasFixedSize(true);
@@ -79,11 +81,13 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
                         new Thread(() -> {
                             Import.ImportLecture(this.getContext());
                             if (getView() != null)
-                                getView().findViewById(R.id.rVEvents).post(() -> LoadData(getView().findViewById(R.id.rVEvents).getRootView()));
+                                getView().post(() -> {
+                                    AlarmManager.UpdateNextAlarm(this.getContext());
+                                    LoadData();
+                                });
                         }).start();
 
-        if (view != null)
-            LoadData(view.findViewById(R.id.rVEvents).getRootView());
+        LoadData();
     }
 }
 

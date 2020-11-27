@@ -13,6 +13,9 @@ import androidx.preference.PreferenceManager;
 
 public class AlarmManager {
 
+    private static int BEFORE, WAY, AFTER;
+    private static boolean ALARM_PHONE, init = true;
+
     /**
      * Set the next alarm
      *
@@ -53,6 +56,18 @@ public class AlarmManager {
      * @param context context of the application
      */
     public static void UpdateNextAlarm(@NonNull Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (!init && BEFORE == preferences.getInt(PreferenceKeys.BEFORE, 0) &&
+                WAY == preferences.getInt(PreferenceKeys.WAY, 0) &&
+                AFTER == preferences.getInt(PreferenceKeys.AFTER, 0) &&
+                ALARM_PHONE == preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false)) {
+            init = false;
+            return;
+        }
+        BEFORE = preferences.getInt(PreferenceKeys.BEFORE, 0);
+        WAY = preferences.getInt(PreferenceKeys.WAY, 0);
+        AFTER = preferences.getInt(PreferenceKeys.AFTER, 0);
+        ALARM_PHONE = preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false);
         CancelNextAlarm(context);
         SetNextAlarm(context);
     }
@@ -62,7 +77,7 @@ public class AlarmManager {
      *
      * @param context context of the application
      */
-    public static void UpdateNextAlarmAfterImport(@NonNull Context context) {
+    public static void UpdateNextAlarmAfterAutoImport(@NonNull Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (!preferences.getBoolean(PreferenceKeys.ALARM_CHANGE, false)) return;
         SetNextAlarm(context);

@@ -241,10 +241,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      * remove all import lecture events
      */
     private void removeAllEventsLecture() {
-        if (getContext() == null) return;
-        Lecture_Schedule l = Lecture_Schedule.Load(getContext());
-        l.clearEvents();
-        l.Save(getContext());
+        if (getContext() != null)
+            Lecture_Schedule.Load(getContext()).clearEvents().Save(getContext());
     }
 
     /**
