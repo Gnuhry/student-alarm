@@ -42,6 +42,8 @@
     <string name="normal_events">Normale Ereignisse</string>
     <string name="import_events">Importierte Ereignisse</string>
     <string name="which_events_do_you_want_to_delete">Welche Ereignisse möchten Sie löschen?</string>
+    <string name="export">Export</string>
+    <string name="which_event_do_you_want_to_export">Welche Ereignisse möchten Sie exportieren?</string>
     <string name="next_alarm_in">Nächster Alarm in</string>
     <string name="time_format">%d h - %d min</string>
     <string name="zero_time">00 h - 00 min</string>

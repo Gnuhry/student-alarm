@@ -11,25 +11,27 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
 public class PreferenceKeys {
-    @NonNull public static final String MODE = "Mode";
-    @NonNull public static final String LINK = "Link";
-    @NonNull public static final String BEFORE = "BEFORE";
-    @NonNull public static final String WAY = "WAY";
-    @NonNull public static final String AFTER = "AFTER";
-    @NonNull  public static final String ALARM_ON = "ALARM_ON";
-    @NonNull public static final String ALARM_PHONE = "ALARM_PHONE";
-    @NonNull  public static final String ALARM_CHANGE = "ALARM_CHANGE";
-    @NonNull  public static final String AUTO_IMPORT = "AUTO_IMPORT";
-    @NonNull   public static final String ALARM_TIME = "ALARM_TIME";
-    @NonNull  public static final String SNOOZE = "SNOOZE";
-    @NonNull  public static final String IMPORT_TIME = "IMPORT_TIME";
-    @NonNull  public static final String LANGUAGE = "LANGUAGE";
-    @NonNull  public static final String RINGTONE = "RINGTONE";
+    @NonNull
+    public static final String
+            MODE = "Mode",
+            LINK = "Link",
+            BEFORE = "BEFORE",
+            WAY = "WAY",
+            AFTER = "AFTER",
+            ALARM_ON = "ALARM_ON",
+            ALARM_PHONE = "ALARM_PHONE",
+            ALARM_CHANGE = "ALARM_CHANGE",
+            AUTO_IMPORT = "AUTO_IMPORT",
+            ALARM_TIME = "ALARM_TIME",
+            SNOOZE = "SNOOZE",
+            IMPORT_TIME = "IMPORT_TIME",
+            LANGUAGE = "LANGUAGE",
+            RINGTONE = "RINGTONE",
 
-    @NonNull  public static final String DEFAULT_RINGTONE = "Default";
-    @NonNull  public static final String DEFAULT_LANGUAGE = "EN";
-    @NonNull  public static final String DEFAULT_SNOOZE = "5";
-    @NonNull  public static final String DEFAULT_IMPORT_TIME = "19:00";
+    DEFAULT_RINGTONE = "Default",
+            DEFAULT_LANGUAGE = "EN",
+            DEFAULT_SNOOZE = "5",
+            DEFAULT_IMPORT_TIME = "19:00";
 
     /**
      * Reset the settings

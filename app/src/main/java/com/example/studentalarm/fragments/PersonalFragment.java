@@ -19,9 +19,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
-public class SchoolFragment extends Fragment {
+public class PersonalFragment extends Fragment {
 
-    public SchoolFragment() {
+    public PersonalFragment() {
     }
 
     @Override
@@ -32,7 +32,7 @@ public class SchoolFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_school, container, false);
+        View view = inflater.inflate(R.layout.fragment_personal, container, false);
         if (getContext() == null) return view;
         view.findViewById(R.id.txVBefore).setOnClickListener(v -> NumberDialog(getContext(), getString(R.string.before), PreferenceKeys.BEFORE));
         view.findViewById(R.id.txtWay).setOnClickListener(v -> NumberDialog(getContext(), getString(R.string.way), PreferenceKeys.WAY));
