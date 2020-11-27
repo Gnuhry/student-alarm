@@ -132,6 +132,7 @@ public class ImportDialog extends Dialog {
             }else if (((RadioButton) findViewById(R.id.rBtnDHBWMa)).isChecked()) {
                 preferences.edit().putInt("Mode", DHBWMa).apply();
                 preferences.edit().putString("Link", "http://vorlesungsplan.dhbw-mannheim.de/ical.php?uid="+((Course)((Spinner) findViewById(R.id.spDHBWMaCourse)).getSelectedItem()).getCourseID()).apply();
+                Log.d("Change Preference","ISC LINK "+preferences.getString("Link","Error"));
                 this.cancel();}
         });
 

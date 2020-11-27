@@ -65,7 +65,7 @@ public class Import {
         switch (PreferenceManager.getDefaultSharedPreferences(context).getInt(PreferenceKeys.MODE, 0)) {
             case ImportFunction.NONE:
                 return;
-            case ImportFunction.ICS:
+            case ImportFunction.ICS: case ImportFunction.DHBWMa:
                 String link = PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.LINK, null);
                 if (link == null) return;
                 String icsFile = runSynchronous(link);
