@@ -4,7 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-public class Course {
+public class Course implements Comparable<String>{
     private final String CourseName;
     private final String CourseISCID;
     public Course(String CourseName, String CourseISCID){
@@ -24,5 +24,10 @@ public class Course {
     @Override
     public String toString() {
         return CourseName;
+    }
+
+    @Override
+    public int compareTo(String o) {
+        return CourseName.compareTo(o);
     }
 }

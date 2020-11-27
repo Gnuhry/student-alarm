@@ -68,6 +68,13 @@ public class ImportDialog extends Dialog {
                         Log.d("Spinnerelement Course","Course: "+ course);
                     }
                     findViewById(R.id.spDHBWMaCourse).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourse)).setAdapter(courseadapter));
+                    for(int in=0 ; in<courseadapter.getCount() ; in++){
+                        if (0==courseadapter.getItem(in).compareTo(preferences.getString(PreferenceKeys.DHBWMANNHEIMCOURSE,null))){
+                            int finalIn = in;
+                            findViewById(R.id.spDHBWMaCourse).post(() -> ((Spinner)findViewById(R.id.spDHBWMaCourse)).setSelection(finalIn));
+                        }
+                    }
+
                 }
 
                 @Override
@@ -75,6 +82,13 @@ public class ImportDialog extends Dialog {
 
                 }
             });
+
+            for(int i=0 ; i<categoryadapter.getCount() ; i++){
+                if (0==categoryadapter.getItem(i).compareTo(preferences.getString(PreferenceKeys.DHBWMANNHEIMCOURSECATEGORY,null))){
+                    int finalI = i;
+                    findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner)findViewById(R.id.spDHBWMaCourseCategory)).setSelection(finalI));
+                }
+            }
 
             //findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner)findViewById(R.id.spDHBWMaCourseCategory)).setSelection(categoryadapter.getPosition(new CourseCategory(preferences.getString(PreferenceKeys.DHBWMANNHEIMCOURSECATEGORY,null),null))));
 
