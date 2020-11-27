@@ -47,7 +47,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 alarm_change = findPreference(PreferenceKeys.ALARM_CHANGE),
                 auto_import = findPreference(PreferenceKeys.AUTO_IMPORT);
         Preference import_ = findPreference("IMPORT"),
-                import_delete_all = findPreference("IMPORT_DELETE_ALL"),
+                import_delete_all = findPreference("EVENT_DELETE_ALL"),
+                export = findPreference("EXPORT"),
                 reset = findPreference("RESET");
         EditTextPreference snooze = findPreference(PreferenceKeys.SNOOZE),
                 import_time = findPreference(PreferenceKeys.IMPORT_TIME);
@@ -55,7 +56,19 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 ringtone = findPreference(PreferenceKeys.RINGTONE),
                 theme = findPreference("THEME");
 
-        if (alarm_on == null || alarm_phone == null || alarm_change == null || auto_import == null || import_ == null || import_delete_all == null || snooze == null || import_time == null || reset == null || ringtone == null || language == null || theme == null)
+        if (alarm_on == null ||
+                alarm_phone == null ||
+                alarm_change == null ||
+                auto_import == null ||
+                import_ == null ||
+                import_delete_all == null ||
+                snooze == null ||
+                import_time == null ||
+                reset == null ||
+                ringtone == null ||
+                language == null ||
+                theme == null ||
+                export == null)
             return;
 
         alarm_on.setOnPreferenceChangeListener((preference, newValue) -> {
@@ -168,6 +181,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         import_delete_all.setOnPreferenceClickListener(preference -> {
             if (getContext() != null)
                 new DeleteLectureDialog(getContext()).show();
+            return true;
+        });
+
+        export.setOnPreferenceClickListener(preference -> {
+            if (getContext() != null && getActivity() != null)
+                new ExportLectureDialog(getContext(), getActivity()).show();
             return true;
         });
 

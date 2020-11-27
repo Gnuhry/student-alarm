@@ -83,7 +83,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
         Lecture_Schedule.Lecture l = lecture.get(position);
-        if (l.getName().equals("")) {
+        if (!l.getName().equals("")) {
             viewHolder.TLEvent.setVisibility(View.VISIBLE);
             viewHolder.barrier.setVisibility(View.GONE);
             viewHolder.date.setVisibility(View.GONE);

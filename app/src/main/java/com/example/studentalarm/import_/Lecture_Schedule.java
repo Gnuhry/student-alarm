@@ -70,6 +70,16 @@ public class Lecture_Schedule implements Serializable {
         return all;
     }
 
+    @NonNull
+    public List<Lecture> getLecture() {
+        return lecture;
+    }
+
+    @NonNull
+    public List<Lecture> getImport_lecture() {
+        return import_lecture;
+    }
+
     /**
      * delete all import events
      */

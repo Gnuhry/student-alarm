@@ -45,8 +45,11 @@
             android:singleLine="true"
             android:title="@string/import_time" />
         <Preference
-            android:key="IMPORT_DELETE_ALL"
+            android:key="EVENT_DELETE_ALL"
             app:title="@string/delete_all_events" />
+        <Preference
+            android:key="EXPORT"
+            app:title="@string/export" />
     </PreferenceCategory>
     <PreferenceCategory android:title="General">
 
