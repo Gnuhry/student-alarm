@@ -20,9 +20,6 @@ import java.util.TimeZone;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 public class Lecture_Schedule implements Serializable {
     @NonNull
     private final List<Lecture> lecture, import_lecture;
@@ -43,13 +40,14 @@ public class Lecture_Schedule implements Serializable {
     @NonNull
     public Lecture_Schedule ImportICS(@NonNull ICS calendar) {
         import_lecture.clear();
-        if (calendar.getVEventList() != null)
-            for (ICS.vEvent ev : calendar.getVEventList()) {
+        List<ICS.vEvent> list = calendar.getVEventList();
+        if (list != null)
+            for (ICS.vEvent ev : list) {
                 try {
-                    if (ev.SUMMARY != null && ev.LOCATION != null && ev.DTStart != null && ev.DTend != null) {
+                    if (ev.DTStart != null && ev.DTend != null && ev.SUMMARY != null) {
                         Date start = ICS.stringToDate(ev.DTStart), end = ICS.stringToDate(ev.DTend);
                         if (start != null && end != null)
-                            import_lecture.add(new Lecture(true).setName(ev.SUMMARY).setLocation(ev.LOCATION).setStart(start).setEnd(end));
+                            import_lecture.add(new Lecture(true, start, end).setName(ev.SUMMARY).setLocation(ev.LOCATION));
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -112,7 +110,7 @@ public class Lecture_Schedule implements Serializable {
     @Nullable
     public Lecture getNextFirstDayLecture() {
         boolean first = true;
-        Lecture help = new Lecture(false).setStart(getDayAddDay(1)), help2 = new Lecture(false).setStart(getDayAddDay(0));
+        Lecture help = new Lecture(false, getDayAddDay(1), new Date()), help2 = new Lecture(false, getDayAddDay(0), new Date());
         for (Lecture l : getAllLecture())
             if (l.compareTo(help2) >= 0 && first) {
                 first = false;
@@ -187,28 +185,35 @@ public class Lecture_Schedule implements Serializable {
      * inner class to represent the lecture information
      */
     public static class Lecture implements Serializable, Comparable<Lecture> {
+        @Nullable
         private String docent, location, name;
+        @NonNull
         private Date start, end;
         private static int counter = 1;
         private int color = Color.RED;
         private final int id;
         private final boolean isImport;
 
-        public Lecture(boolean isImport) {
+        public Lecture(boolean isImport, @NonNull Date start, @NonNull Date end) {
+            this.start = start;
+            this.end = end;
             this.id = counter++;
             this.isImport = isImport;
         }
 
+        @Nullable
         public String getDocent() {
             return docent;
         }
 
+        @Nullable
         public String getLocation() {
             return location;
         }
 
+        @NonNull
         public String getName() {
-            return name;
+            return name == null ? "" : name;
         }
 
         @NonNull
@@ -234,13 +239,13 @@ public class Lecture_Schedule implements Serializable {
         }
 
         @NonNull
-        public Lecture setDocent(@NonNull String docent) {
+        public Lecture setDocent(@Nullable String docent) {
             this.docent = docent;
             return this;
         }
 
         @NonNull
-        public Lecture setLocation(@NonNull String location) {
+        public Lecture setLocation(@Nullable String location) {
             this.location = location;
             return this;
         }
