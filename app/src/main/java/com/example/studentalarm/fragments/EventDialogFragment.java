@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.studentalarm.AlarmManager;
 import com.example.studentalarm.R;
 import com.example.studentalarm.import_.Lecture_Schedule;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -100,6 +101,7 @@ public class EventDialogFragment extends DialogFragment {
         } else {
             create = true;
             InitListener();
+            InitDatePickerListenerWithoutDate();
             cancel_direct = false;
         }
         InitCancel();
@@ -146,9 +148,9 @@ public class EventDialogFragment extends DialogFragment {
     }
 
     /**
-     * init all views to make changes possible
+     * init datePicker views to make changes possible
      */
-    private void InitListener() {
+    private void InitDatePickerListenerWithoutDate() {
         Calendar calendar = Calendar.getInstance();
         dPBegin.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), (datePicker, i, i1, i2) -> {
             SetDateTime(txVBegin, dPBegin, begin);
@@ -156,6 +158,12 @@ public class EventDialogFragment extends DialogFragment {
             dPEnd.setMinDate(calendar.getTimeInMillis());
         });
         dPEnd.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), (datePicker, i, i1, i2) -> SetDateTime(txVEnd, dPEnd, end));
+    }
+
+    /**
+     * init all views to make changes possible
+     */
+    private void InitListener() {
         InitTimeEditText(begin, dPBegin, txVBegin);
         InitTimeEditText(end, dPEnd, txVEnd);
         add.setOnClickListener(view -> {
@@ -235,11 +243,11 @@ public class EventDialogFragment extends DialogFragment {
             }
 
             if (create) {
-                schedule.addLecture(new Lecture_Schedule.Lecture(false).setName(title.getText().toString())
+                schedule.addLecture(new Lecture_Schedule.Lecture(false,
+                        new Date(dBegin.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)),
+                        new Date(dEnd.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET))).setName(title.getText().toString())
                         .setDocent(docent.getText().toString())
                         .setLocation(location.getText().toString())
-                        .setStart(new Date(dBegin.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)))
-                        .setEnd(new Date(dEnd.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)))
                         .setColor(((EventColor) spinner.getSelectedItem()).getColor()));
             } else {
                 List<Lecture_Schedule.Lecture> help = schedule.getAllLecture();
@@ -256,9 +264,17 @@ public class EventDialogFragment extends DialogFragment {
         });
         delete.setOnClickListener(view -> {
             if (getContext() == null) return;
-            schedule.removeLecture(this.data);
-            schedule.Save(getContext());
-            this.dismiss();
+            new MaterialAlertDialogBuilder(getContext())
+                    .setTitle(R.string.delete)
+                    .setMessage(R.string.do_you_want_to_delete_this_events)
+                    .setPositiveButton(R.string.delete, (dialogInterface, i) -> {
+                        schedule.removeLecture(this.data).Save(getContext());
+                        this.dismiss();
+                    })
+                    .setNegativeButton(R.string.cancel, (dialogInterface, i) -> this.dismiss())
+                    .setCancelable(true)
+                    .show();
+
         });
         LBegin.setOnClickListener(view -> {
             if (CBegin.getVisibility() == View.VISIBLE) {
@@ -476,7 +492,9 @@ public class EventDialogFragment extends DialogFragment {
      */
     @Override
     public void onDestroyView() {
-        lecture.RefreshLectureSchedule();
+        lecture.LoadData();
+        if (getContext() != null)
+            AlarmManager.UpdateNextAlarm(this.getContext());
         super.onDestroyView();
     }
 

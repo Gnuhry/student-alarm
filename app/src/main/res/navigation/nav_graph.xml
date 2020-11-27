@@ -20,7 +20,7 @@
         tools:layout="@layout/fragment_lecture" />
     <fragment
         android:id="@+id/schoolFragment_"
-        android:name="com.example.studentalarm.fragments.SchoolFragment"
+        android:name="com.example.studentalarm.fragments.PersonalFragment"
         android:label="fragment_school"
-        tools:layout="@layout/fragment_school" />
+        tools:layout="@layout/fragment_personal" />
 </navigation>
