@@ -1,7 +1,6 @@
-package com.example.studentalarm.dhbw_mannheim;
+package com.example.studentalarm.import_.dhbw_mannheim;
 
 import android.util.Log;
-import android.content.SharedPreferences;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,50 +9,46 @@ import java.util.List;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import com.example.studentalarm.R;
-import androidx.preference.Preference;
-
+import okhttp3.ResponseBody;
 
 
 public class CourseImport {
 
-    private List<CourseCategory> DHBWCoursecategory;
+    private final List<CourseCategory> DHBWCourseCategory;
     private List<Course> tempDHBWCourses;
-    private final OkHttpClient client = new OkHttpClient();
-    private boolean successful=false;
+    private static final String link_to_course = "https://vorlesungsplan.dhbw-mannheim.de/ical.php";
 
     public CourseImport() {//muss in neuem Thread aufgerufen werden new Thread(() -> {CourseNamesDHBW_Mannheim test = new CourseNamesDHBW_Mannheim();}).start();
-        Log.d("Info","Aufgerufen");
-        DHBWCoursecategory=new ArrayList<>();
-        tempDHBWCourses=new ArrayList<>();
+        Log.d("Info", "Aufgerufen");
+        DHBWCourseCategory = new ArrayList<>();
+        tempDHBWCourses = new ArrayList<>();
         runSynchronous();
     }
 
     public void runSynchronous() {
-        successful=false;
         Request request = new Request.Builder()
-                .url("https://vorlesungsplan.dhbw-mannheim.de/ical.php")
+                .url(link_to_course)
                 .build();
 
-        try (Response response = client.newCall(request).execute()) {
+        try (Response response = new OkHttpClient().newCall(request).execute()) {
             if (!response.isSuccessful())
                 Log.e("ICS-Synchronous", "Unexpected code " + response);
-            parse(response.body().string());
-            successful=true;
+            ResponseBody body = response.body();
+            if (body != null)
+                parse(body.string());
         } catch (IOException e) {
             e.printStackTrace();
-            successful=false;
         }
     }
 
     private void parse(String CourseFile) {
-        Log.d("HTMLImport","ICal Kurs Detail: SUCCESS "+CourseFile);
-        for (String importrow : CourseFile.split("\\n")) {
-            if (importrow.contains("<form id=\"class_form\" >")) {
-                Log.d("HTMLAnalyse", "Relevante Zeile suchen: SUCCESS " + importrow);
-                for (String optgroup: importrow.split("<optgroup")) {
+        Log.d("HTMLImport", "ICal Kurs Detail: SUCCESS " + CourseFile);
+        for (String import_row : CourseFile.split("\\n")) {
+            if (import_row.contains("<form id=\"class_form\" >")) {
+                Log.d("HTMLAnalyse", "Relevante Zeile suchen: SUCCESS " + import_row);
+                for (String optgroup : import_row.split("<optgroup")) {
                     String[] coursecategory = optgroup.split("\"");// speichert zusätzlichen Array um Category herauszufinden
-                    tempDHBWCourses=new ArrayList<>(); //.clear funktioniert hier nicht
+                    tempDHBWCourses = new ArrayList<>(); //.clear funktioniert hier nicht
                     if (!coursecategory[1].equals("class_form")) {
                         for (String option : optgroup.split("<option|>")) {
                             if (option.contains("label") && option.contains("value")) {
@@ -62,9 +57,9 @@ public class CourseImport {
                                 tempDHBWCourses.add(new Course(course[1], course[3]));
                             }
                         }
-                        DHBWCoursecategory.add(new CourseCategory(coursecategory[1],tempDHBWCourses));
-                    }else{
-                        DHBWCoursecategory.add(new CourseCategory("Course Category",tempDHBWCourses)); //muss noch als variabler zugriff realisiert werden
+                        DHBWCourseCategory.add(new CourseCategory(coursecategory[1], tempDHBWCourses));
+                    } else {
+                        DHBWCourseCategory.add(new CourseCategory("Course Category", tempDHBWCourses)); //muss noch als variabler zugriff realisiert werden
                     }
                 }
 
@@ -73,6 +68,6 @@ public class CourseImport {
     }
 
     public List<CourseCategory> getDHBWCourses() {
-        return DHBWCoursecategory;
+        return DHBWCourseCategory;
     }
 }
