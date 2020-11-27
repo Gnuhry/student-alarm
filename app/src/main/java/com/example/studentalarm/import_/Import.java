@@ -100,6 +100,13 @@ public class Import {
         return null;
     }
 
+    /**
+     * Check for connection
+     *
+     * @param activity activity of app
+     * @param context  context of application
+     * @return boolean if connection is active
+     */
     public static boolean CheckConnection(@NonNull Activity activity, Context context) {
         ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm.getActiveNetworkInfo() == null || !cm.getActiveNetworkInfo().isConnected()) {

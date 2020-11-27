@@ -15,6 +15,9 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
 public class SnoozeReceiver extends BroadcastReceiver {
+    /**
+     * triggered if alarm should snooze
+     */
     @Override
     public void onReceive(@NonNull Context context, Intent intent) {
         Log.d("ALARM", "Snooze");

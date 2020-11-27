@@ -23,6 +23,13 @@ import androidx.core.content.FileProvider;
 
 public class Export {
 
+    /**
+     * export event to ICS
+     *
+     * @param context  context of application
+     * @param activity activity of app
+     * @param list     events list
+     */
     public static void ExportToICS(@NonNull Context context, @NonNull Activity activity, @NonNull List<Lecture_Schedule.Lecture> list) {
         Log.d("Export", "Start");
         try {
@@ -47,6 +54,13 @@ public class Export {
         }
     }
 
+    /**
+     * Write the ics string to a file
+     *
+     * @param context context of application
+     * @param text    text of ics
+     * @return the ics file
+     */
     @Nullable
     private static File WriteFile(@NonNull Context context, @NonNull String text) throws IOException {
         File documentsPath = new File(context.getFilesDir(), "share/");
@@ -64,7 +78,14 @@ public class Export {
         return file;
     }
 
-    private static void Share(@NonNull Context context, @NonNull File file, @NonNull Activity activity) {
+    /**
+     * File share dialog
+     *
+     * @param context  context of application
+     * @param file     file to share
+     * @param activity activity of application
+     */
+    public static void Share(@NonNull Context context, @NonNull File file, @NonNull Activity activity) {
         Uri uri = FileProvider.getUriForFile(context, "com.example.studentalarm.fileprovider", file);
         Intent intent = ShareCompat.IntentBuilder.from(activity)
                 .setType("*/*")
@@ -74,16 +95,5 @@ public class Export {
                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         context.startActivity(intent);
-    }
-
-    public static boolean DeleteAll(@NonNull Context context) {
-        boolean erg = true;
-        File folder = new File(context.getFilesDir(), "share");
-        File[] filesInFolder = folder.listFiles();
-        if (filesInFolder != null)
-            for (File file : filesInFolder)
-                if (!file.isDirectory())
-                    erg &= file.delete();
-        return erg;
     }
 }

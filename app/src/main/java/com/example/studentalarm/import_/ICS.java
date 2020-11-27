@@ -87,6 +87,12 @@ public class ICS {
         return vEventList;
     }
 
+    /**
+     * change date to UTC
+     *
+     * @param s_date string date to change
+     * @return string date as UTC
+     */
     @NonNull
     private String setTimeZones(@NonNull String s_date) throws ParseException, InvalidRecurrenceRuleException {
         if (vTimezone.size() == 1 || vTimezone.size() == 2) {
@@ -129,6 +135,13 @@ public class ICS {
         return s_date;
     }
 
+    /**
+     * Get all DateTimes of the timezone rules
+     *
+     * @param timezone timezone to get the rules from
+     * @param start    when the rule starting
+     * @return list of all rule dates
+     */
     @NonNull
     private List<DateTime> getDatesTimeZone(@NonNull vTimezone timezone, @NonNull Calendar start) throws InvalidRecurrenceRuleException {
         List<DateTime> dateTimes = new ArrayList<>();
@@ -173,11 +186,23 @@ public class ICS {
 
     }
 
+    /**
+     * convert ICS string to date
+     *
+     * @param string ICS string to convert
+     * @return date
+     */
     @Nullable
     public static Date stringToDate(@NonNull String string) throws ParseException {
         return new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault()).parse(string.replace("T", "-"));
     }
 
+    /**
+     * Format ICS file string
+     *
+     * @param events events to export
+     * @return ics file as string
+     */
     @NonNull
     public static String ExportToICS(@NonNull List<vEvent> events) {
         StringBuilder erg = new StringBuilder(Begin_VCalendar).append("\n")
@@ -228,7 +253,6 @@ public class ICS {
         public String UID, LOCATION, SUMMARY, DTStart, DTend, DTStamp;
 
         public vEvent() {
-
         }
 
         public vEvent(@NonNull String[] strings) {
