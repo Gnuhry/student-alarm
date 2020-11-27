@@ -29,7 +29,7 @@ public class Course implements Comparable<String> {
     }
 
     @Override
-    public int compareTo(String o) {
+    public int compareTo(@NonNull String o) {
         return CourseName.compareTo(o);
     }
 }

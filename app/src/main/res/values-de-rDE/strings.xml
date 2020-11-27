@@ -45,7 +45,6 @@
     <string name="export">Export</string>
     <string name="which_event_do_you_want_to_export">Welche Ereignisse möchten Sie exportieren?</string>
     <string name="DHBWMa">DHBW Mannheim</string>
-    <string name="course_category">Kurs Kategorie</string>
     <string name="missing_selected_course">Kurs nicht ausgewählt</string>
     <string name="share">Teilen</string>
     <string name="next_alarm_in">Nächster Alarm in</string>
