@@ -25,6 +25,9 @@ public class PreferenceKeys {
     @NonNull  public static final String IMPORT_TIME = "IMPORT_TIME";
     @NonNull  public static final String LANGUAGE = "LANGUAGE";
     @NonNull  public static final String RINGTONE = "RINGTONE";
+    public static final String DHBWMANNHEIMCOURSECATEGORY = "";
+    public static final String DHBWMANNHEIMCOURSE = "";
+
 
     @NonNull  public static final String DEFAULT_RINGTONE = "Default";
     @NonNull  public static final String DEFAULT_LANGUAGE = "EN";
