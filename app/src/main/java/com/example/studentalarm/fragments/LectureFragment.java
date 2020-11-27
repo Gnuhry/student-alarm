@@ -89,30 +89,39 @@ public class LectureFragment extends Fragment {
         }
     }
 
+
+    /**
+     * Start the reload animation
+     *
+     * @param activity activity of app
+     */
     public static void AnimateReload(@NonNull Activity activity) {
         activity.findViewById(R.id.my_toolbar).post(() -> ((Toolbar) activity.findViewById(R.id.my_toolbar)).getMenu().getItem(1).setEnabled(false));
         animate_bool = true;
         MenuItem item = ((Toolbar) activity.findViewById(R.id.my_toolbar)).getMenu().getItem(1);
         animate = new Thread(() -> {
-            while (animate_bool) {
-                activity.findViewById(R.id.my_toolbar).post(() -> item.setIcon(R.drawable.hourglass_bottom));
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                activity.findViewById(R.id.my_toolbar).post(() -> item.setIcon(R.drawable.hourglass_top));
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+            setAnimation(activity, item, R.drawable.hourglass_bottom);
             activity.findViewById(R.id.my_toolbar).post(() -> item.setIcon(R.drawable.replay));
         });
         animate.start();
     }
 
+    private static void setAnimation(Activity activity, MenuItem item, int res) {
+        activity.findViewById(R.id.my_toolbar).post(() -> item.setIcon(res));
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (animate_bool)
+            setAnimation(activity, item, res == R.drawable.hourglass_bottom ? R.drawable.hourglass_top: R.drawable.hourglass_bottom);
+    }
+
+    /**
+     * Stop the reload animation
+     *
+     * @param activity activity of app
+     */
     public static void StopAnimateReload(@NonNull Activity activity) {
         activity.findViewById(R.id.my_toolbar).post(() -> ((Toolbar) activity.findViewById(R.id.my_toolbar)).getMenu().getItem(1).setEnabled(true));
         animate_bool = false;

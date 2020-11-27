@@ -186,7 +186,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         export.setOnPreferenceClickListener(preference -> {
             if (getContext() != null && getActivity() != null)
-                new ExportLectureDialog(getContext(), getActivity()).show();
+                new ExportDialog(getContext(), getActivity()).show();
+//                new ExportLectureDialog(getContext(), getActivity()).show();
             return true;
         });
 

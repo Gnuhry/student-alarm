@@ -74,7 +74,6 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
     /**
      * Refresh the Lecture Schedule
      */
-    @Override
     public void RefreshLectureSchedule() {
         if (getContext() != null &&
                 PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) != Import.ImportFunction.NONE &&
