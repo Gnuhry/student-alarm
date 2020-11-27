@@ -33,8 +33,6 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
-import static com.example.studentalarm.import_.Import.ImportFunction.DHBWMa;
-
 
 public class ImportDialog extends Dialog {
 
@@ -88,7 +86,7 @@ public class ImportDialog extends Dialog {
                 ((RadioButton) findViewById(R.id.rBtnICS)).setChecked(true);
                 findViewById(R.id.LLLink).setVisibility(View.VISIBLE);
                 break;
-            case DHBWMa:
+            case Import.ImportFunction.DHBWMa:
                 ((RadioButton) findViewById(R.id.rBtnDHBWMa)).setChecked(true);
                 findViewById(R.id.LLDHBWMaCourse).setVisibility(View.VISIBLE);
                 break;
@@ -129,9 +127,11 @@ public class ImportDialog extends Dialog {
             } else if (((RadioButton) findViewById(R.id.rBtnNone)).isChecked()) {
                 preferences.edit().putInt(PreferenceKeys.MODE, Import.ImportFunction.NONE).apply();
                 this.cancel();
-            }else if (((RadioButton) findViewById(R.id.rBtnDHBWMa)).isChecked()) {
-                preferences.edit().putInt("Mode", DHBWMa).apply();
+            }else if (((RadioButton) findViewById(R.id.rBtnDHBWMa)).isChecked() && (((Spinner) findViewById(R.id.spDHBWMaCourse)).getSelectedItem()) instanceof Course) {
+                preferences.edit().putInt("Mode", Import.ImportFunction.DHBWMa).apply();
                 preferences.edit().putString("Link", "http://vorlesungsplan.dhbw-mannheim.de/ical.php?uid="+((Course)((Spinner) findViewById(R.id.spDHBWMaCourse)).getSelectedItem()).getCourseID()).apply();
+                preferences.edit().putString("DHBWMANNHEIMCOURSE",((Course)((Spinner) findViewById(R.id.spDHBWMaCourse)).getSelectedItem()).getCourseID()).apply();
+                preferences.edit().putString("DHBWMANNHEIMCOURSECATEGORY",((CourseCategory)((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).getSelectedItem()).getCourseCategory()).apply();
                 Log.d("Change Preference","ISC LINK "+preferences.getString("Link","Error"));
                 this.cancel();}
         });

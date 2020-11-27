@@ -27,8 +27,10 @@ public class PreferenceKeys {
             IMPORT_TIME = "IMPORT_TIME",
             LANGUAGE = "LANGUAGE",
             RINGTONE = "RINGTONE",
+            DHBWMANNHEIMCOURSECATEGORY = "",
+            DHBWMANNHEIMCOURSE = "",
 
-    DEFAULT_RINGTONE = "Default",
+            DEFAULT_RINGTONE = "Default",
             DEFAULT_LANGUAGE = "EN",
             DEFAULT_SNOOZE = "5",
             DEFAULT_IMPORT_TIME = "19:00";
