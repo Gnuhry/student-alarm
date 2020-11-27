@@ -136,6 +136,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             StringBuilder sb = new StringBuilder(Import.ImportFunction.imports.get(mode));
             if (mode == Import.ImportFunction.ICS)
                 sb.append(" - ").append(preferences.getString(PreferenceKeys.LINK, null));
+            else if (mode == Import.ImportFunction.DHBWMa)
+                sb.append(" - ").append(preferences.getString(PreferenceKeys.DHBWMANNHEIMCOURSE, null));//if Impot Dialog Correct should never use defValue, better save than sorry
             return sb.toString();
         });
         import_.setOnPreferenceClickListener(preference -> {
