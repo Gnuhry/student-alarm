@@ -235,11 +235,11 @@ public class EventDialogFragment extends DialogFragment {
             }
 
             if (create) {
-                schedule.addLecture(new Lecture_Schedule.Lecture(false).setName(title.getText().toString())
+                schedule.addLecture(new Lecture_Schedule.Lecture(false,
+                        new Date(dBegin.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)),
+                        new Date(dEnd.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET))).setName(title.getText().toString())
                         .setDocent(docent.getText().toString())
                         .setLocation(location.getText().toString())
-                        .setStart(new Date(dBegin.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)))
-                        .setEnd(new Date(dEnd.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)))
                         .setColor(((EventColor) spinner.getSelectedItem()).getColor()));
             } else {
                 List<Lecture_Schedule.Lecture> help = schedule.getAllLecture();
