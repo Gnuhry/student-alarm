@@ -24,12 +24,12 @@ public class CourseImport {
 
     public CourseImport() {//muss in neuem Thread aufgerufen werden new Thread(() -> {CourseNamesDHBW_Mannheim test = new CourseNamesDHBW_Mannheim();}).start();
         Log.d("Info","Aufgerufen");
+        DHBWCoursecategory=new ArrayList<>();
+        tempDHBWCourses=new ArrayList<>();
         runSynchronous();
     }
 
     public void runSynchronous() {
-        DHBWCoursecategory=new ArrayList<>();
-        tempDHBWCourses=new ArrayList<>();
         successful=false;
         Request request = new Request.Builder()
                 .url("https://vorlesungsplan.dhbw-mannheim.de/ical.php")
