@@ -42,7 +42,7 @@ public class ICS {
     private final List<vEvent> vEventList;
     @NonNull
     private final List<vTimezone> vTimezone;
-    private final int year = 1950;
+    private static final int year = 1950, year_until_plus_this_year = 50;
 
     public ICS(@NonNull String icsFile) {
         vEventList = new ArrayList<>();
@@ -85,27 +85,28 @@ public class ICS {
 
     @NonNull
     private String setTimeZones(@NonNull String s_date) throws ParseException, InvalidRecurrenceRuleException {
-        if (vTimezone.size() > 1) {
-            boolean normal = true;
-            List<DateTime> standard = getDatesTimeZone(vTimezone.get(0)),
-                    standard2 = getDatesTimeZone(vTimezone.get(1));
-            Calendar calendar = Calendar.getInstance(),
-                    calendar1 = Calendar.getInstance(),
-                    calendar2 = Calendar.getInstance();
+        if (vTimezone.size() == 1 || vTimezone.size() == 2) {
+            String offset = vTimezone.get(0).TZOffsetTo;
+            Calendar calendar = Calendar.getInstance();
             Date date = (stringToDate(s_date));
+
             if (date == null) return s_date;
             calendar.setTime(date);
-            int year = calendar.get(Calendar.YEAR) - this.year;
-            calendar1.setTimeInMillis(standard.get(year).getTimestamp());
-            calendar2.setTimeInMillis(standard2.get(year).getTimestamp());
-
-            if (calendar1.after(calendar2)) {
-                Calendar calendar3 = calendar1;
-                calendar1 = calendar2;
-                calendar2 = calendar3;
-                normal = false;
+            if (vTimezone.size() == 2) {
+                boolean normal = true;
+                Calendar calendar1 = Calendar.getInstance(), calendar2 = Calendar.getInstance();
+                int year_ = calendar.get(Calendar.YEAR) - year;
+                if (year_ < 0) return s_date;
+                calendar1.setTimeInMillis(getDatesTimeZone(vTimezone.get(0)).get(year_).getTimestamp());
+                calendar2.setTimeInMillis(getDatesTimeZone(vTimezone.get(1)).get(year_).getTimestamp());
+                if (calendar1.after(calendar2)) {
+                    Calendar calendar3 = calendar1;
+                    calendar1 = calendar2;
+                    calendar2 = calendar3;
+                    normal = false;
+                }
+                offset = vTimezone.get((calendar.after(calendar1) && calendar.before(calendar2)) ? normal ? 0 : 1 : normal ? 1 : 0).TZOffsetTo;
             }
-            String offset = vTimezone.get((calendar.after(calendar1) && calendar.before(calendar2)) ? normal ? 0 : 1 : normal ? 1 : 0).TZOffsetTo;
             int hour = Integer.parseInt(offset.substring(1, 3)), minute = Integer.parseInt(offset.substring(3, 5));
             if (offset.charAt(0) == '-') {
                 hour *= -1;
@@ -122,11 +123,11 @@ public class ICS {
     private List<DateTime> getDatesTimeZone(@NonNull vTimezone timezone) throws InvalidRecurrenceRuleException {
         List<DateTime> dateTimes = new ArrayList<>();
         RecurrenceRule rule = new RecurrenceRule(timezone.rule);
-        int year = this.year;
-        RecurrenceRuleIterator it = rule.iterator(new DateTime(year, 0, 1));
-        while (it.hasNext() && year <= Calendar.getInstance().get(Calendar.YEAR)) {
+        int year_ = year;
+        RecurrenceRuleIterator it = rule.iterator(new DateTime(year_, 0, 1));
+        while (it.hasNext() && year_ <= Calendar.getInstance().get(Calendar.YEAR) + year_until_plus_this_year) {
             dateTimes.add(it.nextDateTime());
-            year = dateTimes.get(dateTimes.size() - 1).getYear();
+            year_ = dateTimes.get(dateTimes.size() - 1).getYear();
         }
         return dateTimes;
     }
