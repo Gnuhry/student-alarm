@@ -60,7 +60,7 @@ public class ImportDialog extends Dialog {
             findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setAdapter(category_adapter));
             ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                public void onItemSelected(@NonNull AdapterView<?> adapterView, View view, int i, long l) {
                     Log.d("Spinner Course", "adview:" + adapterView.getItemAtPosition(1) + " view :" + view + " i " + i + " l " + l + "  Coursecat: " + adapterView.getItemAtPosition(i));
                     ArrayAdapter<Course> course_adapter = new ArrayAdapter<>(getContext(),
                             android.R.layout.simple_spinner_item, ((CourseCategory) adapterView.getItemAtPosition(i)).getDHBWCourses());

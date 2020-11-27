@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -14,6 +15,7 @@ import okhttp3.ResponseBody;
 
 public class CourseImport {
 
+    @NonNull
     private final List<CourseCategory> DHBWCourseCategory;
     private List<Course> tempDHBWCourses;
     private static final String link_to_course = "https://vorlesungsplan.dhbw-mannheim.de/ical.php";
@@ -41,7 +43,7 @@ public class CourseImport {
         }
     }
 
-    private void parse(String CourseFile) {
+    private void parse(@NonNull String CourseFile) {
         Log.d("HTMLImport", "ICal Kurs Detail: SUCCESS " + CourseFile);
         for (String import_row : CourseFile.split("\\n")) {
             if (import_row.contains("<form id=\"class_form\" >")) {
@@ -58,15 +60,17 @@ public class CourseImport {
                             }
                         }
                         DHBWCourseCategory.add(new CourseCategory(coursecategory[1], tempDHBWCourses));
-                    } else {
-                        DHBWCourseCategory.add(new CourseCategory("Course Category", tempDHBWCourses)); //muss noch als variabler zugriff realisiert werden
                     }
+//                    else {
+//                        DHBWCourseCategory.add(new CourseCategory("Course Category", tempDHBWCourses)); //muss noch als variabler zugriff realisiert werden
+//                    }
                 }
 
             }
         }
     }
 
+    @NonNull
     public List<CourseCategory> getDHBWCourses() {
         return DHBWCourseCategory;
     }

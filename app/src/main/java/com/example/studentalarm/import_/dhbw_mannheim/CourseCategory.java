@@ -31,7 +31,7 @@ public class CourseCategory implements Comparable<String> {
     }
 
     @Override
-    public int compareTo(String o) {
+    public int compareTo(@NonNull String o) {
         return CourseCategory.compareTo(o);
     }
 }
