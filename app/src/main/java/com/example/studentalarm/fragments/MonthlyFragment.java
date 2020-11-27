@@ -74,18 +74,22 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
      */
     @Override
     public void RefreshLectureSchedule() {
-        if (getContext() != null)
-            if (PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) != Import.ImportFunction.NONE)
-                if (getActivity() != null)
-                    if (Import.CheckConnection(getActivity(), getContext()))
-                        new Thread(() -> {
-                            Import.ImportLecture(this.getContext());
-                            if (getView() != null)
-                                getView().post(() -> {
-                                    AlarmManager.UpdateNextAlarm(this.getContext());
-                                    LoadData();
-                                });
-                        }).start();
+        if (getContext() != null &&
+                PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) != Import.ImportFunction.NONE &&
+                getActivity() != null &&
+                Import.CheckConnection(getActivity(), getContext()))
+            new Thread(() -> {
+                if (getActivity() == null) return;
+                LectureFragment.AnimateReload(getActivity());
+                Import.ImportLecture(this.getContext());
+                if (getView() != null)
+                    getView().post(() -> {
+                        AlarmManager.UpdateNextAlarm(this.getContext());
+                        LoadData();
+                    });
+                if (getActivity() == null) return;
+                LectureFragment.StopAnimateReload(getActivity());
+            }).start();
 
         LoadData();
     }
