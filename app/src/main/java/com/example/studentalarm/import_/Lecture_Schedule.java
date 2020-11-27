@@ -70,6 +70,16 @@ public class Lecture_Schedule implements Serializable {
         return all;
     }
 
+    @NonNull
+    public List<Lecture> getLecture() {
+        return lecture;
+    }
+
+    @NonNull
+    public List<Lecture> getImport_lecture() {
+        return import_lecture;
+    }
+
     /**
      * delete all import events
      */
@@ -87,19 +97,23 @@ public class Lecture_Schedule implements Serializable {
     /**
      * delete all events. import and not import
      */
-    public void clearEvents() {
+    @NonNull
+    public Lecture_Schedule clearEvents() {
         this.import_lecture.clear();
         this.lecture.clear();
+        return this;
     }
 
     public void addLecture(@NonNull Lecture lecture) {
         this.lecture.add(lecture);
     }
 
-    public void removeLecture(@NonNull Lecture data) {
+    @NonNull
+    public Lecture_Schedule removeLecture(@NonNull Lecture data) {
         int id1 = lecture.indexOf(data), id2 = import_lecture.indexOf(data);
         if (id1 >= 0) lecture.remove(id1);
         if (id2 >= 0) import_lecture.remove(id2);
+        return this;
     }
 
     /**
