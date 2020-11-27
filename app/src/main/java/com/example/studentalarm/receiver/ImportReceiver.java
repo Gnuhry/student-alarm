@@ -11,6 +11,9 @@ import androidx.annotation.NonNull;
 
 public class ImportReceiver extends BroadcastReceiver {
 
+    /**
+     * triggered if file should import
+     */
     @Override
     public void onReceive(@NonNull Context context, Intent intent) {
         Import.ImportLecture(context);
