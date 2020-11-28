@@ -1,5 +1,7 @@
 package com.example.studentalarm.import_;
 
+import android.util.Log;
+
 import org.dmfs.rfc5545.DateTime;
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException;
 import org.dmfs.rfc5545.recur.RecurrenceRule;
@@ -19,34 +21,35 @@ import androidx.annotation.Nullable;
 public class ICS {
     @NonNull
     private static final String
-            Begin_VCalendar = "BEGIN:VCALENDAR",
-            Begin_VTimezone = "BEGIN:VTIMEZONE",
-            End_VTimezone = "END:VTIMEZONE",
-            Begin_VEvent = "BEGIN:VEVENT",
-            End_VEvent = "END:VEVENT",
-            VEvent_UID = "UID",
-            VEvent_Location = "LOCATION",
-            VEvent_Summary = "SUMMARY",
-            VEvent_DtStamp = "DTSTAMP",
-            VEvent_DtStart = "DTSTART",
-            VEvent_DtEnd = "DTEND",
-            Begin_Timezone_DayLight = "BEGIN:DAYLIGHT",
-            End_Timezone_DayLight = "END:DAYLIGHT",
-            Begin_Timezone_Standard = "BEGIN:STANDARD",
-            End_Timezone_Standard = "END:STANDARD",
-            Timezone_RRule = "RRULE",
-            Timezone_TZOffsetTo = "TZOFFSETTO",
-            Version = "VERSION:2.0",
-            Method = "METHOD:PUBLISH",
-            CalScale = "CALSCALE:GREGORIAN",
-            End_VCalendar = "END:VCALENDAR";
+            BEGIN_VCALENDAR = "BEGIN:VCALENDAR",
+            BEGIN_VTIMEZONE = "BEGIN:VTIMEZONE",
+            END_VTIMEZONE = "END:VTIMEZONE",
+            BEGIN_VEVENT = "BEGIN:VEVENT",
+            END_VEVENT = "END:VEVENT",
+            VEVENT_UID = "UID",
+            VEVENT_LOCATION = "LOCATION",
+            VEVENT_SUMMARY = "SUMMARY",
+            VEVENT_DT_STAMP = "DTSTAMP",
+            VEVENT_DT_START = "DTSTART",
+            VEVENT_DT_END = "DTEND",
+            BEGIN_TIMEZONE_DAY_LIGHT = "BEGIN:DAYLIGHT",
+            END_TIMEZONE_DAY_LIGHT = "END:DAYLIGHT",
+            BEGIN_TIMEZONE_STANDARD = "BEGIN:STANDARD",
+            END_TIMEZONE_STANDARD = "END:STANDARD",
+            TIMEZONE_R_RULE = "RRULE",
+            TIMEZONE_TZ_OFFSET_TO = "TZOFFSETTO",
+            VERSION = "VERSION:2.0",
+            METHOD = "METHOD:PUBLISH",
+            CAL_SCALE = "CALSCALE:GREGORIAN",
+            END_VCALENDAR = "END:VCALENDAR";
 
 
     @NonNull
     private final List<vEvent> vEventList;
     @NonNull
     private final List<vTimezone> vTimezone;
-    private static final int year_until_plus_this_year = 50;
+    private static final int YEAR_UNTIL_PLUS_THIS_YEAR = 50;
+    private static final String LOG = "ICS";
 
     public ICS(@NonNull String icsFile) {
         vEventList = new ArrayList<>();
@@ -71,7 +74,7 @@ public class ICS {
         return null;
     }
 
-    public boolean isSuccessful(){
+    public boolean isSuccessful() {
         return !vEventList.isEmpty();
     }
 
@@ -99,6 +102,7 @@ public class ICS {
      */
     @NonNull
     private String setTimeZones(@NonNull String s_date) throws ParseException, InvalidRecurrenceRuleException {
+        Log.d(LOG, "date before add timezone: " + s_date);
         if (vTimezone.size() == 1 || vTimezone.size() == 2) {
             String offset = vTimezone.get(0).TZOffsetTo;
             Calendar calendar = Calendar.getInstance();
@@ -132,9 +136,12 @@ public class ICS {
                 hour *= -1;
                 minute *= -1;
             }
+            Log.d(LOG, "Add " + hour + " hour and " + minute + " min");
             calendar.add(Calendar.HOUR_OF_DAY, -hour);
             calendar.add(Calendar.MINUTE, -minute);
-            return new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault()).format(calendar.getTime());
+            String erg = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault()).format(calendar.getTime());
+            Log.d(LOG, "date after add timezone: " + erg);
+            return erg;
         }
         return s_date;
     }
@@ -152,7 +159,7 @@ public class ICS {
         RecurrenceRule rule = new RecurrenceRule(timezone.rule);
         RecurrenceRuleIterator it = rule.iterator(new DateTime(start.getTimeInMillis()));
         int year_ = start.get(Calendar.YEAR);
-        while (it.hasNext() && year_ <= Calendar.getInstance().get(Calendar.YEAR) + year_until_plus_this_year) {
+        while (it.hasNext() && year_ <= Calendar.getInstance().get(Calendar.YEAR) + YEAR_UNTIL_PLUS_THIS_YEAR) {
             dateTimes.add(it.nextDateTime());
             year_ = dateTimes.get(dateTimes.size() - 1).getYear();
         }
@@ -165,27 +172,30 @@ public class ICS {
      * @param icsFile the ics file as string
      */
     private void parse(@NonNull String icsFile) {
-        int id = icsFile.indexOf(Begin_VCalendar);
+        int id = icsFile.indexOf(BEGIN_VCALENDAR);
         if (id < 0) return;
-        String icsFile_ = icsFile.substring(id + Begin_VCalendar.length());
-        id = icsFile_.indexOf(Begin_VTimezone);
-        int id2 = icsFile_.indexOf(End_VTimezone);
+        String icsFile_ = icsFile.substring(id + BEGIN_VCALENDAR.length());
+        id = icsFile_.indexOf(BEGIN_VTIMEZONE);
+        int id2 = icsFile_.indexOf(END_VTIMEZONE);
         if (id >= 0 && id2 >= 0) {
-            String timeZone = icsFile_.substring(id + Begin_VTimezone.length(), id2);
-            id = timeZone.indexOf(Begin_Timezone_DayLight);
-            id2 = timeZone.indexOf(End_Timezone_DayLight);
-            vTimezone.add(new vTimezone(timeZone.substring(id + Begin_Timezone_DayLight.length(), id2).split("\n")));
-            id = timeZone.indexOf(Begin_Timezone_Standard, id2);
-            id2 = timeZone.indexOf(End_Timezone_Standard, id2);
-            vTimezone.add(new vTimezone(timeZone.substring(id + Begin_Timezone_Standard.length(), id2).split("\n")));
-            icsFile_ = icsFile_.substring(id2 + End_VTimezone.length());
+            String timeZone = icsFile_.substring(id + BEGIN_VTIMEZONE.length(), id2);
+            Log.d(LOG, "timeZone: " + timeZone);
+            id = timeZone.indexOf(BEGIN_TIMEZONE_DAY_LIGHT);
+            id2 = timeZone.indexOf(END_TIMEZONE_DAY_LIGHT);
+            vTimezone.add(new vTimezone(timeZone.substring(id + BEGIN_TIMEZONE_DAY_LIGHT.length(), id2).split("\n")));
+            id = timeZone.indexOf(BEGIN_TIMEZONE_STANDARD, id2);
+            id2 = timeZone.indexOf(END_TIMEZONE_STANDARD, id2);
+            vTimezone.add(new vTimezone(timeZone.substring(id + BEGIN_TIMEZONE_STANDARD.length(), id2).split("\n")));
+            icsFile_ = icsFile_.substring(id2 + END_VTIMEZONE.length());
         }
-        id = icsFile_.indexOf(Begin_VEvent);
-        id2 = icsFile_.indexOf(End_VEvent, id);
+        id = icsFile_.indexOf(BEGIN_VEVENT);
+        id2 = icsFile_.indexOf(END_VEVENT, id);
         while (id >= 0 && id2 >= 0) {
-            vEventList.add(new vEvent(icsFile_.substring(id + Begin_VEvent.length(), id2).split("\n")));
-            id = icsFile_.indexOf(Begin_VEvent, id2);
-            id2 = icsFile_.indexOf(End_VEvent, id);
+            String event = icsFile_.substring(id + BEGIN_VEVENT.length(), id2);
+            Log.d(LOG, "event: " + event);
+            vEventList.add(new vEvent(event.split("\n")));
+            id = icsFile_.indexOf(BEGIN_VEVENT, id2);
+            id2 = icsFile_.indexOf(END_VEVENT, id);
         }
 
     }
@@ -209,20 +219,20 @@ public class ICS {
      */
     @NonNull
     public static String ExportToICS(@NonNull List<vEvent> events) {
-        StringBuilder erg = new StringBuilder(Begin_VCalendar).append("\n")
-                .append(Version).append("\n")
-                .append(Method).append("\n")
-                .append(CalScale).append("\n");
+        StringBuilder erg = new StringBuilder(BEGIN_VCALENDAR).append("\n")
+                .append(VERSION).append("\n")
+                .append(METHOD).append("\n")
+                .append(CAL_SCALE).append("\n");
         for (vEvent event : events)
-            erg.append(Begin_VEvent).append("\n")
-                    .append(VEvent_UID).append(":").append(event.UID).append("\n")
-                    .append(VEvent_Location).append(":").append(event.LOCATION).append("\n")
-                    .append(VEvent_Summary).append(":").append(event.SUMMARY).append("\n")
-                    .append(VEvent_DtStart).append(":").append(event.DTStart).append("\n")
-                    .append(VEvent_DtEnd).append(":").append(event.DTend).append("\n")
-                    .append(VEvent_DtStamp).append(":").append(event.DTStamp).append("\n")
-                    .append(End_VEvent).append("\n");
-        return erg.append(End_VCalendar).toString();
+            erg.append(BEGIN_VEVENT).append("\n")
+                    .append(VEVENT_UID).append(":").append(event.UID).append("\n")
+                    .append(VEVENT_LOCATION).append(":").append(event.LOCATION).append("\n")
+                    .append(VEVENT_SUMMARY).append(":").append(event.SUMMARY).append("\n")
+                    .append(VEVENT_DT_START).append(":").append(event.DTStart).append("\n")
+                    .append(VEVENT_DT_END).append(":").append(event.DTend).append("\n")
+                    .append(VEVENT_DT_STAMP).append(":").append(event.DTStamp).append("\n")
+                    .append(END_VEVENT).append("\n");
+        return erg.append(END_VCALENDAR).toString();
     }
 
     /**
@@ -235,13 +245,13 @@ public class ICS {
             for (String s : strings)
                 if (s.split(":").length > 1)
                     switch (s.split(":")[0]) {
-                        case VEvent_DtStart:
+                        case VEVENT_DT_START:
                             DTStart = s.split(":")[1];
                             break;
-                        case Timezone_TZOffsetTo:
+                        case TIMEZONE_TZ_OFFSET_TO:
                             TZOffsetTo = s.split(":")[1];
                             break;
-                        case Timezone_RRule:
+                        case TIMEZONE_R_RULE:
                             rule = s.split(":")[1];
                             break;
                     }
@@ -263,22 +273,22 @@ public class ICS {
             for (String s : strings)
                 if (s.split(":").length > 1)
                     switch (s.split(":")[0]) {
-                        case VEvent_UID:
+                        case VEVENT_UID:
                             UID = s.split(":")[1];
                             break;
-                        case VEvent_Location:
+                        case VEVENT_LOCATION:
                             LOCATION = s.split(":")[1];
                             break;
-                        case VEvent_Summary:
+                        case VEVENT_SUMMARY:
                             SUMMARY = s.substring(8);
                             break;
-                        case VEvent_DtStart:
+                        case VEVENT_DT_START:
                             DTStart = s.split(":")[1];
                             break;
-                        case VEvent_DtEnd:
+                        case VEVENT_DT_END:
                             DTend = s.split(":")[1];
                             break;
-                        case VEvent_DtStamp:
+                        case VEVENT_DT_STAMP:
                             DTStamp = s.split(":")[1];
                             break;
                     }

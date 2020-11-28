@@ -28,8 +28,6 @@ import com.example.studentalarm.import_.dhbw_mannheim.Course;
 import com.example.studentalarm.import_.dhbw_mannheim.CourseCategory;
 import com.example.studentalarm.import_.dhbw_mannheim.CourseImport;
 
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
@@ -40,6 +38,7 @@ public class ImportDialog extends Dialog {
     private String lastValidString;
     private final Activity activity;
     private static final String link_begin = "http://vorlesungsplan.dhbw-mannheim.de/ical.php?uid=";
+    private static final String LOG = "ImportDialog";
 
     public ImportDialog(@NonNull Context context, Activity activity) {
         super(context);
@@ -49,11 +48,13 @@ public class ImportDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(LOG, "open");
         setContentView(R.layout.fragment_import);
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         new Thread(() -> {
+            Log.i(LOG, "get DHBW course");
             ArrayAdapter<CourseCategory> category_adapter = new ArrayAdapter<>(getContext(),
                     android.R.layout.simple_spinner_item, new CourseImport().getDHBWCourses());
             category_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -61,19 +62,18 @@ public class ImportDialog extends Dialog {
             ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(@NonNull AdapterView<?> adapterView, View view, int i, long l) {
-                    Log.d("Spinner Course", "adview:" + adapterView.getItemAtPosition(1) + " view :" + view + " i " + i + " l " + l + "  Coursecat: " + adapterView.getItemAtPosition(i));
+                    Log.d(LOG, "Spinner:" + ((CourseCategory) adapterView.getItemAtPosition(i)).toString());
                     ArrayAdapter<Course> course_adapter = new ArrayAdapter<>(getContext(),
                             android.R.layout.simple_spinner_item, ((CourseCategory) adapterView.getItemAtPosition(i)).getDHBWCourses());
                     course_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     findViewById(R.id.spDHBWMaCourse).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourse)).setAdapter(course_adapter));
                     String course = preferences.getString(PreferenceKeys.DHBW_MANNHEIM_COURSE, null);
-                    if (course != null) {
+                    if (course != null)
                         for (int in = 0; in < course_adapter.getCount(); in++)
                             if (0 == course_adapter.getItem(in).compareTo(course)) {
                                 int finalIn = in;
                                 findViewById(R.id.spDHBWMaCourse).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourse)).setSelection(finalIn));
                             }
-                    }
                 }
 
                 @Override
@@ -130,7 +130,9 @@ public class ImportDialog extends Dialog {
         });
 
         findViewById(R.id.btnSave).setOnClickListener(view1 -> {
+            Log.i(LOG, "save");
             if (((RadioButton) findViewById(R.id.rBtnICS)).isChecked()) {
+                Log.d(LOG, "ICS");
                 if (isValid) {
                     preferences.edit().putInt(PreferenceKeys.MODE, Import.ImportFunction.ICS).apply();
                     preferences.edit().putString(PreferenceKeys.LINK, ((EditText) findViewById(R.id.edTLink)).getText().toString()).apply();
@@ -140,9 +142,11 @@ public class ImportDialog extends Dialog {
                 } else
                     Toast.makeText(getContext(), R.string.missing_checked_valid_url, Toast.LENGTH_SHORT).show();
             } else if (((RadioButton) findViewById(R.id.rBtnNone)).isChecked()) {
+                Log.d(LOG, "none");
                 preferences.edit().putInt(PreferenceKeys.MODE, Import.ImportFunction.NONE).apply();
                 this.cancel();
             } else if (((RadioButton) findViewById(R.id.rBtnDHBWMa)).isChecked()) {
+                Log.d(LOG, "dhbw");
                 Course course = ((Course) ((Spinner) findViewById(R.id.spDHBWMaCourse)).getSelectedItem());
                 CourseCategory category = ((CourseCategory) ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).getSelectedItem());
                 if (course == null || category == null)
@@ -154,9 +158,6 @@ public class ImportDialog extends Dialog {
                             .putString(PreferenceKeys.DHBW_MANNHEIM_COURSE, course.getCourseName())
                             .putString(PreferenceKeys.DHBW_MANNHEIM_COURSE_CATEGORY, category.getCourseCategory())
                             .apply();
-                    Log.d("Change Preference", "DHBWMANNHEIMCOURSE: " + preferences.getString("DHBWMANNHEIMCOURSE", "Error"));
-                    Log.d("Change Preference", "DHBWMANNHEIMCOURSECATEGORY: " + preferences.getString("DHBWMANNHEIMCOURSECATEGORY", "Error"));
-                    Log.d("Change Preference", "ISC LINK " + preferences.getString("Link", "Error"));
                     new Thread(() -> Import.ImportLecture(this.getContext())).start();
                     Toast.makeText(getContext(), R.string.it_may_take_a_minute_until_the_change_is_visible_in_the_calendar, Toast.LENGTH_LONG).show();
                     this.cancel();
@@ -164,10 +165,14 @@ public class ImportDialog extends Dialog {
             }
         });
 
-        findViewById(R.id.btnCancel).setOnClickListener(view1 -> this.cancel());
+        findViewById(R.id.btnCancel).setOnClickListener(view1 -> {
+            Log.i(LOG, "cancel");
+            this.cancel();
+        });
 
         findViewById(R.id.btnCheckLink).setOnClickListener(view12 -> {
             String text = ((EditText) findViewById(R.id.edTLink)).getText().toString();
+            Log.i(LOG, "check link: "+text);
             if (!URLUtil.isValidUrl(text)) {
                 Toast.makeText(getContext(), R.string.string_is_not_a_valid_url, Toast.LENGTH_SHORT).show();
                 return;
@@ -177,11 +182,12 @@ public class ImportDialog extends Dialog {
             ImageView imageView = findViewById(R.id.imgStatus);
             Glide.with(getContext()).load(R.drawable.sandglass).into(imageView);
             new Thread(() -> {
+                Log.d(LOG, "start check thread");
                 String icsFile = Import.runSynchronous(text);
                 if (icsFile == null) return;
                 isValid = new ICS(icsFile).isSuccessful();
                 findViewById(R.id.btnCheckLink).post(() -> findViewById(R.id.btnCheckLink).setEnabled(true));
-                findViewById(R.id.imgStatus).post(() ->((ImageView) findViewById(R.id.imgStatus)).setImageResource(isValid ? R.drawable.right : R.drawable.cross));
+                findViewById(R.id.imgStatus).post(() -> ((ImageView) findViewById(R.id.imgStatus)).setImageResource(isValid ? R.drawable.right : R.drawable.cross));
                 if (isValid) lastValidString = text;
             }).start();
         });

@@ -2,6 +2,7 @@ package com.example.studentalarm;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.example.studentalarm.import_.Lecture_Schedule;
 
@@ -14,7 +15,8 @@ import androidx.preference.PreferenceManager;
 public class AlarmManager {
 
     private static int BEFORE, WAY, AFTER;
-    private static boolean ALARM_PHONE, init = true;
+    private static boolean ALARM_PHONE, INIT = true;
+    private static final String LOG = "AlarmManager";
 
     /**
      * Set the next alarm
@@ -22,7 +24,9 @@ public class AlarmManager {
      * @param context context of the application
      */
     public static void SetNextAlarm(@NonNull Context context) {
+        Log.d(LOG, "set next alarm");
         if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.ALARM_ON, false)) {
+            Log.d(LOG, "alarm on");
             Lecture_Schedule.Lecture first = Lecture_Schedule.Load(context).getNextFirstDayLecture();
             if (first != null)
                 SetAlarm(first.getStart(), context);
@@ -36,6 +40,7 @@ public class AlarmManager {
      * @param context context of the application
      */
     private static void SetAlarm(@NonNull Date date, @NonNull Context context) {
+        Log.d(LOG, "Set alarm");
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -56,12 +61,13 @@ public class AlarmManager {
      * @param context context of the application
      */
     public static void UpdateNextAlarm(@NonNull Context context) {
+        Log.d(LOG, "update alarm");
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (!init && BEFORE == preferences.getInt(PreferenceKeys.BEFORE, 0) &&
+        if (!INIT && BEFORE == preferences.getInt(PreferenceKeys.BEFORE, 0) &&
                 WAY == preferences.getInt(PreferenceKeys.WAY, 0) &&
                 AFTER == preferences.getInt(PreferenceKeys.AFTER, 0) &&
                 ALARM_PHONE == preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false)) {
-            init = false;
+            INIT = false;
             return;
         }
         BEFORE = preferences.getInt(PreferenceKeys.BEFORE, 0);
@@ -78,6 +84,7 @@ public class AlarmManager {
      * @param context context of the application
      */
     public static void UpdateNextAlarmAfterAutoImport(@NonNull Context context) {
+        Log.d(LOG, "update alarm after auto import");
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (!preferences.getBoolean(PreferenceKeys.ALARM_CHANGE, false)) return;
         SetNextAlarm(context);
@@ -89,6 +96,7 @@ public class AlarmManager {
      * @param context context of the application
      */
     public static void CancelNextAlarm(@NonNull Context context) {
+        Log.d(LOG, "cancel alarm");
         Alarm.cancelAlarm(context);
     }
 

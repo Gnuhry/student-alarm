@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +22,15 @@ import androidx.preference.PreferenceManager;
 
 public class PersonalFragment extends Fragment {
 
+    private static final String LOG = "PersonalFragment";
+
     public PersonalFragment() {
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.fragment_personal, container, false);
         if (getContext() == null) return view;
         view.findViewById(R.id.txVBefore).setOnClickListener(v -> NumberDialog(getContext(), getString(R.string.before), PreferenceKeys.BEFORE));
@@ -43,6 +47,7 @@ public class PersonalFragment extends Fragment {
      * @param key     key of preference
      */
     private void NumberDialog(@NonNull Context context, String title, String key) {
+        Log.i(LOG, title);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(title);

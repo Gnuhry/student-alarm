@@ -3,6 +3,7 @@ package com.example.studentalarm.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.example.studentalarm.PreferenceKeys;
 
@@ -15,6 +16,7 @@ public class NetworkReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(@NonNull Context context, Intent intent) {
+        Log.d("NetworkReceiver", "network change");
         if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.AUTO_IMPORT, false))
             new ImportReceiver().onReceive(context, intent);
     }

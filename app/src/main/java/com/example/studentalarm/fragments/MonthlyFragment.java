@@ -1,6 +1,7 @@
 package com.example.studentalarm.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +25,12 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
     private int position_today;
     @Nullable
     private View view;
+    private static final String LOG = "MonthlyFragment";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.fragment_montly, container, false);
         if (getContext() == null || getActivity() == null) return view;
         this.view = view;
@@ -44,6 +47,7 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
      * @param rv      the recyclerview to manage
      */
     private void InitAppBar(@NonNull Toolbar toolbar, @NonNull RecyclerView rv) {
+        Log.i(LOG, "init appbar");
         toolbar.getMenu().getItem(0).setOnMenuItemClickListener(menuItem -> {
             rv.scrollToPosition(position_today);
             return true;
@@ -59,6 +63,7 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
      */
     @Override
     public void LoadData() {
+        Log.i(LOG, "load data to display");
         if (getContext() == null) return;
         if (view == null && getView() == null) return;
         if (view == null && getView() != null) view = getView();
@@ -75,11 +80,13 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
      * Refresh the Lecture Schedule
      */
     public void RefreshLectureSchedule() {
+        Log.i(LOG, "refresh");
         if (getContext() != null &&
                 PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) != Import.ImportFunction.NONE &&
                 getActivity() != null &&
                 Import.CheckConnection(getActivity(), getContext()))
             new Thread(() -> {
+                Log.d(LOG, "start thread");
                 if (getActivity() == null) return;
                 LectureFragment.AnimateReload(getActivity());
                 Import.ImportLecture(this.getContext());

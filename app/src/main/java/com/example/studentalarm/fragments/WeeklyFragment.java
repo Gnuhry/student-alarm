@@ -1,6 +1,7 @@
 package com.example.studentalarm.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,8 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
     @NonNull
     private final ReloadLecture lecture;
 
+    private final static String LOG = "WeeklyFragment";
+
     public WeeklyFragment() {
         lecture = this;
     }
@@ -35,6 +38,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.fragment_weekly, container, false);
         if (getContext() == null || getActivity() == null) return view;
         WeekView weekview = view.findViewById(R.id.weekView);
@@ -53,6 +57,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
      * @param weekView weekView to control
      */
     private void InitWeekView(@NonNull WeekView weekView) {
+        Log.i(LOG, "init week view");
         SimpleDateFormat format = new SimpleDateFormat("E", getResources().getConfiguration().locale);
         DateFormat dateformat = DateFormat.getDateInstance(DateFormat.SHORT, getResources().getConfiguration().locale);
         adapter = new Adapter();
@@ -70,6 +75,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
      * @param toolbar  the appbar
      */
     private void InitAppBar(@NonNull WeekView weekView, @NonNull Toolbar toolbar) {
+        Log.i(LOG, "init appbar");
         toolbar.getMenu().getItem(0).setOnMenuItemClickListener(menuItem -> {
             weekView.scrollToDate(Calendar.getInstance());
             return true;
@@ -85,11 +91,13 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
      * Refresh the Lecture Schedule
      */
     public void RefreshLectureSchedule() {
+        Log.i(LOG, "refresh");
         if (getContext() != null &&
                 PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) != Import.ImportFunction.NONE &&
                 getActivity() != null &&
                 Import.CheckConnection(getActivity(), getContext()))
             new Thread(() -> {
+                Log.d(LOG, "refresh thread start");
                 if (getActivity() == null) return;
                 LectureFragment.AnimateReload(getActivity());
                 Import.ImportLecture(this.getContext());
@@ -106,6 +114,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
      * Load the date and display in weekView
      */
     public void LoadData() {
+        Log.i(LOG, "load data");
         if (getContext() == null) return;
         adapter.submitList(Lecture_Schedule.Load(getContext()).getAllLecture());
     }
