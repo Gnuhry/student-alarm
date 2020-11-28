@@ -179,7 +179,7 @@ public class ImportDialog extends Dialog {
                 if (icsFile == null) return;
                 isValid = new ICS(icsFile).isSuccessful();
                 findViewById(R.id.btnCheckLink).post(() -> findViewById(R.id.btnCheckLink).setEnabled(true));
-                findViewById(R.id.spDHBWMaCourse).post(() ->((ImageView) findViewById(R.id.imgStatus)).setImageResource(isValid ? R.drawable.right : R.drawable.cross));
+                findViewById(R.id.imgStatus).post(() ->((ImageView) findViewById(R.id.imgStatus)).setImageResource(isValid ? R.drawable.right : R.drawable.cross));
                 if (isValid) lastValidString = text;
             }).start();
         });
