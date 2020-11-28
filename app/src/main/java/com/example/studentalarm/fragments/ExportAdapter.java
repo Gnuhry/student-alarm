@@ -9,7 +9,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 
 import com.example.studentalarm.R;
-import com.example.studentalarm.import_.Export;
+import com.example.studentalarm.imports.Export;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class ExportAdapter extends RecyclerView.Adapter<ExportAdapter.ViewHolder
         private final CheckBox file;
         private final ImageView share;
         @Nullable
-        private File file_;
+        private File holderFile;
 
         public ViewHolder(@NonNull View view) {
             super(view);
@@ -58,8 +58,8 @@ public class ExportAdapter extends RecyclerView.Adapter<ExportAdapter.ViewHolder
      */
     public void deleteFiles() {
         for (ViewHolder holder : list)
-            if (holder.file.isChecked() && holder.file_ != null && !holder.file_.delete())
-                holder.file_.deleteOnExit();
+            if (holder.file.isChecked() && holder.holderFile != null && !holder.holderFile.delete())
+                holder.holderFile.deleteOnExit();
     }
 
     /**
@@ -83,8 +83,8 @@ public class ExportAdapter extends RecyclerView.Adapter<ExportAdapter.ViewHolder
         if (files != null && files[position] != null) {
             list.add(holder);
             holder.file.setText(files[position].getName());
-            holder.share.setOnClickListener(view -> Export.Share(context, files[position], activity));
-            holder.file_ = files[position];
+            holder.share.setOnClickListener(view -> Export.share(context, files[position], activity));
+            holder.holderFile = files[position];
             holder.file.setOnCheckedChangeListener((compoundButton, b) -> {
                 booleans[position] = b;
                 int tr = 0;

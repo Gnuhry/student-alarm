@@ -15,8 +15,8 @@ import android.widget.Toast;
 import com.example.studentalarm.AlarmManager;
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
-import com.example.studentalarm.import_.Import;
-import com.example.studentalarm.import_.Lecture_Schedule;
+import com.example.studentalarm.imports.Import;
+import com.example.studentalarm.imports.LectureSchedule;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -37,34 +37,37 @@ import androidx.preference.SwitchPreference;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
+    private static final String LOG = "SettingsFragment";
+
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
+        Log.i(LOG, "open");
         boolean bool = getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_ON, false), bool2 = bool && !getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_PHONE, false);
 
         //---------------Init----------------------------------
-        SwitchPreference alarm_on = findPreference(PreferenceKeys.ALARM_ON),
-                alarm_phone = findPreference(PreferenceKeys.ALARM_PHONE),
-                alarm_change = findPreference(PreferenceKeys.ALARM_CHANGE),
-                auto_import = findPreference(PreferenceKeys.AUTO_IMPORT);
-        Preference import_ = findPreference("IMPORT"),
-                import_delete_all = findPreference("EVENT_DELETE_ALL"),
+        SwitchPreference alarmOn = findPreference(PreferenceKeys.ALARM_ON),
+                alarmPhone = findPreference(PreferenceKeys.ALARM_PHONE),
+                alarmChange = findPreference(PreferenceKeys.ALARM_CHANGE),
+                autoImport = findPreference(PreferenceKeys.AUTO_IMPORT);
+        Preference importPref = findPreference("IMPORT"),
+                eventDeleteAll = findPreference("EVENT_DELETE_ALL"),
                 export = findPreference("EXPORT"),
                 reset = findPreference("RESET");
         EditTextPreference snooze = findPreference(PreferenceKeys.SNOOZE),
-                import_time = findPreference(PreferenceKeys.IMPORT_TIME);
+                importTime = findPreference(PreferenceKeys.IMPORT_TIME);
         ListPreference language = findPreference(PreferenceKeys.LANGUAGE),
                 ringtone = findPreference(PreferenceKeys.RINGTONE),
                 theme = findPreference("THEME");
 
-        if (alarm_on == null ||
-                alarm_phone == null ||
-                alarm_change == null ||
-                auto_import == null ||
-                import_ == null ||
-                import_delete_all == null ||
+        if (alarmOn == null ||
+                alarmPhone == null ||
+                alarmChange == null ||
+                autoImport == null ||
+                importPref == null ||
+                eventDeleteAll == null ||
                 snooze == null ||
-                import_time == null ||
+                importTime == null ||
                 reset == null ||
                 ringtone == null ||
                 language == null ||
@@ -72,31 +75,32 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 export == null)
             return;
 
-        alarm_on.setOnPreferenceChangeListener((preference, newValue) -> {
-
+        alarmOn.setOnPreferenceChangeListener((preference, newValue) -> {
+            Log.i(LOG, "alarm on change to " + newValue);
             if ((Boolean) newValue) {
-                if (getContext() != null && Lecture_Schedule.Load(getContext()).getAllLecture().size() == 0) {
+                if (getContext() != null && LectureSchedule.load(getContext()).getAllLecture().size() == 0) {
                     Toast.makeText(getContext(), R.string.missing_events, Toast.LENGTH_SHORT).show();
                     return false;
                 }
                 getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.ALARM_ON, (Boolean) newValue).apply();
-                AlarmManager.SetNextAlarm(getContext());
+                AlarmManager.setNextAlarm(getContext());
             } else {
                 getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.ALARM_ON, (Boolean) newValue).apply();
                 if (getContext() != null)
-                    AlarmManager.CancelNextAlarm(getContext());
+                    AlarmManager.cancelNextAlarm(getContext());
             }
             boolean bool3 = (Boolean) newValue;
-            alarm_phone.setEnabled(bool3);
+            alarmPhone.setEnabled(bool3);
             bool3 &= !getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_PHONE, false);
-            alarm_change.setEnabled(bool3);
+            alarmChange.setEnabled(bool3);
             snooze.setEnabled(bool3);
             ringtone.setEnabled(bool3);
             return true;
         });
 
-        alarm_phone.setEnabled(bool);
-        alarm_phone.setOnPreferenceChangeListener((preference, newValue) -> {
+        alarmPhone.setEnabled(bool);
+        alarmPhone.setOnPreferenceChangeListener((preference, newValue) -> {
+            Log.i(LOG, "alarm phone change to " + newValue);
             if (getContext() == null) return false;
             if ((Boolean) newValue)
                 new MaterialAlertDialogBuilder(getContext())
@@ -104,68 +108,79 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         .setMessage(R.string.if_alarm_is_set_in_phone_alarm_app_this_application_can_not_delete_it)
                         .setPositiveButton(R.string.ok, (dialogInterface, i) -> {
                             getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.ALARM_PHONE, true).apply();
-                            Reload();
-                            AlarmManager.UpdateNextAlarm(getContext());
+                            reload();
+                            AlarmManager.updateNextAlarm(getContext());
                         })
                         .setNegativeButton(getString(R.string.cancel), null)
                         .setCancelable(true)
                         .show();
             else {
-                alarm_change.setEnabled(true);
+                alarmChange.setEnabled(true);
                 snooze.setEnabled(true);
                 ringtone.setEnabled(true);
                 if (getContext() == null) return false;
                 PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putBoolean(PreferenceKeys.ALARM_PHONE, (Boolean) newValue).apply();
-                AlarmManager.UpdateNextAlarm(getContext());
+                AlarmManager.updateNextAlarm(getContext());
                 return true;
             }
             return false;
         });
-        alarm_change.setEnabled(bool2);
+        alarmChange.setEnabled(bool2);
 
         snooze.setEnabled(bool2);
         snooze.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
         snooze.setSummaryProvider(preference -> getString(R.string._min, preference.getSharedPreferences().getString(PreferenceKeys.SNOOZE, PreferenceKeys.DEFAULT_SNOOZE)));
+        snooze.setOnPreferenceChangeListener((preference, newValue) -> {
+            Log.i(LOG, "alarm snooze change to " + newValue);
+            return true;
+        })
+        ;
 
         ringtone.setEnabled(bool2);
+        ringtone.setOnPreferenceChangeListener((preference, newValue) -> {
+            Log.i(LOG, "alarm ringtone change to " + newValue);
+            return true;
+        });
 
-        import_.setSummaryProvider(preference -> {
+        importPref.setSummaryProvider(preference -> {
             SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
             int mode = preferences.getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE);
-            Log.d("set-frag-array","int: "+mode+" Array: "+Import.ImportFunction.imports);
-            StringBuilder sb = new StringBuilder(Import.ImportFunction.imports.get(mode));
+            Log.d("set-frag-array", "int: " + mode + " Array: " + Import.ImportFunction.IMPORTS);
+            StringBuilder sb = new StringBuilder(Import.ImportFunction.IMPORTS.get(mode));
             if (mode == Import.ImportFunction.ICS)
                 sb.append(" - ").append(preferences.getString(PreferenceKeys.LINK, null));
-            else if (mode == Import.ImportFunction.DHBWMa)
+            else if (mode == Import.ImportFunction.DHBWMA)
                 sb.append(" - ").append(preferences.getString(PreferenceKeys.DHBW_MANNHEIM_COURSE, null));//if Impot Dialog Correct should never use defValue, better save than sorry !!!PreferenceKeys.DHBWMANNHEIMCOURSE funktioniert nicht
             return sb.toString();
         });
-        import_.setOnPreferenceClickListener(preference -> {
+        importPref.setOnPreferenceClickListener(preference -> {
             if (getContext() == null) return false;
             ImportDialog importDialog = new ImportDialog(this.getContext(), getActivity());
-            importDialog.setOnCancelListener(dialogInterface -> Reload());
+            importDialog.setOnCancelListener(dialogInterface -> reload());
             importDialog.show();
             return true;
         });
 
         if (getPreferenceManager().getSharedPreferences().getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) == Import.ImportFunction.NONE)
-            auto_import.setEnabled(false);
-        auto_import.setOnPreferenceChangeListener((preference, newValue) -> {
+            autoImport.setEnabled(false);
+        autoImport.setOnPreferenceChangeListener((preference, newValue) -> {
+            Log.i(LOG, "alarm import change to " + newValue);
             if (getContext() == null) return false;
-            import_time.setEnabled((Boolean) newValue);
-            if ((Boolean) newValue) Import.SetTimer(getContext());
-            else Import.StopTimer(getContext());
+            importTime.setEnabled((Boolean) newValue);
+            if ((Boolean) newValue) Import.setTimer(getContext());
+            else Import.stopTimer(getContext());
             return true;
         });
 
-        import_time.setEnabled(getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.AUTO_IMPORT, false));
-        import_time.setSummaryProvider(preference -> getString(R.string._time, preference.getSharedPreferences().getString(PreferenceKeys.IMPORT_TIME, PreferenceKeys.DEFAULT_IMPORT_TIME)));
-        import_time.setOnBindEditTextListener(editText -> {
+        importTime.setEnabled(getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.AUTO_IMPORT, false));
+        importTime.setSummaryProvider(preference -> getString(R.string._time, preference.getSharedPreferences().getString(PreferenceKeys.IMPORT_TIME, PreferenceKeys.DEFAULT_IMPORT_TIME)));
+        importTime.setOnBindEditTextListener(editText -> {
             editText.setInputType(InputType.TYPE_CLASS_DATETIME);
             editText.setHint(R.string.hh_mm);
         });
 
-        import_time.setOnPreferenceChangeListener((preference, newValue) -> {
+        importTime.setOnPreferenceChangeListener((preference, newValue) -> {
+            Log.i(LOG, "import time change to " + newValue);
             SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.GERMAN);
             String value = (String) newValue;
             if (value.length() != 5) {
@@ -182,7 +197,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-        import_delete_all.setOnPreferenceClickListener(preference -> {
+        eventDeleteAll.setOnPreferenceClickListener(preference -> {
             if (getContext() != null)
                 new DeleteLectureDialog(getContext()).show();
             return true;
@@ -191,18 +206,19 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         export.setOnPreferenceClickListener(preference -> {
             if (getContext() != null && getActivity() != null)
                 new ExportDialog(getContext(), getActivity()).show();
-//                new ExportLectureDialog(getContext(), getActivity()).show();
             return true;
         });
 
         language.setOnPreferenceChangeListener((preference, newValue) -> {
+            Log.i(LOG, "language change to " + newValue);
             if (getContext() == null || getActivity() == null) return false;
-            ChangeLanguage((String) newValue, getContext(), getActivity());
-            Reload();
+            changeLanguage((String) newValue, getContext(), getActivity());
+            reload();
             return true;
         });
 
         theme.setOnPreferenceChangeListener((preference, newValue) -> {
+            Log.i(LOG, "theme change to " + newValue);
             int mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
             switch ((String) newValue) {
                 case "Default":
@@ -220,16 +236,18 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         reset.setOnPreferenceClickListener(preference -> {
+            Log.i(LOG, "reset");
             if (getContext() == null || getActivity() == null) return false;
             new MaterialAlertDialogBuilder(getContext())
                     .setTitle(R.string.reset)
                     .setMessage(R.string.do_you_want_to_reset_this_application)
                     .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
-                        String lan = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(PreferenceKeys.LANGUAGE, PreferenceKeys.DEFAULT_LANGUAGE), lan2 = PreferenceKeys.Reset(getContext());
+                        Log.i(LOG, "reset - positive");
+                        String lan = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(PreferenceKeys.LANGUAGE, PreferenceKeys.DEFAULT_LANGUAGE), lan2 = PreferenceKeys.reset(getContext());
                         if (!lan2.equals(lan) && getActivity() != null)
-                            ChangeLanguage(lan2, getContext(), getActivity());
+                            changeLanguage(lan2, getContext(), getActivity());
                         removeAllEventsLecture();
-                        Reload();
+                        reload();
                     })
                     .setNegativeButton(R.string.no, null)
                     .setCancelable(true)
@@ -243,7 +261,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      *
      * @param newValue new language code
      */
-    public void ChangeLanguage(@NonNull String newValue, @NonNull Context context, @NonNull Activity activity) {
+    public void changeLanguage(@NonNull String newValue, @NonNull Context context, @NonNull Activity activity) {
         Resources resources = context.getResources();
         DisplayMetrics dm = resources.getDisplayMetrics();
         Configuration config = resources.getConfiguration();
@@ -266,13 +284,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      */
     private void removeAllEventsLecture() {
         if (getContext() != null)
-            Lecture_Schedule.Load(getContext()).clearEvents().Save(getContext());
+            LectureSchedule.load(getContext()).clearEvents().save(getContext());
     }
 
     /**
      * Reload the fragment
      */
-    private void Reload() {
+    private void reload() {
         if (getActivity() == null) return;
         NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_);
         if (navHostFragment != null)

@@ -2,8 +2,9 @@ package com.example.studentalarm;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
-import com.example.studentalarm.import_.Lecture_Schedule;
+import com.example.studentalarm.imports.LectureSchedule;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -13,19 +14,22 @@ import androidx.preference.PreferenceManager;
 
 public class AlarmManager {
 
-    private static int BEFORE, WAY, AFTER;
-    private static boolean ALARM_PHONE, init = true;
+    private static int before, way, after;
+    private static boolean alarmPhone, init = true;
+    private static final String LOG = "AlarmManager";
 
     /**
      * Set the next alarm
      *
      * @param context context of the application
      */
-    public static void SetNextAlarm(@NonNull Context context) {
+    public static void setNextAlarm(@NonNull Context context) {
+        Log.d(LOG, "set next alarm");
         if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.ALARM_ON, false)) {
-            Lecture_Schedule.Lecture first = Lecture_Schedule.Load(context).getNextFirstDayLecture();
+            Log.d(LOG, "alarm on");
+            LectureSchedule.Lecture first = LectureSchedule.load(context).getNextFirstDayLecture();
             if (first != null)
-                SetAlarm(first.getStart(), context);
+                setAlarm(first.getStart(), context);
         }
     }
 
@@ -35,7 +39,8 @@ public class AlarmManager {
      * @param date    date where the alarm should trigger
      * @param context context of the application
      */
-    private static void SetAlarm(@NonNull Date date, @NonNull Context context) {
+    private static void setAlarm(@NonNull Date date, @NonNull Context context) {
+        Log.d(LOG, "Set alarm");
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -45,7 +50,7 @@ public class AlarmManager {
         if (preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false))
             Alarm.setPhoneAlarm(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), context);
         else {
-            CancelNextAlarm(context);
+            cancelNextAlarm(context);
             Alarm.setAlarm(calendar, context);
         }
     }
@@ -55,21 +60,22 @@ public class AlarmManager {
      *
      * @param context context of the application
      */
-    public static void UpdateNextAlarm(@NonNull Context context) {
+    public static void updateNextAlarm(@NonNull Context context) {
+        Log.d(LOG, "update alarm");
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (!init && BEFORE == preferences.getInt(PreferenceKeys.BEFORE, 0) &&
-                WAY == preferences.getInt(PreferenceKeys.WAY, 0) &&
-                AFTER == preferences.getInt(PreferenceKeys.AFTER, 0) &&
-                ALARM_PHONE == preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false)) {
+        if (!init && before == preferences.getInt(PreferenceKeys.BEFORE, 0) &&
+                way == preferences.getInt(PreferenceKeys.WAY, 0) &&
+                after == preferences.getInt(PreferenceKeys.AFTER, 0) &&
+                alarmPhone == preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false)) {
             init = false;
             return;
         }
-        BEFORE = preferences.getInt(PreferenceKeys.BEFORE, 0);
-        WAY = preferences.getInt(PreferenceKeys.WAY, 0);
-        AFTER = preferences.getInt(PreferenceKeys.AFTER, 0);
-        ALARM_PHONE = preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false);
-        CancelNextAlarm(context);
-        SetNextAlarm(context);
+        before = preferences.getInt(PreferenceKeys.BEFORE, 0);
+        way = preferences.getInt(PreferenceKeys.WAY, 0);
+        after = preferences.getInt(PreferenceKeys.AFTER, 0);
+        alarmPhone = preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false);
+        cancelNextAlarm(context);
+        setNextAlarm(context);
     }
 
     /**
@@ -77,10 +83,11 @@ public class AlarmManager {
      *
      * @param context context of the application
      */
-    public static void UpdateNextAlarmAfterAutoImport(@NonNull Context context) {
+    public static void updateNextAlarmAfterAutoImport(@NonNull Context context) {
+        Log.d(LOG, "update alarm after auto import");
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (!preferences.getBoolean(PreferenceKeys.ALARM_CHANGE, false)) return;
-        SetNextAlarm(context);
+        setNextAlarm(context);
     }
 
     /**
@@ -88,7 +95,8 @@ public class AlarmManager {
      *
      * @param context context of the application
      */
-    public static void CancelNextAlarm(@NonNull Context context) {
+    public static void cancelNextAlarm(@NonNull Context context) {
+        Log.d(LOG, "cancel alarm");
         Alarm.cancelAlarm(context);
     }
 

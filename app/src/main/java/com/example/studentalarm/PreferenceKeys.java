@@ -30,7 +30,7 @@ public class PreferenceKeys {
             DHBW_MANNHEIM_COURSE_CATEGORY = "DHBWMANNHEIMCOURSECATEGORY",
             DHBW_MANNHEIM_COURSE = "DHBWMANNHEIMCOURSE",
 
-            DEFAULT_RINGTONE = "Default",
+    DEFAULT_RINGTONE = "Default",
             DEFAULT_LANGUAGE = "EN",
             DEFAULT_SNOOZE = "5",
             DEFAULT_IMPORT_TIME = "19:00";
@@ -42,10 +42,10 @@ public class PreferenceKeys {
      * @return language
      */
     @NonNull
-    public static String Reset(@NonNull Context context) {
+    public static String reset(@NonNull Context context) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().clear().apply();
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-        return Default(context);
+        return setDefault(context);
     }
 
     /**
@@ -55,8 +55,8 @@ public class PreferenceKeys {
      * @return language
      */
     @NonNull
-    public static String Default(@NonNull Context context) {
-        String erg = DEFAULT_LANGUAGE(context);
+    public static String setDefault(@NonNull Context context) {
+        String erg = defaultLanguage(context);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (preferences.getString(PreferenceKeys.RINGTONE, null) == null)
             preferences.edit().putString(PreferenceKeys.RINGTONE, DEFAULT_RINGTONE).apply();
@@ -76,7 +76,7 @@ public class PreferenceKeys {
      * @return default language
      */
     @NonNull
-    public static String DEFAULT_LANGUAGE(@NonNull Context context) {
+    public static String defaultLanguage(@NonNull Context context) {
         String s = Locale.getDefault().getLanguage();
         Log.d("LANGUAGE", s);
         for (String language : context.getResources().getStringArray(R.array.language)) {

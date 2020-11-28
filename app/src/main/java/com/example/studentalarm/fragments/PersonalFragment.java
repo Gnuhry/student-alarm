@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,17 +22,20 @@ import androidx.preference.PreferenceManager;
 
 public class PersonalFragment extends Fragment {
 
+    private static final String LOG = "PersonalFragment";
+
     public PersonalFragment() {
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.fragment_personal, container, false);
         if (getContext() == null) return view;
-        view.findViewById(R.id.txVBefore).setOnClickListener(v -> NumberDialog(getContext(), getString(R.string.before), PreferenceKeys.BEFORE));
-        view.findViewById(R.id.txtWay).setOnClickListener(v -> NumberDialog(getContext(), getString(R.string.way), PreferenceKeys.WAY));
-        view.findViewById(R.id.txtAfter).setOnClickListener(v -> NumberDialog(getContext(), getString(R.string.after), PreferenceKeys.AFTER));
+        view.findViewById(R.id.txVBefore).setOnClickListener(v -> numberDialog(getContext(), getString(R.string.before), PreferenceKeys.BEFORE));
+        view.findViewById(R.id.txtWay).setOnClickListener(v -> numberDialog(getContext(), getString(R.string.way), PreferenceKeys.WAY));
+        view.findViewById(R.id.txtAfter).setOnClickListener(v -> numberDialog(getContext(), getString(R.string.after), PreferenceKeys.AFTER));
         return view;
     }
 
@@ -42,7 +46,8 @@ public class PersonalFragment extends Fragment {
      * @param title   title of the number dialog
      * @param key     key of preference
      */
-    private void NumberDialog(@NonNull Context context, String title, String key) {
+    private void numberDialog(@NonNull Context context, String title, String key) {
+        Log.i(LOG, title);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(title);
@@ -56,7 +61,7 @@ public class PersonalFragment extends Fragment {
             int value = Integer.parseInt(input.getText().toString());
             if (preferences.getInt(key, 0) != value) {
                 preferences.edit().putInt(key, value).apply();
-                AlarmManager.UpdateNextAlarm(context);
+                AlarmManager.updateNextAlarm(context);
             }
         });
         builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.cancel());

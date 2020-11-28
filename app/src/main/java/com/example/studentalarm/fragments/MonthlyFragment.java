@@ -1,6 +1,7 @@
 package com.example.studentalarm.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,8 +9,8 @@ import android.view.ViewGroup;
 import com.example.studentalarm.AlarmManager;
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
-import com.example.studentalarm.import_.Import;
-import com.example.studentalarm.import_.Lecture_Schedule;
+import com.example.studentalarm.imports.Import;
+import com.example.studentalarm.imports.LectureSchedule;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,16 +25,18 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
     private int position_today;
     @Nullable
     private View view;
+    private static final String LOG = "MonthlyFragment";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.fragment_montly, container, false);
         if (getContext() == null || getActivity() == null) return view;
         this.view = view;
-        LoadData();
-        InitAppBar(this.getActivity().findViewById(R.id.my_toolbar), view.findViewById(R.id.rVEvents));
-        view.findViewById(R.id.fabAdd).setOnClickListener(view1 -> new EventDialogFragment(null, Lecture_Schedule.Load(getContext()), this).show(getActivity().getSupportFragmentManager(), "dialog"));
+        loadData();
+        initAppBar(this.getActivity().findViewById(R.id.my_toolbar), view.findViewById(R.id.rVEvents));
+        view.findViewById(R.id.fabAdd).setOnClickListener(view1 -> new EventDialogFragment(null, LectureSchedule.load(getContext()), this).show(getActivity().getSupportFragmentManager(), "dialog"));
         return view;
     }
 
@@ -43,13 +46,14 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
      * @param toolbar the appbar
      * @param rv      the recyclerview to manage
      */
-    private void InitAppBar(@NonNull Toolbar toolbar, @NonNull RecyclerView rv) {
+    private void initAppBar(@NonNull Toolbar toolbar, @NonNull RecyclerView rv) {
+        Log.i(LOG, "init appbar");
         toolbar.getMenu().getItem(0).setOnMenuItemClickListener(menuItem -> {
             rv.scrollToPosition(position_today);
             return true;
         });
         toolbar.getMenu().getItem(1).setOnMenuItemClickListener(menuItem -> {
-            RefreshLectureSchedule();
+            refreshLectureSchedule();
             return true;
         });
     }
@@ -58,12 +62,13 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
      * Load the date and display in recyclerview
      */
     @Override
-    public void LoadData() {
+    public void loadData() {
+        Log.i(LOG, "load data to display");
         if (getContext() == null) return;
         if (view == null && getView() == null) return;
         if (view == null && getView() != null) view = getView();
         RecyclerView rv = view.findViewById(R.id.rVEvents);
-        LectureAdapter adapter = new LectureAdapter(Lecture_Schedule.Load(getContext()), getContext(), getActivity(), this);
+        LectureAdapter adapter = new LectureAdapter(LectureSchedule.load(getContext()), getContext(), getActivity(), this);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(adapter);
@@ -74,25 +79,27 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
     /**
      * Refresh the Lecture Schedule
      */
-    public void RefreshLectureSchedule() {
+    public void refreshLectureSchedule() {
+        Log.i(LOG, "refresh");
         if (getContext() != null &&
                 PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) != Import.ImportFunction.NONE &&
                 getActivity() != null &&
-                Import.CheckConnection(getActivity(), getContext()))
+                Import.checkConnection(getActivity(), getContext()))
             new Thread(() -> {
+                Log.d(LOG, "start thread");
                 if (getActivity() == null) return;
-                LectureFragment.AnimateReload(getActivity());
-                Import.ImportLecture(this.getContext());
+                LectureFragment.animateReload(getActivity());
+                Import.importLecture(this.getContext());
                 if (getView() != null)
                     getView().post(() -> {
-                        AlarmManager.UpdateNextAlarm(this.getContext());
-                        LoadData();
+                        AlarmManager.updateNextAlarm(this.getContext());
+                        loadData();
                     });
                 if (getActivity() == null) return;
-                LectureFragment.StopAnimateReload(getActivity());
+                LectureFragment.stopAnimateReload(getActivity());
             }).start();
 
-        LoadData();
+        loadData();
     }
 }
 
