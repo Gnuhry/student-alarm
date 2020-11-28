@@ -55,10 +55,10 @@ public class ImportDialog extends Dialog {
 
         new Thread(() -> {
             Log.i(LOG, "get DHBW course");
-            ArrayAdapter<CourseCategory> category_adapter = new ArrayAdapter<>(getContext(),
+            ArrayAdapter<CourseCategory> categoryAdapter = new ArrayAdapter<>(getContext(),
                     android.R.layout.simple_spinner_item, new CourseImport().getDHBWCourses());
-            category_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setAdapter(category_adapter));
+            categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setAdapter(categoryAdapter));
             ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(@NonNull AdapterView<?> adapterView, View view, int i, long l) {
@@ -83,8 +83,8 @@ public class ImportDialog extends Dialog {
 
             String category = preferences.getString(PreferenceKeys.DHBW_MANNHEIM_COURSE_CATEGORY, null);
             if (category != null) {
-                for (int i = 0; i < category_adapter.getCount(); i++)
-                    if (0 == category_adapter.getItem(i).compareTo(category)) {
+                for (int i = 0; i < categoryAdapter.getCount(); i++)
+                    if (0 == categoryAdapter.getItem(i).compareTo(category)) {
                         int finalI = i;
                         findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setSelection(finalI));
                     }
@@ -172,7 +172,7 @@ public class ImportDialog extends Dialog {
 
         findViewById(R.id.btnCheckLink).setOnClickListener(view12 -> {
             String text = ((EditText) findViewById(R.id.edTLink)).getText().toString();
-            Log.i(LOG, "check link: "+text);
+            Log.i(LOG, "check link: " + text);
             if (!URLUtil.isValidUrl(text)) {
                 Toast.makeText(getContext(), R.string.string_is_not_a_valid_url, Toast.LENGTH_SHORT).show();
                 return;
