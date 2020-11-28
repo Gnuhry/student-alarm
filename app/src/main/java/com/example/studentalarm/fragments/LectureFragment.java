@@ -106,7 +106,7 @@ public class LectureFragment extends Fragment {
         animate.start();
     }
 
-    private static void setAnimation(Activity activity, MenuItem item, int res) {
+    private static void setAnimation(@NonNull Activity activity, @NonNull MenuItem item, int res) {
         activity.findViewById(R.id.my_toolbar).post(() -> item.setIcon(res));
         try {
             Thread.sleep(500);
