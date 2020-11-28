@@ -71,6 +71,10 @@ public class ICS {
         return null;
     }
 
+    public boolean isSuccessful(){
+        return !vEventList.isEmpty();
+    }
+
     /**
      * returns all events from the ics file with teh UTC time
      *
