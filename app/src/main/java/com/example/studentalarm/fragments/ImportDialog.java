@@ -135,6 +135,7 @@ public class ImportDialog extends Dialog {
                     preferences.edit().putInt(PreferenceKeys.MODE, Import.ImportFunction.ICS).apply();
                     preferences.edit().putString(PreferenceKeys.LINK, ((EditText) findViewById(R.id.edTLink)).getText().toString()).apply();
                     new Thread(() -> Import.ImportLecture(this.getContext())).start();
+                    Toast.makeText(getContext(), R.string.it_may_take_a_minute_until_the_change_is_visible_in_the_calendar, Toast.LENGTH_LONG).show();
                     this.cancel();
                 } else
                     Toast.makeText(getContext(), R.string.missing_checked_valid_url, Toast.LENGTH_SHORT).show();
@@ -157,6 +158,7 @@ public class ImportDialog extends Dialog {
                     Log.d("Change Preference", "DHBWMANNHEIMCOURSECATEGORY: " + preferences.getString("DHBWMANNHEIMCOURSECATEGORY", "Error"));
                     Log.d("Change Preference", "ISC LINK " + preferences.getString("Link", "Error"));
                     new Thread(() -> Import.ImportLecture(this.getContext())).start();
+                    Toast.makeText(getContext(), R.string.it_may_take_a_minute_until_the_change_is_visible_in_the_calendar, Toast.LENGTH_LONG).show();
                     this.cancel();
                 }
             }

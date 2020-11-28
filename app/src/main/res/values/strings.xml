@@ -49,6 +49,8 @@
     <string name="DHBWMa">DHBW Mannheim</string>
     <string name="share">Share</string>
     <string name="missing_selected_course">Missing selected course</string>
+    <string name="it_may_take_a_minute_until_the_change_is_visible_in_the_calendar">It may take a minute until the change is visible in the calendar</string>
+    <string name="do_you_want_to_delete_this_exports">Do you want to delete this exports?</string>
 
     <!--Alarm-->
     <string name="next_alarm_in">Next alarm in</string>
