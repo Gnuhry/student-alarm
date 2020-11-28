@@ -55,7 +55,18 @@ public class AlarmFragment extends Fragment {
                 public void onTick(long l) {
                     Calendar ca = Calendar.getInstance();
                     ca.setTimeInMillis(l);
-                    txVTimer.setText(getString(R.string.time_format, ca.get(Calendar.HOUR_OF_DAY), ca.get(Calendar.MINUTE)));
+                    txVTimer.setText(getString(R.string.time_format, getHour(ca), ca.get(Calendar.MINUTE) + 1));
+                }
+
+                /**
+                 * get hour inclusive day time
+                 * @param ca ca to get the hours
+                 * @return hour
+                 */
+                private int getHour(Calendar ca) {
+                    int erg = ca.get(Calendar.HOUR);
+                    erg += ca.get(Calendar.DAY_OF_MONTH) * 24;
+                    return erg;
                 }
 
                 @Override
