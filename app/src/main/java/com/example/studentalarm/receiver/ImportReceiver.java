@@ -16,7 +16,9 @@ public class ImportReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(@NonNull Context context, Intent intent) {
-        Import.ImportLecture(context);
-        AlarmManager.UpdateNextAlarmAfterAutoImport(context);
+        new Thread(() -> {
+            Import.ImportLecture(context);
+            AlarmManager.UpdateNextAlarmAfterAutoImport(context);
+        }).start();
     }
 }
