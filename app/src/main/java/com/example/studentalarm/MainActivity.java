@@ -7,6 +7,8 @@ import com.example.studentalarm.fragments.SettingsFragment;
 import com.example.studentalarm.receiver.NetworkReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.Calendar;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
@@ -32,5 +34,10 @@ public class MainActivity extends AppCompatActivity {
             PreferenceKeys.Default(this);
         else if (!lan.equals(PreferenceKeys.DEFAULT_LANGUAGE(this)))
             new SettingsFragment().ChangeLanguage(lan, this, this);
+
+
+//        Calendar calendar=Calendar.getInstance();
+//        calendar.set(2020,11,28,10,00,00);
+//        Alarm.setAlarm(calendar, this);
     }
 }
