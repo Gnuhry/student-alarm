@@ -5,5 +5,5 @@ public interface ReloadLecture {
     /**
      * Load the date and display it
      */
-    void LoadData();
+    void loadData();
 }

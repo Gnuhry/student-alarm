@@ -2,6 +2,7 @@ package com.example.studentalarm.fragments;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,15 +24,17 @@ import androidx.preference.PreferenceManager;
 public class AlarmFragment extends Fragment {
 
     private CountDownTimer timer;
+    private static final String LOG = "Alarm_Fragment";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.fragment_alarm, container, false);
         if (getContext() == null) return view;
 
-        CheckNotification();
-        SetTimer(view);
+        checkNotification();
+        setTimer(view);
 
         return view;
     }
@@ -41,8 +44,9 @@ public class AlarmFragment extends Fragment {
      *
      * @param view view to display the timer
      */
-    private void SetTimer(@NonNull View view) {
+    private void setTimer(@NonNull View view) {
         if (getContext() == null) return;
+        Log.i(LOG, "Set timer");
         long time = PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_TIME, 0);
         if (time != 0 && time > Calendar.getInstance().getTimeInMillis()) {
             TextView txVTimer = view.findViewById(R.id.txVCountdown);
@@ -51,7 +55,18 @@ public class AlarmFragment extends Fragment {
                 public void onTick(long l) {
                     Calendar ca = Calendar.getInstance();
                     ca.setTimeInMillis(l);
-                    txVTimer.setText(getString(R.string.time_format, ca.get(Calendar.HOUR_OF_DAY), ca.get(Calendar.MINUTE)));
+                    txVTimer.setText(getString(R.string.time_format, getHour(ca), ca.get(Calendar.MINUTE) + 1));
+                }
+
+                /**
+                 * get hour inclusive day time
+                 * @param ca ca to get the hours
+                 * @return hour
+                 */
+                private int getHour(Calendar ca) {
+                    int erg = ca.get(Calendar.HOUR);
+                    erg += ca.get(Calendar.DAY_OF_MONTH) * 24;
+                    return erg;
                 }
 
                 @Override
@@ -68,14 +83,16 @@ public class AlarmFragment extends Fragment {
      * Check if needed notification are given
      * if not, pop up a dialog and ask
      */
-    private void CheckNotification() {
-        if (getContext() != null && !NotificationManagerCompat.from(getContext()).areNotificationsEnabled())
+    private void checkNotification() {
+        if (getContext() != null && !NotificationManagerCompat.from(getContext()).areNotificationsEnabled()) {
+            Log.i(LOG, "Missing notification permission");
             new MaterialAlertDialogBuilder(getContext())
                     .setTitle(R.string.notification_permission_missing)
                     .setMessage(R.string.notification_permission_are_missing_without_them_the_alarm_will_not_work_properly)
                     .setPositiveButton(R.string.ok, null)
                     .setCancelable(true)
                     .show();
+        }
     }
 
     /**
@@ -83,6 +100,7 @@ public class AlarmFragment extends Fragment {
      */
     @Override
     public void onDestroyView() {
+        Log.i(LOG, "Destroyed");
         super.onDestroyView();
         if (timer != null)
             timer.cancel();

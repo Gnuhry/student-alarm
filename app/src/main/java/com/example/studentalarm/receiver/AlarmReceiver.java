@@ -35,7 +35,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(@NonNull Context context, Intent intent) {
         Log.d("Alarm Bell", "Alarm just fired");
-        mp = GetMediaPlayer(context);
+        mp = getMediaPlayer(context);
         if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
             setNotification(context);
             mp.setLooping(true);
@@ -92,7 +92,7 @@ public class AlarmReceiver extends BroadcastReceiver {
      * @param context context of the application
      * @return ringtone to play
      */
-    private MediaPlayer GetMediaPlayer(@NonNull Context context) {
+    private MediaPlayer getMediaPlayer(@NonNull Context context) {
         switch (PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.RINGTONE, PreferenceKeys.DEFAULT_RINGTONE)) {
             case "didudeldudu":
                 return MediaPlayer.create(context.getApplicationContext(), R.raw.didudeldudu);
