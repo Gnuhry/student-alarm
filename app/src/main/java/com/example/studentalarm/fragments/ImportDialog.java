@@ -22,11 +22,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
+import com.example.studentalarm.import_.ICS;
+import com.example.studentalarm.import_.Import;
 import com.example.studentalarm.import_.dhbw_mannheim.Course;
 import com.example.studentalarm.import_.dhbw_mannheim.CourseCategory;
 import com.example.studentalarm.import_.dhbw_mannheim.CourseImport;
-import com.example.studentalarm.import_.ICS;
-import com.example.studentalarm.import_.Import;
 
 import java.util.List;
 
@@ -134,6 +134,7 @@ public class ImportDialog extends Dialog {
                 if (isValid) {
                     preferences.edit().putInt(PreferenceKeys.MODE, Import.ImportFunction.ICS).apply();
                     preferences.edit().putString(PreferenceKeys.LINK, ((EditText) findViewById(R.id.edTLink)).getText().toString()).apply();
+                    new Thread(() -> Import.ImportLecture(this.getContext())).start();
                     this.cancel();
                 } else
                     Toast.makeText(getContext(), R.string.missing_checked_valid_url, Toast.LENGTH_SHORT).show();
@@ -155,6 +156,7 @@ public class ImportDialog extends Dialog {
                     Log.d("Change Preference", "DHBWMANNHEIMCOURSE: " + preferences.getString("DHBWMANNHEIMCOURSE", "Error"));
                     Log.d("Change Preference", "DHBWMANNHEIMCOURSECATEGORY: " + preferences.getString("DHBWMANNHEIMCOURSECATEGORY", "Error"));
                     Log.d("Change Preference", "ISC LINK " + preferences.getString("Link", "Error"));
+                    new Thread(() -> Import.ImportLecture(this.getContext())).start();
                     this.cancel();
                 }
             }
@@ -175,8 +177,7 @@ public class ImportDialog extends Dialog {
             new Thread(() -> {
                 String icsFile = Import.runSynchronous(text);
                 if (icsFile == null) return;
-                List<ICS.vEvent> list = new ICS(icsFile).getVEventList();
-                isValid = list == null || list.isEmpty();
+                isValid = new ICS(icsFile).isSuccessful();
                 findViewById(R.id.btnCheckLink).post(() -> findViewById(R.id.btnCheckLink).setEnabled(true));
                 ((ImageView) findViewById(R.id.imgStatus)).setImageResource(isValid ? R.drawable.right : R.drawable.cross);
                 if (isValid) lastValidString = text;
