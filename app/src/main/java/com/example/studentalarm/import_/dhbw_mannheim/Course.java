@@ -1,7 +1,5 @@
 package com.example.studentalarm.import_.dhbw_mannheim;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 public class Course implements Comparable<String> {
@@ -11,7 +9,6 @@ public class Course implements Comparable<String> {
     public Course(String CourseName, String CourseISCID) {
         this.CourseName = CourseName;
         this.CourseISCID = CourseISCID;
-        Log.d("Course", "Neu Angelegt Kursname:" + CourseName + " ISCKursID:" + CourseISCID);
     }
 
     public String getCourseID() {

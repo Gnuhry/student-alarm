@@ -4,12 +4,12 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 
 import com.example.studentalarm.R;
-import com.example.studentalarm.import_.Lecture_Schedule;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import androidx.annotation.NonNull;
@@ -24,6 +24,7 @@ public class ExportDialog extends Dialog {
     private final Activity activity;
     private RecyclerView recyclerView;
     private boolean pause = false;
+    private static final String LOG = "ExportDialog";
 
     public ExportDialog(@NonNull Context context, @NonNull Activity activity) {
         super(context);
@@ -34,6 +35,7 @@ public class ExportDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(LOG, "open");
         setContentView(R.layout.export_dialog);
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         recyclerView = findViewById(R.id.rVExport);
@@ -42,6 +44,7 @@ public class ExportDialog extends Dialog {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         findViewById(R.id.imVAdd).setOnClickListener(view -> {
+            Log.i(LOG, "add");
             new ExportLectureDialog(context, activity).show();
             this.cancel();
         });
@@ -75,12 +78,16 @@ public class ExportDialog extends Dialog {
             findViewById(R.id.imVAdd).setVisibility(View.GONE);
             findViewById(R.id.imVDelete).setVisibility(View.VISIBLE);
             findViewById(R.id.imVDelete).setOnClickListener(view -> {
+                Log.i(LOG, "delete");
                 ExportAdapter adapter = ((ExportAdapter) recyclerView.getAdapter());
                 if (adapter != null)
                     new MaterialAlertDialogBuilder(getContext())
                             .setTitle(R.string.delete)
                             .setMessage(R.string.do_you_want_to_delete_this_exports)
-                            .setPositiveButton(R.string.delete, (dialogInterface, i) -> adapter.deleteFiles())
+                            .setPositiveButton(R.string.delete, (dialogInterface, i) -> {
+                                Log.i(LOG, "delete positive");
+                                adapter.deleteFiles();
+                            })
                             .setNegativeButton(R.string.cancel, (dialogInterface, i) -> this.cancel())
                             .setCancelable(true)
                             .show();

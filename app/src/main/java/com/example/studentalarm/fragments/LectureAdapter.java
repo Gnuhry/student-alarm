@@ -1,6 +1,7 @@
 package com.example.studentalarm.fragments;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
     private static DateFormat day, time;
     private static FragmentActivity activity;
     private static ReloadLecture reloadLecture;
+    private static final String LOG = "LectureAdapter";
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView title, from, detail, until, date;
@@ -69,6 +71,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
                 if (positionToday == -1 && calendar.after(Calendar.getInstance()))
                     positionToday = this.lecture.size();
                 this.lecture.add(new Lecture_Schedule.Lecture(false, l.getStart(), new Date()));
+                Log.d(LOG, "add Time: " + l.getStart().toString());
             }
             this.lecture.add(l);
         }

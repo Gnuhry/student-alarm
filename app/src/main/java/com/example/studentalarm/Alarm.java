@@ -17,6 +17,8 @@ import androidx.preference.PreferenceManager;
 
 public class Alarm {
 
+    private static final String LOG = "Alarm";
+
     /**
      * create an alarm, which going to trigger the AlarmReceiver class
      *
@@ -28,9 +30,9 @@ public class Alarm {
             ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class), 0));
             PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_TIME, time.getTimeInMillis()).apply();
             Toast.makeText(context, R.string.alarm_is_set, Toast.LENGTH_SHORT).show();
-            Log.d("ALARM", "Set alarm to " + time.getTimeInMillis());
+            Log.d(LOG, "Set alarm to " + time.getTimeInMillis());
         } else {
-            Log.e("ALARM", "Wrong Date is set for alarm. Date is before current date");
+            Log.e(LOG, "Wrong Date is set for alarm. Date is before current date");
         }
     }
 
@@ -38,6 +40,7 @@ public class Alarm {
      * cancel the alarm
      */
     public static void cancelAlarm(@NonNull Context context) {
+        Log.d(LOG, "cancel");
         PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_TIME, 0).apply();
         ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class), 0));
     }
@@ -50,6 +53,7 @@ public class Alarm {
      * @param context context to show the toast
      */
     public static void setPhoneAlarm(int hour, int minute, @NonNull Context context) {
+        Log.d(LOG, "Set phone alarm");
         if (hour <= 24 && minute <= 60)
             context.startActivity(new Intent(AlarmClock.ACTION_SET_ALARM).putExtra(AlarmClock.EXTRA_HOUR, hour).putExtra(AlarmClock.EXTRA_MINUTES, minute).putExtra(AlarmClock.EXTRA_SKIP_UI, true));
     }

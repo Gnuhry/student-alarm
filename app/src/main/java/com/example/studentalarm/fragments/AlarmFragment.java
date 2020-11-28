@@ -2,6 +2,7 @@ package com.example.studentalarm.fragments;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +24,12 @@ import androidx.preference.PreferenceManager;
 public class AlarmFragment extends Fragment {
 
     private CountDownTimer timer;
+    private static final String LOG = "Alarm_Fragment";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.fragment_alarm, container, false);
         if (getContext() == null) return view;
 
@@ -43,6 +46,7 @@ public class AlarmFragment extends Fragment {
      */
     private void SetTimer(@NonNull View view) {
         if (getContext() == null) return;
+        Log.i(LOG, "Set timer");
         long time = PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_TIME, 0);
         if (time != 0 && time > Calendar.getInstance().getTimeInMillis()) {
             TextView txVTimer = view.findViewById(R.id.txVCountdown);
@@ -69,13 +73,15 @@ public class AlarmFragment extends Fragment {
      * if not, pop up a dialog and ask
      */
     private void CheckNotification() {
-        if (getContext() != null && !NotificationManagerCompat.from(getContext()).areNotificationsEnabled())
+        if (getContext() != null && !NotificationManagerCompat.from(getContext()).areNotificationsEnabled()) {
+            Log.i(LOG, "Missing notification permission");
             new MaterialAlertDialogBuilder(getContext())
                     .setTitle(R.string.notification_permission_missing)
                     .setMessage(R.string.notification_permission_are_missing_without_them_the_alarm_will_not_work_properly)
                     .setPositiveButton(R.string.ok, null)
                     .setCancelable(true)
                     .show();
+        }
     }
 
     /**
@@ -83,6 +89,7 @@ public class AlarmFragment extends Fragment {
      */
     @Override
     public void onDestroyView() {
+        Log.i(LOG, "Destroyed");
         super.onDestroyView();
         if (timer != null)
             timer.cancel();

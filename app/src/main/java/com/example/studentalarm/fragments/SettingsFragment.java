@@ -37,9 +37,12 @@ import androidx.preference.SwitchPreference;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
+    private static final String LOG = "SettingsFragment";
+
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
+        Log.i(LOG, "open");
         boolean bool = getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_ON, false), bool2 = bool && !getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_PHONE, false);
 
         //---------------Init----------------------------------
@@ -73,7 +76,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             return;
 
         alarm_on.setOnPreferenceChangeListener((preference, newValue) -> {
-
+            Log.i(LOG, "alarm on change to " + newValue);
             if ((Boolean) newValue) {
                 if (getContext() != null && Lecture_Schedule.Load(getContext()).getAllLecture().size() == 0) {
                     Toast.makeText(getContext(), R.string.missing_events, Toast.LENGTH_SHORT).show();
@@ -97,6 +100,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         alarm_phone.setEnabled(bool);
         alarm_phone.setOnPreferenceChangeListener((preference, newValue) -> {
+            Log.i(LOG, "alarm phone change to " + newValue);
             if (getContext() == null) return false;
             if ((Boolean) newValue)
                 new MaterialAlertDialogBuilder(getContext())
@@ -126,13 +130,22 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         snooze.setEnabled(bool2);
         snooze.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
         snooze.setSummaryProvider(preference -> getString(R.string._min, preference.getSharedPreferences().getString(PreferenceKeys.SNOOZE, PreferenceKeys.DEFAULT_SNOOZE)));
+        snooze.setOnPreferenceChangeListener((preference, newValue) -> {
+            Log.i(LOG, "alarm snooze change to " + newValue);
+            return true;
+        })
+        ;
 
         ringtone.setEnabled(bool2);
+        ringtone.setOnPreferenceChangeListener((preference, newValue) -> {
+            Log.i(LOG, "alarm ringtone change to " + newValue);
+            return true;
+        });
 
         import_.setSummaryProvider(preference -> {
             SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
             int mode = preferences.getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE);
-            Log.d("set-frag-array","int: "+mode+" Array: "+Import.ImportFunction.imports);
+            Log.d("set-frag-array", "int: " + mode + " Array: " + Import.ImportFunction.imports);
             StringBuilder sb = new StringBuilder(Import.ImportFunction.imports.get(mode));
             if (mode == Import.ImportFunction.ICS)
                 sb.append(" - ").append(preferences.getString(PreferenceKeys.LINK, null));
@@ -151,6 +164,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         if (getPreferenceManager().getSharedPreferences().getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) == Import.ImportFunction.NONE)
             auto_import.setEnabled(false);
         auto_import.setOnPreferenceChangeListener((preference, newValue) -> {
+            Log.i(LOG, "alarm import change to " + newValue);
             if (getContext() == null) return false;
             import_time.setEnabled((Boolean) newValue);
             if ((Boolean) newValue) Import.SetTimer(getContext());
@@ -166,6 +180,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         import_time.setOnPreferenceChangeListener((preference, newValue) -> {
+            Log.i(LOG, "import time change to " + newValue);
             SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.GERMAN);
             String value = (String) newValue;
             if (value.length() != 5) {
@@ -191,11 +206,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         export.setOnPreferenceClickListener(preference -> {
             if (getContext() != null && getActivity() != null)
                 new ExportDialog(getContext(), getActivity()).show();
-//                new ExportLectureDialog(getContext(), getActivity()).show();
             return true;
         });
 
         language.setOnPreferenceChangeListener((preference, newValue) -> {
+            Log.i(LOG, "language change to " + newValue);
             if (getContext() == null || getActivity() == null) return false;
             ChangeLanguage((String) newValue, getContext(), getActivity());
             Reload();
@@ -203,6 +218,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         theme.setOnPreferenceChangeListener((preference, newValue) -> {
+            Log.i(LOG, "theme change to " + newValue);
             int mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
             switch ((String) newValue) {
                 case "Default":
@@ -220,11 +236,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         reset.setOnPreferenceClickListener(preference -> {
+            Log.i(LOG, "reset");
             if (getContext() == null || getActivity() == null) return false;
             new MaterialAlertDialogBuilder(getContext())
                     .setTitle(R.string.reset)
                     .setMessage(R.string.do_you_want_to_reset_this_application)
                     .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
+                        Log.i(LOG, "reset - positive");
                         String lan = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(PreferenceKeys.LANGUAGE, PreferenceKeys.DEFAULT_LANGUAGE), lan2 = PreferenceKeys.Reset(getContext());
                         if (!lan2.equals(lan) && getActivity() != null)
                             ChangeLanguage(lan2, getContext(), getActivity());

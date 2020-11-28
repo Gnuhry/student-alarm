@@ -23,6 +23,7 @@ import androidx.core.content.FileProvider;
 
 public class Export {
 
+    private static final String LOG="Export";
     /**
      * export event to ICS
      *
@@ -31,7 +32,7 @@ public class Export {
      * @param list     events list
      */
     public static void ExportToICS(@NonNull Context context, @NonNull Activity activity, @NonNull List<Lecture_Schedule.Lecture> list) {
-        Log.d("Export", "Start");
+        Log.d(LOG, "Start");
         try {
             List<ICS.vEvent> erg = new ArrayList<>();
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd-HHmmssSS", Locale.getDefault());
@@ -47,7 +48,7 @@ public class Export {
             }
             File help = WriteFile(context, ICS.ExportToICS(erg));
             if (help == null) return;
-            Log.d("Export", "End");
+            Log.d(LOG, "End");
             Share(context, help, activity);
         } catch (IOException e) {
             e.printStackTrace();
@@ -63,6 +64,7 @@ public class Export {
      */
     @Nullable
     private static File WriteFile(@NonNull Context context, @NonNull String text) throws IOException {
+        Log.d(LOG, "Write to file");
         File documentsPath = new File(context.getFilesDir(), "share/");
         if (!documentsPath.exists() && !documentsPath.mkdir()) return null;
 
@@ -74,7 +76,7 @@ public class Export {
         OutputStream fo = new FileOutputStream(file);
         fo.write(text.getBytes());
         fo.close();
-        System.out.println("file created: " + file);
+        Log.d(LOG, "file created "+file);
         return file;
     }
 
@@ -86,6 +88,7 @@ public class Export {
      * @param activity activity of application
      */
     public static void Share(@NonNull Context context, @NonNull File file, @NonNull Activity activity) {
+        Log.d(LOG, "sharing");
         Uri uri = FileProvider.getUriForFile(context, "com.example.studentalarm.fileprovider", file);
         Intent intent = ShareCompat.IntentBuilder.from(activity)
                 .setType("*/*")

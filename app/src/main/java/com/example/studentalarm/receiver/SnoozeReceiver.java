@@ -20,7 +20,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(@NonNull Context context, Intent intent) {
-        Log.d("ALARM", "Snooze");
+        Log.d("SnoozeReceiver", "snoozing");
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MINUTE, Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.SNOOZE, PreferenceKeys.DEFAULT_SNOOZE)));
         Alarm.setAlarm(calendar, context);

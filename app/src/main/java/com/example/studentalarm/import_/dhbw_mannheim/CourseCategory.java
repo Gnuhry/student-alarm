@@ -1,7 +1,5 @@
 package com.example.studentalarm.import_.dhbw_mannheim;
 
-import android.util.Log;
-
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -13,7 +11,6 @@ public class CourseCategory implements Comparable<String> {
     public CourseCategory(String CourseCategory, List<Course> Courses) {
         this.CourseCategory = CourseCategory;
         this.DHBWCoursesCategory = Courses;
-        Log.d("CourseCategory", "Neu Angelegt Courscategory:" + CourseCategory);
     }
 
     public String getCourseCategory() {

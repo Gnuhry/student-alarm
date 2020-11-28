@@ -2,6 +2,7 @@ package com.example.studentalarm.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,11 +23,13 @@ public class LectureFragment extends Fragment {
 
     private static Thread animate;
     private static boolean animate_bool = true;
+    private static final String LOG = "LectureFragment";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.fragment_lecture, container, false);
         if (getActivity() == null) return view;
 
@@ -66,13 +69,15 @@ public class LectureFragment extends Fragment {
      * @param fragment the fragment to open
      */
     public void openFragment(@NonNull Fragment fragment) {
-        if (getActivity() != null)
+        if (getActivity() != null) {
+            Log.i(LOG, "open Fragment: " + fragment.getClass().toString());
             getActivity()
                     .getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fLLecture, fragment, TAG)
                     .addToBackStack(null)
                     .commit();
+        }
     }
 
     /**
@@ -82,6 +87,7 @@ public class LectureFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         if (getActivity() == null) return;
+        Log.i(LOG, "destroy");
         Toolbar toolbar = this.getActivity().findViewById(R.id.my_toolbar);
         if (toolbar != null) {
             toolbar.getMenu().getItem(0).setVisible(false);
@@ -96,6 +102,7 @@ public class LectureFragment extends Fragment {
      * @param activity activity of app
      */
     public static void AnimateReload(@NonNull Activity activity) {
+        Log.d(LOG, "Start animate reload");
         activity.findViewById(R.id.my_toolbar).post(() -> ((Toolbar) activity.findViewById(R.id.my_toolbar)).getMenu().getItem(1).setEnabled(false));
         animate_bool = true;
         MenuItem item = ((Toolbar) activity.findViewById(R.id.my_toolbar)).getMenu().getItem(1);
@@ -106,6 +113,13 @@ public class LectureFragment extends Fragment {
         animate.start();
     }
 
+    /**
+     * Playing the animation
+     *
+     * @param activity activity of app
+     * @param item     item to display animation
+     * @param res      res to display
+     */
     private static void setAnimation(@NonNull Activity activity, @NonNull MenuItem item, int res) {
         activity.findViewById(R.id.my_toolbar).post(() -> item.setIcon(res));
         try {
@@ -114,7 +128,7 @@ public class LectureFragment extends Fragment {
             e.printStackTrace();
         }
         if (animate_bool)
-            setAnimation(activity, item, res == R.drawable.hourglass_bottom ? R.drawable.hourglass_top: R.drawable.hourglass_bottom);
+            setAnimation(activity, item, res == R.drawable.hourglass_bottom ? R.drawable.hourglass_top : R.drawable.hourglass_bottom);
     }
 
     /**
@@ -123,6 +137,7 @@ public class LectureFragment extends Fragment {
      * @param activity activity of app
      */
     public static void StopAnimateReload(@NonNull Activity activity) {
+        Log.d(LOG, "stop animation");
         activity.findViewById(R.id.my_toolbar).post(() -> ((Toolbar) activity.findViewById(R.id.my_toolbar)).getMenu().getItem(1).setEnabled(true));
         animate_bool = false;
         if (animate != null) {
