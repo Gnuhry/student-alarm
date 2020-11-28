@@ -31,7 +31,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
+        <receiver android:name=".receiver.AlarmReceiver" />
         <receiver android:name=".receiver.AlarmOffReceiver" />
         <receiver android:name=".receiver.SnoozeReceiver" />
 
