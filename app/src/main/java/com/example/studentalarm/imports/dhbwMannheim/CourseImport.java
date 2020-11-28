@@ -23,6 +23,10 @@ public class CourseImport {
         parse(Import.runSynchronous(LINK_TO_COURSE));
     }
 
+    /**
+     * parse string to course category and course
+     * @param courseFile string to parse
+     */
     private void parse(@NonNull String courseFile) {
         Log.d("HTMLImport", "ICal Kurs Detail: SUCCESS " + courseFile);
         for (String import_row : courseFile.split("\\n"))
