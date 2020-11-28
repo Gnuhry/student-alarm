@@ -9,6 +9,8 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 
 import com.example.studentalarm.R;
+import com.example.studentalarm.import_.Lecture_Schedule;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -75,7 +77,13 @@ public class ExportDialog extends Dialog {
             findViewById(R.id.imVDelete).setOnClickListener(view -> {
                 ExportAdapter adapter = ((ExportAdapter) recyclerView.getAdapter());
                 if (adapter != null)
-                    adapter.deleteFiles();
+                    new MaterialAlertDialogBuilder(getContext())
+                            .setTitle(R.string.delete)
+                            .setMessage(R.string.do_you_want_to_delete_this_exports)
+                            .setPositiveButton(R.string.delete, (dialogInterface, i) -> adapter.deleteFiles())
+                            .setNegativeButton(R.string.cancel, (dialogInterface, i) -> this.cancel())
+                            .setCancelable(true)
+                            .show();
                 this.cancel();
             });
         } else {
