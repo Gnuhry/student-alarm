@@ -17,7 +17,7 @@ public class AlarmOffReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(@NonNull Context context, Intent intent) {
         Log.d("ALARM", "OFF");
-        AlarmManager.SetNextAlarm(context);
+        AlarmManager.setNextAlarm(context);
         NotificationManagerCompat.from(context).cancel(AlarmReceiver.NOTIFICATION_ID);
         if (AlarmReceiver.mp != null) {
             AlarmReceiver.mp.stop();

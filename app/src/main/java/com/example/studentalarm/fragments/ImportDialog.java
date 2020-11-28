@@ -22,11 +22,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
-import com.example.studentalarm.import_.ICS;
-import com.example.studentalarm.import_.Import;
-import com.example.studentalarm.import_.dhbw_mannheim.Course;
-import com.example.studentalarm.import_.dhbw_mannheim.CourseCategory;
-import com.example.studentalarm.import_.dhbw_mannheim.CourseImport;
+import com.example.studentalarm.imports.ICS;
+import com.example.studentalarm.imports.Import;
+import com.example.studentalarm.imports.dhbwMannheim.Course;
+import com.example.studentalarm.imports.dhbwMannheim.CourseCategory;
+import com.example.studentalarm.imports.dhbwMannheim.CourseImport;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
@@ -37,7 +37,7 @@ public class ImportDialog extends Dialog {
     private boolean isValid = false;
     private String lastValidString;
     private final Activity activity;
-    private static final String link_begin = "http://vorlesungsplan.dhbw-mannheim.de/ical.php?uid=";
+    private static final String LINK_BEGIN = "http://vorlesungsplan.dhbw-mannheim.de/ical.php?uid=";
     private static final String LOG = "ImportDialog";
 
     public ImportDialog(@NonNull Context context, Activity activity) {
@@ -63,14 +63,14 @@ public class ImportDialog extends Dialog {
                 @Override
                 public void onItemSelected(@NonNull AdapterView<?> adapterView, View view, int i, long l) {
                     Log.d(LOG, "Spinner:" + ((CourseCategory) adapterView.getItemAtPosition(i)).toString());
-                    ArrayAdapter<Course> course_adapter = new ArrayAdapter<>(getContext(),
-                            android.R.layout.simple_spinner_item, ((CourseCategory) adapterView.getItemAtPosition(i)).getDHBWCourses());
-                    course_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    findViewById(R.id.spDHBWMaCourse).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourse)).setAdapter(course_adapter));
+                    ArrayAdapter<Course> courseAdapter = new ArrayAdapter<>(getContext(),
+                            android.R.layout.simple_spinner_item, ((CourseCategory) adapterView.getItemAtPosition(i)).getCourses());
+                    courseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    findViewById(R.id.spDHBWMaCourse).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourse)).setAdapter(courseAdapter));
                     String course = preferences.getString(PreferenceKeys.DHBW_MANNHEIM_COURSE, null);
                     if (course != null)
-                        for (int in = 0; in < course_adapter.getCount(); in++)
-                            if (0 == course_adapter.getItem(in).compareTo(course)) {
+                        for (int in = 0; in < courseAdapter.getCount(); in++)
+                            if (0 == courseAdapter.getItem(in).compareTo(course)) {
                                 int finalIn = in;
                                 findViewById(R.id.spDHBWMaCourse).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourse)).setSelection(finalIn));
                             }
@@ -99,7 +99,7 @@ public class ImportDialog extends Dialog {
                 ((RadioButton) findViewById(R.id.rBtnICS)).setChecked(true);
                 findViewById(R.id.LLLink).setVisibility(View.VISIBLE);
                 break;
-            case Import.ImportFunction.DHBWMa:
+            case Import.ImportFunction.DHBWMA:
                 ((RadioButton) findViewById(R.id.rBtnDHBWMa)).setChecked(true);
                 findViewById(R.id.LLDHBWMaCourse).setVisibility(View.VISIBLE);
                 break;
@@ -136,7 +136,7 @@ public class ImportDialog extends Dialog {
                 if (isValid) {
                     preferences.edit().putInt(PreferenceKeys.MODE, Import.ImportFunction.ICS).apply();
                     preferences.edit().putString(PreferenceKeys.LINK, ((EditText) findViewById(R.id.edTLink)).getText().toString()).apply();
-                    new Thread(() -> Import.ImportLecture(this.getContext())).start();
+                    new Thread(() -> Import.importLecture(this.getContext())).start();
                     Toast.makeText(getContext(), R.string.it_may_take_a_minute_until_the_change_is_visible_in_the_calendar, Toast.LENGTH_LONG).show();
                     this.cancel();
                 } else
@@ -153,12 +153,12 @@ public class ImportDialog extends Dialog {
                     Toast.makeText(getContext(), R.string.missing_selected_course, Toast.LENGTH_SHORT).show();
                 else {
                     preferences.edit()
-                            .putInt(PreferenceKeys.MODE, Import.ImportFunction.DHBWMa)
-                            .putString(PreferenceKeys.LINK, link_begin + course.getCourseID())
+                            .putInt(PreferenceKeys.MODE, Import.ImportFunction.DHBWMA)
+                            .putString(PreferenceKeys.LINK, LINK_BEGIN + course.getCourseID())
                             .putString(PreferenceKeys.DHBW_MANNHEIM_COURSE, course.getCourseName())
                             .putString(PreferenceKeys.DHBW_MANNHEIM_COURSE_CATEGORY, category.getCourseCategory())
                             .apply();
-                    new Thread(() -> Import.ImportLecture(this.getContext())).start();
+                    new Thread(() -> Import.importLecture(this.getContext())).start();
                     Toast.makeText(getContext(), R.string.it_may_take_a_minute_until_the_change_is_visible_in_the_calendar, Toast.LENGTH_LONG).show();
                     this.cancel();
                 }
@@ -177,7 +177,7 @@ public class ImportDialog extends Dialog {
                 Toast.makeText(getContext(), R.string.string_is_not_a_valid_url, Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (!Import.CheckConnection(activity, getContext())) return;
+            if (!Import.checkConnection(activity, getContext())) return;
             findViewById(R.id.btnCheckLink).setEnabled(false);
             ImageView imageView = findViewById(R.id.imgStatus);
             Glide.with(getContext()).load(R.drawable.sandglass).into(imageView);

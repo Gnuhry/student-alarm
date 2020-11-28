@@ -1,4 +1,4 @@
-package com.example.studentalarm.import_;
+package com.example.studentalarm.imports;
 
 import android.app.Activity;
 import android.content.Context;
@@ -31,12 +31,12 @@ public class Export {
      * @param activity activity of app
      * @param list     events list
      */
-    public static void ExportToICS(@NonNull Context context, @NonNull Activity activity, @NonNull List<Lecture_Schedule.Lecture> list) {
+    public static void exportToICS(@NonNull Context context, @NonNull Activity activity, @NonNull List<LectureSchedule.Lecture> list) {
         Log.d(LOG, "Start");
         try {
             List<ICS.vEvent> erg = new ArrayList<>();
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd-HHmmssSS", Locale.getDefault());
-            for (Lecture_Schedule.Lecture lecture : list) {
+            for (LectureSchedule.Lecture lecture : list) {
                 ICS.vEvent event = new ICS.vEvent();
                 event.SUMMARY = lecture.getName();
                 event.LOCATION = lecture.getLocation();
@@ -46,10 +46,10 @@ public class Export {
                 event.DTStamp = format.format(Calendar.getInstance().getTime()).replace("-", "T");
                 erg.add(event);
             }
-            File help = WriteFile(context, ICS.ExportToICS(erg));
+            File help = writeFile(context, ICS.exportToICS(erg));
             if (help == null) return;
             Log.d(LOG, "End");
-            Share(context, help, activity);
+            share(context, help, activity);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -63,7 +63,7 @@ public class Export {
      * @return the ics file
      */
     @Nullable
-    private static File WriteFile(@NonNull Context context, @NonNull String text) throws IOException {
+    private static File writeFile(@NonNull Context context, @NonNull String text) throws IOException {
         Log.d(LOG, "Write to file");
         File documentsPath = new File(context.getFilesDir(), "share/");
         if (!documentsPath.exists() && !documentsPath.mkdir()) return null;
@@ -87,7 +87,7 @@ public class Export {
      * @param file     file to share
      * @param activity activity of application
      */
-    public static void Share(@NonNull Context context, @NonNull File file, @NonNull Activity activity) {
+    public static void share(@NonNull Context context, @NonNull File file, @NonNull Activity activity) {
         Log.d(LOG, "sharing");
         Uri uri = FileProvider.getUriForFile(context, "com.example.studentalarm.fileprovider", file);
         Intent intent = ShareCompat.IntentBuilder.from(activity)

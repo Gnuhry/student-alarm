@@ -1,4 +1,4 @@
-package com.example.studentalarm.import_;
+package com.example.studentalarm.imports;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -35,7 +35,7 @@ public class Import {
      *
      * @param context context of the application
      */
-    public static void SetTimer(@NonNull Context context) {
+    public static void setTimer(@NonNull Context context) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         String[] time = PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.IMPORT_TIME, PreferenceKeys.DEFAULT_IMPORT_TIME).split(":");
@@ -54,7 +54,7 @@ public class Import {
     /**
      * stops the timer
      */
-    public static void StopTimer(@NonNull Context context) {
+    public static void stopTimer(@NonNull Context context) {
         Log.d(LOG, "Stop timer");
         ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(context, 0, new Intent(context, ImportReceiver.class), 0));
     }
@@ -64,20 +64,20 @@ public class Import {
      *
      * @param context context of the application
      */
-    public static void ImportLecture(@NonNull Context context) {
+    public static void importLecture(@NonNull Context context) {
         Log.d(LOG, "import lecture");
-        Lecture_Schedule lecture_schedule = Lecture_Schedule.Load(context);
+        LectureSchedule lecture_schedule = LectureSchedule.load(context);
         switch (PreferenceManager.getDefaultSharedPreferences(context).getInt(PreferenceKeys.MODE, 0)) {
             case ImportFunction.NONE:
                 return;
             case ImportFunction.ICS:
-            case ImportFunction.DHBWMa:
+            case ImportFunction.DHBWMA:
                 String link = PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.LINK, null);
                 if (link == null) return;
                 String icsFile = runSynchronous(link);
                 if (icsFile == null) return;
                 ICS ics = new ICS(icsFile);
-                lecture_schedule.ImportICS(ics).Save(context);
+                lecture_schedule.importICS(ics).save(context);
         }
     }
 
@@ -114,7 +114,7 @@ public class Import {
      * @param context  context of application
      * @return boolean if connection is active
      */
-    public static boolean CheckConnection(@NonNull Activity activity, Context context) {
+    public static boolean checkConnection(@NonNull Activity activity, Context context) {
         Log.d(LOG, "Check connection");
         ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm.getActiveNetworkInfo() == null || !cm.getActiveNetworkInfo().isConnected()) {
@@ -131,9 +131,9 @@ public class Import {
     public static class ImportFunction {
         public static final int NONE = 0;
         public static final int ICS = 1;
-        public static final int DHBWMa = 2;
+        public static final int DHBWMA = 2;
         @NonNull
-        public static final List<String> imports = Arrays.asList("None", "ICS", "DHBWMa");
+        public static final List<String> IMPORTS = Arrays.asList("None", "ICS", "DHBWMa");
     }
 
 }

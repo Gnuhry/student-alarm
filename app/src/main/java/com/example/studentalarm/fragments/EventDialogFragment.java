@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.example.studentalarm.AlarmManager;
 import com.example.studentalarm.R;
-import com.example.studentalarm.import_.Lecture_Schedule;
+import com.example.studentalarm.imports.LectureSchedule;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.DateFormat;
@@ -39,12 +39,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 
 public class EventDialogFragment extends DialogFragment {
-    private final Lecture_Schedule.Lecture data;
-    private final Lecture_Schedule schedule;
-    private boolean create = false, cancel_direct = true;
+    @Nullable
+    private final LectureSchedule.Lecture data;
+    private final LectureSchedule schedule;
+    private boolean create = false, cancelDirect = true;
     private static boolean working;
     private final ReloadLecture lecture;
-    private final static String LOG = "EventDialogFragment";
+    private static final String LOG = "EventDialogFragment";
 
 
     private EditText title, docent, location, begin, end;
@@ -56,7 +57,7 @@ public class EventDialogFragment extends DialogFragment {
     @NonNull
     private final List<EventColor> colors;
 
-    public EventDialogFragment(Lecture_Schedule.Lecture data, Lecture_Schedule schedule, ReloadLecture lecture) {
+    public EventDialogFragment(@Nullable LectureSchedule.Lecture data, LectureSchedule schedule, ReloadLecture lecture) {
         this.lecture = lecture;
         this.data = data;
         this.schedule = schedule;
@@ -92,32 +93,32 @@ public class EventDialogFragment extends DialogFragment {
         delete = view.findViewById(R.id.txVDelete);
         spinner = view.findViewById(R.id.spColor);
 
-        InitSpinner();
+        initSpinner();
         if (data != null) {
-            InitData();
+            initData();
             if (!data.isImport()) {
-                cancel_direct = false;
-                InitListener();
-                InitDataChangeable();
+                cancelDirect = false;
+                initListener();
+                initDataChangeable();
             } else
-                DisableView();
+                disableView();
         } else {
             create = true;
-            InitListener();
-            InitDatePickerListenerWithoutDate();
-            cancel_direct = false;
+            initListener();
+            initDatePickerListenerWithoutDate();
+            cancelDirect = false;
         }
-        InitCancel();
+        initCancel();
         return view;
     }
 
     /**
      * init the cancel button
      */
-    private void InitCancel() {
+    private void initCancel() {
         Log.i(LOG, "Init cancel button");
         cancel.setOnClickListener(view -> {
-            if (cancel_direct)
+            if (cancelDirect)
                 this.dismiss();
             else if (getContext() != null)
                 new MaterialAlertDialogBuilder(getContext())
@@ -133,7 +134,7 @@ public class EventDialogFragment extends DialogFragment {
     /**
      * init the color spinner
      */
-    private void InitSpinner() {
+    private void initSpinner() {
         Log.i(LOG, "Init the spinner");
         ArrayAdapter<EventColor> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item);
         adapter.addAll(colors);
@@ -144,7 +145,7 @@ public class EventDialogFragment extends DialogFragment {
     /**
      * disable all views, if lecture is import
      */
-    private void DisableView() {
+    private void disableView() {
         Log.i(LOG, "Disable the views");
         title.setEnabled(false);
         docent.setEnabled(false);
@@ -156,24 +157,24 @@ public class EventDialogFragment extends DialogFragment {
     /**
      * init datePicker views to make changes possible
      */
-    private void InitDatePickerListenerWithoutDate() {
+    private void initDatePickerListenerWithoutDate() {
         Log.i(LOG, "Init datePicker without data");
         Calendar calendar = Calendar.getInstance();
         dPBegin.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), (datePicker, i, i1, i2) -> {
-            SetDateTime(txVBegin, dPBegin, begin);
+            setDateTime(txVBegin, dPBegin, begin);
             calendar.set(dPBegin.getYear(), dPBegin.getMonth(), dPBegin.getDayOfMonth(), 0, 0, 0);
             dPEnd.setMinDate(calendar.getTimeInMillis());
         });
-        dPEnd.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), (datePicker, i, i1, i2) -> SetDateTime(txVEnd, dPEnd, end));
+        dPEnd.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), (datePicker, i, i1, i2) -> setDateTime(txVEnd, dPEnd, end));
     }
 
     /**
      * init all views to make changes possible
      */
-    private void InitListener() {
+    private void initListener() {
         Log.i(LOG, "Init listener");
-        InitTimeEditText(begin, dPBegin, txVBegin);
-        InitTimeEditText(end, dPEnd, txVEnd);
+        initTimeEditText(begin, dPBegin, txVBegin);
+        initTimeEditText(end, dPEnd, txVEnd);
         add.setOnClickListener(view -> {
             Log.i(LOG, "start checking");
             if (getContext() == null) return;
@@ -261,7 +262,7 @@ public class EventDialogFragment extends DialogFragment {
 
             if (create) {
                 Log.i(LOG, "Create Lecture");
-                schedule.addLecture(new Lecture_Schedule.Lecture(false,
+                schedule.addLecture(new LectureSchedule.Lecture(false,
                         new Date(dBegin.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)),
                         new Date(dEnd.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET))).setName(title.getText().toString())
                         .setDocent(docent.getText().toString())
@@ -269,7 +270,7 @@ public class EventDialogFragment extends DialogFragment {
                         .setColor(((EventColor) spinner.getSelectedItem()).getColor()));
             } else {
                 Log.i(LOG, "Update Lecture");
-                List<Lecture_Schedule.Lecture> help = schedule.getAllLecture();
+                List<LectureSchedule.Lecture> help = schedule.getAllLecture();
                 help.get(help.indexOf(this.data))
                         .setName(title.getText().toString())
                         .setDocent(docent.getText().toString())
@@ -278,7 +279,7 @@ public class EventDialogFragment extends DialogFragment {
                         .setEnd(new Date(dEnd.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)))
                         .setColor(((EventColor) spinner.getSelectedItem()).getColor());
             }
-            schedule.Save(getContext());
+            schedule.save(getContext());
             this.dismiss();
         });
         delete.setOnClickListener(view -> {
@@ -289,7 +290,7 @@ public class EventDialogFragment extends DialogFragment {
                     .setMessage(R.string.do_you_want_to_delete_this_events)
                     .setPositiveButton(R.string.delete, (dialogInterface, i) -> {
                         Log.i(LOG, "delete Lecture");
-                        schedule.removeLecture(this.data).Save(getContext());
+                        schedule.removeLecture(this.data).save(getContext());
                         this.dismiss();
                     })
                     .setNegativeButton(R.string.cancel, (dialogInterface, i) -> this.dismiss())
@@ -318,7 +319,7 @@ public class EventDialogFragment extends DialogFragment {
     /**
      * set the date in the views
      */
-    private void InitData() {
+    private void initData() {
         Log.i(LOG, "init data");
         add.setText(R.string.update);
         title.setText(data.getName());
@@ -329,21 +330,21 @@ public class EventDialogFragment extends DialogFragment {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(data.getStart());
         dPBegin.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), (datePicker, i, i1, i2) -> {
-            SetDateTime(txVBegin, dPBegin, begin);
+            setDateTime(txVBegin, dPBegin, begin);
             calendar.set(dPBegin.getYear(), dPBegin.getMonth(), dPBegin.getDayOfMonth(), 0, 0, 0);
             dPEnd.setMinDate(calendar.getTimeInMillis());
         });
         calendar.setTime(data.getEnd());
-        dPEnd.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), (datePicker, i, i1, i2) -> SetDateTime(txVEnd, dPEnd, end));
-        SetDateTime(txVBegin, dPBegin, begin);
-        SetDateTime(txVEnd, dPEnd, end);
+        dPEnd.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), (datePicker, i, i1, i2) -> setDateTime(txVEnd, dPEnd, end));
+        setDateTime(txVBegin, dPBegin, begin);
+        setDateTime(txVEnd, dPEnd, end);
         spinner.setSelection(colors.indexOf(new EventColor(data.getColor())));
     }
 
     /**
      * set data, for views, who only visible if date is not an import
      */
-    private void InitDataChangeable() {
+    private void initDataChangeable() {
         Log.i(LOG, "init data changeable");
         delete.setVisibility(View.VISIBLE);
     }
@@ -406,7 +407,7 @@ public class EventDialogFragment extends DialogFragment {
      * @param datePicker datePicker where the date is from
      * @param editText   editText where the time is from
      */
-    private void SetDateTime(@NonNull TextView textView, @NonNull DatePicker datePicker, @NonNull EditText editText) {
+    private void setDateTime(@NonNull TextView textView, @NonNull DatePicker datePicker, @NonNull EditText editText) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, datePicker.getYear());
         calendar.set(Calendar.MONTH, datePicker.getMonth());
@@ -423,7 +424,7 @@ public class EventDialogFragment extends DialogFragment {
      * @param datePicker datePicker to get date to show in textView
      * @param textView   textView to show date time
      */
-    private void InitTimeEditText(@NonNull EditText text, @NonNull DatePicker datePicker, @NonNull TextView textView) {
+    private void initTimeEditText(@NonNull EditText text, @NonNull DatePicker datePicker, @NonNull TextView textView) {
         Log.i(LOG, "init time edit");
         text.setTag(false);
         text.addTextChangedListener(new TextWatcher() {
@@ -448,15 +449,15 @@ public class EventDialogFragment extends DialogFragment {
                     case 4:  //XX:XX
                         editable.replace(0, editable.length(), without);
                         editable.insert(2, ":");
-                        CheckMinute(editable, 3, true);
-                        CheckHour(editable);
-                        SetDateTime(textView, datePicker, text);
+                        checkMinute(editable, 3, true);
+                        checkHour(editable);
+                        setDateTime(textView, datePicker, text);
                         break;
                     case 3: //X:XX
                         editable.replace(0, editable.length(), without);
                         editable.insert(1, ":");
-                        if (CheckMinute(editable, 2, false))
-                            SetDateTime(textView, datePicker, text);
+                        if (checkMinute(editable, 2, false))
+                            setDateTime(textView, datePicker, text);
                         break;
                     case 2: //XX
                     case 1:
@@ -471,13 +472,13 @@ public class EventDialogFragment extends DialogFragment {
                 working = false;
             }
 
-            private void CheckHour(@NonNull Editable editable) {
+            private void checkHour(@NonNull Editable editable) {
                 String hour = editable.toString().substring(0, 2);
                 if (Integer.parseInt(hour) >= 24)
                     editable.replace(0, 1, "0");
             }
 
-            private boolean CheckMinute(@NonNull Editable editable, int pos, boolean change) {
+            private boolean checkMinute(@NonNull Editable editable, int pos, boolean change) {
                 String minute = editable.toString().substring(pos);
                 boolean erg = Integer.parseInt(minute) >= 60;
                 if (erg && change)
@@ -518,9 +519,9 @@ public class EventDialogFragment extends DialogFragment {
     @Override
     public void onDestroyView() {
         Log.i(LOG, "destroy");
-        lecture.LoadData();
+        lecture.loadData();
         if (getContext() != null)
-            AlarmManager.UpdateNextAlarm(this.getContext());
+            AlarmManager.updateNextAlarm(this.getContext());
         super.onDestroyView();
     }
 

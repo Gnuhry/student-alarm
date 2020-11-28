@@ -1,32 +1,32 @@
-package com.example.studentalarm.import_.dhbw_mannheim;
+package com.example.studentalarm.imports.dhbwMannheim;
 
 import androidx.annotation.NonNull;
 
 public class Course implements Comparable<String> {
-    private final String CourseName;
-    private final String CourseISCID;
+    private final String courseName;
+    private final String courseISCID;
 
     public Course(String CourseName, String CourseISCID) {
-        this.CourseName = CourseName;
-        this.CourseISCID = CourseISCID;
+        this.courseName = CourseName;
+        this.courseISCID = CourseISCID;
     }
 
     public String getCourseID() {
-        return this.CourseISCID;
+        return this.courseISCID;
     }
 
     public String getCourseName() {
-        return CourseName;
+        return courseName;
     }
 
     @NonNull
     @Override
     public String toString() {
-        return CourseName;
+        return courseName;
     }
 
     @Override
     public int compareTo(@NonNull String o) {
-        return CourseName.compareTo(o);
+        return courseName.compareTo(o);
     }
 }

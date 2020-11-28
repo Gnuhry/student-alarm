@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.example.studentalarm.AlarmManager;
-import com.example.studentalarm.import_.Import;
+import com.example.studentalarm.imports.Import;
 import com.example.studentalarm.PreferenceKeys;
 
 import androidx.annotation.NonNull;
@@ -22,8 +22,8 @@ public class BootReceiver extends BroadcastReceiver {
         Log.d("BootReceiver", "boot done");
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
             if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.AUTO_IMPORT, false))
-                Import.SetTimer(context);
-            AlarmManager.SetNextAlarm(context);
+                Import.setTimer(context);
+            AlarmManager.setNextAlarm(context);
         }
     }
 }
