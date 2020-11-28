@@ -33,8 +33,8 @@ public class AlarmFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_alarm, container, false);
         if (getContext() == null) return view;
 
-        CheckNotification();
-        SetTimer(view);
+        checkNotification();
+        setTimer(view);
 
         return view;
     }
@@ -44,7 +44,7 @@ public class AlarmFragment extends Fragment {
      *
      * @param view view to display the timer
      */
-    private void SetTimer(@NonNull View view) {
+    private void setTimer(@NonNull View view) {
         if (getContext() == null) return;
         Log.i(LOG, "Set timer");
         long time = PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_TIME, 0);
@@ -72,7 +72,7 @@ public class AlarmFragment extends Fragment {
      * Check if needed notification are given
      * if not, pop up a dialog and ask
      */
-    private void CheckNotification() {
+    private void checkNotification() {
         if (getContext() != null && !NotificationManagerCompat.from(getContext()).areNotificationsEnabled()) {
             Log.i(LOG, "Missing notification permission");
             new MaterialAlertDialogBuilder(getContext())

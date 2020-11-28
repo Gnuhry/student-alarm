@@ -8,7 +8,7 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 
 import com.example.studentalarm.R;
-import com.example.studentalarm.import_.Lecture_Schedule;
+import com.example.studentalarm.imports.LectureSchedule;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import androidx.annotation.NonNull;
@@ -35,8 +35,8 @@ public class DeleteLectureDialog extends Dialog {
         });
         findViewById(R.id.btnDelete).setOnClickListener(view -> {
             Log.i(LOG, "delete");
-            boolean normal = ((CheckBox) findViewById(R.id.rdBNormalEvents)).isChecked(), import_ = ((CheckBox) findViewById(R.id.rdBImportEvents)).isChecked();
-            if (normal || import_){
+            boolean normal = ((CheckBox) findViewById(R.id.rdBNormalEvents)).isChecked(), chBImport = ((CheckBox) findViewById(R.id.rdBImportEvents)).isChecked();
+            if (normal || chBImport){
                 Log.i(LOG, "Delete Dialog");
                 new MaterialAlertDialogBuilder(getContext())
                         .setTitle(R.string.delete_all)
@@ -44,12 +44,12 @@ public class DeleteLectureDialog extends Dialog {
                         .setPositiveButton(R.string.delete, (dialogInterface, i) -> {
                             Log.i(LOG, "Delete Dialog - positive");
                             if (getContext() == null) return;
-                            Lecture_Schedule schedule = Lecture_Schedule.Load(getContext());
+                            LectureSchedule schedule = LectureSchedule.load(getContext());
                             if (normal)
                                 schedule.clearNormalEvents();
-                            if (import_)
+                            if (chBImport)
                                 schedule.clearImportEvents();
-                            schedule.Save(getContext());
+                            schedule.save(getContext());
                             this.cancel();
                         })
                         .setNegativeButton(R.string.cancel, (dialogInterface, i) -> this.cancel())

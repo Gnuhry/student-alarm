@@ -19,10 +19,10 @@ import androidx.fragment.app.Fragment;
 public class LectureFragment extends Fragment {
 
     @NonNull
-    private final static String TAG = "LECTURE_FRAGMENT";
+    private static final String TAG = "LECTURE_FRAGMENT";
 
     private static Thread animate;
-    private static boolean animate_bool = true;
+    private static boolean animateBool = true;
     private static final String LOG = "LectureFragment";
 
     @Override
@@ -101,10 +101,10 @@ public class LectureFragment extends Fragment {
      *
      * @param activity activity of app
      */
-    public static void AnimateReload(@NonNull Activity activity) {
+    public static void animateReload(@NonNull Activity activity) {
         Log.d(LOG, "Start animate reload");
         activity.findViewById(R.id.my_toolbar).post(() -> ((Toolbar) activity.findViewById(R.id.my_toolbar)).getMenu().getItem(1).setEnabled(false));
-        animate_bool = true;
+        animateBool = true;
         MenuItem item = ((Toolbar) activity.findViewById(R.id.my_toolbar)).getMenu().getItem(1);
         animate = new Thread(() -> {
             setAnimation(activity, item, R.drawable.hourglass_bottom);
@@ -127,7 +127,7 @@ public class LectureFragment extends Fragment {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if (animate_bool)
+        if (animateBool)
             setAnimation(activity, item, res == R.drawable.hourglass_bottom ? R.drawable.hourglass_top : R.drawable.hourglass_bottom);
     }
 
@@ -136,10 +136,10 @@ public class LectureFragment extends Fragment {
      *
      * @param activity activity of app
      */
-    public static void StopAnimateReload(@NonNull Activity activity) {
+    public static void stopAnimateReload(@NonNull Activity activity) {
         Log.d(LOG, "stop animation");
         activity.findViewById(R.id.my_toolbar).post(() -> ((Toolbar) activity.findViewById(R.id.my_toolbar)).getMenu().getItem(1).setEnabled(true));
-        animate_bool = false;
+        animateBool = false;
         if (animate != null) {
             try {
                 animate.join();

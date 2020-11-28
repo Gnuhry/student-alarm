@@ -1,4 +1,4 @@
-package com.example.studentalarm.import_;
+package com.example.studentalarm.imports;
 
 import android.util.Log;
 
@@ -218,7 +218,7 @@ public class ICS {
      * @return ics file as string
      */
     @NonNull
-    public static String ExportToICS(@NonNull List<vEvent> events) {
+    public static String exportToICS(@NonNull List<vEvent> events) {
         StringBuilder erg = new StringBuilder(BEGIN_VCALENDAR).append("\n")
                 .append(VERSION).append("\n")
                 .append(METHOD).append("\n")

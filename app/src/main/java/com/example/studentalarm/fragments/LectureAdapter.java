@@ -9,7 +9,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.example.studentalarm.R;
-import com.example.studentalarm.import_.Lecture_Schedule;
+import com.example.studentalarm.imports.LectureSchedule;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -25,11 +25,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHolder> {
     @NonNull
-    private final List<Lecture_Schedule.Lecture> lecture;
+    private final List<LectureSchedule.Lecture> lecture;
     private int positionToday = -1;
     @NonNull
-    public static final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
-    private static SimpleDateFormat day_of_week_name;
+    public static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
+    private static SimpleDateFormat dayOfWeekName;
     private static DateFormat day, time;
     private static FragmentActivity activity;
     private static ReloadLecture reloadLecture;
@@ -54,23 +54,23 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
     }
 
 
-    public LectureAdapter(@NonNull Lecture_Schedule lecture_schedule, @NonNull Context context, FragmentActivity ac, ReloadLecture reloadLecture_) {
+    public LectureAdapter(@NonNull LectureSchedule lecture_schedule, @NonNull Context context, FragmentActivity ac, ReloadLecture reloadLecture_) {
         reloadLecture = reloadLecture_;
         activity = ac;
-        day_of_week_name = new SimpleDateFormat("EEEE", context.getResources().getConfiguration().locale);
+        dayOfWeekName = new SimpleDateFormat("EEEE", context.getResources().getConfiguration().locale);
         day = DateFormat.getDateInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
         time = DateFormat.getTimeInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
         this.lecture = new ArrayList<>();
         String formatS = "01.01.1900", format2S;
-        for (Lecture_Schedule.Lecture l : lecture_schedule.getAllLecture()) {
-            format2S = format.format(l.getStart());
+        for (LectureSchedule.Lecture l : lecture_schedule.getAllLecture()) {
+            format2S = FORMAT.format(l.getStart());
             if (!format2S.equals(formatS)) {
                 formatS = format2S;
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(l.getStart());
                 if (positionToday == -1 && calendar.after(Calendar.getInstance()))
                     positionToday = this.lecture.size();
-                this.lecture.add(new Lecture_Schedule.Lecture(false, l.getStart(), new Date()));
+                this.lecture.add(new LectureSchedule.Lecture(false, l.getStart(), new Date()));
                 Log.d(LOG, "add Time: " + l.getStart().toString());
             }
             this.lecture.add(l);
@@ -85,23 +85,23 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
-        Lecture_Schedule.Lecture l = lecture.get(position);
+        LectureSchedule.Lecture l = lecture.get(position);
         if (!l.getName().equals("")) {
             viewHolder.TLEvent.setVisibility(View.VISIBLE);
             viewHolder.barrier.setVisibility(View.GONE);
             viewHolder.date.setVisibility(View.GONE);
             viewHolder.title.setText(l.getName());
-            viewHolder.from.setText(CutTime(time.format(l.getStart())));
+            viewHolder.from.setText(cutTime(time.format(l.getStart())));
             boolean aa = l.getDocent() != null, ab = l.getLocation() != null;
             viewHolder.detail.setText(aa && ab ? l.getDocent() + " - " + l.getLocation() : aa ? l.getDocent() : ab ? l.getLocation() : null);
-            viewHolder.until.setText(CutTime(time.format(l.getEnd())));
+            viewHolder.until.setText(cutTime(time.format(l.getEnd())));
             viewHolder.colorLine.setBackgroundColor(l.getColor());
-            viewHolder.TLEvent.setOnClickListener(view -> new EventDialogFragment(l, Lecture_Schedule.Load(view.getContext()), reloadLecture).show(activity.getSupportFragmentManager(), "dialog"));
+            viewHolder.TLEvent.setOnClickListener(view -> new EventDialogFragment(l, LectureSchedule.load(view.getContext()), reloadLecture).show(activity.getSupportFragmentManager(), "dialog"));
         } else {
             viewHolder.TLEvent.setVisibility(View.GONE);
             viewHolder.barrier.setVisibility(View.VISIBLE);
             viewHolder.date.setVisibility(View.VISIBLE);
-            viewHolder.date.setText(String.format("%s %s", day_of_week_name.format(l.getStart()), day.format(l.getStart())));
+            viewHolder.date.setText(String.format("%s %s", dayOfWeekName.format(l.getStart()), day.format(l.getStart())));
         }
     }
 
@@ -132,7 +132,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
      * @return time format to am/pm format
      */
     @NonNull
-    private String CutTime(@NonNull String time) {
+    private String cutTime(@NonNull String time) {
         StringBuilder erg = new StringBuilder();
         String[] help = time.split(":");
         erg.append(help[0]).append(":").append(help[1]);

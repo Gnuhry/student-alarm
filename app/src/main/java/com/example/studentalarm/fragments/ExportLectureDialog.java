@@ -11,8 +11,8 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.example.studentalarm.R;
-import com.example.studentalarm.import_.Export;
-import com.example.studentalarm.import_.Lecture_Schedule;
+import com.example.studentalarm.imports.Export;
+import com.example.studentalarm.imports.LectureSchedule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,13 +50,13 @@ public class ExportLectureDialog extends Dialog {
             boolean normal = ((CheckBox) findViewById(R.id.rdBNormalEvents)).isChecked(), import_ = ((CheckBox) findViewById(R.id.rdBImportEvents)).isChecked();
             if (normal || import_) {
                 if (getContext() == null) return;
-                List<Lecture_Schedule.Lecture> export = new ArrayList<>();
-                Lecture_Schedule schedule = Lecture_Schedule.Load(getContext());
+                List<LectureSchedule.Lecture> export = new ArrayList<>();
+                LectureSchedule schedule = LectureSchedule.load(getContext());
                 if (normal)
                     export.addAll(schedule.getLecture());
                 if (import_)
-                    export.addAll(schedule.getImport_lecture());
-                Export.ExportToICS(context, activity, export);
+                    export.addAll(schedule.getImportLecture());
+                Export.exportToICS(context, activity, export);
             }
             this.cancel();
         });

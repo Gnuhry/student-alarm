@@ -1,4 +1,4 @@
-package com.example.studentalarm.import_;
+package com.example.studentalarm.imports;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -20,16 +20,16 @@ import java.util.TimeZone;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class Lecture_Schedule implements Serializable {
+public class LectureSchedule implements Serializable {
     @NonNull
-    private final List<Lecture> lecture, import_lecture;
+    private final List<Lecture> lecture, importLecture;
 
     /**
      * Create an empty lecture schedule
      */
-    public Lecture_Schedule() {
+    public LectureSchedule() {
         lecture = new ArrayList<>();
-        import_lecture = new ArrayList<>();
+        importLecture = new ArrayList<>();
     }
 
     /**
@@ -38,8 +38,8 @@ public class Lecture_Schedule implements Serializable {
      * @param calendar the ics file object
      */
     @NonNull
-    public Lecture_Schedule ImportICS(@NonNull ICS calendar) {
-        import_lecture.clear();
+    public LectureSchedule importICS(@NonNull ICS calendar) {
+        importLecture.clear();
         List<ICS.vEvent> list = calendar.getVEventList();
         if (list != null)
             for (ICS.vEvent ev : list) {
@@ -47,7 +47,7 @@ public class Lecture_Schedule implements Serializable {
                     if (ev.DTStart != null && ev.DTend != null && ev.SUMMARY != null) {
                         Date start = ICS.stringToDate(ev.DTStart), end = ICS.stringToDate(ev.DTend);
                         if (start != null && end != null)
-                            import_lecture.add(new Lecture(true, start, end).setName(ev.SUMMARY).setLocation(ev.LOCATION));
+                            importLecture.add(new Lecture(true, start, end).setName(ev.SUMMARY).setLocation(ev.LOCATION));
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -65,7 +65,7 @@ public class Lecture_Schedule implements Serializable {
     public List<Lecture> getAllLecture() {
         List<Lecture> all = new ArrayList<>();
         all.addAll(lecture);
-        all.addAll(import_lecture);
+        all.addAll(importLecture);
         Collections.sort(all);
         return all;
     }
@@ -76,15 +76,15 @@ public class Lecture_Schedule implements Serializable {
     }
 
     @NonNull
-    public List<Lecture> getImport_lecture() {
-        return import_lecture;
+    public List<Lecture> getImportLecture() {
+        return importLecture;
     }
 
     /**
      * delete all import events
      */
     public void clearImportEvents() {
-        this.import_lecture.clear();
+        this.importLecture.clear();
     }
 
     /**
@@ -98,8 +98,8 @@ public class Lecture_Schedule implements Serializable {
      * delete all events. import and not import
      */
     @NonNull
-    public Lecture_Schedule clearEvents() {
-        this.import_lecture.clear();
+    public LectureSchedule clearEvents() {
+        this.importLecture.clear();
         this.lecture.clear();
         return this;
     }
@@ -109,10 +109,10 @@ public class Lecture_Schedule implements Serializable {
     }
 
     @NonNull
-    public Lecture_Schedule removeLecture(@NonNull Lecture data) {
-        int id1 = lecture.indexOf(data), id2 = import_lecture.indexOf(data);
+    public LectureSchedule removeLecture(@NonNull Lecture data) {
+        int id1 = lecture.indexOf(data), id2 = importLecture.indexOf(data);
         if (id1 >= 0) lecture.remove(id1);
-        if (id2 >= 0) import_lecture.remove(id2);
+        if (id2 >= 0) importLecture.remove(id2);
         return this;
     }
 
@@ -159,7 +159,7 @@ public class Lecture_Schedule implements Serializable {
      *
      * @param context context of the application
      */
-    public void Save(@NonNull Context context) {
+    public void save(@NonNull Context context) {
         FileOutputStream fos;
         try {
             fos = context.openFileOutput("LECTURE", Context.MODE_PRIVATE);
@@ -178,11 +178,11 @@ public class Lecture_Schedule implements Serializable {
      * @param context context of the application
      */
     @NonNull
-    public static Lecture_Schedule Load(@NonNull Context context) {
+    public static LectureSchedule load(@NonNull Context context) {
         try {
             FileInputStream fis = context.openFileInput("LECTURE");
             ObjectInputStream ois = new ObjectInputStream(fis);
-            Lecture_Schedule erg = (Lecture_Schedule) ois.readObject();
+            LectureSchedule erg = (LectureSchedule) ois.readObject();
             fis.close();
             ois.close();
             if (erg != null)
@@ -192,7 +192,7 @@ public class Lecture_Schedule implements Serializable {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return new Lecture_Schedule();
+        return new LectureSchedule();
     }
 
     /**
