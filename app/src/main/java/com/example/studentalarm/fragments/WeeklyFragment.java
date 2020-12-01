@@ -17,7 +17,6 @@ import com.example.studentalarm.imports.LectureSchedule;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
