@@ -1,8 +1,10 @@
-package com.example.studentalarm;
+package com.example.studentalarm.save;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+
+import com.example.studentalarm.R;
 
 import java.util.Locale;
 

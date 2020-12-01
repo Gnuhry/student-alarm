@@ -1,4 +1,4 @@
-package com.example.studentalarm.fragments;
+package com.example.studentalarm.ui.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 
-import com.example.studentalarm.AlarmManager;
-import com.example.studentalarm.PreferenceKeys;
+import com.example.studentalarm.alarm.AlarmManager;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
 
 import androidx.annotation.NonNull;

@@ -1,4 +1,4 @@
-package com.example.studentalarm.fragments;
+package com.example.studentalarm.ui.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -19,7 +19,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.studentalarm.PreferenceKeys;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.ICS;
 import com.example.studentalarm.imports.Import;
@@ -46,7 +46,7 @@ public class ImportDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(LOG, "open");
-        setContentView(R.layout.fragment_import);
+        setContentView(R.layout.dialog_import);
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 

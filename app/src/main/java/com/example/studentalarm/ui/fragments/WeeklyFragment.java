@@ -1,4 +1,4 @@
-package com.example.studentalarm.fragments;
+package com.example.studentalarm.ui.fragments;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -8,9 +8,10 @@ import android.view.ViewGroup;
 
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEntity;
-import com.example.studentalarm.AlarmManager;
-import com.example.studentalarm.PreferenceKeys;
+import com.example.studentalarm.alarm.AlarmManager;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
+import com.example.studentalarm.ui.dialog.EventDialog;
 import com.example.studentalarm.imports.Import;
 import com.example.studentalarm.imports.LectureSchedule;
 
@@ -46,7 +47,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
         initWeekView(weekview);
         loadData();
 
-        view.findViewById(R.id.fabAdd).setOnClickListener(view1 -> new EventDialogFragment(null, LectureSchedule.load(getContext()), this).show(getActivity().getSupportFragmentManager(), "dialog"));
+        view.findViewById(R.id.fabAdd).setOnClickListener(view1 -> new EventDialog(null, LectureSchedule.load(getContext()), this).show(getActivity().getSupportFragmentManager(), "dialog"));
         return view;
     }
 
@@ -131,7 +132,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
         public void onEventClick(@NonNull LectureSchedule.Lecture data) {
             super.onEventClick(data);
             if (getActivity() != null)
-                new EventDialogFragment(data, LectureSchedule.load(getContext()), lecture).show(getActivity().getSupportFragmentManager(), "dialog");
+                new EventDialog(data, LectureSchedule.load(getContext()), lecture).show(getActivity().getSupportFragmentManager(), "dialog");
         }
 
         @NonNull

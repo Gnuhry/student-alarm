@@ -1,4 +1,4 @@
-package com.example.studentalarm.fragments;
+package com.example.studentalarm.ui.dialog;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -18,8 +18,9 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.studentalarm.AlarmManager;
+import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.R;
+import com.example.studentalarm.ui.fragments.ReloadLecture;
 import com.example.studentalarm.imports.LectureSchedule;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -38,7 +39,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 
-public class EventDialogFragment extends DialogFragment {
+public class EventDialog extends DialogFragment {
     @Nullable
     private final LectureSchedule.Lecture data;
     private final LectureSchedule schedule;
@@ -57,7 +58,7 @@ public class EventDialogFragment extends DialogFragment {
     @NonNull
     private final List<EventColor> colors;
 
-    public EventDialogFragment(@Nullable LectureSchedule.Lecture data, LectureSchedule schedule, ReloadLecture lecture) {
+    public EventDialog(@Nullable LectureSchedule.Lecture data, LectureSchedule schedule, ReloadLecture lecture) {
         this.lecture = lecture;
         this.data = data;
         this.schedule = schedule;
@@ -75,7 +76,7 @@ public class EventDialogFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(LOG, "open");
-        View view = inflater.inflate(R.layout.event_dialog_fragment, container, false);
+        View view = inflater.inflate(R.layout.dialog_event, container, false);
         title = view.findViewById(R.id.edTTitle);
         docent = view.findViewById(R.id.edTDocent);
         location = view.findViewById(R.id.edTLocation);

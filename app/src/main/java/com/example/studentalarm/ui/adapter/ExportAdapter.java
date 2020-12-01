@@ -1,4 +1,4 @@
-package com.example.studentalarm.fragments;
+package com.example.studentalarm.ui.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 
 import com.example.studentalarm.R;
+import com.example.studentalarm.ui.dialog.ExportDialog;
 import com.example.studentalarm.imports.Export;
 
 import java.io.File;
@@ -75,7 +76,7 @@ public class ExportAdapter extends RecyclerView.Adapter<ExportAdapter.ViewHolder
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.export_adapter, parent, false));
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_export, parent, false));
     }
 
     @Override
