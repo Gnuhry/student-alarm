@@ -1,4 +1,4 @@
-package com.example.studentalarm.fragments;
+package com.example.studentalarm.ui.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -10,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 
 import com.example.studentalarm.R;
+import com.example.studentalarm.ui.adapter.ExportAdapter;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import androidx.annotation.NonNull;
@@ -36,7 +37,7 @@ public class ExportDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(LOG, "open");
-        setContentView(R.layout.export_dialog);
+        setContentView(R.layout.dialog_export);
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         recyclerView = findViewById(R.id.rVExport);
         ExportAdapter adapter = new ExportAdapter(context, activity, this);

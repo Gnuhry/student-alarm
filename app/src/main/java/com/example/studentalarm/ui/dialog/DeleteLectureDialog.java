@@ -1,4 +1,4 @@
-package com.example.studentalarm.fragments;
+package com.example.studentalarm.ui.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -26,7 +26,7 @@ public class DeleteLectureDialog extends Dialog {
         super.onCreate(savedInstanceState);
 
         Log.i(LOG, "open");
-        setContentView(R.layout.delete_lecture_dialog);
+        setContentView(R.layout.dialog_delete);
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
         findViewById(R.id.btnCancel).setOnClickListener(view1 -> {

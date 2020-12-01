@@ -1,4 +1,4 @@
-package com.example.studentalarm.fragments;
+package com.example.studentalarm.ui.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -37,7 +37,7 @@ public class ExportLectureDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(LOG, "open");
-        setContentView(R.layout.delete_lecture_dialog);
+        setContentView(R.layout.dialog_delete);
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         ((TextView) findViewById(R.id.txVDeleteEvent)).setText(R.string.which_event_do_you_want_to_export);
         findViewById(R.id.btnCancel).setOnClickListener(view1 -> {

@@ -1,10 +1,11 @@
-package com.example.studentalarm;
+package com.example.studentalarm.alarm;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.example.studentalarm.imports.LectureSchedule;
+import com.example.studentalarm.save.PreferenceKeys;
 
 import java.util.Calendar;
 import java.util.Date;
