@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import com.example.studentalarm.AlarmManager;
 import com.example.studentalarm.PreferenceKeys;
 import com.example.studentalarm.R;
+import com.example.studentalarm.adapter.MonthlyAdapter;
+import com.example.studentalarm.dialog.EventDialog;
 import com.example.studentalarm.imports.Import;
 import com.example.studentalarm.imports.LectureSchedule;
 
@@ -36,7 +38,7 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
         this.view = view;
         loadData();
         initAppBar(this.getActivity().findViewById(R.id.my_toolbar), view.findViewById(R.id.rVEvents));
-        view.findViewById(R.id.fabAdd).setOnClickListener(view1 -> new EventDialogFragment(null, LectureSchedule.load(getContext()), this).show(getActivity().getSupportFragmentManager(), "dialog"));
+        view.findViewById(R.id.fabAdd).setOnClickListener(view1 -> new EventDialog(null, LectureSchedule.load(getContext()), this).show(getActivity().getSupportFragmentManager(), "dialog"));
         return view;
     }
 
@@ -68,7 +70,7 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
         if (view == null && getView() == null) return;
         if (view == null && getView() != null) view = getView();
         RecyclerView rv = view.findViewById(R.id.rVEvents);
-        LectureAdapter adapter = new LectureAdapter(LectureSchedule.load(getContext()), getContext(), getActivity(), this);
+        MonthlyAdapter adapter = new MonthlyAdapter(LectureSchedule.load(getContext()), getContext(), getActivity(), this);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(adapter);
