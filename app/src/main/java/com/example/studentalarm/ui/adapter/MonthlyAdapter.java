@@ -1,4 +1,4 @@
-package com.example.studentalarm.adapter;
+package com.example.studentalarm.ui.adapter;
 
 import android.content.Context;
 import android.util.Log;
@@ -9,8 +9,8 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.example.studentalarm.R;
-import com.example.studentalarm.dialog.EventDialog;
-import com.example.studentalarm.fragments.ReloadLecture;
+import com.example.studentalarm.ui.dialog.EventDialog;
+import com.example.studentalarm.ui.fragments.ReloadLecture;
 import com.example.studentalarm.imports.LectureSchedule;
 
 import java.text.DateFormat;

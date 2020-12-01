@@ -1,4 +1,4 @@
-package com.example.studentalarm.fragments;
+package com.example.studentalarm.ui.fragments;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
-import com.example.studentalarm.adapter.MonthlyAdapter;
-import com.example.studentalarm.dialog.EventDialog;
+import com.example.studentalarm.ui.adapter.MonthlyAdapter;
+import com.example.studentalarm.ui.dialog.EventDialog;
 import com.example.studentalarm.imports.Import;
 import com.example.studentalarm.imports.LectureSchedule;
 

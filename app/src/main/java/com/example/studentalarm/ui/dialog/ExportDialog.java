@@ -1,4 +1,4 @@
-package com.example.studentalarm.dialog;
+package com.example.studentalarm.ui.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -10,7 +10,7 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 
 import com.example.studentalarm.R;
-import com.example.studentalarm.adapter.ExportAdapter;
+import com.example.studentalarm.ui.adapter.ExportAdapter;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import androidx.annotation.NonNull;

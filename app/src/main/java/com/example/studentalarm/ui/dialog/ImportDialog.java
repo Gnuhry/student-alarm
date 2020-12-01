@@ -1,4 +1,4 @@
-package com.example.studentalarm.dialog;
+package com.example.studentalarm.ui.dialog;
 
 import android.app.Dialog;
 import android.content.Context;

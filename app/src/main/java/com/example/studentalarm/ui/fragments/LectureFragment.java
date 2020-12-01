@@ -1,4 +1,4 @@
-package com.example.studentalarm.fragments;
+package com.example.studentalarm.ui.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
