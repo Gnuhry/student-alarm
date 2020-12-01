@@ -38,6 +38,12 @@ public class PersonalFragment extends Fragment {
         view.findViewById(R.id.txVBefore).setOnClickListener(v -> numberDialog(getContext(), getString(R.string.before), PreferenceKeys.BEFORE));
         view.findViewById(R.id.txtWay).setOnClickListener(v -> numberDialog(getContext(), getString(R.string.way), PreferenceKeys.WAY));
         view.findViewById(R.id.txtAfter).setOnClickListener(v -> numberDialog(getContext(), getString(R.string.after), PreferenceKeys.AFTER));
+        view.findViewById(R.id.btnRegularLecture).setOnClickListener(view1 -> getActivity()
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.nav_host_fragment_, new RegularLectureFragment(), "TAG")
+                .addToBackStack(null)
+                .commit());
         return view;
     }
 

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.RegularLectureFragment">
+
+    <com.alamkanak.weekview.WeekView
+        android:id="@+id/regularWeekView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="10dp"
+        app:columnGap="8dp"
+        app:dayBackgroundColor="?android:attr/colorBackground"
+        app:eventTextColor="@color/white"
+        app:headerPadding="12dp"
+        app:horizontalScrollingEnabled="false"
+        app:hourHeight="60dp"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:numberOfVisibleDays="7"
+        app:showCurrentTimeFirst="false"
+        app:showFirstDayOfWeekFirst="false"
+        app:showHourSeparator="true"
+        app:showMidnightHour="false"
+        app:showNowLine="false"
+        app:showTimeColumnHourSeparator="true"
+        app:showTimeColumnSeparator="true"
+        app:timeColumnBackgroundColor="?android:attr/colorBackground"
+        app:timeColumnPadding="8dp"
+        app:timeColumnTextSize="12sp" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" >
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
