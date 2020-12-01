@@ -1,4 +1,4 @@
-package com.example.studentalarm;
+package com.example.studentalarm.alarm;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -8,7 +8,9 @@ import android.provider.AlarmClock;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.studentalarm.R;
 import com.example.studentalarm.receiver.AlarmReceiver;
+import com.example.studentalarm.save.PreferenceKeys;
 
 import java.util.Calendar;
 

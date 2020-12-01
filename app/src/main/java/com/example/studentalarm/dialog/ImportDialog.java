@@ -19,7 +19,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.studentalarm.PreferenceKeys;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.ICS;
 import com.example.studentalarm.imports.Import;

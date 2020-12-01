@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEntity;
-import com.example.studentalarm.AlarmManager;
-import com.example.studentalarm.PreferenceKeys;
+import com.example.studentalarm.alarm.AlarmManager;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
 import com.example.studentalarm.dialog.EventDialog;
 import com.example.studentalarm.imports.Import;

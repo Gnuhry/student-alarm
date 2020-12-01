@@ -8,7 +8,7 @@ import android.net.ConnectivityManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.studentalarm.PreferenceKeys;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
 import com.example.studentalarm.receiver.ImportReceiver;
 

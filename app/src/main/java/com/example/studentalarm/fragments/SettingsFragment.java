@@ -12,8 +12,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.studentalarm.AlarmManager;
-import com.example.studentalarm.PreferenceKeys;
+import com.example.studentalarm.alarm.AlarmManager;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
 import com.example.studentalarm.dialog.DeleteLectureDialog;
 import com.example.studentalarm.dialog.ExportDialog;
