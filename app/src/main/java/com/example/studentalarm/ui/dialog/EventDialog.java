@@ -1,4 +1,4 @@
-package com.example.studentalarm.dialog;
+package com.example.studentalarm.ui.dialog;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.R;
-import com.example.studentalarm.fragments.ReloadLecture;
+import com.example.studentalarm.ui.fragments.ReloadLecture;
 import com.example.studentalarm.imports.LectureSchedule;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 

@@ -1,4 +1,4 @@
-package com.example.studentalarm.adapter;
+package com.example.studentalarm.ui.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,7 +9,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 
 import com.example.studentalarm.R;
-import com.example.studentalarm.dialog.ExportDialog;
+import com.example.studentalarm.ui.dialog.ExportDialog;
 import com.example.studentalarm.imports.Export;
 
 import java.io.File;
