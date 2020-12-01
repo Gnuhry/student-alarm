@@ -112,7 +112,7 @@ public class Import {
      * @param context  context of application
      * @return boolean if connection is active
      */
-    public static boolean checkConnection(Context context) {
+    public static boolean checkConnection(@NonNull Context context) {
         Log.d(LOG, "Check connection");
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm.getActiveNetworkInfo() == null || !cm.getActiveNetworkInfo().isConnected()) {

@@ -65,7 +65,7 @@ public class AlarmFragment extends Fragment {
                  * @param ca ca to get the hours
                  * @return hour
                  */
-                private int getHour(Calendar ca) {
+                private int getHour(@NonNull Calendar ca) {
                     int erg = ca.get(Calendar.HOUR);
                     erg += ca.get(Calendar.DAY_OF_MONTH) * 24;
                     return erg;
