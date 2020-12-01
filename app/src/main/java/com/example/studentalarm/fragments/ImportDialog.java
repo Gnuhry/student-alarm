@@ -177,7 +177,7 @@ public class ImportDialog extends Dialog {
                 Toast.makeText(getContext(), R.string.string_is_not_a_valid_url, Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (!Import.checkConnection(activity, getContext())) return;
+            if (!Import.checkConnection(getContext())) return;
             findViewById(R.id.btnCheckLink).setEnabled(false);
             ImageView imageView = findViewById(R.id.imgStatus);
             Glide.with(getContext()).load(R.drawable.sandglass).into(imageView);
