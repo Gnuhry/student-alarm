@@ -18,7 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.studentalarm.AlarmManager;
+import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.R;
 import com.example.studentalarm.fragments.ReloadLecture;
 import com.example.studentalarm.imports.LectureSchedule;

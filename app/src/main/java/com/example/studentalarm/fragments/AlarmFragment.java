@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.studentalarm.PreferenceKeys;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 

@@ -12,7 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
-import com.example.studentalarm.PreferenceKeys;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
 
 import androidx.annotation.NonNull;

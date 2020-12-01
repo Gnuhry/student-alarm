@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.studentalarm.AlarmManager;
-import com.example.studentalarm.PreferenceKeys;
+import com.example.studentalarm.alarm.AlarmManager;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
 import com.example.studentalarm.adapter.MonthlyAdapter;
 import com.example.studentalarm.dialog.EventDialog;

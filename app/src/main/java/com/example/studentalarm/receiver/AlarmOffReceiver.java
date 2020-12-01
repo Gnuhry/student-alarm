@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.example.studentalarm.AlarmManager;
+import com.example.studentalarm.alarm.AlarmManager;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationManagerCompat;
