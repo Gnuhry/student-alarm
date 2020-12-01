@@ -28,7 +28,6 @@ public class LectureFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.fragment_lecture, container, false);
         if (getActivity() == null) return view;
@@ -81,20 +80,16 @@ public class LectureFragment extends Fragment {
     }
 
     /**
-     * Remove menu item if fragment changed
+     * Remove menu item
      */
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (getActivity() == null) return;
+    public static void removeLectureMenu(@NonNull Activity activity){
         Log.i(LOG, "destroy");
-        Toolbar toolbar = this.getActivity().findViewById(R.id.my_toolbar);
+        Toolbar toolbar = activity.findViewById(R.id.my_toolbar);
         if (toolbar != null) {
             toolbar.getMenu().getItem(0).setVisible(false);
             toolbar.getMenu().getItem(1).setVisible(false);
         }
     }
-
 
     /**
      * Start the reload animation

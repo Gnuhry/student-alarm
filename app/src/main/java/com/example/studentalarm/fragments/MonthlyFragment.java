@@ -101,5 +101,12 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
 
         loadData();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(LOG, "resume");
+        loadData();
+    }
 }
 

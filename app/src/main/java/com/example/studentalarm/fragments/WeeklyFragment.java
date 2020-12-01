@@ -17,7 +17,7 @@ import com.example.studentalarm.imports.LectureSchedule;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -119,6 +119,13 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
         adapter.submitList(LectureSchedule.load(getContext()).getAllLecture());
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(LOG, "resume");
+        loadData();
+    }
+
     class Adapter extends WeekView.SimpleAdapter<LectureSchedule.Lecture> {
 
         @Override
@@ -134,10 +141,10 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
             WeekViewEntity.Style.Builder builder = new WeekViewEntity.Style.Builder();
             builder.setBackgroundColor(item.getColor());
 
-            Calendar startCal = new GregorianCalendar();
+            Calendar startCal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
             startCal.setTime(item.getStart());
 
-            Calendar endCal = new GregorianCalendar();
+            Calendar endCal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
             endCal.setTime(item.getEnd());
 
             WeekViewEntity.Event.Builder<LectureSchedule.Lecture> erg = new WeekViewEntity.Event.Builder<>(item);
