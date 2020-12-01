@@ -1,4 +1,4 @@
-package com.example.studentalarm.fragments;
+package com.example.studentalarm.adapter;
 
 import android.content.Context;
 import android.util.Log;
@@ -9,6 +9,8 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.example.studentalarm.R;
+import com.example.studentalarm.dialog.EventDialog;
+import com.example.studentalarm.fragments.ReloadLecture;
 import com.example.studentalarm.imports.LectureSchedule;
 
 import java.text.DateFormat;
@@ -23,7 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHolder> {
+public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHolder> {
     @NonNull
     private final List<LectureSchedule.Lecture> lecture;
     private int positionToday = -1;
@@ -54,7 +56,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
     }
 
 
-    public LectureAdapter(@NonNull LectureSchedule lecture_schedule, @NonNull Context context, FragmentActivity ac, ReloadLecture reloadLecture_) {
+    public MonthlyAdapter(@NonNull LectureSchedule lecture_schedule, @NonNull Context context, FragmentActivity ac, ReloadLecture reloadLecture_) {
         reloadLecture = reloadLecture_;
         activity = ac;
         dayOfWeekName = new SimpleDateFormat("EEEE", context.getResources().getConfiguration().locale);
@@ -80,7 +82,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.monthly_event_fragment, viewGroup, false));
+        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.adapter_monthly, viewGroup, false));
     }
 
     @Override
@@ -96,7 +98,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
             viewHolder.detail.setText(aa && ab ? l.getDocent() + " - " + l.getLocation() : aa ? l.getDocent() : ab ? l.getLocation() : null);
             viewHolder.until.setText(cutTime(time.format(l.getEnd())));
             viewHolder.colorLine.setBackgroundColor(l.getColor());
-            viewHolder.TLEvent.setOnClickListener(view -> new EventDialogFragment(l, LectureSchedule.load(view.getContext()), reloadLecture).show(activity.getSupportFragmentManager(), "dialog"));
+            viewHolder.TLEvent.setOnClickListener(view -> new EventDialog(l, LectureSchedule.load(view.getContext()), reloadLecture).show(activity.getSupportFragmentManager(), "dialog"));
         } else {
             viewHolder.TLEvent.setVisibility(View.GONE);
             viewHolder.barrier.setVisibility(View.VISIBLE);

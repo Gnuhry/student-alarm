@@ -1,4 +1,4 @@
-package com.example.studentalarm.fragments;
+package com.example.studentalarm.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -46,7 +46,7 @@ public class ImportDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(LOG, "open");
-        setContentView(R.layout.fragment_import);
+        setContentView(R.layout.dialog_import);
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
