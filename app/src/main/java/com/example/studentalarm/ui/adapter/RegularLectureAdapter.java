@@ -1,10 +1,8 @@
-package com.example.studentalarm.fragments;
+package com.example.studentalarm.ui.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.example.studentalarm.R;
