@@ -30,6 +30,8 @@ public class PersonalFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (getActivity() != null)
+            LectureFragment.removeLectureMenu(getActivity());
         Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.fragment_personal, container, false);
         if (getContext() == null) return view;

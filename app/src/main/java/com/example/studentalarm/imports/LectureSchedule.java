@@ -209,8 +209,8 @@ public class LectureSchedule implements Serializable {
         private final boolean isImport;
 
         public Lecture(boolean isImport, @NonNull Date start, @NonNull Date end) {
-            this.start = start;
-            this.end = end;
+            this.start = new Date(start.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
+            this.end = new Date(end.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
             this.id = counter++;
             this.isImport = isImport;
         }
@@ -232,12 +232,12 @@ public class LectureSchedule implements Serializable {
 
         @NonNull
         public Date getStart() {
-            return new Date(start.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
+            return start;// new Date(start.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
         }
 
         @NonNull
         public Date getEnd() {
-            return new Date(end.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
+            return end;// new Date(end.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
         }
 
         public int getId() {
