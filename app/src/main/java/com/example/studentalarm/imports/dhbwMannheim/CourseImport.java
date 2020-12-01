@@ -20,11 +20,14 @@ public class CourseImport {
     public CourseImport() {
         dhbwCourseCategory = new ArrayList<>();
         tempDHBWCourses = new ArrayList<>();
-        parse(Import.runSynchronous(LINK_TO_COURSE));
+        String parse = Import.runSynchronous(LINK_TO_COURSE);
+        if (parse != null)
+            parse(parse);
     }
 
     /**
      * parse string to course category and course
+     *
      * @param courseFile string to parse
      */
     private void parse(@NonNull String courseFile) {

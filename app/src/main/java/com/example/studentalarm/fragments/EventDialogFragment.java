@@ -66,7 +66,8 @@ public class EventDialogFragment extends DialogFragment {
         colors.add(new EventColor(R.string.green, Color.GREEN));
         colors.add(new EventColor(R.string.blue, Color.BLUE));
         colors.add(new EventColor(R.string.yellow, Color.YELLOW));
-        Log.d(LOG, data.toString());
+        if (data != null)
+            Log.d(LOG, data.toString());
     }
 
 
@@ -289,6 +290,7 @@ public class EventDialogFragment extends DialogFragment {
                     .setTitle(R.string.delete)
                     .setMessage(R.string.do_you_want_to_delete_this_events)
                     .setPositiveButton(R.string.delete, (dialogInterface, i) -> {
+                        if (data == null) return;
                         Log.i(LOG, "delete Lecture");
                         schedule.removeLecture(this.data).save(getContext());
                         this.dismiss();
@@ -322,6 +324,7 @@ public class EventDialogFragment extends DialogFragment {
     private void initData() {
         Log.i(LOG, "init data");
         add.setText(R.string.update);
+        if (data == null) return;
         title.setText(data.getName());
         docent.setText(data.getDocent());
         location.setText(data.getLocation());

@@ -1,6 +1,5 @@
 package com.example.studentalarm.fragments;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -36,13 +35,11 @@ public class ImportDialog extends Dialog {
 
     private boolean isValid = false;
     private String lastValidString;
-    private final Activity activity;
     private static final String LINK_BEGIN = "http://vorlesungsplan.dhbw-mannheim.de/ical.php?uid=";
     private static final String LOG = "ImportDialog";
 
-    public ImportDialog(@NonNull Context context, Activity activity) {
+    public ImportDialog(@NonNull Context context) {
         super(context);
-        this.activity = activity;
     }
 
     @Override
