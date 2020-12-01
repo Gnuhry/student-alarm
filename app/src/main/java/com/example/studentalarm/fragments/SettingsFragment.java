@@ -194,6 +194,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 Toast.makeText(getContext(), getString(R.string.wrong_time_format), Toast.LENGTH_SHORT).show();
                 return false;
             }
+            if (getContext() == null) return false;
+            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(PreferenceKeys.IMPORT_TIME, value.trim()).apply();
+            Import.stopTimer(getContext());
+            Import.setTimer(getContext());
             return true;
         });
 
