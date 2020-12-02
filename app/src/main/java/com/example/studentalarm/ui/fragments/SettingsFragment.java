@@ -44,8 +44,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        if (getActivity() != null)
+        if (getActivity() != null) {
+            RegularLectureFragment.removeRegularLectureMenu(getActivity());
             LectureFragment.removeLectureMenu(getActivity());
+        }
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
         Log.i(LOG, "open");
         boolean bool = getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_ON, false), bool2 = bool && !getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_PHONE, false);
@@ -285,7 +287,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         bottomNav.inflateMenu(R.menu.bottom_nav_menu);
         Toolbar toolbar = activity.findViewById(R.id.my_toolbar);
         toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.lecture);
+        toolbar.inflateMenu(R.menu.toolbar);
     }
 
     /**

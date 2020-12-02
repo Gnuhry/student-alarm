@@ -22,7 +22,7 @@
     <string name="do_you_want_to_delete_this_events">Möchten Sie diese Events löschen?</string>
     <string name="cancel">Abbrechen</string>
     <string name="check">Prüfen</string>
-    <string name="save">Speichern</string>
+    <string name="saveRegularLecture">Speichern</string>
     <string name="none">Kein</string>
     <string name="ics">ICS</string>
     <string name="delete_all">Alle löschen</string>
