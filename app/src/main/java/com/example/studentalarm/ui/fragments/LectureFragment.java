@@ -32,6 +32,7 @@ public class LectureFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_lecture, container, false);
         if (getActivity() == null) return view;
 
+        RegularLectureFragment.removeRegularLectureMenu(getActivity());
         Toolbar toolbar = getActivity().findViewById(R.id.my_toolbar);
         toolbar.getMenu().getItem(0).setVisible(true);
         toolbar.getMenu().getItem(1).setVisible(true);
@@ -83,7 +84,6 @@ public class LectureFragment extends Fragment {
      * Remove menu item
      */
     public static void removeLectureMenu(@NonNull Activity activity){
-        Log.i(LOG, "destroy");
         Toolbar toolbar = activity.findViewById(R.id.my_toolbar);
         if (toolbar != null) {
             toolbar.getMenu().getItem(0).setVisible(false);

@@ -30,51 +30,29 @@ public class PersonalFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (getActivity() != null)
+        if (getActivity() != null) {
+            RegularLectureFragment.removeRegularLectureMenu(getActivity());
             LectureFragment.removeLectureMenu(getActivity());
+        }
         Log.i(LOG, "open");
-        View view = inflater.inflate(R.layout.fragment_personal, container, false);
-        if (getContext() == null) return view;
-        view.findViewById(R.id.txVBefore).setOnClickListener(v -> numberDialog(getContext(), getString(R.string.before), PreferenceKeys.BEFORE));
-        view.findViewById(R.id.txtWay).setOnClickListener(v -> numberDialog(getContext(), getString(R.string.way), PreferenceKeys.WAY));
-        view.findViewById(R.id.txtAfter).setOnClickListener(v -> numberDialog(getContext(), getString(R.string.after), PreferenceKeys.AFTER));
-        view.findViewById(R.id.btnRegularLecture).setOnClickListener(view1 -> getActivity()
-                .getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.nav_host_fragment_, new RegularLectureFragment(), "TAG")
-                .addToBackStack(null)
-                .commit());
-        return view;
+        openFragment(new AlarmSettingFragment(this));
+        return inflater.inflate(R.layout.fragment_personal, container, false);
     }
 
     /**
-     * Init Number Dialog
+     * open a fragment
      *
-     * @param context context of the application
-     * @param title   title of the number dialog
-     * @param key     key of preference
+     * @param fragment the fragment to open
      */
-    private void numberDialog(@NonNull Context context, String title, String key) {
-        Log.i(LOG, title);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle(title);
-        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.number_input, (ViewGroup) getView(), false);
-        final EditText input = viewInflated.findViewById(R.id.input);
-        input.setText(String.valueOf(preferences.getInt(key, 0)));
-        input.requestFocus();
-        builder.setView(viewInflated);
-        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-            dialog.dismiss();
-            int value = Integer.parseInt(input.getText().toString());
-            if (preferences.getInt(key, 0) != value) {
-                preferences.edit().putInt(key, value).apply();
-                AlarmManager.updateNextAlarm(context);
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.cancel());
-        Dialog dialog = builder.create();
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        dialog.show();
+    public void openFragment(@NonNull Fragment fragment) {
+        if (getActivity() != null) {
+            Log.i(LOG, "open Fragment: " + fragment.getClass().toString());
+            getActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frLPersonal, fragment, "TAG")
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 }

@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        app:menu="@menu/lecture"
+        app:menu="@menu/toolbar"
         app:title="@string/app_name"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:layout_constraintTop_toTopOf="parent"
