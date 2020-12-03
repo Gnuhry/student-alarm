@@ -8,10 +8,13 @@ import java.util.List;
 public class RegularLectureSchedule {
 
     private int days, hours;
-    private List<RegularLecture> lectures;
+    private final List<RegularLecture> lectures;
 
     public RegularLectureSchedule(int days, int hours) {
-        //Check day hour
+        if (days < 4 || days > 6)
+            days = 5;
+        if (hours < 0 || hours > 23)
+            hours = 10;
         lectures = new ArrayList<>();
         this.days = days;
         this.hours = hours;
@@ -62,18 +65,25 @@ public class RegularLectureSchedule {
             this.name = name;
         }
 
-        public static void setCounter(int new_counter){
-            counter=new_counter;
+        public static void setCounter(int new_counter) {
+            counter = new_counter;
         }
 
-        public RegularLecture addRoom(String room) {
-            if(activeRoomId==-1) activeRoomId=0;
+        public void addRoom(String room) {
+            if (activeRoomId == -1) activeRoomId = 0;
             rooms.add(room);
-            return this;
         }
 
         public List<String> getRooms() {
             return rooms;
+        }
+
+        public RegularLecture setAllRooms(List<String> rooms) {
+            this.rooms.clear();
+            this.rooms.addAll(rooms);
+            if (rooms.size() > 0)
+                activeRoomId = 0;
+            return this;
         }
 
         public String getName() {
@@ -117,7 +127,7 @@ public class RegularLectureSchedule {
         }
 
         public String getActiveRoom() {
-            if(activeRoomId==-1)
+            if (activeRoomId == -1 || activeRoomId >= rooms.size())
                 return null;
             return rooms.get(activeRoomId);
         }

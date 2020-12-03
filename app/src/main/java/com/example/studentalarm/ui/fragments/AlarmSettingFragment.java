@@ -22,11 +22,11 @@ import androidx.preference.PreferenceManager;
 
 public class AlarmSettingFragment extends Fragment {
 
-    private static final String LOG = "PersonalFragment";
+    private static final String LOG = "AlarmSettingFragment";
     private final PersonalFragment fragment;
 
     public AlarmSettingFragment(PersonalFragment fragment) {
-        this.fragment=fragment;
+        this.fragment = fragment;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class AlarmSettingFragment extends Fragment {
         view.findViewById(R.id.txVBefore).setOnClickListener(v -> numberDialog(getContext(), getString(R.string.before), PreferenceKeys.BEFORE));
         view.findViewById(R.id.txtWay).setOnClickListener(v -> numberDialog(getContext(), getString(R.string.way), PreferenceKeys.WAY));
         view.findViewById(R.id.txtAfter).setOnClickListener(v -> numberDialog(getContext(), getString(R.string.after), PreferenceKeys.AFTER));
-        view.findViewById(R.id.btnRegularLecture).setOnClickListener(view1 -> fragment.openFragment(new RegularLectureFragment()));
+        view.findViewById(R.id.btnRegularLecture).setOnClickListener(view1 -> fragment.openFragment(fragment.getRegularFragment()));
         return view;
     }
 
