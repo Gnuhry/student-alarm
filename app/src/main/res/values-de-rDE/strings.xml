@@ -93,6 +93,9 @@
     <string name="ok">Ok</string>
     <string name="number">Zahl</string>
     <string name="no_connection">Keine Verbindung</string>
-
+    <string name="save">Speichern</string>
+    <string name="do_you_want_to_delete_this_lecture">Möchten sie diese Vorlesung löschen?</string>
+    <string name="do_you_want_to_save_your_changes">Möchten Sie ihre Änderungen speichern?</string>
+    <string name="hour">" Stunde"</string>
 
 </resources>

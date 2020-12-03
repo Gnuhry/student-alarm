@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEntity;
@@ -14,8 +15,6 @@ import com.example.studentalarm.R;
 import com.example.studentalarm.RegularLectureSchedule;
 import com.example.studentalarm.save.SaveRegularLectureSchedule;
 import com.example.studentalarm.ui.adapter.RegularLectureAdapter;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -29,17 +28,20 @@ import java.util.Iterator;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RegularLectureFragment extends Fragment {
-    RegularLectureAdapter regularLectureAdapter;
-    Adapter adapter;
-    RegularLectureSchedule regularLectureSchedule;
-    WeekView weekView;
+    private RegularLectureAdapter regularLectureAdapter;
+    private Adapter adapter;
+    private final RegularLectureSchedule regularLectureSchedule;
+    private WeekView weekView;
     private final List<RegularLectureSchedule.RegularLecture.RegularLectureTime> lectures;
+    private RecyclerView rv;
+    private static final String LOG = "RegularLectureFragment";
 
     public RegularLectureFragment() {
         regularLectureSchedule = new RegularLectureSchedule(4, 10);
@@ -51,29 +53,40 @@ public class RegularLectureFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_regular_lecture, container, false);
         if (getContext() == null || getActivity() == null) return view;
 
-        InitAppBar();
-
-//        save();
-
-//        initTest();
-
+        initAppBar();
         weekView = view.findViewById(R.id.regularWeekView);
+        rv = view.findViewById(R.id.rVRegularLecture);
         load();
         initWeekView();
-        loadRecyclerView(view);
+        loadRecyclerView();
         loadDataWeekView();
 
         return view;
     }
 
-    private void InitAppBar() {
-        if(getActivity()==null) return;
+    /**
+     * fragment has no changes
+     *
+     * @return {true} if no changes {false} if changes occurs
+     */
+    public boolean hasNoChanges() {
+        //TODO return false if changes true if not
+        return false;
+    }
+
+    /**
+     * init the appbar
+     */
+    private void initAppBar() {
+        Log.i(LOG, "initAppBar");
+        if (getActivity() == null) return;
         Toolbar toolbar = getActivity().findViewById(R.id.my_toolbar);
         toolbar.getMenu().getItem(2).setVisible(true);
         toolbar.getMenu().getItem(2).setOnMenuItemClickListener(menuItem -> {
@@ -82,7 +95,7 @@ public class RegularLectureFragment extends Fragment {
         });
         toolbar.getMenu().getItem(3).setVisible(true);
         toolbar.getMenu().getItem(3).setOnMenuItemClickListener(menuItem -> {
-            //TODO settings regular lecture schedule
+            //TODO settings regular lecture settings
             return false;
         });
     }
@@ -99,6 +112,13 @@ public class RegularLectureFragment extends Fragment {
         }
     }
 
+    /**
+     * add a lecture to the timetable
+     *
+     * @param day     day to add
+     * @param hour    hour to add
+     * @param lecture lecture to add
+     */
     private void addTime(int day, int hour, @NonNull RegularLectureSchedule.RegularLecture lecture) {
         if (day >= regularLectureSchedule.getDays() || hour >= regularLectureSchedule.getHours())
             return;
@@ -106,6 +126,12 @@ public class RegularLectureFragment extends Fragment {
         lectures.add(new RegularLectureSchedule.RegularLecture.RegularLectureTime(day, hour, lecture.getActiveRoomId(), lecture));
     }
 
+    /**
+     * remove a lecture from the timetable
+     *
+     * @param day  day to remove
+     * @param hour hour to remove
+     */
     private void removeTime(int day, int hour) {
         if (day >= regularLectureSchedule.getDays() || hour >= regularLectureSchedule.getHours())
             return;
@@ -116,13 +142,11 @@ public class RegularLectureFragment extends Fragment {
         }
     }
 
-    private void initTest() {
-        regularLectureSchedule.addLecture(new RegularLectureSchedule.RegularLecture("Test").setDocent("Mr. aoshgoa").addRoom("A123"));
-        regularLectureSchedule.addLecture(new RegularLectureSchedule.RegularLecture("Test2").setDocent("Mr. 123").addRoom("HUHN"));
-        regularLectureSchedule.addLecture(new RegularLectureSchedule.RegularLecture("Test3").setDocent("Mr. 23").addRoom("A123"));
-    }
-
+    /**
+     * init the weekView
+     */
     private void initWeekView() {
+        Log.i(LOG, "init weekView");
         Calendar calendar = Calendar.getInstance();
         calendar.set(2020, 5, 1, 0, 0, 0);
         weekView.scrollToDate(calendar);
@@ -130,34 +154,72 @@ public class RegularLectureFragment extends Fragment {
         weekView.setAdapter(adapter);
 
         SimpleDateFormat format = new SimpleDateFormat("E", getResources().getConfiguration().locale);
-        weekView.setTimeFormatter(hour -> hour + 1 + " Stunde");
+        weekView.setTimeFormatter(hour -> hour + 1 + getString(R.string.hour));
         weekView.setMinHour(0);
         weekView.setMaxHour(regularLectureSchedule.getHours());
         weekView.setDateFormatter(date -> format.format(date.getTime()));
         weekView.setNumberOfVisibleDays(regularLectureSchedule.getDays() - 1);
     }
 
-    private void loadRecyclerView(View view) {
-        RecyclerView rv = view.findViewById(R.id.rVRegularLecture);
-        regularLectureAdapter = new RegularLectureAdapter(regularLectureSchedule.getLectures());
+    /**
+     * loading the recycler view elements
+     */
+    public void loadRecyclerView() {
+        Log.i(LOG, "load recyclerView");
+        regularLectureAdapter = new RegularLectureAdapter(regularLectureSchedule, this);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rv.setAdapter(regularLectureAdapter);
+        loadDataWeekView();
     }
 
+    /**
+     * loading the week view elements
+     */
     private void loadDataWeekView() {
+        Log.i(LOG, "load weekView");
         Log.d("erg", lectures.size() + "");
+        for (Iterator<RegularLectureSchedule.RegularLecture.RegularLectureTime> iterator = lectures.iterator(); iterator.hasNext(); )
+            if (!regularLectureSchedule.getLectures().contains(iterator.next().lecture))
+                iterator.remove();
         adapter.submitList(lectures);
     }
 
     //----------------------------------Save---------------------------------
-    private void save() {
-        if (getContext() == null) return;
+
+    /**
+     * clear data from file
+     *
+     * @param context context of app
+     */
+    public static void clearSave(@NonNull Context context) {
+        Log.i(LOG, "clear save");
+        saving(null, context);
+    }
+
+    /**
+     * save data to file
+     */
+    public void save() {
+        Log.i(LOG, "save");
+        if (getContext() != null) {
+            saving(createSave(), getContext());
+            Toast.makeText(getContext(), R.string.save, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * saving the date to the file
+     *
+     * @param schedule data to save
+     * @param context  context of app
+     */
+    private static void saving(@Nullable SaveRegularLectureSchedule schedule, @NonNull Context context) {
         FileOutputStream fos;
         try {
-            fos = getContext().openFileOutput("REGULAR_LECTURE", Context.MODE_PRIVATE);
+            fos = context.openFileOutput("REGULAR_LECTURE", Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(createSave());
+            oos.writeObject(schedule);
             oos.close();
             fos.close();
         } catch (IOException e) {
@@ -165,6 +227,11 @@ public class RegularLectureFragment extends Fragment {
         }
     }
 
+    /**
+     * create the save object
+     *
+     * @return save object
+     */
     private SaveRegularLectureSchedule createSave() {
         SaveRegularLectureSchedule erg = new SaveRegularLectureSchedule();
         erg.day = regularLectureSchedule.getDays();
@@ -192,17 +259,16 @@ public class RegularLectureFragment extends Fragment {
 
             times[f].saveRegularLecture = new SaveRegularLectureSchedule.SaveRegularLecture();
             times[f].saveRegularLecture.id = t.lecture.getId();
-//            times[f].saveRegularLecture.activeRoomId = t.lecture.getActiveRoomId();
-//            times[f].saveRegularLecture.color = t.lecture.getColor();
-//            times[f].saveRegularLecture.docent = t.lecture.getDocent();
-//            times[f].saveRegularLecture.name = t.lecture.getName();
-//            times[f].saveRegularLecture.rooms = t.lecture.getRooms().toArray(new String[0]);
         }
         erg.times = times;
         return erg;
     }
 
+    /**
+     * load data from file
+     */
     private void load() {
+        Log.i(LOG, "load");
         if (getContext() == null) return;
         try {
             FileInputStream fis = getContext().openFileInput("REGULAR_LECTURE");
@@ -217,7 +283,12 @@ public class RegularLectureFragment extends Fragment {
         }
     }
 
-    private void ConvertSave(SaveRegularLectureSchedule readObject) {
+    /**
+     * convert the save object to the normal object
+     *
+     * @param readObject save object to convert
+     */
+    private void ConvertSave(@NonNull SaveRegularLectureSchedule readObject) {
         this.regularLectureSchedule.setDays(readObject.day);
         this.regularLectureSchedule.setHours(readObject.hour);
         int id = 0;
@@ -240,7 +311,7 @@ public class RegularLectureFragment extends Fragment {
             for (SaveRegularLectureSchedule.SaveTime time : readObject.times)
                 for (RegularLectureSchedule.RegularLecture l : help)
                     if (l.getId() == time.saveRegularLecture.id)
-                        lectures.add(new RegularLectureSchedule.RegularLecture.RegularLectureTime(time.day, time.hour, time.room_id, l));
+                        lectures.add(new RegularLectureSchedule.RegularLecture.RegularLectureTime(time.day, time.hour, time.room_id < 0 ? (l.getRooms().size() > 0 ? l.getActiveRoomId() : -1) : time.room_id, l));
     }
 
     class Adapter extends WeekView.SimpleAdapter<RegularLectureSchedule.RegularLecture.RegularLectureTime> {
@@ -250,6 +321,7 @@ public class RegularLectureFragment extends Fragment {
         @Override
         public void onEventClick(@NonNull RegularLectureSchedule.RegularLecture.RegularLectureTime data) {
             super.onEventClick(data);
+            Log.i(LOG, "adapter-eventClick");
             RegularLectureSchedule.RegularLecture selected = regularLectureAdapter.getSelected();
             if (selected == null) return;
             if (selected.equals(data.lecture))
@@ -273,15 +345,16 @@ public class RegularLectureFragment extends Fragment {
             calendar1.set(2020, 5, item.day, item.hour, 59, 59);
             erg.setEndTime(calendar1);
             if (item.lecture.getActiveRoom() != null)
-                erg.setSubtitle(item.lecture.getActiveRoom());
+                erg.setSubtitle(item.lecture.getRooms().get(item.room_id));
             erg.setStyle(new WeekViewEntity.Style.Builder().setBackgroundColor(item.lecture.getColor()).build());
             erg.setId(counter++);
             return erg.build();
         }
 
         @Override
-        public void onEmptyViewClick(@NotNull Calendar time) {
+        public void onEmptyViewClick(@NonNull Calendar time) {
             super.onEmptyViewClick(time);
+            Log.i(LOG, "adapter-emptyClick");
             RegularLectureSchedule.RegularLecture selected = regularLectureAdapter.getSelected();
             if (selected == null) return;
             addTime(time.get(Calendar.DAY_OF_MONTH), time.get(Calendar.HOUR), selected);

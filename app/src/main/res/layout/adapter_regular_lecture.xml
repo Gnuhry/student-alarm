@@ -33,15 +33,13 @@
             <TextView
                 android:id="@+id/txVTitle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/txVDocent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="7dp"
-                android:text="TextView" />
+                android:paddingLeft="7dp" />
         </LinearLayout>
 
         <TextView
@@ -50,7 +48,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:inputType="textMultiLine"
-            android:maxWidth="50dp"
-            android:text="dddddddd" />
+            android:maxWidth="50dp" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

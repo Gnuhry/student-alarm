@@ -12,14 +12,14 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.studentalarm.alarm.AlarmManager;
-import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
+import com.example.studentalarm.alarm.AlarmManager;
+import com.example.studentalarm.imports.Import;
+import com.example.studentalarm.imports.LectureSchedule;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.dialog.DeleteLectureDialog;
 import com.example.studentalarm.ui.dialog.ExportDialog;
 import com.example.studentalarm.ui.dialog.ImportDialog;
-import com.example.studentalarm.imports.Import;
-import com.example.studentalarm.imports.LectureSchedule;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -259,6 +259,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             changeLanguage(lan2, getContext(), getActivity());
                         removeAllEventsLecture();
                         reload();
+                        RegularLectureFragment.clearSave(getContext());
                     })
                     .setNegativeButton(R.string.no, null)
                     .setCancelable(true)

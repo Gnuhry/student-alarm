@@ -16,13 +16,13 @@
         android:visible="false" />
     <item
         android:id="@+id/save"
-        android:icon="@drawable/sandglass"
+        android:icon="@drawable/save"
         android:title="@string/save"
         app:showAsAction="ifRoom"
         android:visible="false" />
     <item
         android:id="@+id/settings"
-        android:icon="@drawable/settings"
+        android:icon="@drawable/settings_gray"
         android:title="@string/settings"
         app:showAsAction="ifRoom"
         android:visible="false" />
