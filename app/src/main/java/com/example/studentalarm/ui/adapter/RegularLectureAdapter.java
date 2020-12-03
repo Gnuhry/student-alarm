@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class RegularLectureAdapter extends RecyclerView.Adapter<RegularLectureAdapter.ViewHolder> {
 
+    @NonNull
     private final RegularLectureSchedule regularLectureSchedule;
     private final List<RegularLectureSchedule.RegularLecture> regularLecture;
     private final String LOG = "RegularLectureAdapter";
@@ -31,7 +32,7 @@ public class RegularLectureAdapter extends RecyclerView.Adapter<RegularLectureAd
     private int selected_id;
     private final RegularLectureFragment fragment;
 
-    public RegularLectureAdapter(RegularLectureSchedule regularLectureSchedule, RegularLectureFragment fragment) {
+    public RegularLectureAdapter(@NonNull RegularLectureSchedule regularLectureSchedule, RegularLectureFragment fragment) {
         this.regularLectureSchedule = regularLectureSchedule;
         regularLecture = regularLectureSchedule.getLectures();
         this.fragment = fragment;

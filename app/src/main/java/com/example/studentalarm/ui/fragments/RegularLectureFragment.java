@@ -37,8 +37,10 @@ import androidx.recyclerview.widget.RecyclerView;
 public class RegularLectureFragment extends Fragment {
     private RegularLectureAdapter regularLectureAdapter;
     private Adapter adapter;
+    @NonNull
     private final RegularLectureSchedule regularLectureSchedule;
     private WeekView weekView;
+    @NonNull
     private final List<RegularLectureSchedule.RegularLecture.RegularLectureTime> lectures;
     private RecyclerView rv;
     private static final String LOG = "RegularLectureFragment";
@@ -55,7 +57,7 @@ public class RegularLectureFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_regular_lecture, container, false);
         if (getContext() == null || getActivity() == null) return view;
@@ -232,6 +234,7 @@ public class RegularLectureFragment extends Fragment {
      *
      * @return save object
      */
+    @NonNull
     private SaveRegularLectureSchedule createSave() {
         SaveRegularLectureSchedule erg = new SaveRegularLectureSchedule();
         erg.day = regularLectureSchedule.getDays();

@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 
 public class ChangeRoomDialog extends Dialog {
 
+    @NonNull
     private final Context context;
     private final RegularLectureSchedule.RegularLecture lecture;
     private static final String LOG = "ChangeRoomDialog";
