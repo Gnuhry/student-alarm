@@ -5,9 +5,13 @@ import android.graphics.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 public class RegularLectureSchedule {
 
     private int days, hours;
+    @NonNull
     private final List<RegularLecture> lectures;
 
     public RegularLectureSchedule(int days, int hours) {
@@ -36,6 +40,7 @@ public class RegularLectureSchedule {
         this.hours = hours;
     }
 
+    @NonNull
     public List<RegularLecture> getLectures() {
         return lectures;
     }
@@ -46,6 +51,7 @@ public class RegularLectureSchedule {
 
     public static class RegularLecture {
         private String name, docent;
+        @NonNull
         private final List<String> rooms;
         private final int id;
         private static int counter = 0;
@@ -74,11 +80,13 @@ public class RegularLectureSchedule {
             rooms.add(room);
         }
 
+        @NonNull
         public List<String> getRooms() {
             return rooms;
         }
 
-        public RegularLecture setAllRooms(List<String> rooms) {
+        @NonNull
+        public RegularLecture setAllRooms(@NonNull List<String> rooms) {
             this.rooms.clear();
             this.rooms.addAll(rooms);
             if (rooms.size() > 0)
@@ -90,6 +98,7 @@ public class RegularLectureSchedule {
             return name;
         }
 
+        @NonNull
         public RegularLecture setName(String name) {
             this.name = name;
             return this;
@@ -99,6 +108,7 @@ public class RegularLectureSchedule {
             return docent;
         }
 
+        @NonNull
         public RegularLecture setDocent(String docent) {
             this.docent = docent;
             return this;
@@ -112,6 +122,7 @@ public class RegularLectureSchedule {
             return color;
         }
 
+        @NonNull
         public RegularLecture setColor(int color) {
             this.color = color;
             return this;
@@ -121,11 +132,13 @@ public class RegularLectureSchedule {
             return activeRoomId;
         }
 
+        @NonNull
         public RegularLecture setActiveRoomId(int activeRoomId) {
             this.activeRoomId = activeRoomId;
             return this;
         }
 
+        @Nullable
         public String getActiveRoom() {
             if (activeRoomId == -1 || activeRoomId >= rooms.size())
                 return null;

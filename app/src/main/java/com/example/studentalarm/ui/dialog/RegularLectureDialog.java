@@ -32,6 +32,7 @@ public class RegularLectureDialog extends DialogFragment {
     private final RegularLectureSchedule data;
     private final int index;
     private boolean cancelDirect = true;
+    @NonNull
     private final RegularLectureFragment fragment;
     private static final String LOG = "RegularLectureFragment";
 
@@ -222,6 +223,7 @@ public class RegularLectureDialog extends DialogFragment {
      *
      * @return room as string list
      */
+    @NonNull
     private List<String> getRooms() {//TODO change room
         return Arrays.asList(location.getText().toString().split(";"));
     }

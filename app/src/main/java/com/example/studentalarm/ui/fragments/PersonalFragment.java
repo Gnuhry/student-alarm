@@ -10,11 +10,13 @@ import com.example.studentalarm.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 public class PersonalFragment extends Fragment {
 
     private static final String LOG = "PersonalFragment";
+    @Nullable
     private RegularLectureFragment fragment;
 
     public PersonalFragment() {
@@ -56,6 +58,7 @@ public class PersonalFragment extends Fragment {
      *
      * @return regular fragment
      */
+    @NonNull
     public RegularLectureFragment getRegularFragment() {
         fragment = new RegularLectureFragment();
         return fragment;

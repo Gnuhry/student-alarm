@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -12,7 +11,8 @@
         android:src="@drawable/add_circle"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/add" />
 
     <LinearLayout
         android:id="@+id/LLRegularLecture"
@@ -28,7 +28,9 @@
             android:layout_weight="5"
             android:orientation="vertical"
             android:paddingLeft="5dp"
-            android:paddingRight="20dp">
+            android:paddingRight="20dp"
+            android:paddingEnd="20dp"
+            android:paddingStart="5dp">
 
             <TextView
                 android:id="@+id/txVTitle"
@@ -39,7 +41,10 @@
                 android:id="@+id/txVDocent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="7dp" />
+                android:paddingLeft="7dp"
+                android:paddingStart="7dp"
+                android:paddingEnd="0dp"
+                android:paddingRight="0dp"/>
         </LinearLayout>
 
         <TextView
@@ -47,7 +52,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:inputType="textMultiLine"
             android:maxWidth="50dp" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

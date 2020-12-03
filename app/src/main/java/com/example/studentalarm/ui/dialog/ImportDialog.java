@@ -59,7 +59,7 @@ public class ImportDialog extends Dialog {
             ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(@NonNull AdapterView<?> adapterView, View view, int i, long l) {
-                    Log.d(LOG, "Spinner:" + ((CourseCategory) adapterView.getItemAtPosition(i)).toString());
+                    Log.d(LOG, "Spinner:" + adapterView.getItemAtPosition(i).toString());
                     ArrayAdapter<Course> courseAdapter = new ArrayAdapter<>(getContext(),
                             android.R.layout.simple_spinner_item, ((CourseCategory) adapterView.getItemAtPosition(i)).getCourses());
                     courseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
