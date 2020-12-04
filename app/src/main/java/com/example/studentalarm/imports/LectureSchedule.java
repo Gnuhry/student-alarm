@@ -224,7 +224,7 @@ public class LectureSchedule {
         try {
             FileInputStream fis = context.openFileInput("LECTURE");
             ObjectInputStream ois = new ObjectInputStream(fis);
-            LectureSchedule erg = ConvertSave((SaveLecture) ois.readObject());
+            LectureSchedule erg = convertSave((SaveLecture) ois.readObject());
             fis.close();
             ois.close();
             return erg;
@@ -243,7 +243,7 @@ public class LectureSchedule {
      * @return lecture object
      */
     @NonNull
-    private static LectureSchedule ConvertSave(@Nullable SaveLecture saveLecture) {
+    private static LectureSchedule convertSave(@Nullable SaveLecture saveLecture) {
         LectureSchedule lectureSchedule = new LectureSchedule();
         if (saveLecture == null) return lectureSchedule;
         for (int i = 0; i < saveLecture.saves[0].length; i++) {

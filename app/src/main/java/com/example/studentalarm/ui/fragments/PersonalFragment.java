@@ -60,7 +60,7 @@ public class PersonalFragment extends Fragment {
      */
     @NonNull
     public RegularLectureFragment getRegularFragment() {
-        fragment = new RegularLectureFragment();
+        fragment = new RegularLectureFragment(this);
         return fragment;
     }
 

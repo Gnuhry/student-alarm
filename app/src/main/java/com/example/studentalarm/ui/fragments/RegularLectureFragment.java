@@ -12,9 +12,10 @@ import android.widget.Toast;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEntity;
 import com.example.studentalarm.R;
-import com.example.studentalarm.RegularLectureSchedule;
+import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.save.SaveRegularLectureSchedule;
 import com.example.studentalarm.ui.adapter.RegularLectureAdapter;
+import com.example.studentalarm.ui.dialog.RegularLectureSettingDialog;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -43,11 +44,13 @@ public class RegularLectureFragment extends Fragment {
     @NonNull
     private final List<RegularLectureSchedule.RegularLecture.RegularLectureTime> lectures;
     private RecyclerView rv;
+    private PersonalFragment fragment;
     private static final String LOG = "RegularLectureFragment";
 
-    public RegularLectureFragment() {
+    public RegularLectureFragment(PersonalFragment fragment) {
         regularLectureSchedule = new RegularLectureSchedule(4, 10);
         lectures = new ArrayList<>();
+        this.fragment = fragment;
     }
 
     @Override
@@ -68,9 +71,18 @@ public class RegularLectureFragment extends Fragment {
         load();
         initWeekView();
         loadRecyclerView();
-        loadDataWeekView();
+//        loadDataWeekView();
 
         return view;
+    }
+
+    @NonNull
+    public RegularLectureSchedule getRegularLectureSchedule() {
+        return regularLectureSchedule;
+    }
+
+    public PersonalFragment getFragmentParent() {
+        return fragment;
     }
 
     /**
@@ -97,6 +109,7 @@ public class RegularLectureFragment extends Fragment {
         });
         toolbar.getMenu().getItem(3).setVisible(true);
         toolbar.getMenu().getItem(3).setOnMenuItemClickListener(menuItem -> {
+            new RegularLectureSettingDialog(getContext(), getActivity(), this).show(getActivity().getSupportFragmentManager(), "dialog");
             //TODO settings regular lecture settings
             return false;
         });
@@ -158,9 +171,12 @@ public class RegularLectureFragment extends Fragment {
         SimpleDateFormat format = new SimpleDateFormat("E", getResources().getConfiguration().locale);
         weekView.setTimeFormatter(hour -> hour + 1 + getString(R.string.hour));
         weekView.setMinHour(0);
-        weekView.setMaxHour(regularLectureSchedule.getHours());
         weekView.setDateFormatter(date -> format.format(date.getTime()));
-        weekView.setNumberOfVisibleDays(regularLectureSchedule.getDays() - 1);
+        Log.d("HH", "H");
+        weekView.setNumberOfVisibleDays(regularLectureSchedule.getDays());
+        Log.d("HH", "H");
+        weekView.setMaxHour(regularLectureSchedule.getHours()); //min 6
+        Log.d("HH", "H");
     }
 
     /**
@@ -181,9 +197,12 @@ public class RegularLectureFragment extends Fragment {
     private void loadDataWeekView() {
         Log.i(LOG, "load weekView");
         Log.d("erg", lectures.size() + "");
-        for (Iterator<RegularLectureSchedule.RegularLecture.RegularLectureTime> iterator = lectures.iterator(); iterator.hasNext(); )
-            if (!regularLectureSchedule.getLectures().contains(iterator.next().lecture))
+        for (Iterator<RegularLectureSchedule.RegularLecture.RegularLectureTime> iterator = lectures.iterator(); iterator.hasNext(); ) {
+            RegularLectureSchedule.RegularLecture.RegularLectureTime time = iterator.next();
+            if (!regularLectureSchedule.getLectures().contains(time.lecture) || time.day >= regularLectureSchedule.getDays() || time.hour >= regularLectureSchedule.getHours())
                 iterator.remove();
+        }
+        Log.d("erg2", lectures.size() + "");
         adapter.submitList(lectures);
     }
 

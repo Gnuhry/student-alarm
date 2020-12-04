@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
+
+    <LinearLayout
+        android:id="@+id/LLTime"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingLeft="5dp"
+        android:paddingTop="10dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="10dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/txVHour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Stunde 1:" />
+
+        <EditText
+            android:id="@+id/edTFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:autofillHints="@string/hh_mm"
+            android:ems="5"
+            android:gravity="end"
+            android:hint="@string/hh_mm"
+            android:inputType="time"
+            android:maxLength="5" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/line" />
+
+        <EditText
+            android:id="@+id/edTUnti"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:autofillHints="@string/hh_mm"
+            android:ems="5"
+            android:gravity="end"
+            android:hint="@string/hh_mm"
+            android:inputType="time"
+            android:maxLength="5" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LLAddDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imVAdd"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:contentDescription="@string/add"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:src="@drawable/add_circle" />
+
+        <ImageView
+            android:id="@+id/imVRemove"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:contentDescription="@string/remove"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:src="@drawable/remove" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

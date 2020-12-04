@@ -8,7 +8,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.example.studentalarm.R;
-import com.example.studentalarm.RegularLectureSchedule;
+import com.example.studentalarm.regular.RegularLectureSchedule;
 
 import java.util.List;
 
@@ -42,6 +42,7 @@ public class ChangeRoomDialog extends Dialog {
             radioButton.setId(i);
             radioGroup.addView(radioButton, params);
         }
+        radioGroup.check(lecture.getActiveRoomId());
         radioGroup.setOnCheckedChangeListener((radioGroup1, i) -> {
             lecture.setActiveRoomId(i);
             this.dismiss();
