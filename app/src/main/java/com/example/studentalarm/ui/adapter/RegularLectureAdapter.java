@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.studentalarm.R;
-import com.example.studentalarm.RegularLectureSchedule;
+import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.ui.dialog.ChangeRoomDialog;
 import com.example.studentalarm.ui.dialog.RegularLectureDialog;
 import com.example.studentalarm.ui.fragments.RegularLectureFragment;
@@ -51,7 +51,7 @@ public class RegularLectureAdapter extends RecyclerView.Adapter<RegularLectureAd
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new RegularLectureAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_regular_lecture, parent, false));
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_regular_lecture, parent, false));
     }
 
     @Override

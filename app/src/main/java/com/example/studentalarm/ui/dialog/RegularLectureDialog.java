@@ -15,7 +15,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.studentalarm.R;
-import com.example.studentalarm.RegularLectureSchedule;
+import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.ui.fragments.RegularLectureFragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
