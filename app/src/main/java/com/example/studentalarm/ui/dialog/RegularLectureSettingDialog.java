@@ -77,6 +77,9 @@ public class RegularLectureSettingDialog extends DialogFragment {
         return view;
     }
 
+    /**
+     * cancel play error
+     */
     private void cancel() {
         new MaterialAlertDialogBuilder(getContext())
                 .setTitle(R.string.dismiss)

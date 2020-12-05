@@ -1,7 +1,6 @@
 package com.example.studentalarm.regular;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.example.studentalarm.save.SaveHour;
 
@@ -74,7 +73,6 @@ public class Hours {
      * @return save object
      */
     private static SaveHour saveHours(List<Hours> list) {
-        Log.d("hours", list.size() + "");
         SaveHour saveHour = new SaveHour();
         SaveHour.Save[] saves = new SaveHour.Save[list.size()];
         for (int i = 0; i < list.size(); i++) {
@@ -138,7 +136,6 @@ public class Hours {
         List<Hours> hours = new ArrayList<>();
         for (SaveHour.Save save : readObject.save)
             hours.add(new Hours(save.id).setFrom(save.from).setUntil(save.until));
-        Log.d("Help", hours.size() + "");
         return hours;
     }
 

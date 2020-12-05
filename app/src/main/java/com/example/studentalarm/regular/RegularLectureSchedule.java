@@ -213,7 +213,6 @@ public class RegularLectureSchedule {
                         .setDocent(lecture.docent);
                 if (lecture.id > id)
                     id = lecture.id;
-                Log.d("Check_ID", lecture.id + "");
                 for (String room : lecture.rooms)
                     help.addRoom(room);
                 schedule.addLecture(help);
