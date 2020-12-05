@@ -16,16 +16,18 @@ import android.widget.TextView;
 
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.RegularLectureSchedule;
+import com.example.studentalarm.ui.adapter.RoomAdapter;
 import com.example.studentalarm.ui.fragments.RegularLectureFragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class RegularLectureDialog extends DialogFragment {
     @Nullable
@@ -34,10 +36,12 @@ public class RegularLectureDialog extends DialogFragment {
     private boolean cancelDirect = true;
     @NonNull
     private final RegularLectureFragment fragment;
-    private static final String LOG = "RegularLectureFragment";
+    private static final String LOG = "RegularLectureDialog";
 
 
-    private EditText title, docent, location;
+    private EditText title, docent;
+    private RoomAdapter adapter;
+    private RecyclerView recyclerView;
     private TextView add, cancel, delete;
     private Spinner spinner;
     @NonNull
@@ -74,16 +78,24 @@ public class RegularLectureDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_regular_lecture, container, false);
         title = view.findViewById(R.id.edTTitle);
         docent = view.findViewById(R.id.edTDocent);
-        location = view.findViewById(R.id.edTLocation);
+        recyclerView = view.findViewById(R.id.rVRoom);
         add = view.findViewById(R.id.txVAdd);
         cancel = view.findViewById(R.id.txVCancel);
         delete = view.findViewById(R.id.txVDelete);
         spinner = view.findViewById(R.id.spColor);
 
         init();
-        if (data != null && index >= 0)
+        if (data != null && index >= 0 && index < data.getLectures().size())
             initData();
+        initAdapter(data != null && index >= 0 ? data.getLectures().get(index) : new RegularLectureSchedule.RegularLecture(""));
         return view;
+    }
+
+    private void initAdapter(RegularLectureSchedule.RegularLecture lecture) {
+        adapter = new RoomAdapter(lecture);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
     }
 
 
@@ -106,14 +118,14 @@ public class RegularLectureDialog extends DialogFragment {
                 data.addLecture(new RegularLectureSchedule.RegularLecture(title.getText().toString())
                         .setDocent(docent.getText().toString())
                         .setColor(((EventColor) spinner.getSelectedItem()).getColor())
-                        .setAllRooms(getRooms()));
+                        .setAllRooms(adapter.getAllRooms()));
             } else {
                 Log.i(LOG, "Update Lecture");
                 data.getLectures().get(index)
                         .setName(title.getText().toString())
                         .setDocent(docent.getText().toString())
                         .setColor(((EventColor) spinner.getSelectedItem()).getColor())
-                        .setAllRooms(getRooms());
+                        .setAllRooms(adapter.getAllRooms());
             }
             this.dismiss();
         });
@@ -203,29 +215,8 @@ public class RegularLectureDialog extends DialogFragment {
         RegularLectureSchedule.RegularLecture lecture = data.getLectures().get(index);
         title.setText(lecture.getName());
         docent.setText(lecture.getDocent());
-        setRooms();
         spinner.setSelection(colors.indexOf(new EventColor(lecture.getColor())));
         delete.setVisibility(View.VISIBLE);
-    }
-
-    /**
-     * Setting the rooms
-     */
-    private void setRooms() {//TODO change room
-        StringBuilder sb = new StringBuilder();
-        for (String s : data.getLectures().get(index).getRooms())
-            sb.append(s).append(";");
-        location.setText(sb.toString());
-    }
-
-    /**
-     * getting all rooms
-     *
-     * @return room as string list
-     */
-    @NonNull
-    private List<String> getRooms() {//TODO change room
-        return Arrays.asList(location.getText().toString().split(";"));
     }
 
     /**

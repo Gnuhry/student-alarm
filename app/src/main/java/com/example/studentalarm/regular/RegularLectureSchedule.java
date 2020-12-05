@@ -78,7 +78,7 @@ public class RegularLectureSchedule {
         if (day >= this.days || hour >= this.hours)
             return;
         removeTime(day, hour);
-        regularLectures.add(new RegularLectureSchedule.RegularLecture.RegularLectureTime(day, hour, lecture.getActiveRoomId(), lecture));
+        regularLectures.add(new RegularLectureSchedule.RegularLecture.RegularLectureTime(day, hour, lecture.getActiveRoom(), lecture));
     }
 
     /**
@@ -165,7 +165,7 @@ public class RegularLectureSchedule {
             RegularLectureSchedule.RegularLecture.RegularLectureTime t = regularLectures.get(f);
             times[f].day = t.day;
             times[f].hour = t.hour;
-            times[f].room_id = t.room_id;
+            times[f].room = t.room;
 
             times[f].saveRegularLecture = new SaveRegularLectureSchedule.SaveRegularLecture();
             times[f].saveRegularLecture.id = t.lecture.getId();
@@ -225,7 +225,7 @@ public class RegularLectureSchedule {
             for (SaveRegularLectureSchedule.SaveTime time : readObject.times)
                 for (RegularLectureSchedule.RegularLecture l : help)
                     if (l.getId() == time.saveRegularLecture.id)
-                        schedule.regularLectures.add(new RegularLectureSchedule.RegularLecture.RegularLectureTime(time.day, time.hour, time.room_id < 0 ? (l.getRooms().size() > 0 ? l.getActiveRoomId() : -1) : time.room_id, l));
+                        schedule.regularLectures.add(new RegularLectureSchedule.RegularLecture.RegularLectureTime(time.day, time.hour, time.room, l));
         return schedule;
     }
 
@@ -233,7 +233,7 @@ public class RegularLectureSchedule {
     public static class RegularLecture {
         private String name, docent;
         @NonNull
-        private final List<String> rooms;
+        private List<String> rooms;
         private final int id;
         private static int counter = 0;
         private int color = Color.RED, activeRoomId;
@@ -266,10 +266,10 @@ public class RegularLectureSchedule {
             return rooms;
         }
 
+
         @NonNull
-        public RegularLecture setAllRooms(@NonNull List<String> rooms) {
-            this.rooms.clear();
-            this.rooms.addAll(rooms);
+        public RegularLecture setAllRooms(@NonNull List<String> rooms2) {
+            this.rooms = rooms2;
             if (rooms.size() > 0)
                 activeRoomId = 0;
             return this;
@@ -328,21 +328,26 @@ public class RegularLectureSchedule {
 
 
         public static class RegularLectureTime {
-            public final int day, hour, room_id;
+            public final int day, hour;
+            private final String room;
             public final RegularLecture lecture;
 
-            public RegularLectureTime(int day, int hour, int room_id, RegularLecture lecture) {
+            public RegularLectureTime(int day, int hour, String room, RegularLecture lecture) {
                 this.day = day;
                 this.hour = hour;
-                this.room_id = room_id;
+                this.room = room;
                 this.lecture = lecture;
             }
 
             @Nullable
             public String getActiveRoom() {
-                if (room_id >= 0 && lecture.rooms != null && lecture.rooms.size() > room_id)
-                    return lecture.rooms.get(room_id);
-                return null;
+                if (lecture.rooms.contains(room))
+                    return room;
+                return lecture.getActiveRoom();
+            }
+
+            public String getRoom() {
+                return room;
             }
 
             public int getCalendarDay() {
