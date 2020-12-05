@@ -14,7 +14,8 @@ public class SaveRegularLectureSchedule implements Serializable{
     }
 
     public static class SaveTime implements Serializable {
-        public int day, hour, room_id;
+        public int day, hour;
+        public String room;
         public SaveRegularLecture saveRegularLecture;
     }
 }
