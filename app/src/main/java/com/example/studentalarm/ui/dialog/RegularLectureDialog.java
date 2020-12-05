@@ -115,12 +115,14 @@ public class RegularLectureDialog extends DialogFragment {
 
             if (index < 0) {
                 Log.i(LOG, "Create Lecture");
+                fragment.setChanges(true);
                 data.addLecture(new RegularLectureSchedule.RegularLecture(title.getText().toString())
                         .setDocent(docent.getText().toString())
                         .setColor(((EventColor) spinner.getSelectedItem()).getColor())
                         .setAllRooms(adapter.getAllRooms()));
             } else {
                 Log.i(LOG, "Update Lecture");
+                fragment.setChanges(true);
                 data.getLectures().get(index)
                         .setName(title.getText().toString())
                         .setDocent(docent.getText().toString())
@@ -139,6 +141,7 @@ public class RegularLectureDialog extends DialogFragment {
                         if (data == null) return;
                         Log.i(LOG, "delete Lecture");
                         data.getLectures().remove(index);
+                        fragment.setChanges(true);
                         this.dismiss();
                     })
                     .setNegativeButton(R.string.cancel, (dialogInterface, i) -> this.dismiss())
