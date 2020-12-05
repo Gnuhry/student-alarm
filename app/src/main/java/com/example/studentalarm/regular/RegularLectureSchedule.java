@@ -346,10 +346,6 @@ public class RegularLectureSchedule {
                 return lecture.getActiveRoom();
             }
 
-            public String getRoom() {
-                return room;
-            }
-
             public int getCalendarDay() {
                 return day == 7 ? 1 : day + 1;
             }
