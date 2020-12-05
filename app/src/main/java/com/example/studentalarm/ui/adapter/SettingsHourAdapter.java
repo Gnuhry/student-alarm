@@ -73,7 +73,6 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if (position == hours.size()) {
-            Log.d("Help", position + "==" + hours.size());
             holder.llTime.setVisibility(View.GONE);
             holder.llAddDelete.setVisibility(View.VISIBLE);
             holder.add.setOnClickListener(view -> {
