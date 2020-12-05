@@ -69,6 +69,7 @@ public class RegularLectureAdapter extends RecyclerView.Adapter<RegularLectureAd
             RegularLectureSchedule.RegularLecture regularLecture = this.regularLecture.get(position);
             holder.title.setText(regularLecture.getName());
             holder.docent.setText(regularLecture.getDocent());
+            Log.d("adapter_room", "" + regularLecture.getRooms().size());
             if (regularLecture.getRooms() != null && regularLecture.getRooms().size() > 0) {
                 holder.location.setText(regularLecture.getActiveRoom());
                 if (regularLecture.getRooms().size() > 1) {

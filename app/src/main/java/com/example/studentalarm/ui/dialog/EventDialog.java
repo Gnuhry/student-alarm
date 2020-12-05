@@ -523,7 +523,10 @@ public class EventDialog extends DialogFragment {
     @Override
     public void onDestroyView() {
         Log.i(LOG, "destroy");
-        if (data != null && data.isImport()) return;
+        if (data != null && data.isImport()) {
+            super.onDestroyView();
+            return;
+        }
         lecture.loadData();
         if (getContext() != null)
             AlarmManager.updateNextAlarm(this.getContext());
