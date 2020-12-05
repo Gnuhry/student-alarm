@@ -177,6 +177,7 @@ public class RegularLectureSchedule {
     /**
      * load data from file
      */
+    @NonNull
     public static RegularLectureSchedule load(@Nullable Context context) {
         Log.i(LOG, "load");
         if (context == null) return new RegularLectureSchedule();
@@ -200,6 +201,7 @@ public class RegularLectureSchedule {
      *
      * @param readObject save object to convert
      */
+    @NonNull
     private static RegularLectureSchedule convertSave(@NonNull SaveRegularLectureSchedule readObject) {
         RegularLectureSchedule schedule = new RegularLectureSchedule();
         schedule.days = readObject.day;
@@ -336,6 +338,7 @@ public class RegularLectureSchedule {
                 this.lecture = lecture;
             }
 
+            @Nullable
             public String getActiveRoom() {
                 if (room_id >= 0 && lecture.rooms != null && lecture.rooms.size() > room_id)
                     return lecture.rooms.get(room_id);

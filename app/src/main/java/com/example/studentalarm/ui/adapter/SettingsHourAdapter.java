@@ -28,10 +28,14 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapter.ViewHolder> {
+    @NonNull
     private final List<Hours> hours;
+    @NonNull
     private final Context context;
     private final static String LOG = "SettingsHourAdapter";
+    @NonNull
     private final Activity activity;
+    @NonNull
     private final List<ViewHolder> holders;
 
     public SettingsHourAdapter(@NonNull Context context, @NonNull Activity activity) {

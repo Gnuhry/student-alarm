@@ -25,6 +25,7 @@ public class RegularLectureAdapter extends RecyclerView.Adapter<RegularLectureAd
 
     @NonNull
     private final RegularLectureSchedule regularLectureSchedule;
+    @NonNull
     private final List<RegularLectureSchedule.RegularLecture> regularLecture;
     private final String LOG = "RegularLectureAdapter";
     @Nullable

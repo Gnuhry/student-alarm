@@ -25,9 +25,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class RegularLectureSettingDialog extends DialogFragment {
 
+    @NonNull
     private final SettingsHourAdapter adapter;
+    @NonNull
     private final RegularLectureSchedule schedule;
+    @NonNull
     private final Context context;
+    @NonNull
     private final RegularLectureFragment fragment;
 
     public RegularLectureSettingDialog(@NonNull Context context, @NonNull Activity activity, @NonNull RegularLectureFragment fragment) {

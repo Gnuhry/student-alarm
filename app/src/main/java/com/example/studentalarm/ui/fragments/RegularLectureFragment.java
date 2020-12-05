@@ -19,7 +19,6 @@ import java.util.Calendar;
 import java.util.Iterator;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class RegularLectureFragment extends Fragment {
     private static final String LOG = "RegularLectureFragment";
+    @NonNull
     private final PersonalFragment fragment;
     private RegularLectureSchedule regularLectureSchedule;
     private RegularLectureAdapter regularLectureAdapter;
@@ -34,7 +34,7 @@ public class RegularLectureFragment extends Fragment {
     private WeekView weekView;
     private RecyclerView rv;
 
-    public RegularLectureFragment(@Nullable PersonalFragment fragment) {
+    public RegularLectureFragment(@NonNull PersonalFragment fragment) {
         this.fragment = fragment;
     }
 
@@ -66,6 +66,7 @@ public class RegularLectureFragment extends Fragment {
         return regularLectureSchedule;
     }
 
+    @NonNull
     public PersonalFragment getFragmentParent() {
         return fragment;
     }

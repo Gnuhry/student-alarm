@@ -78,20 +78,15 @@ public class LectureSchedule {
     }
 
     /**
-     * get all lectures from Lecture_Schedule without regularLecture
+     * get all regular lecture as lecture
      *
-     * @return all Lectures
+     * @param context context of app
+     * @param from    date where the regularity should start
+     * @param until   date where the regularity should end
+     * @return list of lecture
      */
     @NonNull
-    public List<Lecture> getAllLecture() {
-        List<Lecture> all = new ArrayList<>();
-        all.addAll(lecture);
-        all.addAll(importLecture);
-        Collections.sort(all);
-        return all;
-    }
-
-    private List<Lecture> getRegularLecture(@NonNull Context context, Calendar from, Calendar until) {
+    private List<Lecture> getRegularLecture(@NonNull Context context, @NonNull Calendar from, @NonNull Calendar until) {
         List<Lecture> erg = new ArrayList<>();
         List<List<Date>> help = getAllDaysWeek(from, until);
         RegularLectureSchedule schedule = RegularLectureSchedule.load(context);
@@ -110,7 +105,15 @@ public class LectureSchedule {
         return erg;
     }
 
-    private Date[] getDateWithTime(Date date, Hours hours) {
+    /**
+     * combine date and times
+     *
+     * @param date  date to combine
+     * @param hours time to combine
+     * @return date start and end
+     */
+    @NonNull
+    private Date[] getDateWithTime(@NonNull Date date, @NonNull Hours hours) {
         Date start = hours.getFromAsDate(), end = hours.getUntilAsDate();
         Calendar startAsC = Calendar.getInstance(), endAsC = Calendar.getInstance();
         startAsC.setTime(start);
@@ -131,17 +134,14 @@ public class LectureSchedule {
         return new Date[]{startC.getTime(), endC.getTime()};
     }
 
-    private List<Date> getAllDaysWithWeek(@NonNull Calendar from, @NonNull Calendar until, int weekDay) {
-        List<Date> erg = new ArrayList<>();
-        while (from.get(Calendar.DAY_OF_WEEK) != weekDay)
-            from.add(Calendar.DAY_OF_MONTH, 1);
-        while (from.before(until)) {
-            erg.add(from.getTime());
-            from.add(Calendar.DAY_OF_MONTH, 7);
-        }
-        return erg;
-    }
-
+    /**
+     * get all days sort by weekdays
+     *
+     * @param from  date where the regularity should start
+     * @param until date where the regularity should end
+     * @return List of list of date (1 layer - weekday, 2 layer - dates)
+     */
+    @NonNull
     private List<List<Date>> getAllDaysWeek(@NonNull Calendar from, @NonNull Calendar until) {
         List<List<Date>> erg = new ArrayList<>();
         for (int f = 0; f < 7; f++)
