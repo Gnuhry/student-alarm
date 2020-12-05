@@ -156,7 +156,9 @@ public class RegularLectureFragment extends Fragment {
             RegularLectureSchedule.RegularLecture.RegularLectureTime time = iterator.next();
             if (!regularLectureSchedule.getLectures().contains(time.lecture) || time.day >= regularLectureSchedule.getDays() || time.hour >= regularLectureSchedule.getHours())
                 iterator.remove();
+
         }
+        //TODO save? delete all elements outside of the scope?
         adapter.submitList(regularLectureSchedule.getRegularLectures());
     }
 
@@ -191,8 +193,8 @@ public class RegularLectureFragment extends Fragment {
             erg.setStartTime(calendar);
             calendar1.set(2020, 5, item.day, item.hour, 59, 59);
             erg.setEndTime(calendar1);
-            if (item.lecture.getActiveRoom() != null)
-                erg.setSubtitle(item.lecture.getRooms().get(item.room_id));
+            if (item.getActiveRoom() != null)
+                erg.setSubtitle(item.getActiveRoom());
             erg.setStyle(new WeekViewEntity.Style.Builder().setBackgroundColor(item.lecture.getColor()).build());
             erg.setId(counter++);
             return erg.build();
