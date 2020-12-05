@@ -105,6 +105,7 @@ public class RegularLectureFragment extends Fragment {
      * Remove menu item
      */
     public static void removeRegularLectureMenu(@NonNull Activity activity) {
+        Log.i(LOG, "remove app bar");
         Toolbar toolbar = activity.findViewById(R.id.my_toolbar);
         if (toolbar != null) {
             toolbar.getMenu().getItem(2).setVisible(false);

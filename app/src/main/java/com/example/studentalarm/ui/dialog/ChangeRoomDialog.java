@@ -44,6 +44,7 @@ public class ChangeRoomDialog extends Dialog {
         }
         radioGroup.check(lecture.getActiveRoomId());
         radioGroup.setOnCheckedChangeListener((radioGroup1, i) -> {
+            Log.i(LOG, "change room");
             lecture.setActiveRoomId(i);
             this.dismiss();
         });

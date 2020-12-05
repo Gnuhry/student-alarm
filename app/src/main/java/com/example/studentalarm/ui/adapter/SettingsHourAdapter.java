@@ -36,7 +36,6 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
 
     public SettingsHourAdapter(@NonNull Context context, @NonNull Activity activity) {
         hours = Hours.load(context);
-        Log.d("HT", hours.size() + "");
         while (hours.size() < 6)
             hours.add(new Hours(hours.size() + 1));
         this.context = context;
@@ -57,10 +56,6 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
             if (holders.get(f).until.getError() != null || holders.get(f).from.getError() != null)
                 return -1;
         }
-
-//        for (ViewHolder holder : holders)
-//            if (holder.until.getError() != null || holder.from.getError() != null)
-//                return -1;
         Hours.save(context, hours);
         return hours.size();
     }
