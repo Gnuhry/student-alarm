@@ -67,6 +67,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
         return lecture.getRooms().size() + 1;
     }
 
+    @NonNull
     public List<String> getAllRooms() {
         for (int f = 0; f < holders.size(); f++)
             lecture.getRooms().set((int) holders.get(f).room.getTag(), holders.get(f).room.getText().toString());
