@@ -95,11 +95,12 @@ public class LectureSchedule {
             Hours hour = hours.get(fragmentLecture.hour);
             for (Date date : help.get(fragmentLecture.getCalendarDay() - 1)) {
                 Date[] dates = getDateWithTime(date, hour);
-                erg.add(new Lecture(true, dates[0], dates[1])
-                        .setName(fragmentLecture.lecture.getName())
-                        .setDocent(fragmentLecture.lecture.getDocent())
-                        .setColor(fragmentLecture.lecture.getColor())
-                        .setLocation(fragmentLecture.getActiveRoom()));
+                if (date != null)
+                    erg.add(new Lecture(true, dates[0], dates[1])
+                            .setName(fragmentLecture.lecture.getName())
+                            .setDocent(fragmentLecture.lecture.getDocent())
+                            .setColor(fragmentLecture.lecture.getColor())
+                            .setLocation(fragmentLecture.getActiveRoom()));
             }
         }
         return erg;
@@ -115,19 +116,20 @@ public class LectureSchedule {
     @NonNull
     private Date[] getDateWithTime(@NonNull Date date, @NonNull Hours hours) {
         Date start = hours.getFromAsDate(), end = hours.getUntilAsDate();
+        if (start == null || end == null) return null;
         Calendar startAsC = Calendar.getInstance(), endAsC = Calendar.getInstance();
         startAsC.setTime(start);
         endAsC.setTime(end);
 
         Calendar startC = Calendar.getInstance(), endC = Calendar.getInstance();
         startC.setTime(date);
-        startC.set(Calendar.HOUR, startAsC.get(Calendar.HOUR));
+        startC.set(Calendar.HOUR_OF_DAY, startAsC.get(Calendar.HOUR));
         startC.set(Calendar.MINUTE, startAsC.get(Calendar.MINUTE));
         startC.set(Calendar.SECOND, 0);
         startC.set(Calendar.MILLISECOND, 0);
 
         endC.setTime(date);
-        endC.set(Calendar.HOUR, endAsC.get(Calendar.HOUR));
+        endC.set(Calendar.HOUR_OF_DAY, endAsC.get(Calendar.HOUR));
         endC.set(Calendar.MINUTE, endAsC.get(Calendar.MINUTE));
         endC.set(Calendar.SECOND, 0);
         endC.set(Calendar.MILLISECOND, 0);
