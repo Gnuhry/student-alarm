@@ -17,6 +17,7 @@ import com.example.studentalarm.imports.LectureSchedule;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import androidx.annotation.NonNull;
@@ -45,7 +46,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
 
         initAppBar(weekview, this.getActivity().findViewById(R.id.my_toolbar));
         initWeekView(weekview);
-        loadData();
+        new Thread(this::loadData).start(); //TODO Threading or not?
 
         view.findViewById(R.id.fabAdd).setOnClickListener(view1 -> new EventDialog(null, LectureSchedule.load(getContext()), this).show(getActivity().getSupportFragmentManager(), "dialog"));
         return view;
@@ -64,8 +65,6 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
         weekView.setAdapter(adapter);
         weekView.setTimeFormatter(hour -> getResources().getConfiguration().locale.getLanguage().equals("en") ? (hour == 12 ? "12 pm" : (hour > 21 ? (hour - 12) + " pm" : (hour > 12 ? "0" + (hour - 12) + " pm" : (hour >= 10 ? hour + " am" : "0" + hour + " am")))) : hour >= 10 ? hour + " h" : "0" + hour + " h");
         weekView.setDateFormatter(date -> String.format("%s %s", format.format(date.getTime()), dateformat.format(date.getTime())));
-        if (getContext() == null) return;
-        adapter.submitList(LectureSchedule.load(getContext()).getAllLecture());
     }
 
     /**
@@ -115,15 +114,15 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
      */
     public void loadData() {
         Log.i(LOG, "load data");
-        if (getContext() == null) return;
-        adapter.submitList(LectureSchedule.load(getContext()).getAllLecture());
+        if (getContext() != null)
+            adapter.submitList(LectureSchedule.load(getContext()).getAllLecture(getContext()));
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Log.i(LOG, "resume");
-        loadData();
+        new Thread(this::loadData).start();  //TODO Threading or not?
     }
 
     class Adapter extends WeekView.SimpleAdapter<LectureSchedule.Lecture> {

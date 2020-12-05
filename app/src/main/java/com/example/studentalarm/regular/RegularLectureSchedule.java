@@ -1,8 +1,20 @@
 package com.example.studentalarm.regular;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
+import android.widget.Toast;
 
+import com.example.studentalarm.R;
+import com.example.studentalarm.save.SaveRegularLectureSchedule;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -10,18 +22,19 @@ import androidx.annotation.Nullable;
 
 public class RegularLectureSchedule {
 
+    private static final String LOG = "RegularLectureSchedule";
+
     private int days, hours;
     @NonNull
     private final List<RegularLecture> lectures;
+    @NonNull
+    private final List<RegularLectureSchedule.RegularLecture.RegularLectureTime> regularLectures;
 
-    public RegularLectureSchedule(int days, int hours) {
-        if (days < 4 || days > 6)
-            days = 5;
-        if (hours < 0 || hours > 23)
-            hours = 10;
+    public RegularLectureSchedule() {
         lectures = new ArrayList<>();
-        this.days = days;
-        this.hours = hours;
+        regularLectures = new ArrayList<>();
+        days = 5;
+        hours = 6;
     }
 
     public int getDays() {
@@ -45,9 +58,176 @@ public class RegularLectureSchedule {
         return lectures;
     }
 
+    @NonNull
+    public List<RegularLecture.RegularLectureTime> getRegularLectures() {
+        return regularLectures;
+    }
+
     public void addLecture(RegularLecture lecture) {
         lectures.add(lecture);
     }
+
+    /**
+     * add a lecture to the timetable
+     *
+     * @param day     day to add
+     * @param hour    hour to add
+     * @param lecture lecture to add
+     */
+    public void addTime(int day, int hour, @NonNull RegularLectureSchedule.RegularLecture lecture) {
+        if (day >= this.days || hour >= this.hours)
+            return;
+        removeTime(day, hour);
+        regularLectures.add(new RegularLectureSchedule.RegularLecture.RegularLectureTime(day, hour, lecture.getActiveRoomId(), lecture));
+    }
+
+    /**
+     * remove a lecture from the timetable
+     *
+     * @param day  day to remove
+     * @param hour hour to remove
+     */
+    public void removeTime(int day, int hour) {
+        if (day >= this.days || hour >= this.hours)
+            return;
+        for (Iterator<RegularLecture.RegularLectureTime> iterator = regularLectures.iterator(); iterator.hasNext(); ) {
+            RegularLectureSchedule.RegularLecture.RegularLectureTime time = iterator.next();
+            if (time.day == day && time.hour == hour)
+                iterator.remove();
+        }
+    }
+
+    //----------------------------------Save---------------------------------
+
+    /**
+     * clear data from file
+     *
+     * @param context context of app
+     */
+    public static void clearSave(@NonNull Context context) {
+        Log.i(LOG, "clear save");
+        saving(null, context);
+    }
+
+    /**
+     * save data to file
+     */
+    public void save(@NonNull Context context) {
+        Log.i(LOG, "save");
+        saving(createSave(), context);
+        Toast.makeText(context, R.string.save, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * saving the date to the file
+     *
+     * @param schedule data to save
+     * @param context  context of app
+     */
+    private static void saving(@Nullable SaveRegularLectureSchedule schedule, @NonNull Context context) {
+        FileOutputStream fos;
+        try {
+            fos = context.openFileOutput("REGULAR_LECTURE", Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(schedule);
+            oos.close();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * create the save object
+     *
+     * @return save object
+     */
+    @NonNull
+    private SaveRegularLectureSchedule createSave() {
+        SaveRegularLectureSchedule erg = new SaveRegularLectureSchedule();
+        erg.day = this.days;
+        erg.hour = this.hours;
+        SaveRegularLectureSchedule.SaveRegularLecture[] saveRegularLecture = new SaveRegularLectureSchedule.SaveRegularLecture[lectures.size()];
+        for (int f = 0; f < saveRegularLecture.length; f++) {
+            saveRegularLecture[f] = new SaveRegularLectureSchedule.SaveRegularLecture();
+            RegularLectureSchedule.RegularLecture l = lectures.get(f);
+            saveRegularLecture[f].id = l.getId();
+            saveRegularLecture[f].activeRoomId = l.getActiveRoomId();
+            saveRegularLecture[f].color = l.getColor();
+            saveRegularLecture[f].docent = l.getDocent();
+            saveRegularLecture[f].name = l.getName();
+            saveRegularLecture[f].rooms = l.getRooms().toArray(new String[0]);
+        }
+        erg.schedule = saveRegularLecture;
+        SaveRegularLectureSchedule.SaveTime[] times = new SaveRegularLectureSchedule.SaveTime[regularLectures.size()];
+        for (int f = 0; f < times.length; f++) {
+            times[f] = new SaveRegularLectureSchedule.SaveTime();
+            RegularLectureSchedule.RegularLecture.RegularLectureTime t = regularLectures.get(f);
+            times[f].day = t.day;
+            times[f].hour = t.hour;
+            times[f].room_id = t.room_id;
+
+            times[f].saveRegularLecture = new SaveRegularLectureSchedule.SaveRegularLecture();
+            times[f].saveRegularLecture.id = t.lecture.getId();
+        }
+        erg.times = times;
+        return erg;
+    }
+
+    /**
+     * load data from file
+     */
+    public static RegularLectureSchedule load(@Nullable Context context) {
+        Log.i(LOG, "load");
+        if (context == null) return new RegularLectureSchedule();
+        try {
+            FileInputStream fis = context.openFileInput("REGULAR_LECTURE");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            RegularLectureSchedule help = convertSave((SaveRegularLectureSchedule) ois.readObject());
+            fis.close();
+            ois.close();
+            return help;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new RegularLectureSchedule();
+    }
+
+    /**
+     * convert the save object to the normal object
+     *
+     * @param readObject save object to convert
+     */
+    private static RegularLectureSchedule convertSave(@NonNull SaveRegularLectureSchedule readObject) {
+        RegularLectureSchedule schedule = new RegularLectureSchedule();
+        schedule.days = readObject.day;
+        schedule.hours = readObject.hour;
+        int id = 0;
+        if (readObject.schedule != null)
+            for (SaveRegularLectureSchedule.SaveRegularLecture lecture : readObject.schedule) {
+                RegularLectureSchedule.RegularLecture help = new RegularLectureSchedule.RegularLecture(lecture.name, lecture.id)
+                        .setActiveRoomId(lecture.activeRoomId)
+                        .setColor(lecture.color)
+                        .setDocent(lecture.docent);
+                if (lecture.id > id)
+                    id = lecture.id;
+                Log.d("Check_ID", lecture.id + "");
+                for (String room : lecture.rooms)
+                    help.addRoom(room);
+                schedule.addLecture(help);
+            }
+        RegularLectureSchedule.RegularLecture.setCounter(id);
+        List<RegularLectureSchedule.RegularLecture> help = schedule.getLectures();
+        if (readObject.times != null)
+            for (SaveRegularLectureSchedule.SaveTime time : readObject.times)
+                for (RegularLectureSchedule.RegularLecture l : help)
+                    if (l.getId() == time.saveRegularLecture.id)
+                        schedule.regularLectures.add(new RegularLectureSchedule.RegularLecture.RegularLectureTime(time.day, time.hour, time.room_id < 0 ? (l.getRooms().size() > 0 ? l.getActiveRoomId() : -1) : time.room_id, l));
+        return schedule;
+    }
+
 
     public static class RegularLecture {
         private String name, docent;
@@ -145,6 +325,7 @@ public class RegularLectureSchedule {
             return rooms.get(activeRoomId);
         }
 
+
         public static class RegularLectureTime {
             public final int day, hour, room_id;
             public final RegularLecture lecture;
@@ -154,6 +335,16 @@ public class RegularLectureSchedule {
                 this.hour = hour;
                 this.room_id = room_id;
                 this.lecture = lecture;
+            }
+
+            public String getActiveRoom() {
+                if (room_id >= 0 && lecture.rooms != null && lecture.rooms.size() > room_id)
+                    return lecture.rooms.get(room_id);
+                return null;
+            }
+
+            public int getCalendarDay() {
+                return day == 7 ? 1 : day + 1;
             }
         }
     }

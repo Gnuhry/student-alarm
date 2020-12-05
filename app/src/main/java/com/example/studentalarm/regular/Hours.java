@@ -10,8 +10,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 
@@ -43,6 +47,24 @@ public class Hours {
 
     public String getUntil() {
         return until;
+    }
+
+    public Date getFromAsDate() {
+        try {
+            return new SimpleDateFormat("HH:mm", Locale.getDefault()).parse(from);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Date getUntilAsDate() {
+        try {
+            return new SimpleDateFormat("HH:mm", Locale.getDefault()).parse(until);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -116,7 +138,7 @@ public class Hours {
         List<Hours> hours = new ArrayList<>();
         for (SaveHour.Save save : readObject.save)
             hours.add(new Hours(save.id).setFrom(save.from).setUntil(save.until));
-        Log.d("Help",hours.size()+"");
+        Log.d("Help", hours.size() + "");
         return hours;
     }
 

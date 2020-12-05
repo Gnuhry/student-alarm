@@ -64,7 +64,7 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
         time = DateFormat.getTimeInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
         this.lecture = new ArrayList<>();
         String formatS = "01.01.1900", format2S;
-        for (LectureSchedule.Lecture l : lecture_schedule.getAllLecture()) {
+        for (LectureSchedule.Lecture l : lecture_schedule.getAllLecture(context)) {
             format2S = FORMAT.format(l.getStart());
             if (!format2S.equals(formatS)) {
                 formatS = format2S;

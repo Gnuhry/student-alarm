@@ -12,6 +12,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.studentalarm.R;
+import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.ui.adapter.SettingsHourAdapter;
 import com.example.studentalarm.ui.fragments.RegularLectureFragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -25,11 +26,15 @@ import androidx.recyclerview.widget.RecyclerView;
 public class RegularLectureSettingDialog extends DialogFragment {
 
     private final SettingsHourAdapter adapter;
+    private final RegularLectureSchedule schedule;
+    private final Context context;
     private final RegularLectureFragment fragment;
 
     public RegularLectureSettingDialog(@NonNull Context context, @NonNull Activity activity, @NonNull RegularLectureFragment fragment) {
         adapter = new SettingsHourAdapter(context, activity);
         this.fragment = fragment;
+        schedule = RegularLectureSchedule.load(context);
+        this.context = context;
     }
 
     @Nullable
@@ -44,7 +49,7 @@ public class RegularLectureSettingDialog extends DialogFragment {
         arrayAdapter.add(getString(R.string.monday_sunday));
         Spinner spinner = view.findViewById(R.id.spDays);
         spinner.setAdapter(arrayAdapter);
-        int days = fragment.getRegularLectureSchedule().getDays();
+        int days = schedule.getDays();
         if (days < 0)
             spinner.setSelection(0);
         else
@@ -63,11 +68,10 @@ public class RegularLectureSettingDialog extends DialogFragment {
                 Toast.makeText(getContext(), R.string.wrong_inputs, Toast.LENGTH_LONG).show();
                 return;
             }
-            fragment.getRegularLectureSchedule().setDays(spinner.getSelectedItemPosition() + 5);
-            fragment.getRegularLectureSchedule().setHours(hour);
-            fragment.save();
+            schedule.setDays(spinner.getSelectedItemPosition() + 5);
+            schedule.setHours(hour);
+            schedule.save(context);
             fragment.getFragmentParent().openFragment(fragment.getFragmentParent().getRegularFragment());
-//            fragment.loadRecyclerView();
             this.dismiss();
         });
         return view;

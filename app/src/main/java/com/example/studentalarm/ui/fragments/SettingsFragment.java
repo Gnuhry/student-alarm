@@ -16,6 +16,7 @@ import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.Import;
 import com.example.studentalarm.imports.LectureSchedule;
+import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.dialog.DeleteLectureDialog;
 import com.example.studentalarm.ui.dialog.ExportDialog;
@@ -85,7 +86,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         alarmOn.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.i(LOG, "alarm on change to " + newValue);
             if ((Boolean) newValue) {
-                if (getContext() != null && LectureSchedule.load(getContext()).getAllLecture().size() == 0) {
+                if (getContext() != null && LectureSchedule.load(getContext()).getAllLecture(getContext()).size() == 0) {
                     Toast.makeText(getContext(), R.string.missing_events, Toast.LENGTH_SHORT).show();
                     return false;
                 }
@@ -259,7 +260,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             changeLanguage(lan2, getContext(), getActivity());
                         removeAllEventsLecture();
                         reload();
-                        RegularLectureFragment.clearSave(getContext());
+                        RegularLectureSchedule.clearSave(getContext());
                     })
                     .setNegativeButton(R.string.no, null)
                     .setCancelable(true)
