@@ -98,8 +98,6 @@
     <string name="do_you_want_to_save_your_changes">Möchten Sie ihre Änderungen speichern?</string>
     <string name="hour">" Stunde"</string>
     <string name="hour_back">"Stunde %d"</string>
-    <string name="from">Von</string>
-    <string name="until">Bis</string>
     <string name="remove">Entfernen</string>
     <string name="monday_friday">Montag - Freitag</string>
     <string name="monday_saturday">Montag - Samstag</string>

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class Hours {
     private final int id;
@@ -26,11 +27,13 @@ public class Hours {
         this.id = id;
     }
 
+    @NonNull
     public Hours setFrom(String from) {
         this.from = from;
         return this;
     }
 
+    @NonNull
     public Hours setUntil(String until) {
         this.until = until;
         return this;
@@ -48,6 +51,7 @@ public class Hours {
         return until;
     }
 
+    @Nullable
     public Date getFromAsDate() {
         try {
             return new SimpleDateFormat("HH:mm", Locale.getDefault()).parse(from);
@@ -57,6 +61,7 @@ public class Hours {
         return null;
     }
 
+    @Nullable
     public Date getUntilAsDate() {
         try {
             return new SimpleDateFormat("HH:mm", Locale.getDefault()).parse(until);
@@ -72,7 +77,8 @@ public class Hours {
      * @param list list to convert
      * @return save object
      */
-    private static SaveHour saveHours(List<Hours> list) {
+    @NonNull
+    private static SaveHour saveHours(@NonNull List<Hours> list) {
         SaveHour saveHour = new SaveHour();
         SaveHour.Save[] saves = new SaveHour.Save[list.size()];
         for (int i = 0; i < list.size(); i++) {
@@ -90,7 +96,7 @@ public class Hours {
      *
      * @param context context of the application
      */
-    public static void save(@NonNull Context context, List<Hours> hours) {
+    public static void save(@NonNull Context context, @NonNull List<Hours> hours) {
         FileOutputStream fos;
         try {
             fos = context.openFileOutput("HOURS", Context.MODE_PRIVATE);
@@ -132,7 +138,8 @@ public class Hours {
      * @param readObject object to convert
      * @return list of hour object
      */
-    private static List<Hours> convertSave(SaveHour readObject) {
+    @NonNull
+    private static List<Hours> convertSave(@NonNull SaveHour readObject) {
         List<Hours> hours = new ArrayList<>();
         for (SaveHour.Save save : readObject.save)
             hours.add(new Hours(save.id).setFrom(save.from).setUntil(save.until));

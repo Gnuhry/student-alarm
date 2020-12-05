@@ -111,8 +111,6 @@
     <string name="hour">" hour"</string>
     <string name="line" translatable="false">-</string>
     <string name="hour_back">"hour %d"</string>
-    <string name="from">From</string>
-    <string name="until">Until</string>
     <string name="remove">Remove</string>
     <string name="monday_friday">Monday - Friday</string>
     <string name="monday_saturday">Monday - Saturday</string>

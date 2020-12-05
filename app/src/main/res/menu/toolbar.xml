@@ -3,25 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/today"
         android:icon="@drawable/today_gray"
         android:title="@string/go_to_today"
         app:showAsAction="ifRoom"
         android:visible="false" />
     <item
-        android:id="@+id/refresh"
         android:icon="@drawable/replay"
         android:title="@string/refresh"
         app:showAsAction="ifRoom"
         android:visible="false" />
     <item
-        android:id="@+id/save"
         android:icon="@drawable/save"
         android:title="@string/save"
         app:showAsAction="ifRoom"
         android:visible="false" />
     <item
-        android:id="@+id/settings"
         android:icon="@drawable/settings_gray"
         android:title="@string/settings"
         app:showAsAction="ifRoom"
