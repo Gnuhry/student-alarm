@@ -73,7 +73,8 @@ public class PersonalFragment extends Fragment {
                     .setTitle(R.string.dismiss)
                     .setMessage(R.string.do_you_want_to_save_your_changes)
                     .setPositiveButton(R.string.save, (dialogInterface, i) -> {
-                        fragment.save();
+                        if (getContext() != null)
+                            fragment.getRegularLectureSchedule().save(getContext());
                         fragment = null;
                     })
                     .setNegativeButton(R.string.dismiss, (dialogInterface, i) -> fragment = null)
