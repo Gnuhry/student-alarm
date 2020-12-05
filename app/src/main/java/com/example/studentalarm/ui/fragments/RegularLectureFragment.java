@@ -33,6 +33,7 @@ public class RegularLectureFragment extends Fragment {
     private Adapter adapter;
     private WeekView weekView;
     private RecyclerView rv;
+    private boolean changes = false;
 
     public RegularLectureFragment(@NonNull PersonalFragment fragment) {
         this.fragment = fragment;
@@ -77,8 +78,11 @@ public class RegularLectureFragment extends Fragment {
      * @return {true} if no changes {false} if changes occurs
      */
     public boolean hasNoChanges() {
-        //TODO return false if changes true if not
-        return false;
+        return !changes;
+    }
+
+    public void setChanges(boolean changes) {
+        this.changes |= changes;
     }
 
     /**
@@ -90,8 +94,10 @@ public class RegularLectureFragment extends Fragment {
         Toolbar toolbar = getActivity().findViewById(R.id.my_toolbar);
         toolbar.getMenu().getItem(2).setVisible(true);
         toolbar.getMenu().getItem(2).setOnMenuItemClickListener(menuItem -> {
-            if (getContext() != null)
+            if (getContext() != null) {
                 regularLectureSchedule.save(getContext());
+                changes = false;
+            }
             return true;
         });
         toolbar.getMenu().getItem(3).setVisible(true);
@@ -178,6 +184,7 @@ public class RegularLectureFragment extends Fragment {
             else
                 regularLectureSchedule.addTime(data.day, data.hour, selected);
             loadDataWeekView();
+            changes = true;
         }
 
         @NonNull
@@ -208,6 +215,7 @@ public class RegularLectureFragment extends Fragment {
             if (selected == null) return;
             regularLectureSchedule.addTime(time.get(Calendar.DAY_OF_MONTH), time.get(Calendar.HOUR), selected);
             loadDataWeekView();
+            changes = true;
         }
     }
 
