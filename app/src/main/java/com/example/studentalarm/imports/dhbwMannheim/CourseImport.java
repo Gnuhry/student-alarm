@@ -12,10 +12,10 @@ import androidx.annotation.NonNull;
 
 public class CourseImport {
 
+    private static final String LINK_TO_COURSE = "https://vorlesungsplan.dhbw-mannheim.de/ical.php";
     @NonNull
     private final List<CourseCategory> dhbwCourseCategory;
     private List<Course> tempDHBWCourses;
-    private static final String LINK_TO_COURSE = "https://vorlesungsplan.dhbw-mannheim.de/ical.php";
 
     public CourseImport() {
         dhbwCourseCategory = new ArrayList<>();
@@ -23,6 +23,11 @@ public class CourseImport {
         String parse = Import.runSynchronous(LINK_TO_COURSE);
         if (parse != null)
             parse(parse);
+    }
+
+    @NonNull
+    public List<CourseCategory> getDHBWCourses() {
+        return dhbwCourseCategory;
     }
 
     /**
@@ -50,10 +55,5 @@ public class CourseImport {
                 }
 
             }
-    }
-
-    @NonNull
-    public List<CourseCategory> getDHBWCourses() {
-        return dhbwCourseCategory;
     }
 }

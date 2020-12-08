@@ -30,24 +30,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RegularLectureDialog extends DialogFragment {
+    private static final String LOG = "RegularLectureDialog";
     @Nullable
     private final RegularLectureSchedule data;
-    private final int index;
-    private boolean cancelDirect = true;
+    private final int index, oldColor;
     @NonNull
     private final RegularLectureFragment fragment;
-    private static final String LOG = "RegularLectureDialog";
-
+    @NonNull
+    private final List<EventColor> colors;
+    private final String oldTitle, oldDocent;
 
     private EditText title, docent;
     private RoomAdapter adapter;
     private RecyclerView recyclerView;
     private TextView add, cancel, delete;
     private Spinner spinner;
-    @NonNull
-    private final List<EventColor> colors;
-    private final String oldTitle, oldDocent;
-    private final int oldColor;
+    private boolean cancelDirect = true;
 
     public RegularLectureDialog(@Nullable RegularLectureSchedule data, int index, @NonNull RegularLectureFragment fragment) {
         this.fragment = fragment;
@@ -91,13 +89,15 @@ public class RegularLectureDialog extends DialogFragment {
         return view;
     }
 
-    private void initAdapter(RegularLectureSchedule.RegularLecture lecture) {
-        adapter = new RoomAdapter(lecture);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter);
+    /**
+     * Remove dialog.
+     */
+    @Override
+    public void onDestroyView() {
+        Log.i(LOG, "destroy");
+        fragment.loadRecyclerView();
+        super.onDestroyView();
     }
-
 
     /**
      * init all views
@@ -209,6 +209,18 @@ public class RegularLectureDialog extends DialogFragment {
     }
 
     /**
+     * init adapter
+     *
+     * @param lecture lecture with the data to init
+     */
+    private void initAdapter(RegularLectureSchedule.RegularLecture lecture) {
+        adapter = new RoomAdapter(lecture);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
+    }
+
+    /**
      * set the date in the views
      */
     private void initData() {
@@ -228,17 +240,6 @@ public class RegularLectureDialog extends DialogFragment {
     private void checkCancelDirect() {
         cancelDirect = ((EventColor) spinner.getSelectedItem()).color == oldColor && docent.getText().toString().equals(oldDocent) && title.getText().toString().equals(oldTitle);
     }
-
-    /**
-     * Remove dialog.
-     */
-    @Override
-    public void onDestroyView() {
-        Log.i(LOG, "destroy");
-        fragment.loadRecyclerView();
-        super.onDestroyView();
-    }
-
 
     /**
      * class to create a adapter with colors for spinner

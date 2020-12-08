@@ -9,8 +9,8 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 
 import com.example.studentalarm.R;
-import com.example.studentalarm.ui.dialog.ExportDialog;
 import com.example.studentalarm.imports.Export;
+import com.example.studentalarm.ui.dialog.ExportDialog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -54,25 +54,6 @@ public class ExportAdapter extends RecyclerView.Adapter<ExportAdapter.ViewHolder
         booleans = new boolean[files.length];
     }
 
-    /**
-     * delete all selected files
-     */
-    public void deleteFiles() {
-        for (ViewHolder holder : list)
-            if (holder.file.isChecked() && holder.holderFile != null && !holder.holderFile.delete())
-                holder.holderFile.deleteOnExit();
-    }
-
-    /**
-     * checked all checkBox
-     *
-     * @param checkedAll checked value
-     */
-    public void setCheckedAll(boolean checkedAll) {
-        for (ViewHolder holder : list)
-            holder.file.setChecked(checkedAll);
-    }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -100,6 +81,25 @@ public class ExportAdapter extends RecyclerView.Adapter<ExportAdapter.ViewHolder
     @Override
     public int getItemCount() {
         return files == null ? -1 : files.length;
+    }
+
+    /**
+     * checked all checkBox
+     *
+     * @param checkedAll checked value
+     */
+    public void setCheckedAll(boolean checkedAll) {
+        for (ViewHolder holder : list)
+            holder.file.setChecked(checkedAll);
+    }
+
+    /**
+     * delete all selected files
+     */
+    public void deleteFiles() {
+        for (ViewHolder holder : list)
+            if (holder.file.isChecked() && holder.holderFile != null && !holder.holderFile.delete())
+                holder.holderFile.deleteOnExit();
     }
 
 

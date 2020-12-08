@@ -27,15 +27,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHolder> {
     @NonNull
-    private final List<LectureSchedule.Lecture> lecture;
-    private int positionToday = -1;
-    @NonNull
     public static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
+    private static final String LOG = "LectureAdapter";
     private static SimpleDateFormat dayOfWeekName;
     private static DateFormat day, time;
     private static FragmentActivity activity;
     private static ReloadLecture reloadLecture;
-    private static final String LOG = "LectureAdapter";
+    @NonNull
+    private final List<LectureSchedule.Lecture> lecture;
+    private int positionToday = -1;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView title, from, detail, until, date;

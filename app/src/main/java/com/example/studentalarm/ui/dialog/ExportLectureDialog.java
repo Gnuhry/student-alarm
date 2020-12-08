@@ -21,11 +21,11 @@ import androidx.annotation.NonNull;
 
 public class ExportLectureDialog extends Dialog {
 
+    private static final String LOG = "ExportLectureDialog";
     @NonNull
     private final Context context;
     @NonNull
     private final Activity activity;
-    private static final String LOG = "ExportLectureDialog";
 
     public ExportLectureDialog(@NonNull Context context, @NonNull Activity activity) {
         super(context);

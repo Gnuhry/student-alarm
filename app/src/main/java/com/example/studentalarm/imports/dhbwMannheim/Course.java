@@ -3,8 +3,7 @@ package com.example.studentalarm.imports.dhbwMannheim;
 import androidx.annotation.NonNull;
 
 public class Course implements Comparable<String> {
-    private final String courseName;
-    private final String courseISCID;
+    private final String courseName, courseISCID;
 
     public Course(String CourseName, String CourseISCID) {
         this.courseName = CourseName;
