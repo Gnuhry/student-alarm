@@ -28,15 +28,33 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapter.ViewHolder> {
+    private final static String LOG = "SettingsHourAdapter";
     @NonNull
     private final List<Hours> hours;
     @NonNull
     private final Context context;
-    private final static String LOG = "SettingsHourAdapter";
     @NonNull
     private final Activity activity;
     @NonNull
     private final List<ViewHolder> holders;
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final TextView hour;
+        private final EditText from, until;
+        private final LinearLayout llAddDelete, llTime;
+        private final ImageView add, remove;
+
+        public ViewHolder(@NonNull View view) {
+            super(view);
+            hour = view.findViewById(R.id.txVHour);
+            from = view.findViewById(R.id.edTFrom);
+            until = view.findViewById(R.id.edTUnti);
+            llAddDelete = view.findViewById(R.id.LLAddDelete);
+            llTime = view.findViewById(R.id.LLTime);
+            add = view.findViewById(R.id.imVAdd);
+            remove = view.findViewById(R.id.imVRemove);
+        }
+    }
 
     public SettingsHourAdapter(@NonNull Context context, @NonNull Activity activity) {
         hours = Hours.load(context);
@@ -45,23 +63,6 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
         this.context = context;
         this.activity = activity;
         holders = new ArrayList<>();
-    }
-
-    /**
-     * save if all inputs are right
-     *
-     * @return {true} if saved {false} if wrong inputs
-     */
-    public int save() {
-        for (int f = 0; f < holders.size(); f++) {
-            hours.get((int) holders.get(f).llTime.getTag())
-                    .setFrom(holders.get(f).from.getText().toString())
-                    .setUntil(holders.get(f).until.getText().toString());
-            if (holders.get(f).until.getError() != null || holders.get(f).from.getError() != null)
-                return -1;
-        }
-        Hours.save(context, hours);
-        return hours.size();
     }
 
     @NonNull
@@ -210,21 +211,22 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
         });
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView hour;
-        private final EditText from, until;
-        private final LinearLayout llAddDelete, llTime;
-        private final ImageView add, remove;
-
-        public ViewHolder(@NonNull View view) {
-            super(view);
-            hour = view.findViewById(R.id.txVHour);
-            from = view.findViewById(R.id.edTFrom);
-            until = view.findViewById(R.id.edTUnti);
-            llAddDelete = view.findViewById(R.id.LLAddDelete);
-            llTime = view.findViewById(R.id.LLTime);
-            add = view.findViewById(R.id.imVAdd);
-            remove = view.findViewById(R.id.imVRemove);
+    /**
+     * save if all inputs are right
+     *
+     * @return {true} if saved {false} if wrong inputs
+     */
+    public int save() {
+        for (int f = 0; f < holders.size(); f++) {
+            hours.get((int) holders.get(f).llTime.getTag())
+                    .setFrom(holders.get(f).from.getText().toString())
+                    .setUntil(holders.get(f).until.getText().toString());
+            if (holders.get(f).until.getError() != null || holders.get(f).from.getError() != null)
+                return -1;
         }
+        Hours.save(context, hours);
+        return hours.size();
     }
+
+
 }

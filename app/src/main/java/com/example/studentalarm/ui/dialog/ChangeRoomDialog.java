@@ -16,10 +16,10 @@ import androidx.annotation.NonNull;
 
 public class ChangeRoomDialog extends Dialog {
 
+    private static final String LOG = "ChangeRoomDialog";
     @NonNull
     private final Context context;
     private final RegularLectureSchedule.RegularLecture lecture;
-    private static final String LOG = "ChangeRoomDialog";
 
     public ChangeRoomDialog(@NonNull Context context, RegularLectureSchedule.RegularLecture lecture) {
         super(context);

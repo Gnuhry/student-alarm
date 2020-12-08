@@ -23,30 +23,35 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class RegularLectureAdapter extends RecyclerView.Adapter<RegularLectureAdapter.ViewHolder> {
 
+    private static final String LOG = "RegularLectureAdapter";
     @NonNull
     private final RegularLectureSchedule regularLectureSchedule;
     @NonNull
     private final List<RegularLectureSchedule.RegularLecture> regularLecture;
-    private final String LOG = "RegularLectureAdapter";
+    private final RegularLectureFragment fragment;
     @Nullable
     private LinearLayout selected;
     private int selected_id;
-    private final RegularLectureFragment fragment;
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final TextView title, docent, location;
+        private final LinearLayout linearLayout;
+        private final ImageView imageView;
+
+        public ViewHolder(@NonNull View view) {
+            super(view);
+            title = view.findViewById(R.id.txVTitle);
+            docent = view.findViewById(R.id.txVDocent);
+            location = view.findViewById(R.id.txVLocation);
+            linearLayout = view.findViewById(R.id.LLRegularLecture);
+            imageView = view.findViewById(R.id.imVAdd);
+        }
+    }
 
     public RegularLectureAdapter(@NonNull RegularLectureSchedule regularLectureSchedule, RegularLectureFragment fragment) {
         this.regularLectureSchedule = regularLectureSchedule;
         regularLecture = regularLectureSchedule.getLectures();
         this.fragment = fragment;
-    }
-
-    /**
-     * get the selected lecture
-     *
-     * @return selected lecture
-     */
-    @Nullable
-    public RegularLectureSchedule.RegularLecture getSelected() {
-        return selected == null ? null : regularLecture.get(selected_id);
     }
 
     @NonNull
@@ -114,18 +119,13 @@ public class RegularLectureAdapter extends RecyclerView.Adapter<RegularLectureAd
         return regularLecture.size() + 1;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView title, docent, location;
-        private final LinearLayout linearLayout;
-        private final ImageView imageView;
-
-        public ViewHolder(@NonNull View view) {
-            super(view);
-            title = view.findViewById(R.id.txVTitle);
-            docent = view.findViewById(R.id.txVDocent);
-            location = view.findViewById(R.id.txVLocation);
-            linearLayout = view.findViewById(R.id.LLRegularLecture);
-            imageView = view.findViewById(R.id.imVAdd);
-        }
+    /**
+     * get the selected lecture
+     *
+     * @return selected lecture
+     */
+    @Nullable
+    public RegularLectureSchedule.RegularLecture getSelected() {
+        return selected == null ? null : regularLecture.get(selected_id);
     }
 }

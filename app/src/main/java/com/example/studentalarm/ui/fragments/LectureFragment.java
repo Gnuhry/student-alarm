@@ -20,10 +20,10 @@ public class LectureFragment extends Fragment {
 
     @NonNull
     private static final String TAG = "LECTURE_FRAGMENT";
+    private static final String LOG = "LectureFragment";
 
     private static Thread animate;
     private static boolean animateBool = true;
-    private static final String LOG = "LectureFragment";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -109,24 +109,6 @@ public class LectureFragment extends Fragment {
     }
 
     /**
-     * Playing the animation
-     *
-     * @param activity activity of app
-     * @param item     item to display animation
-     * @param res      res to display
-     */
-    private static void setAnimation(@NonNull Activity activity, @NonNull MenuItem item, int res) {
-        activity.findViewById(R.id.my_toolbar).post(() -> item.setIcon(res));
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if (animateBool)
-            setAnimation(activity, item, res == R.drawable.hourglass_bottom ? R.drawable.hourglass_top : R.drawable.hourglass_bottom);
-    }
-
-    /**
      * Stop the reload animation
      *
      * @param activity activity of app
@@ -142,5 +124,23 @@ public class LectureFragment extends Fragment {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Playing the animation
+     *
+     * @param activity activity of app
+     * @param item     item to display animation
+     * @param res      res to display
+     */
+    private static void setAnimation(@NonNull Activity activity, @NonNull MenuItem item, int res) {
+        activity.findViewById(R.id.my_toolbar).post(() -> item.setIcon(res));
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (animateBool)
+            setAnimation(activity, item, res == R.drawable.hourglass_bottom ? R.drawable.hourglass_top : R.drawable.hourglass_bottom);
     }
 }
