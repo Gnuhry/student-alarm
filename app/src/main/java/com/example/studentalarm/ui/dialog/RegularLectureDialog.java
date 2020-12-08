@@ -76,8 +76,8 @@ public class RegularLectureDialog extends DialogFragment {
                              Bundle savedInstanceState) {
         Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.dialog_regular_lecture, container, false);
-        title = view.findViewById(R.id.edTTitle);
-        docent = view.findViewById(R.id.edTDocent);
+        title = view.findViewById(R.id.edTTitleReg);
+        docent = view.findViewById(R.id.edTDocentReg);
         recyclerView = view.findViewById(R.id.rVRoom);
         add = view.findViewById(R.id.txVAdd);
         cancel = view.findViewById(R.id.txVCancel);

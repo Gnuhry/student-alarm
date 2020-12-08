@@ -59,18 +59,18 @@
             android:background="?android:attr/listDivider" />
 
         <EditText
-            android:id="@+id/edTTitle"
+            android:id="@+id/edTTitleReg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:autofillHints="Title"
             android:background="@null"
             android:ems="10"
             android:hint="@string/title"
-            android:inputType="textPersonName"
+            android:inputType="text"
             android:paddingLeft="5dp"
             android:paddingTop="10dp"
             android:paddingRight="5dp"
-            android:paddingBottom="10dp" />
+            android:paddingBottom="10dp"
+            android:importantForAutofill="no" />
 
         <View
             android:layout_width="match_parent"
@@ -78,18 +78,18 @@
             android:background="?android:attr/listDivider" />
 
         <EditText
-            android:id="@+id/edTDocent"
+            android:id="@+id/edTDocentReg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:autofillHints="Docent"
             android:background="@null"
             android:ems="10"
             android:hint="@string/docent"
-            android:inputType="textPersonName"
+            android:inputType="text"
             android:paddingLeft="5dp"
             android:paddingTop="10dp"
             android:paddingRight="5dp"
-            android:paddingBottom="10dp" />
+            android:paddingBottom="10dp"
+            android:importantForAutofill="no" />
 
         <View
             android:layout_width="match_parent"
