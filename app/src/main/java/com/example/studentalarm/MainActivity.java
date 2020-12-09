@@ -3,8 +3,9 @@ package com.example.studentalarm;
 import android.content.IntentFilter;
 import android.os.Bundle;
 
-import com.example.studentalarm.fragments.SettingsFragment;
+import com.example.studentalarm.ui.fragments.SettingsFragment;
 import com.example.studentalarm.receiver.NetworkReceiver;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;

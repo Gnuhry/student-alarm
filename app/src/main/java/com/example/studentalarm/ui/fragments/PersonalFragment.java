@@ -1,4 +1,4 @@
-package com.example.studentalarm.fragments;
+package com.example.studentalarm.ui.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 
-import com.example.studentalarm.AlarmManager;
-import com.example.studentalarm.PreferenceKeys;
+import com.example.studentalarm.alarm.AlarmManager;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
 
 import androidx.annotation.NonNull;
@@ -30,6 +30,8 @@ public class PersonalFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (getActivity() != null)
+            LectureFragment.removeLectureMenu(getActivity());
         Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.fragment_personal, container, false);
         if (getContext() == null) return view;

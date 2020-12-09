@@ -1,4 +1,4 @@
-package com.example.studentalarm.fragments;
+package com.example.studentalarm.ui.fragments;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,9 +12,12 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.studentalarm.AlarmManager;
-import com.example.studentalarm.PreferenceKeys;
+import com.example.studentalarm.alarm.AlarmManager;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
+import com.example.studentalarm.ui.dialog.DeleteLectureDialog;
+import com.example.studentalarm.ui.dialog.ExportDialog;
+import com.example.studentalarm.ui.dialog.ImportDialog;
 import com.example.studentalarm.imports.Import;
 import com.example.studentalarm.imports.LectureSchedule;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -41,6 +44,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        if (getActivity() != null)
+            LectureFragment.removeLectureMenu(getActivity());
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
         Log.i(LOG, "open");
         boolean bool = getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_ON, false), bool2 = bool && !getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_PHONE, false);
@@ -155,7 +160,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
         importPref.setOnPreferenceClickListener(preference -> {
             if (getContext() == null) return false;
-            ImportDialog importDialog = new ImportDialog(this.getContext(), getActivity());
+            ImportDialog importDialog = new ImportDialog(this.getContext());
             importDialog.setOnCancelListener(dialogInterface -> reload());
             importDialog.show();
             return true;
@@ -194,6 +199,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 Toast.makeText(getContext(), getString(R.string.wrong_time_format), Toast.LENGTH_SHORT).show();
                 return false;
             }
+            if (getContext() == null) return false;
+            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(PreferenceKeys.IMPORT_TIME, value.trim()).apply();
+            Import.stopTimer(getContext());
+            Import.setTimer(getContext());
             return true;
         });
 

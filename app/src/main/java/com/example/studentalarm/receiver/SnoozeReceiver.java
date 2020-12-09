@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.example.studentalarm.Alarm;
-import com.example.studentalarm.PreferenceKeys;
+import com.example.studentalarm.alarm.Alarm;
+import com.example.studentalarm.save.PreferenceKeys;
 
 import java.util.Calendar;
 

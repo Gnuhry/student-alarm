@@ -3,12 +3,13 @@ package com.example.studentalarm.imports;
 import android.content.Context;
 import android.graphics.Color;
 
+import com.example.studentalarm.save.SaveLecture;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,7 +21,7 @@ import java.util.TimeZone;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class LectureSchedule implements Serializable {
+public class LectureSchedule {
     @NonNull
     private final List<Lecture> lecture, importLecture;
 
@@ -164,12 +165,53 @@ public class LectureSchedule implements Serializable {
         try {
             fos = context.openFileOutput("LECTURE", Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(this);
+            oos.writeObject(createSave());
             oos.close();
             fos.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * create a save object
+     *
+     * @return lecture_schedule as save object
+     */
+    @NonNull
+    private SaveLecture createSave() {
+        SaveLecture saveLecture = new SaveLecture();
+        saveLecture.saves = new SaveLecture.Save[2][];
+        saveLecture.saves[0] = new SaveLecture.Save[this.lecture.size()];
+        for (int i = 0; i < this.lecture.size(); i++) {
+            Lecture l = this.lecture.get(i);
+            SaveLecture.Save save = new SaveLecture.Save();
+            save.name = l.name;
+            save.docent = l.docent;
+            save.location = l.location;
+            save.start = l.start;
+            save.end = l.end;
+            save.color = l.color;
+            save.id = l.id;
+            save.isImport = l.isImport;
+            saveLecture.saves[0][i] = save;
+        }
+
+        saveLecture.saves[1] = new SaveLecture.Save[this.importLecture.size()];
+        for (int i = 0; i < this.importLecture.size(); i++) {
+            Lecture l = this.importLecture.get(i);
+            SaveLecture.Save save = new SaveLecture.Save();
+            save.name = l.name;
+            save.docent = l.docent;
+            save.location = l.location;
+            save.start = l.start;
+            save.end = l.end;
+            save.color = l.color;
+            save.id = l.id;
+            save.isImport = l.isImport;
+            saveLecture.saves[1][i] = save;
+        }
+        return saveLecture;
     }
 
     /**
@@ -182,11 +224,10 @@ public class LectureSchedule implements Serializable {
         try {
             FileInputStream fis = context.openFileInput("LECTURE");
             ObjectInputStream ois = new ObjectInputStream(fis);
-            LectureSchedule erg = (LectureSchedule) ois.readObject();
+            LectureSchedule erg = ConvertSave((SaveLecture) ois.readObject());
             fis.close();
             ois.close();
-            if (erg != null)
-                return erg;
+            return erg;
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -196,9 +237,30 @@ public class LectureSchedule implements Serializable {
     }
 
     /**
+     * convert save object to lecture
+     *
+     * @param saveLecture object to convert
+     * @return lecture object
+     */
+    @NonNull
+    private static LectureSchedule ConvertSave(@Nullable SaveLecture saveLecture) {
+        LectureSchedule lectureSchedule = new LectureSchedule();
+        if (saveLecture == null) return lectureSchedule;
+        for (int i = 0; i < saveLecture.saves[0].length; i++) {
+            SaveLecture.Save save = saveLecture.saves[0][i];
+            lectureSchedule.lecture.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setLocation(save.location).setDocent(save.docent).setName(save.name));
+        }
+        for (int i = 0; i < saveLecture.saves[1].length; i++) {
+            SaveLecture.Save save = saveLecture.saves[1][i];
+            lectureSchedule.importLecture.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setLocation(save.location).setDocent(save.docent).setName(save.name));
+        }
+        return lectureSchedule;
+    }
+
+    /**
      * inner class to represent the lecture information
      */
-    public static class Lecture implements Serializable, Comparable<Lecture> {
+    public static class Lecture implements Comparable<Lecture> {
         @Nullable
         private String docent, location, name;
         @NonNull
@@ -209,9 +271,16 @@ public class LectureSchedule implements Serializable {
         private final boolean isImport;
 
         public Lecture(boolean isImport, @NonNull Date start, @NonNull Date end) {
-            this.start = start;
-            this.end = end;
+            this.start = new Date(start.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
+            this.end = new Date(end.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
             this.id = counter++;
+            this.isImport = isImport;
+        }
+
+        private Lecture(boolean isImport, @NonNull Date start, @NonNull Date end, int id) {
+            this.start = new Date(start.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
+            this.end = new Date(end.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
+            this.id = id;
             this.isImport = isImport;
         }
 
@@ -232,12 +301,12 @@ public class LectureSchedule implements Serializable {
 
         @NonNull
         public Date getStart() {
-            return new Date(start.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
+            return start;// new Date(start.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
         }
 
         @NonNull
         public Date getEnd() {
-            return new Date(end.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
+            return end;// new Date(end.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
         }
 
         public int getId() {

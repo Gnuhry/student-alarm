@@ -1,4 +1,4 @@
-package com.example.studentalarm.fragments;
+package com.example.studentalarm.ui.fragments;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -8,16 +8,16 @@ import android.view.ViewGroup;
 
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEntity;
-import com.example.studentalarm.AlarmManager;
-import com.example.studentalarm.PreferenceKeys;
+import com.example.studentalarm.alarm.AlarmManager;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
+import com.example.studentalarm.ui.dialog.EventDialog;
 import com.example.studentalarm.imports.Import;
 import com.example.studentalarm.imports.LectureSchedule;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -47,7 +47,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
         initWeekView(weekview);
         loadData();
 
-        view.findViewById(R.id.fabAdd).setOnClickListener(view1 -> new EventDialogFragment(null, LectureSchedule.load(getContext()), this).show(getActivity().getSupportFragmentManager(), "dialog"));
+        view.findViewById(R.id.fabAdd).setOnClickListener(view1 -> new EventDialog(null, LectureSchedule.load(getContext()), this).show(getActivity().getSupportFragmentManager(), "dialog"));
         return view;
     }
 
@@ -95,7 +95,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
         if (getContext() != null &&
                 PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) != Import.ImportFunction.NONE &&
                 getActivity() != null &&
-                Import.checkConnection(getActivity(), getContext()))
+                Import.checkConnection(getContext()))
             new Thread(() -> {
                 Log.d(LOG, "refresh thread start");
                 if (getActivity() == null) return;
@@ -119,13 +119,20 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
         adapter.submitList(LectureSchedule.load(getContext()).getAllLecture());
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(LOG, "resume");
+        loadData();
+    }
+
     class Adapter extends WeekView.SimpleAdapter<LectureSchedule.Lecture> {
 
         @Override
         public void onEventClick(@NonNull LectureSchedule.Lecture data) {
             super.onEventClick(data);
             if (getActivity() != null)
-                new EventDialogFragment(data, LectureSchedule.load(getContext()), lecture).show(getActivity().getSupportFragmentManager(), "dialog");
+                new EventDialog(data, LectureSchedule.load(getContext()), lecture).show(getActivity().getSupportFragmentManager(), "dialog");
         }
 
         @NonNull
@@ -134,10 +141,10 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
             WeekViewEntity.Style.Builder builder = new WeekViewEntity.Style.Builder();
             builder.setBackgroundColor(item.getColor());
 
-            Calendar startCal = new GregorianCalendar();
+            Calendar startCal = Calendar.getInstance();
             startCal.setTime(item.getStart());
 
-            Calendar endCal = new GregorianCalendar();
+            Calendar endCal = Calendar.getInstance();
             endCal.setTime(item.getEnd());
 
             WeekViewEntity.Event.Builder<LectureSchedule.Lecture> erg = new WeekViewEntity.Event.Builder<>(item);

@@ -1,4 +1,4 @@
-package com.example.studentalarm.fragments;
+package com.example.studentalarm.ui.fragments;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.studentalarm.PreferenceKeys;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -29,6 +29,8 @@ public class AlarmFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (getActivity() != null)
+            LectureFragment.removeLectureMenu(getActivity());
         Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.fragment_alarm, container, false);
         if (getContext() == null) return view;
@@ -63,9 +65,9 @@ public class AlarmFragment extends Fragment {
                  * @param ca ca to get the hours
                  * @return hour
                  */
-                private int getHour(Calendar ca) {
-                    int erg = ca.get(Calendar.HOUR);
-                    erg += ca.get(Calendar.DAY_OF_MONTH) * 24;
+                private int getHour(@NonNull Calendar ca) {
+                    int erg = ca.get(Calendar.HOUR_OF_DAY);
+                    erg += ca.get(Calendar.DAY_OF_MONTH) * 24 - 24;
                     return erg;
                 }
 
