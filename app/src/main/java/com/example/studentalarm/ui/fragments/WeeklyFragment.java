@@ -25,11 +25,10 @@ import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 public class WeeklyFragment extends Fragment implements ReloadLecture {
-    private WeekView.SimpleAdapter<LectureSchedule.Lecture> adapter;
+    private static final String LOG = "WeeklyFragment";
     @NonNull
     private final ReloadLecture lecture;
-
-    private static final String LOG = "WeeklyFragment";
+    private WeekView.SimpleAdapter<LectureSchedule.Lecture> adapter;
 
     public WeeklyFragment() {
         lecture = this;
@@ -51,38 +50,11 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
         return view;
     }
 
-    /**
-     * Init the weekView
-     *
-     * @param weekView weekView to control
-     */
-    private void initWeekView(@NonNull WeekView weekView) {
-        Log.i(LOG, "init week view");
-        SimpleDateFormat format = new SimpleDateFormat("E", getResources().getConfiguration().locale);
-        DateFormat dateformat = DateFormat.getDateInstance(DateFormat.SHORT, getResources().getConfiguration().locale);
-        adapter = new Adapter();
-        weekView.setAdapter(adapter);
-        weekView.setTimeFormatter(hour -> getResources().getConfiguration().locale.getLanguage().equals("en") ? (hour == 12 ? "12 pm" : (hour > 21 ? (hour - 12) + " pm" : (hour > 12 ? "0" + (hour - 12) + " pm" : (hour >= 10 ? hour + " am" : "0" + hour + " am")))) : hour >= 10 ? hour + " h" : "0" + hour + " h");
-        weekView.setDateFormatter(date -> String.format("%s %s", format.format(date.getTime()), dateformat.format(date.getTime())));
-    }
-
-    /**
-     * Init the app bar item
-     *
-     * @param weekView weekView to control
-     * @param toolbar  the appbar
-     */
-    private void initAppBar(@NonNull WeekView weekView, @NonNull Toolbar toolbar) {
-        Log.i(LOG, "init appbar");
-        toolbar.getMenu().getItem(0).setOnMenuItemClickListener(menuItem -> {
-            weekView.scrollToDate(Calendar.getInstance());
-            return true;
-        });
-
-        toolbar.getMenu().getItem(1).setOnMenuItemClickListener(menuItem -> {
-            refreshLectureSchedule();
-            return true;
-        });
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(LOG, "resume");
+        new Thread(this::loadData).start();  //TODO Threading or not?
     }
 
     /**
@@ -115,13 +87,6 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
         Log.i(LOG, "load data");
         if (getContext() != null)
             adapter.submitList(LectureSchedule.load(getContext()).getAllLecture(getContext()));
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.i(LOG, "resume");
-        new Thread(this::loadData).start();  //TODO Threading or not?
     }
 
     class Adapter extends WeekView.SimpleAdapter<LectureSchedule.Lecture> {
@@ -158,6 +123,40 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
             erg.setId(item.getId());
             return erg.build();
         }
+    }
+
+    /**
+     * Init the weekView
+     *
+     * @param weekView weekView to control
+     */
+    private void initWeekView(@NonNull WeekView weekView) {
+        Log.i(LOG, "init week view");
+        SimpleDateFormat format = new SimpleDateFormat("E", getResources().getConfiguration().locale);
+        DateFormat dateformat = DateFormat.getDateInstance(DateFormat.SHORT, getResources().getConfiguration().locale);
+        adapter = new Adapter();
+        weekView.setAdapter(adapter);
+        weekView.setTimeFormatter(hour -> getResources().getConfiguration().locale.getLanguage().equals("en") ? (hour == 12 ? "12 pm" : (hour > 21 ? (hour - 12) + " pm" : (hour > 12 ? "0" + (hour - 12) + " pm" : (hour >= 10 ? hour + " am" : "0" + hour + " am")))) : hour >= 10 ? hour + " h" : "0" + hour + " h");
+        weekView.setDateFormatter(date -> String.format("%s %s", format.format(date.getTime()), dateformat.format(date.getTime())));
+    }
+
+    /**
+     * Init the app bar item
+     *
+     * @param weekView weekView to control
+     * @param toolbar  the appbar
+     */
+    private void initAppBar(@NonNull WeekView weekView, @NonNull Toolbar toolbar) {
+        Log.i(LOG, "init appbar");
+        toolbar.getMenu().getItem(0).setOnMenuItemClickListener(menuItem -> {
+            weekView.scrollToDate(Calendar.getInstance());
+            return true;
+        });
+
+        toolbar.getMenu().getItem(1).setOnMenuItemClickListener(menuItem -> {
+            refreshLectureSchedule();
+            return true;
+        });
     }
 
 

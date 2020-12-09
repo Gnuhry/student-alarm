@@ -19,13 +19,13 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.ICS;
 import com.example.studentalarm.imports.Import;
 import com.example.studentalarm.imports.dhbwMannheim.Course;
 import com.example.studentalarm.imports.dhbwMannheim.CourseCategory;
 import com.example.studentalarm.imports.dhbwMannheim.CourseImport;
+import com.example.studentalarm.save.PreferenceKeys;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
@@ -33,10 +33,10 @@ import androidx.preference.PreferenceManager;
 
 public class ImportDialog extends Dialog {
 
-    private boolean isValid = false;
-    private String lastValidString;
     private static final String LINK_BEGIN = "http://vorlesungsplan.dhbw-mannheim.de/ical.php?uid=";
     private static final String LOG = "ImportDialog";
+    private boolean isValid = false;
+    private String lastValidString;
 
     public ImportDialog(@NonNull Context context) {
         super(context);

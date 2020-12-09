@@ -23,8 +23,8 @@ import androidx.preference.PreferenceManager;
 
 public class AlarmFragment extends Fragment {
 
-    private CountDownTimer timer;
     private static final String LOG = "Alarm_Fragment";
+    private CountDownTimer timer;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -41,6 +41,17 @@ public class AlarmFragment extends Fragment {
         setTimer(view);
 
         return view;
+    }
+
+    /**
+     * If change fragment, the countdown can stop
+     */
+    @Override
+    public void onDestroyView() {
+        Log.i(LOG, "Destroyed");
+        super.onDestroyView();
+        if (timer != null)
+            timer.cancel();
     }
 
     /**
@@ -97,16 +108,5 @@ public class AlarmFragment extends Fragment {
                     .setCancelable(true)
                     .show();
         }
-    }
-
-    /**
-     * If change fragment, the countdown can stop
-     */
-    @Override
-    public void onDestroyView() {
-        Log.i(LOG, "Destroyed");
-        super.onDestroyView();
-        if (timer != null)
-            timer.cancel();
     }
 }

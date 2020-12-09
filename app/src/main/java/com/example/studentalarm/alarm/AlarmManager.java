@@ -15,9 +15,9 @@ import androidx.preference.PreferenceManager;
 
 public class AlarmManager {
 
+    private static final String LOG = "AlarmManager";
     private static int before, way, after;
     private static boolean alarmPhone, init = true;
-    private static final String LOG = "AlarmManager";
 
     /**
      * Set the next alarm
@@ -31,28 +31,6 @@ public class AlarmManager {
             LectureSchedule.Lecture first = LectureSchedule.load(context).getNextFirstDayLecture(context);
             if (first != null)
                 setAlarm(first.getStart(), context);
-        }
-    }
-
-    /**
-     * Set the alarm at date
-     *
-     * @param date    date where the alarm should trigger
-     * @param context context of the application
-     */
-    private static void setAlarm(@NonNull Date date, @NonNull Context context) {
-        Log.d(LOG, "Set alarm");
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.BEFORE, 0));
-        calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.WAY, 0));
-        calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.AFTER, 0));
-        if (preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false))
-            Alarm.setPhoneAlarm(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), context);
-        else {
-            cancelNextAlarm(context);
-            Alarm.setAlarm(calendar, context);
         }
     }
 
@@ -99,6 +77,28 @@ public class AlarmManager {
     public static void cancelNextAlarm(@NonNull Context context) {
         Log.d(LOG, "cancel alarm");
         Alarm.cancelAlarm(context);
+    }
+
+    /**
+     * Set the alarm at date
+     *
+     * @param date    date where the alarm should trigger
+     * @param context context of the application
+     */
+    private static void setAlarm(@NonNull Date date, @NonNull Context context) {
+        Log.d(LOG, "Set alarm");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.BEFORE, 0));
+        calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.WAY, 0));
+        calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.AFTER, 0));
+        if (preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false))
+            Alarm.setPhoneAlarm(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), context);
+        else {
+            cancelNextAlarm(context);
+            Alarm.setAlarm(calendar, context);
+        }
     }
 
 }

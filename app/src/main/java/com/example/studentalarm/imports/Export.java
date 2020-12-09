@@ -59,31 +59,6 @@ public class Export {
     }
 
     /**
-     * Write the ics string to a file
-     *
-     * @param context context of application
-     * @param text    text of ics
-     * @return the ics file
-     */
-    @Nullable
-    private static File writeFile(@NonNull Context context, @NonNull String text) throws IOException {
-        Log.d(LOG, "Write to file");
-        File documentsPath = new File(context.getFilesDir(), "share/");
-        if (!documentsPath.exists() && !documentsPath.mkdir()) return null;
-
-        File file = new File(documentsPath.getAbsolutePath() +
-                File.separator +
-                new SimpleDateFormat("yyyyMMddHHmmssSS", Locale.getDefault()).format(Calendar.getInstance().getTime())
-                + "_output.ics");
-        if (!file.exists() && !file.createNewFile()) return null;
-        OutputStream fo = new FileOutputStream(file);
-        fo.write(text.getBytes());
-        fo.close();
-        Log.d(LOG, "file created " + file);
-        return file;
-    }
-
-    /**
      * File share dialog
      *
      * @param context  context of application
@@ -107,5 +82,31 @@ public class Export {
             context.grantUriPermission(resolveInfo.activityInfo.packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         context.startActivity(intent);
+    }
+
+
+    /**
+     * Write the ics string to a file
+     *
+     * @param context context of application
+     * @param text    text of ics
+     * @return the ics file
+     */
+    @Nullable
+    private static File writeFile(@NonNull Context context, @NonNull String text) throws IOException {
+        Log.d(LOG, "Write to file");
+        File documentsPath = new File(context.getFilesDir(), "share/");
+        if (!documentsPath.exists() && !documentsPath.mkdir()) return null;
+
+        File file = new File(documentsPath.getAbsolutePath() +
+                File.separator +
+                new SimpleDateFormat("yyyyMMddHHmmssSS", Locale.getDefault()).format(Calendar.getInstance().getTime())
+                + "_output.ics");
+        if (!file.exists() && !file.createNewFile()) return null;
+        OutputStream fo = new FileOutputStream(file);
+        fo.write(text.getBytes());
+        fo.close();
+        Log.d(LOG, "file created " + file);
+        return file;
     }
 }

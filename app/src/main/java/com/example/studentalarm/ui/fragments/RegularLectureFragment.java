@@ -86,6 +86,30 @@ public class RegularLectureFragment extends Fragment {
     }
 
     /**
+     * Remove menu item
+     */
+    public static void removeRegularLectureMenu(@NonNull Activity activity) {
+        Log.i(LOG, "remove app bar");
+        Toolbar toolbar = activity.findViewById(R.id.my_toolbar);
+        if (toolbar != null) {
+            toolbar.getMenu().getItem(2).setVisible(false);
+            toolbar.getMenu().getItem(3).setVisible(false);
+        }
+    }
+
+    /**
+     * loading the recycler view elements
+     */
+    public void loadRecyclerView() {
+        Log.i(LOG, "load recyclerView");
+        regularLectureAdapter = new RegularLectureAdapter(regularLectureSchedule, this);
+        rv.setHasFixedSize(true);
+        rv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        rv.setAdapter(regularLectureAdapter);
+        loadDataWeekView();
+    }
+
+    /**
      * init the appbar
      */
     private void initAppBar() {
@@ -107,19 +131,6 @@ public class RegularLectureFragment extends Fragment {
         });
     }
 
-
-    /**
-     * Remove menu item
-     */
-    public static void removeRegularLectureMenu(@NonNull Activity activity) {
-        Log.i(LOG, "remove app bar");
-        Toolbar toolbar = activity.findViewById(R.id.my_toolbar);
-        if (toolbar != null) {
-            toolbar.getMenu().getItem(2).setVisible(false);
-            toolbar.getMenu().getItem(3).setVisible(false);
-        }
-    }
-
     /**
      * init the weekView
      */
@@ -138,18 +149,6 @@ public class RegularLectureFragment extends Fragment {
         weekView.setAdapter(adapter);
 
 
-        loadDataWeekView();
-    }
-
-    /**
-     * loading the recycler view elements
-     */
-    public void loadRecyclerView() {
-        Log.i(LOG, "load recyclerView");
-        regularLectureAdapter = new RegularLectureAdapter(regularLectureSchedule, this);
-        rv.setHasFixedSize(true);
-        rv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        rv.setAdapter(regularLectureAdapter);
         loadDataWeekView();
     }
 

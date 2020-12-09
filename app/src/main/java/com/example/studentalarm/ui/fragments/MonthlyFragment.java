@@ -6,13 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.studentalarm.alarm.AlarmManager;
-import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
-import com.example.studentalarm.ui.adapter.MonthlyAdapter;
-import com.example.studentalarm.ui.dialog.EventDialog;
+import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.Import;
 import com.example.studentalarm.imports.LectureSchedule;
+import com.example.studentalarm.save.PreferenceKeys;
+import com.example.studentalarm.ui.adapter.MonthlyAdapter;
+import com.example.studentalarm.ui.dialog.EventDialog;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,10 +24,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MonthlyFragment extends Fragment implements ReloadLecture {
 
+    private static final String LOG = "MonthlyFragment";
     private int position_today;
     @Nullable
     private View view;
-    private static final String LOG = "MonthlyFragment";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -42,22 +42,11 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
         return view;
     }
 
-    /**
-     * Init the app bar items
-     *
-     * @param toolbar the appbar
-     * @param rv      the recyclerview to manage
-     */
-    private void initAppBar(@NonNull Toolbar toolbar, @NonNull RecyclerView rv) {
-        Log.i(LOG, "init appbar");
-        toolbar.getMenu().getItem(0).setOnMenuItemClickListener(menuItem -> {
-            rv.scrollToPosition(position_today);
-            return true;
-        });
-        toolbar.getMenu().getItem(1).setOnMenuItemClickListener(menuItem -> {
-            refreshLectureSchedule();
-            return true;
-        });
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(LOG, "resume");
+        loadData();
     }
 
     /**
@@ -104,11 +93,23 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
         loadData();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.i(LOG, "resume");
-        loadData();
+    /**
+     * Init the app bar items
+     *
+     * @param toolbar the appbar
+     * @param rv      the recyclerview to manage
+     */
+    private void initAppBar(@NonNull Toolbar toolbar, @NonNull RecyclerView rv) {
+        Log.i(LOG, "init appbar");
+        toolbar.getMenu().getItem(0).setOnMenuItemClickListener(menuItem -> {
+            rv.scrollToPosition(position_today);
+            return true;
+        });
+        toolbar.getMenu().getItem(1).setOnMenuItemClickListener(menuItem -> {
+            refreshLectureSchedule();
+            return true;
+        });
     }
+
 }
 

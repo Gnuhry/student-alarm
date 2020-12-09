@@ -24,9 +24,9 @@ import static android.app.Notification.EXTRA_NOTIFICATION_ID;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
-    @NonNull
-    private final String CHANNEL_ID = "123456";
     public static final int NOTIFICATION_ID = 123456;
+    @NonNull
+    private static final String CHANNEL_ID = "123456";
     public static MediaPlayer mp;
 
     /**

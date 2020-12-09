@@ -34,6 +34,12 @@ public class PersonalFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_personal, container, false);
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        checkSave();
+    }
+
     /**
      * open a fragment
      *
@@ -81,11 +87,5 @@ public class PersonalFragment extends Fragment {
                     .setCancelable(false)
                     .show();
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        checkSave();
     }
 }
