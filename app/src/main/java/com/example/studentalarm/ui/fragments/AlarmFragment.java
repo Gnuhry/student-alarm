@@ -29,8 +29,10 @@ public class AlarmFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (getActivity() != null)
+        if (getActivity() != null) {
+            RegularLectureFragment.removeRegularLectureMenu(getActivity());
             LectureFragment.removeLectureMenu(getActivity());
+        }
         Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.fragment_alarm, container, false);
         if (getContext() == null) return view;

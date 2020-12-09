@@ -3,6 +3,8 @@ package com.example.studentalarm.imports;
 import android.content.Context;
 import android.graphics.Color;
 
+import com.example.studentalarm.regular.Hours;
+import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.save.SaveLecture;
 
 import java.io.FileInputStream;
@@ -63,12 +65,94 @@ public class LectureSchedule {
      * @return all Lectures
      */
     @NonNull
-    public List<Lecture> getAllLecture() {
+    public List<Lecture> getAllLecture(@NonNull Context context) {
         List<Lecture> all = new ArrayList<>();
         all.addAll(lecture);
         all.addAll(importLecture);
+        Calendar from = Calendar.getInstance(), end = Calendar.getInstance();
+        from.add(Calendar.YEAR, -3);
+        end.add(Calendar.YEAR, 3);
+        all.addAll(getRegularLecture(context, from, end));
         Collections.sort(all);
         return all;
+    }
+
+    /**
+     * get all regular lecture as lecture
+     *
+     * @param context context of app
+     * @param from    date where the regularity should start
+     * @param until   date where the regularity should end
+     * @return list of lecture
+     */
+    @NonNull
+    private List<Lecture> getRegularLecture(@NonNull Context context, @NonNull Calendar from, @NonNull Calendar until) {
+        List<Lecture> erg = new ArrayList<>();
+        List<List<Date>> help = getAllDaysWeek(from, until);
+        RegularLectureSchedule schedule = RegularLectureSchedule.load(context);
+        List<Hours> hours = Hours.load(context);
+        for (RegularLectureSchedule.RegularLecture.RegularLectureTime fragmentLecture : schedule.getRegularLectures()) {
+            Hours hour = hours.get(fragmentLecture.hour);
+            for (Date date : help.get(fragmentLecture.getCalendarDay() - 1)) {
+                Date[] dates = getDateWithTime(date, hour);
+                if (date != null)
+                    erg.add(new Lecture(true, dates[0], dates[1])
+                            .setName(fragmentLecture.lecture.getName())
+                            .setDocent(fragmentLecture.lecture.getDocent())
+                            .setColor(fragmentLecture.lecture.getColor())
+                            .setLocation(fragmentLecture.getActiveRoom()));
+            }
+        }
+        return erg;
+    }
+
+    /**
+     * combine date and times
+     *
+     * @param date  date to combine
+     * @param hours time to combine
+     * @return date start and end
+     */
+    @NonNull
+    private Date[] getDateWithTime(@NonNull Date date, @NonNull Hours hours) {
+        Date start = hours.getFromAsDate(), end = hours.getUntilAsDate();
+        if (start == null || end == null) return null;
+        Calendar startAsC = Calendar.getInstance(), endAsC = Calendar.getInstance();
+        startAsC.setTime(start);
+        endAsC.setTime(end);
+
+        Calendar startC = Calendar.getInstance(), endC = Calendar.getInstance();
+        startC.setTime(date);
+        startC.set(Calendar.HOUR_OF_DAY, startAsC.get(Calendar.HOUR));
+        startC.set(Calendar.MINUTE, startAsC.get(Calendar.MINUTE));
+        startC.set(Calendar.SECOND, 0);
+        startC.set(Calendar.MILLISECOND, 0);
+
+        endC.setTime(date);
+        endC.set(Calendar.HOUR_OF_DAY, endAsC.get(Calendar.HOUR));
+        endC.set(Calendar.MINUTE, endAsC.get(Calendar.MINUTE));
+        endC.set(Calendar.SECOND, 0);
+        endC.set(Calendar.MILLISECOND, 0);
+        return new Date[]{startC.getTime(), endC.getTime()};
+    }
+
+    /**
+     * get all days sort by weekdays
+     *
+     * @param from  date where the regularity should start
+     * @param until date where the regularity should end
+     * @return List of list of date (1 layer - weekday, 2 layer - dates)
+     */
+    @NonNull
+    private List<List<Date>> getAllDaysWeek(@NonNull Calendar from, @NonNull Calendar until) {
+        List<List<Date>> erg = new ArrayList<>();
+        for (int f = 0; f < 7; f++)
+            erg.add(new ArrayList<>());
+        while (!from.after(until)) {
+            erg.get(from.get(Calendar.DAY_OF_WEEK) - 1).add(from.getTime());
+            from.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        return erg;
     }
 
     @NonNull
@@ -93,6 +177,18 @@ public class LectureSchedule {
      */
     public void clearNormalEvents() {
         this.lecture.clear();
+    }
+
+    /**
+     * get highest id
+     */
+    private int getHighestID() {
+        int highest = 0;
+        for (Lecture l : lecture)
+            if (l.id > highest) highest = l.id;
+        for (Lecture l : importLecture)
+            if (l.id > highest) highest = l.id;
+        return highest;
     }
 
     /**
@@ -123,10 +219,10 @@ public class LectureSchedule {
      * @return next lecture
      */
     @Nullable
-    public Lecture getNextFirstDayLecture() {
+    public Lecture getNextFirstDayLecture(@NonNull Context context) {
         boolean first = true;
         Lecture help = new Lecture(false, getDayAddDay(1), new Date()), help2 = new Lecture(false, getDayAddDay(0), new Date());
-        for (Lecture l : getAllLecture())
+        for (Lecture l : getAllLecture(context))
             if (l.compareTo(help2) >= 0 && first) {
                 first = false;
                 if (l.start.after(Calendar.getInstance().getTime()))
@@ -224,7 +320,8 @@ public class LectureSchedule {
         try {
             FileInputStream fis = context.openFileInput("LECTURE");
             ObjectInputStream ois = new ObjectInputStream(fis);
-            LectureSchedule erg = ConvertSave((SaveLecture) ois.readObject());
+            LectureSchedule erg = convertSave((SaveLecture) ois.readObject());
+            LectureSchedule.Lecture.setCounter(erg.getHighestID() + 1);
             fis.close();
             ois.close();
             return erg;
@@ -243,7 +340,7 @@ public class LectureSchedule {
      * @return lecture object
      */
     @NonNull
-    private static LectureSchedule ConvertSave(@Nullable SaveLecture saveLecture) {
+    private static LectureSchedule convertSave(@Nullable SaveLecture saveLecture) {
         LectureSchedule lectureSchedule = new LectureSchedule();
         if (saveLecture == null) return lectureSchedule;
         for (int i = 0; i < saveLecture.saves[0].length; i++) {
@@ -282,6 +379,10 @@ public class LectureSchedule {
             this.end = new Date(end.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
             this.id = id;
             this.isImport = isImport;
+        }
+
+        public static void setCounter(int counter) {
+            Lecture.counter = counter;
         }
 
         @Nullable

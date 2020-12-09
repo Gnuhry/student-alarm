@@ -12,14 +12,15 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.studentalarm.alarm.AlarmManager;
-import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
+import com.example.studentalarm.alarm.AlarmManager;
+import com.example.studentalarm.imports.Import;
+import com.example.studentalarm.imports.LectureSchedule;
+import com.example.studentalarm.regular.RegularLectureSchedule;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.dialog.DeleteLectureDialog;
 import com.example.studentalarm.ui.dialog.ExportDialog;
 import com.example.studentalarm.ui.dialog.ImportDialog;
-import com.example.studentalarm.imports.Import;
-import com.example.studentalarm.imports.LectureSchedule;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -44,8 +45,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        if (getActivity() != null)
+        if (getActivity() != null) {
+            RegularLectureFragment.removeRegularLectureMenu(getActivity());
             LectureFragment.removeLectureMenu(getActivity());
+        }
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
         Log.i(LOG, "open");
         boolean bool = getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_ON, false), bool2 = bool && !getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.ALARM_PHONE, false);
@@ -83,7 +86,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         alarmOn.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.i(LOG, "alarm on change to " + newValue);
             if ((Boolean) newValue) {
-                if (getContext() != null && LectureSchedule.load(getContext()).getAllLecture().size() == 0) {
+                if (getContext() != null && LectureSchedule.load(getContext()).getAllLecture(getContext()).size() == 0) {
                     Toast.makeText(getContext(), R.string.missing_events, Toast.LENGTH_SHORT).show();
                     return false;
                 }
@@ -155,7 +158,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             if (mode == Import.ImportFunction.ICS)
                 sb.append(" - ").append(preferences.getString(PreferenceKeys.LINK, null));
             else if (mode == Import.ImportFunction.DHBWMA)
-                sb.append(" - ").append(preferences.getString(PreferenceKeys.DHBW_MANNHEIM_COURSE, null));//if Impot Dialog Correct should never use defValue, better save than sorry !!!PreferenceKeys.DHBWMANNHEIMCOURSE funktioniert nicht
+                sb.append(" - ").append(preferences.getString(PreferenceKeys.DHBW_MANNHEIM_COURSE, null));
             return sb.toString();
         });
         importPref.setOnPreferenceClickListener(preference -> {
@@ -257,6 +260,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             changeLanguage(lan2, getContext(), getActivity());
                         removeAllEventsLecture();
                         reload();
+                        RegularLectureSchedule.clearSave(getContext());
                     })
                     .setNegativeButton(R.string.no, null)
                     .setCancelable(true)
@@ -285,7 +289,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         bottomNav.inflateMenu(R.menu.bottom_nav_menu);
         Toolbar toolbar = activity.findViewById(R.id.my_toolbar);
         toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.lecture);
+        toolbar.inflateMenu(R.menu.toolbar);
     }
 
     /**
