@@ -63,7 +63,7 @@
             android:id="@+id/edTTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:autofillHints="Title"
+            android:importantForAutofill="no"
             android:background="@null"
             android:ems="10"
             android:hint="@string/title"
@@ -82,7 +82,7 @@
             android:id="@+id/edTDocent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:autofillHints="Docent"
+            android:importantForAutofill="no"
             android:background="@null"
             android:ems="10"
             android:hint="@string/docent"
@@ -101,7 +101,7 @@
             android:id="@+id/edTLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:autofillHints="Location"
+            android:importantForAutofill="no"
             android:background="@null"
             android:ems="10"
             android:hint="@string/location"
@@ -117,7 +117,6 @@
             android:background="?android:attr/listDivider" />
 
         <View
-            android:id="@+id/view"
             android:layout_width="match_parent"
             android:layout_height="20dp" />
 
@@ -192,7 +191,7 @@
                     android:id="@+id/edTTimeBegin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:autofillHints="@string/hh_mm"
+                    android:importantForAutofill="no"
                     android:ems="5"
                     android:maxLength="5"
                     android:gravity="end"
@@ -274,7 +273,7 @@
                     android:id="@+id/edTTimeEnd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:autofillHints="@string/hh_mm"
+                    android:importantForAutofill="no"
                     android:ems="5"
                     android:maxLength="5"
                     android:gravity="end"

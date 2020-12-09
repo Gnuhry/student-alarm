@@ -28,7 +28,7 @@ public class AlarmManager {
         Log.d(LOG, "set next alarm");
         if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.ALARM_ON, false)) {
             Log.d(LOG, "alarm on");
-            LectureSchedule.Lecture first = LectureSchedule.load(context).getNextFirstDayLecture();
+            LectureSchedule.Lecture first = LectureSchedule.load(context).getNextFirstDayLecture(context);
             if (first != null)
                 setAlarm(first.getStart(), context);
         }

@@ -18,10 +18,10 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.R;
-import com.example.studentalarm.ui.fragments.ReloadLecture;
+import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.LectureSchedule;
+import com.example.studentalarm.ui.fragments.ReloadLecture;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.DateFormat;
@@ -272,7 +272,7 @@ public class EventDialog extends DialogFragment {
                         .setColor(((EventColor) spinner.getSelectedItem()).getColor()));
             } else {
                 Log.i(LOG, "Update Lecture");
-                List<LectureSchedule.Lecture> help = schedule.getAllLecture();
+                List<LectureSchedule.Lecture> help = schedule.getAllLecture(getContext());
                 help.get(help.indexOf(this.data))
                         .setName(title.getText().toString())
                         .setDocent(docent.getText().toString())
@@ -523,9 +523,14 @@ public class EventDialog extends DialogFragment {
     @Override
     public void onDestroyView() {
         Log.i(LOG, "destroy");
+        if (data != null && data.isImport()) {
+            super.onDestroyView();
+            return;
+        }
         lecture.loadData();
         if (getContext() != null)
             AlarmManager.updateNextAlarm(this.getContext());
+
         super.onDestroyView();
     }
 

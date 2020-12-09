@@ -24,7 +24,7 @@
     <string name="do_you_want_to_delete_this_events">Do you want to delete this events?</string>
     <string name="cancel">@android:string/cancel</string>
     <string name="check">Check</string>
-    <string name="save">Save</string>
+    <string name="saveRegularLecture">Save</string>
     <string name="none">None</string>
     <string name="ics">ICS</string>
     <string name="delete_all">Delete all</string>
@@ -105,4 +105,17 @@
     <string name="ok">OK</string>
     <string name="number">number</string>
     <string name="no_connection">No connection</string>
+    <string name="save">Save</string>
+    <string name="do_you_want_to_delete_this_lecture">Do you want to delete this lecture?</string>
+    <string name="do_you_want_to_save_your_changes">Do you want to save your changes?</string>
+    <string name="hour">" hour"</string>
+    <string name="line" translatable="false">-</string>
+    <string name="hour_back">"hour %d"</string>
+    <string name="remove">Remove</string>
+    <string name="monday_friday">Monday - Friday</string>
+    <string name="monday_saturday">Monday - Saturday</string>
+    <string name="monday_sunday">Monday - Sunday</string>
+    <string name="days">Days:</string>
+    <string name="wrong_inputs">wrong inputs</string>
+    <string name="room">Room</string>
 </resources>

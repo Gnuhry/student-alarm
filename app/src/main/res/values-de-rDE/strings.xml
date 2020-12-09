@@ -22,7 +22,7 @@
     <string name="do_you_want_to_delete_this_events">Möchten Sie diese Events löschen?</string>
     <string name="cancel">Abbrechen</string>
     <string name="check">Prüfen</string>
-    <string name="save">Speichern</string>
+    <string name="saveRegularLecture">Speichern</string>
     <string name="none">Kein</string>
     <string name="ics">ICS</string>
     <string name="delete_all">Alle löschen</string>
@@ -93,6 +93,16 @@
     <string name="ok">Ok</string>
     <string name="number">Zahl</string>
     <string name="no_connection">Keine Verbindung</string>
-
-
+    <string name="save">Speichern</string>
+    <string name="do_you_want_to_delete_this_lecture">Möchten sie diese Vorlesung löschen?</string>
+    <string name="do_you_want_to_save_your_changes">Möchten Sie ihre Änderungen speichern?</string>
+    <string name="hour">" Stunde"</string>
+    <string name="hour_back">"Stunde %d"</string>
+    <string name="remove">Entfernen</string>
+    <string name="monday_friday">Montag - Freitag</string>
+    <string name="monday_saturday">Montag - Samstag</string>
+    <string name="monday_sunday">Montag - Sonntag</string>
+    <string name="days">Tage:</string>
+    <string name="wrong_inputs">Falsche Eingaben</string>
+    <string name="room">Raum</string>
 </resources>
