@@ -12,7 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
-import com.example.studentalarm.PreferenceKeys;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
 
 import androidx.annotation.NonNull;
@@ -64,7 +64,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 //                .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK), 0))
                 .addAction(R.drawable.alarm, context.getString(R.string.snooze), PendingIntent.getBroadcast(context, 0, snoozeIntent, 0))
                 .addAction(R.drawable.alarm, context.getString(R.string.alarm_off), PendingIntent.getBroadcast(context, 0, alarmOffIntent, 0))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
         createNotificationChannel(context);
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build());
     }

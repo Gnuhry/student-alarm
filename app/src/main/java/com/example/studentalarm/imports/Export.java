@@ -3,6 +3,8 @@ package com.example.studentalarm.imports;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.util.Log;
 
@@ -23,7 +25,8 @@ import androidx.core.content.FileProvider;
 
 public class Export {
 
-    private static final String LOG="Export";
+    private static final String LOG = "Export";
+
     /**
      * export event to ICS
      *
@@ -76,7 +79,7 @@ public class Export {
         OutputStream fo = new FileOutputStream(file);
         fo.write(text.getBytes());
         fo.close();
-        Log.d(LOG, "file created "+file);
+        Log.d(LOG, "file created " + file);
         return file;
     }
 
@@ -89,6 +92,8 @@ public class Export {
      */
     public static void share(@NonNull Context context, @NonNull File file, @NonNull Activity activity) {
         Log.d(LOG, "sharing");
+
+
         Uri uri = FileProvider.getUriForFile(context, "com.example.studentalarm.fileprovider", file);
         Intent intent = ShareCompat.IntentBuilder.from(activity)
                 .setType("*/*")
@@ -96,6 +101,10 @@ public class Export {
                 .setChooserTitle("Choose bar")
                 .createChooserIntent()
                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        List<ResolveInfo> resInfoList = context.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        for (ResolveInfo resolveInfo : resInfoList)
+            context.grantUriPermission(resolveInfo.activityInfo.packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         context.startActivity(intent);
     }

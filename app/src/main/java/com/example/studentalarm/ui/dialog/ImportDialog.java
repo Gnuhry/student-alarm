@@ -1,6 +1,5 @@
-package com.example.studentalarm.fragments;
+package com.example.studentalarm.ui.dialog;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -20,7 +19,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.studentalarm.PreferenceKeys;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.ICS;
 import com.example.studentalarm.imports.Import;
@@ -36,20 +35,18 @@ public class ImportDialog extends Dialog {
 
     private boolean isValid = false;
     private String lastValidString;
-    private final Activity activity;
     private static final String LINK_BEGIN = "http://vorlesungsplan.dhbw-mannheim.de/ical.php?uid=";
     private static final String LOG = "ImportDialog";
 
-    public ImportDialog(@NonNull Context context, Activity activity) {
+    public ImportDialog(@NonNull Context context) {
         super(context);
-        this.activity = activity;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(LOG, "open");
-        setContentView(R.layout.fragment_import);
+        setContentView(R.layout.dialog_import);
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
@@ -177,7 +174,7 @@ public class ImportDialog extends Dialog {
                 Toast.makeText(getContext(), R.string.string_is_not_a_valid_url, Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (!Import.checkConnection(activity, getContext())) return;
+            if (!Import.checkConnection(getContext())) return;
             findViewById(R.id.btnCheckLink).setEnabled(false);
             ImageView imageView = findViewById(R.id.imgStatus);
             Glide.with(getContext()).load(R.drawable.sandglass).into(imageView);

@@ -1,8 +1,10 @@
-package com.example.studentalarm;
+package com.example.studentalarm.save;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+
+import com.example.studentalarm.R;
 
 import java.util.Locale;
 
@@ -29,6 +31,7 @@ public class PreferenceKeys {
             RINGTONE = "RINGTONE",
             DHBW_MANNHEIM_COURSE_CATEGORY = "DHBWMANNHEIMCOURSECATEGORY",
             DHBW_MANNHEIM_COURSE = "DHBWMANNHEIMCOURSE",
+            WAIT_FOR_NETWORK="WAIT_FOR_NETWORK",
 
     DEFAULT_RINGTONE = "Default",
             DEFAULT_LANGUAGE = "EN",
