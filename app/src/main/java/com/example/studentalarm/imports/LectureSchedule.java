@@ -36,6 +36,57 @@ public class LectureSchedule {
     }
 
     /**
+     * get all lectures from Lecture_Schedule
+     *
+     * @return all Lectures
+     */
+    @NonNull
+    public List<Lecture> getAllLecture(@NonNull Context context) {
+        List<Lecture> all = new ArrayList<>();
+        all.addAll(lecture);
+        all.addAll(importLecture);
+        Calendar from = Calendar.getInstance(), end = Calendar.getInstance();
+        from.add(Calendar.YEAR, -3);
+        end.add(Calendar.YEAR, 3);
+        all.addAll(getRegularLecture(context, from, end));
+        Collections.sort(all);
+        return all;
+    }
+
+    @NonNull
+    public List<Lecture> getLecture() {
+        return lecture;
+    }
+
+    @NonNull
+    public List<Lecture> getImportLecture() {
+        return importLecture;
+    }
+
+    /**
+     * get the next lecture, at least starting tomorrow 00:00:00:00
+     *
+     * @return next lecture
+     */
+    @Nullable
+    public Lecture getNextFirstDayLecture(@NonNull Context context) {
+        boolean first = true;
+        Lecture help = new Lecture(false, getDayAddDay(1), new Date()), help2 = new Lecture(false, getDayAddDay(0), new Date());
+        for (Lecture l : getAllLecture(context))
+            if (l.compareTo(help2) >= 0 && first) {
+                first = false;
+                if (l.start.after(Calendar.getInstance().getTime()))
+                    return l;
+            } else if (l.compareTo(help) >= 0)
+                return l;
+        return null;
+    }
+
+    public void addLecture(@NonNull Lecture lecture) {
+        this.lecture.add(lecture);
+    }
+
+    /**
      * import ics file in lecture schedule
      *
      * @param calendar the ics file object
@@ -59,23 +110,38 @@ public class LectureSchedule {
         return this;
     }
 
+    @NonNull
+    public LectureSchedule removeLecture(@NonNull Lecture data) {
+        int id1 = lecture.indexOf(data), id2 = importLecture.indexOf(data);
+        if (id1 >= 0) lecture.remove(id1);
+        if (id2 >= 0) importLecture.remove(id2);
+        return this;
+    }
+
     /**
-     * get all lectures from Lecture_Schedule
-     *
-     * @return all Lectures
+     * delete all import events
+     */
+    public void clearImportEvents() {
+        this.importLecture.clear();
+    }
+
+    /**
+     * delete all not import events
+     */
+    public void clearNormalEvents() {
+        this.lecture.clear();
+    }
+
+    /**
+     * delete all events. import and not import
      */
     @NonNull
-    public List<Lecture> getAllLecture(@NonNull Context context) {
-        List<Lecture> all = new ArrayList<>();
-        all.addAll(lecture);
-        all.addAll(importLecture);
-        Calendar from = Calendar.getInstance(), end = Calendar.getInstance();
-        from.add(Calendar.YEAR, -3);
-        end.add(Calendar.YEAR, 3);
-        all.addAll(getRegularLecture(context, from, end));
-        Collections.sort(all);
-        return all;
+    public LectureSchedule clearEvents() {
+        this.importLecture.clear();
+        this.lecture.clear();
+        return this;
     }
+
 
     /**
      * get all regular lecture as lecture
@@ -155,29 +221,6 @@ public class LectureSchedule {
         return erg;
     }
 
-    @NonNull
-    public List<Lecture> getLecture() {
-        return lecture;
-    }
-
-    @NonNull
-    public List<Lecture> getImportLecture() {
-        return importLecture;
-    }
-
-    /**
-     * delete all import events
-     */
-    public void clearImportEvents() {
-        this.importLecture.clear();
-    }
-
-    /**
-     * delete all not import events
-     */
-    public void clearNormalEvents() {
-        this.lecture.clear();
-    }
 
     /**
      * get highest id
@@ -191,46 +234,6 @@ public class LectureSchedule {
         return highest;
     }
 
-    /**
-     * delete all events. import and not import
-     */
-    @NonNull
-    public LectureSchedule clearEvents() {
-        this.importLecture.clear();
-        this.lecture.clear();
-        return this;
-    }
-
-    public void addLecture(@NonNull Lecture lecture) {
-        this.lecture.add(lecture);
-    }
-
-    @NonNull
-    public LectureSchedule removeLecture(@NonNull Lecture data) {
-        int id1 = lecture.indexOf(data), id2 = importLecture.indexOf(data);
-        if (id1 >= 0) lecture.remove(id1);
-        if (id2 >= 0) importLecture.remove(id2);
-        return this;
-    }
-
-    /**
-     * get the next lecture, at least starting tomorrow 00:00:00:00
-     *
-     * @return next lecture
-     */
-    @Nullable
-    public Lecture getNextFirstDayLecture(@NonNull Context context) {
-        boolean first = true;
-        Lecture help = new Lecture(false, getDayAddDay(1), new Date()), help2 = new Lecture(false, getDayAddDay(0), new Date());
-        for (Lecture l : getAllLecture(context))
-            if (l.compareTo(help2) >= 0 && first) {
-                first = false;
-                if (l.start.after(Calendar.getInstance().getTime()))
-                    return l;
-            } else if (l.compareTo(help) >= 0)
-                return l;
-        return null;
-    }
 
     /**
      * get the next day at 00:00:00:00
@@ -358,14 +361,14 @@ public class LectureSchedule {
      * inner class to represent the lecture information
      */
     public static class Lecture implements Comparable<Lecture> {
+        private static int counter = 1;
+        private final int id;
+        private final boolean isImport;
         @Nullable
         private String docent, location, name;
         @NonNull
         private Date start, end;
-        private static int counter = 1;
         private int color = Color.RED;
-        private final int id;
-        private final boolean isImport;
 
         public Lecture(boolean isImport, @NonNull Date start, @NonNull Date end) {
             this.start = new Date(start.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
@@ -379,10 +382,6 @@ public class LectureSchedule {
             this.end = new Date(end.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
             this.id = id;
             this.isImport = isImport;
-        }
-
-        public static void setCounter(int counter) {
-            Lecture.counter = counter;
         }
 
         @Nullable
@@ -420,6 +419,10 @@ public class LectureSchedule {
 
         public boolean isImport() {
             return isImport;
+        }
+
+        public static void setCounter(int counter) {
+            Lecture.counter = counter;
         }
 
         @NonNull

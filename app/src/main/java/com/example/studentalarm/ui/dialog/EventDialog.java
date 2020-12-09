@@ -40,14 +40,14 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 
 public class EventDialog extends DialogFragment {
+    private static final String LOG = "EventDialogFragment";
+    private static boolean working;
     @Nullable
     private final LectureSchedule.Lecture data;
     private final LectureSchedule schedule;
-    private boolean create = false, cancelDirect = true;
-    private static boolean working;
     private final ReloadLecture lecture;
-    private static final String LOG = "EventDialogFragment";
-
+    @NonNull
+    private final List<EventColor> colors;
 
     private EditText title, docent, location, begin, end;
     private LinearLayout LBegin, LEnd;
@@ -55,8 +55,7 @@ public class EventDialog extends DialogFragment {
     private DatePicker dPBegin, dPEnd;
     private TextView txVBegin, txVEnd, add, cancel, delete;
     private Spinner spinner;
-    @NonNull
-    private final List<EventColor> colors;
+    private boolean create = false, cancelDirect = true;
 
     public EventDialog(@Nullable LectureSchedule.Lecture data, LectureSchedule schedule, ReloadLecture lecture) {
         this.lecture = lecture;
@@ -115,6 +114,23 @@ public class EventDialog extends DialogFragment {
     }
 
     /**
+     * Remove dialog.
+     */
+    @Override
+    public void onDestroyView() {
+        Log.i(LOG, "destroy");
+        if (data != null && data.isImport()) {
+            super.onDestroyView();
+            return;
+        }
+        lecture.loadData();
+        if (getContext() != null)
+            AlarmManager.updateNextAlarm(this.getContext());
+
+        super.onDestroyView();
+    }
+
+    /**
      * init the cancel button
      */
     private void initCancel() {
@@ -142,18 +158,6 @@ public class EventDialog extends DialogFragment {
         adapter.addAll(colors);
         spinner.setAdapter(adapter);
         spinner.setSelection(colors.indexOf(new EventColor(Color.BLUE)));
-    }
-
-    /**
-     * disable all views, if lecture is import
-     */
-    private void disableView() {
-        Log.i(LOG, "Disable the views");
-        title.setEnabled(false);
-        docent.setEnabled(false);
-        location.setEnabled(false);
-        add.setVisibility(View.INVISIBLE);
-        spinner.setEnabled(false);
     }
 
     /**
@@ -354,74 +358,6 @@ public class EventDialog extends DialogFragment {
     }
 
     /**
-     * format the date to a string
-     *
-     * @param date date to format
-     * @return date as formatted date string
-     */
-    @NonNull
-    private String formatDate(@NonNull Date date) {
-        SimpleDateFormat format = new SimpleDateFormat("E", getResources().getConfiguration().locale);
-        DateFormat dateformat = DateFormat.getDateInstance(DateFormat.MEDIUM, getResources().getConfiguration().locale);
-        return String.format("%s %s", format.format(date.getTime()), dateformat.format(date.getTime()));
-    }
-
-    /**
-     * convert string to date
-     *
-     * @param string string to convert
-     * @return the date of the string
-     */
-    @Nullable
-    private Date convertDate(@NonNull String string, int pos) {
-        DateFormat dateformat = DateFormat.getDateInstance(DateFormat.MEDIUM, getResources().getConfiguration().locale);
-        Calendar calendar = Calendar.getInstance(), calendar1 = Calendar.getInstance();
-        try {
-            Date date = dateformat.parse(string.substring(4, pos));
-            if (date != null)
-                calendar.setTime(date);
-            date = new SimpleDateFormat("HH:mm", Locale.getDefault()).parse(string.substring(pos + 3));
-            if (date != null)
-                calendar1.setTime(date);
-            calendar.set(Calendar.HOUR_OF_DAY, calendar1.get(Calendar.HOUR_OF_DAY));
-            calendar.set(Calendar.MINUTE, calendar1.get(Calendar.MINUTE));
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return calendar.getTime();
-    }
-
-    /**
-     * format the date to a string
-     *
-     * @param date date to format
-     * @return date as formatted time string
-     */
-    @NonNull
-    private String formatTime(@NonNull Date date) {
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        return format.format(date);
-    }
-
-    /**
-     * set date and time into textView
-     *
-     * @param textView   textView to set the text
-     * @param datePicker datePicker where the date is from
-     * @param editText   editText where the time is from
-     */
-    private void setDateTime(@NonNull TextView textView, @NonNull DatePicker datePicker, @NonNull EditText editText) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, datePicker.getYear());
-        calendar.set(Calendar.MONTH, datePicker.getMonth());
-        calendar.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
-        String help = formatDate(calendar.getTime());
-        textView.setText(String.format("%s   %s", help, editText.getText().toString()));
-        textView.setTag(help.length());
-    }
-
-    /**
      * init time editText
      *
      * @param text       editText to init
@@ -517,22 +453,87 @@ public class EventDialog extends DialogFragment {
         });
     }
 
-    /**
-     * Remove dialog.
-     */
-    @Override
-    public void onDestroyView() {
-        Log.i(LOG, "destroy");
-        if (data != null && data.isImport()) {
-            super.onDestroyView();
-            return;
-        }
-        lecture.loadData();
-        if (getContext() != null)
-            AlarmManager.updateNextAlarm(this.getContext());
 
-        super.onDestroyView();
+    /**
+     * disable all views, if lecture is import
+     */
+    private void disableView() {
+        Log.i(LOG, "Disable the views");
+        title.setEnabled(false);
+        docent.setEnabled(false);
+        location.setEnabled(false);
+        add.setVisibility(View.INVISIBLE);
+        spinner.setEnabled(false);
     }
+
+    /**
+     * format the date to a string
+     *
+     * @param date date to format
+     * @return date as formatted date string
+     */
+    @NonNull
+    private String formatDate(@NonNull Date date) {
+        SimpleDateFormat format = new SimpleDateFormat("E", getResources().getConfiguration().locale);
+        DateFormat dateformat = DateFormat.getDateInstance(DateFormat.MEDIUM, getResources().getConfiguration().locale);
+        return String.format("%s %s", format.format(date.getTime()), dateformat.format(date.getTime()));
+    }
+
+    /**
+     * format the date to a string
+     *
+     * @param date date to format
+     * @return date as formatted time string
+     */
+    @NonNull
+    private String formatTime(@NonNull Date date) {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        return format.format(date);
+    }
+
+    /**
+     * convert string to date
+     *
+     * @param string string to convert
+     * @return the date of the string
+     */
+    @Nullable
+    private Date convertDate(@NonNull String string, int pos) {
+        DateFormat dateformat = DateFormat.getDateInstance(DateFormat.MEDIUM, getResources().getConfiguration().locale);
+        Calendar calendar = Calendar.getInstance(), calendar1 = Calendar.getInstance();
+        try {
+            Date date = dateformat.parse(string.substring(4, pos));
+            if (date != null)
+                calendar.setTime(date);
+            date = new SimpleDateFormat("HH:mm", Locale.getDefault()).parse(string.substring(pos + 3));
+            if (date != null)
+                calendar1.setTime(date);
+            calendar.set(Calendar.HOUR_OF_DAY, calendar1.get(Calendar.HOUR_OF_DAY));
+            calendar.set(Calendar.MINUTE, calendar1.get(Calendar.MINUTE));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return calendar.getTime();
+    }
+
+    /**
+     * set date and time into textView
+     *
+     * @param textView   textView to set the text
+     * @param datePicker datePicker where the date is from
+     * @param editText   editText where the time is from
+     */
+    private void setDateTime(@NonNull TextView textView, @NonNull DatePicker datePicker, @NonNull EditText editText) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, datePicker.getYear());
+        calendar.set(Calendar.MONTH, datePicker.getMonth());
+        calendar.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
+        String help = formatDate(calendar.getTime());
+        textView.setText(String.format("%s   %s", help, editText.getText().toString()));
+        textView.setTag(help.length());
+    }
+
 
     /**
      * class to create a adapter with colors for spinner

@@ -27,18 +27,6 @@ public class Hours {
         this.id = id;
     }
 
-    @NonNull
-    public Hours setFrom(String from) {
-        this.from = from;
-        return this;
-    }
-
-    @NonNull
-    public Hours setUntil(String until) {
-        this.until = until;
-        return this;
-    }
-
     public int getId() {
         return id;
     }
@@ -71,24 +59,16 @@ public class Hours {
         return null;
     }
 
-    /**
-     * create a save object
-     *
-     * @param list list to convert
-     * @return save object
-     */
     @NonNull
-    private static SaveHour saveHours(@NonNull List<Hours> list) {
-        SaveHour saveHour = new SaveHour();
-        SaveHour.Save[] saves = new SaveHour.Save[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            saves[i] = new SaveHour.Save();
-            saves[i].id = list.get(i).id;
-            saves[i].from = list.get(i).from;
-            saves[i].until = list.get(i).until;
-        }
-        saveHour.save = saves;
-        return saveHour;
+    public Hours setFrom(String from) {
+        this.from = from;
+        return this;
+    }
+
+    @NonNull
+    public Hours setUntil(String until) {
+        this.until = until;
+        return this;
     }
 
     /**
@@ -107,6 +87,26 @@ public class Hours {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * create a save object
+     *
+     * @param list list to convert
+     * @return save object
+     */
+    @NonNull
+    private static SaveHour saveHours(@NonNull List<Hours> list) {
+        SaveHour saveHour = new SaveHour();
+        SaveHour.Save[] saves = new SaveHour.Save[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            saves[i] = new SaveHour.Save();
+            saves[i].id = list.get(i).id;
+            saves[i].from = list.get(i).from;
+            saves[i].until = list.get(i).until;
+        }
+        saveHour.save = saves;
+        return saveHour;
     }
 
     /**

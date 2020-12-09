@@ -128,9 +128,7 @@ public class Import {
      * Display the different import possibilities
      */
     public static class ImportFunction {
-        public static final int NONE = 0;
-        public static final int ICS = 1;
-        public static final int DHBWMA = 2;
+        public static final int NONE = 0, ICS = 1, DHBWMA = 2;
         @NonNull
         public static final List<String> IMPORTS = Arrays.asList("None", "ICS", "DHBWMa");
     }

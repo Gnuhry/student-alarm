@@ -42,14 +42,13 @@ public class ICS {
             METHOD = "METHOD:PUBLISH",
             CAL_SCALE = "CALSCALE:GREGORIAN",
             END_VCALENDAR = "END:VCALENDAR";
-
+    private static final int YEAR_UNTIL_PLUS_THIS_YEAR = 50;
+    private static final String LOG = "ICS";
 
     @NonNull
     private final List<vEvent> vEventList;
     @NonNull
     private final List<vTimezone> vTimezone;
-    private static final int YEAR_UNTIL_PLUS_THIS_YEAR = 50;
-    private static final String LOG = "ICS";
 
     public ICS(@NonNull String icsFile) {
         vEventList = new ArrayList<>();
@@ -78,6 +77,42 @@ public class ICS {
         return !vEventList.isEmpty();
     }
 
+
+    /**
+     * convert ICS string to date
+     *
+     * @param string ICS string to convert
+     * @return date
+     */
+    @Nullable
+    public static Date stringToDate(@NonNull String string) throws ParseException {
+        return new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault()).parse(string.replace("T", "-"));
+    }
+
+    /**
+     * Format ICS file string
+     *
+     * @param events events to export
+     * @return ics file as string
+     */
+    @NonNull
+    public static String exportToICS(@NonNull List<vEvent> events) {
+        StringBuilder erg = new StringBuilder(BEGIN_VCALENDAR).append("\n")
+                .append(VERSION).append("\n")
+                .append(METHOD).append("\n")
+                .append(CAL_SCALE).append("\n");
+        for (vEvent event : events)
+            erg.append(BEGIN_VEVENT).append("\n")
+                    .append(VEVENT_UID).append(":").append(event.UID).append("\n")
+                    .append(VEVENT_LOCATION).append(":").append(event.LOCATION).append("\n")
+                    .append(VEVENT_SUMMARY).append(":").append(event.SUMMARY).append("\n")
+                    .append(VEVENT_DT_START).append(":").append(event.DTStart).append("\n")
+                    .append(VEVENT_DT_END).append(":").append(event.DTend).append("\n")
+                    .append(VEVENT_DT_STAMP).append(":").append(event.DTStamp).append("\n")
+                    .append(END_VEVENT).append("\n");
+        return erg.append(END_VCALENDAR).toString();
+    }
+
     /**
      * returns all events from the ics file with teh UTC time
      *
@@ -92,6 +127,26 @@ public class ICS {
             }
         }
         return vEventList;
+    }
+
+    /**
+     * Get all DateTimes of the timezone rules
+     *
+     * @param timezone timezone to get the rules from
+     * @param start    when the rule starting
+     * @return list of all rule dates
+     */
+    @NonNull
+    private List<DateTime> getDatesTimeZone(@NonNull vTimezone timezone, @NonNull Calendar start) throws InvalidRecurrenceRuleException {
+        List<DateTime> dateTimes = new ArrayList<>();
+        RecurrenceRule rule = new RecurrenceRule(timezone.rule);
+        RecurrenceRuleIterator it = rule.iterator(new DateTime(start.getTimeInMillis()));
+        int year_ = start.get(Calendar.YEAR);
+        while (it.hasNext() && year_ <= Calendar.getInstance().get(Calendar.YEAR) + YEAR_UNTIL_PLUS_THIS_YEAR) {
+            dateTimes.add(it.nextDateTime());
+            year_ = dateTimes.get(dateTimes.size() - 1).getYear();
+        }
+        return dateTimes;
     }
 
     /**
@@ -147,26 +202,6 @@ public class ICS {
     }
 
     /**
-     * Get all DateTimes of the timezone rules
-     *
-     * @param timezone timezone to get the rules from
-     * @param start    when the rule starting
-     * @return list of all rule dates
-     */
-    @NonNull
-    private List<DateTime> getDatesTimeZone(@NonNull vTimezone timezone, @NonNull Calendar start) throws InvalidRecurrenceRuleException {
-        List<DateTime> dateTimes = new ArrayList<>();
-        RecurrenceRule rule = new RecurrenceRule(timezone.rule);
-        RecurrenceRuleIterator it = rule.iterator(new DateTime(start.getTimeInMillis()));
-        int year_ = start.get(Calendar.YEAR);
-        while (it.hasNext() && year_ <= Calendar.getInstance().get(Calendar.YEAR) + YEAR_UNTIL_PLUS_THIS_YEAR) {
-            dateTimes.add(it.nextDateTime());
-            year_ = dateTimes.get(dateTimes.size() - 1).getYear();
-        }
-        return dateTimes;
-    }
-
-    /**
      * parse an ics file to an object
      *
      * @param icsFile the ics file as string
@@ -198,41 +233,6 @@ public class ICS {
             id2 = icsFile_.indexOf(END_VEVENT, id);
         }
 
-    }
-
-    /**
-     * convert ICS string to date
-     *
-     * @param string ICS string to convert
-     * @return date
-     */
-    @Nullable
-    public static Date stringToDate(@NonNull String string) throws ParseException {
-        return new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault()).parse(string.replace("T", "-"));
-    }
-
-    /**
-     * Format ICS file string
-     *
-     * @param events events to export
-     * @return ics file as string
-     */
-    @NonNull
-    public static String exportToICS(@NonNull List<vEvent> events) {
-        StringBuilder erg = new StringBuilder(BEGIN_VCALENDAR).append("\n")
-                .append(VERSION).append("\n")
-                .append(METHOD).append("\n")
-                .append(CAL_SCALE).append("\n");
-        for (vEvent event : events)
-            erg.append(BEGIN_VEVENT).append("\n")
-                    .append(VEVENT_UID).append(":").append(event.UID).append("\n")
-                    .append(VEVENT_LOCATION).append(":").append(event.LOCATION).append("\n")
-                    .append(VEVENT_SUMMARY).append(":").append(event.SUMMARY).append("\n")
-                    .append(VEVENT_DT_START).append(":").append(event.DTStart).append("\n")
-                    .append(VEVENT_DT_END).append(":").append(event.DTend).append("\n")
-                    .append(VEVENT_DT_STAMP).append(":").append(event.DTStamp).append("\n")
-                    .append(END_VEVENT).append("\n");
-        return erg.append(END_VCALENDAR).toString();
     }
 
     /**

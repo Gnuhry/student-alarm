@@ -23,6 +23,20 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
     @NonNull
     private final List<ViewHolder> holders;
 
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final EditText room;
+        private final LinearLayout llRoom;
+        private final ImageView add, remove;
+
+        public ViewHolder(@NonNull View view) {
+            super(view);
+            room = view.findViewById(R.id.edTRoom);
+            llRoom = view.findViewById(R.id.LLRom);
+            add = view.findViewById(R.id.imVAdd);
+            remove = view.findViewById(R.id.imVDelete);
+        }
+    }
+
     public RoomAdapter(RegularLectureSchedule.RegularLecture lecture) {
         this.lecture = lecture;
         this.holders = new ArrayList<>();
@@ -79,17 +93,4 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
     }
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final EditText room;
-        private final LinearLayout llRoom;
-        private final ImageView add, remove;
-
-        public ViewHolder(@NonNull View view) {
-            super(view);
-            room = view.findViewById(R.id.edTRoom);
-            llRoom = view.findViewById(R.id.LLRom);
-            add = view.findViewById(R.id.imVAdd);
-            remove = view.findViewById(R.id.imVDelete);
-        }
-    }
 }
