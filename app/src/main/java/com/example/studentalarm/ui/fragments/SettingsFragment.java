@@ -163,9 +163,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
         importPref.setOnPreferenceClickListener(preference -> {
             if (getContext() == null) return false;
-            ImportDialog importDialog = new ImportDialog(this.getContext());
-            importDialog.setOnCancelListener(dialogInterface -> reload());
-            importDialog.show();
+            if (Import.checkConnection(getContext())) {
+                ImportDialog importDialog = new ImportDialog(this.getContext());
+                importDialog.setOnCancelListener(dialogInterface -> reload());
+                importDialog.show();
+            }
             return true;
         });
 
