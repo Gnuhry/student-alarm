@@ -204,6 +204,8 @@ public class RegularLectureSchedule {
     @NonNull
     private static RegularLectureSchedule convertSave(@NonNull SaveRegularLectureSchedule readObject) {
         RegularLectureSchedule schedule = new RegularLectureSchedule();
+        if (readObject == null)
+            return schedule;
         schedule.days = readObject.day;
         schedule.hours = readObject.hour;
         int id = 0;
