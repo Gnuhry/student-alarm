@@ -13,6 +13,7 @@ import com.example.studentalarm.R;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.ui.adapter.RegularLectureAdapter;
 import com.example.studentalarm.ui.dialog.RegularLectureSettingDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -94,6 +95,7 @@ public class RegularLectureFragment extends Fragment {
         if (toolbar != null) {
             toolbar.getMenu().getItem(2).setVisible(false);
             toolbar.getMenu().getItem(3).setVisible(false);
+            toolbar.getMenu().getItem(4).setVisible(false);
         }
     }
 
@@ -119,13 +121,30 @@ public class RegularLectureFragment extends Fragment {
         toolbar.getMenu().getItem(2).setVisible(true);
         toolbar.getMenu().getItem(2).setOnMenuItemClickListener(menuItem -> {
             if (getContext() != null) {
-                regularLectureSchedule.save(getContext());
-                changes = false;
+                new MaterialAlertDialogBuilder(getContext())
+                        .setTitle(R.string.delete_all_events)
+                        .setMessage(R.string.do_you_want_to_delete_this_events)
+                        .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
+                            RegularLectureSchedule.clearSave(getContext());
+                            changes = false;
+                            loadRecyclerView();
+                        })
+                        .setNegativeButton(R.string.no, null)
+                        .setCancelable(true)
+                        .show();
             }
             return true;
         });
         toolbar.getMenu().getItem(3).setVisible(true);
         toolbar.getMenu().getItem(3).setOnMenuItemClickListener(menuItem -> {
+            if (getContext() != null) {
+                regularLectureSchedule.save(getContext());
+                changes = false;
+            }
+            return true;
+        });
+        toolbar.getMenu().getItem(4).setVisible(true);
+        toolbar.getMenu().getItem(4).setOnMenuItemClickListener(menuItem -> {
             new RegularLectureSettingDialog(getContext(), getActivity(), this).show(getActivity().getSupportFragmentManager(), "dialog");
             return true;
         });
