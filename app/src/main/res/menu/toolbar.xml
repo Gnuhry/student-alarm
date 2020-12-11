@@ -13,6 +13,11 @@
         app:showAsAction="ifRoom"
         android:visible="false" />
     <item
+        android:icon="@drawable/delete"
+        android:title="@string/delete"
+        app:showAsAction="ifRoom"
+        android:visible="false" />
+    <item
         android:icon="@drawable/save"
         android:title="@string/save"
         app:showAsAction="ifRoom"
