@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">studentalarm</string>
     <string name="alarm">Alarm</string>
     <string name="lecture">Lecture</string>
@@ -73,6 +73,9 @@
     <string name="before">Before</string>
     <string name="way">Way</string>
     <string name="after">After</string>
+    <string name="regular_lecture">Regular lecture</string>
+    <string name="holidays">Holidays</string>
+    <string name="minute" tools:ignore="MissingTranslation">%d min</string>
 
     <!--Lecture-->
     <string name="weekly">Weekly</string>
@@ -118,4 +121,7 @@
     <string name="days">Days:</string>
     <string name="wrong_inputs">wrong inputs</string>
     <string name="room">Room</string>
+    <string name="personal_alarm_settings">Personal alarm settings</string>
+    <string name="edit">edit</string>
+
 </resources>

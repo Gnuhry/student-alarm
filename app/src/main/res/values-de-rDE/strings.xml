@@ -105,4 +105,6 @@
     <string name="days">Tage:</string>
     <string name="wrong_inputs">Falsche Eingaben</string>
     <string name="room">Raum</string>
+    <string name="regular_lecture">Regelmäßiger Stundenplan</string>
+    <string name="holidays">Ferien/Urlaub</string>
 </resources>

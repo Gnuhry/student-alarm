@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
@@ -24,6 +25,7 @@ public class AlarmSettingFragment extends Fragment {
 
     private static final String LOG = "AlarmSettingFragment";
     private final PersonalFragment fragment;
+    private TextView timeBefore, timeWay, timeAfter;
 
     public AlarmSettingFragment(PersonalFragment fragment) {
         this.fragment = fragment;
@@ -39,6 +41,11 @@ public class AlarmSettingFragment extends Fragment {
         view.findViewById(R.id.txtWay).setOnClickListener(v -> numberDialog(getContext(), getString(R.string.way), PreferenceKeys.WAY));
         view.findViewById(R.id.txtAfter).setOnClickListener(v -> numberDialog(getContext(), getString(R.string.after), PreferenceKeys.AFTER));
         view.findViewById(R.id.btnRegularLecture).setOnClickListener(view1 -> fragment.openFragment(fragment.getRegularFragment()));
+        timeBefore = view.findViewById(R.id.txVTimeBefore);
+        timeWay = view.findViewById(R.id.txVTimeWay);
+        timeAfter = view.findViewById(R.id.txVTimeAfter);
+        if (getContext() != null)
+            setTime(getContext());
         return view;
     }
 
@@ -65,11 +72,24 @@ public class AlarmSettingFragment extends Fragment {
             if (preferences.getInt(key, 0) != value) {
                 preferences.edit().putInt(key, value).apply();
                 AlarmManager.updateNextAlarm(context);
+                setTime(context);
             }
         });
         builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.cancel());
         Dialog dialog = builder.create();
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         dialog.show();
+    }
+
+    /**
+     * Set the times to textViews
+     *
+     * @param context context of application
+     */
+    private void setTime(@NonNull Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        timeBefore.setText(getString(R.string.minute, preferences.getInt(PreferenceKeys.BEFORE, 0)));
+        timeWay.setText(getString(R.string.minute, preferences.getInt(PreferenceKeys.WAY, 0)));
+        timeAfter.setText(getString(R.string.minute, preferences.getInt(PreferenceKeys.AFTER, 0)));
     }
 }
