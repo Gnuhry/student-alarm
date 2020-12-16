@@ -25,7 +25,7 @@ import androidx.annotation.Nullable;
 
 public class LectureSchedule {
     @NonNull
-    private final List<Lecture> lecture, importLecture;
+    private final List<Lecture> lecture, importLecture, holidays;
 
     /**
      * Create an empty lecture schedule
@@ -33,6 +33,7 @@ public class LectureSchedule {
     public LectureSchedule() {
         lecture = new ArrayList<>();
         importLecture = new ArrayList<>();
+        holidays = new ArrayList<>();
     }
 
     /**
