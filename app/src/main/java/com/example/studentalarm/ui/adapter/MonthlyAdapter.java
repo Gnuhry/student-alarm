@@ -9,9 +9,9 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.example.studentalarm.R;
+import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.ui.dialog.EventDialog;
 import com.example.studentalarm.ui.fragments.ReloadLecture;
-import com.example.studentalarm.imports.LectureSchedule;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -77,6 +77,8 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
             }
             this.lecture.add(l);
         }
+        if (positionToday == -1 && lecture.size() > 0)
+            positionToday = lecture.size() - 1;
     }
 
     @NonNull
