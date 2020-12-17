@@ -105,4 +105,6 @@
     <string name="days">Tage:</string>
     <string name="wrong_inputs">Falsche Eingaben</string>
     <string name="room">Raum</string>
+    <string name="connection_failed">Verbindung fehlgeschlagen</string>
+
 </resources>

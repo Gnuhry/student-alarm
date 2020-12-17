@@ -1,9 +1,15 @@
 package com.example.studentalarm.imports.dhbwMannheim;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.example.studentalarm.R;
 import com.example.studentalarm.imports.Import;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,18 +22,23 @@ public class CourseImport {
     @NonNull
     private final List<CourseCategory> dhbwCourseCategory;
     private List<Course> tempDHBWCourses;
+    private DhbwCourses dhbwCourses;
+    private Context context;
 
-    public CourseImport() {
+    public CourseImport(@NonNull Context context) {
         dhbwCourseCategory = new ArrayList<>();
         tempDHBWCourses = new ArrayList<>();
+        this.context=context;
         String parse = Import.runSynchronous(LINK_TO_COURSE);
         if (parse != null)
             parse(parse);
+        else
+            Toast.makeText(context,context.getString(R.string.connection_failed),Toast.LENGTH_SHORT).show();
     }
 
     @NonNull
-    public List<CourseCategory> getDHBWCourses() {
-        return dhbwCourseCategory;
+    public DhbwCourses getDHBWCourses() {
+        return dhbwCourses;
     }
 
     /**
@@ -55,5 +66,7 @@ public class CourseImport {
                 }
 
             }
+        dhbwCourses= new DhbwCourses(dhbwCourseCategory);
+        dhbwCourses.save(context);
     }
 }

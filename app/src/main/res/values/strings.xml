@@ -118,4 +118,5 @@
     <string name="days">Days:</string>
     <string name="wrong_inputs">wrong inputs</string>
     <string name="room">Room</string>
+    <string name="connection_failed">Connection failed</string>
 </resources>
