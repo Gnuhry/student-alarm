@@ -185,6 +185,11 @@ public class ImportDialog extends Dialog {
             }
         });
 
+        findViewById(R.id.btnImportDhbwCourses).setOnClickListener(view22 -> {
+            Log.i(LOG, "Start new Import");
+                dhbwCourseImport();
+        });
+
         findViewById(R.id.btnCancel).setOnClickListener(view1 -> {
             Log.i(LOG, "cancel");
             this.cancel();
@@ -215,7 +220,15 @@ public class ImportDialog extends Dialog {
 
     private void dhbwCourseImport() {
         if (Import.checkConnection(getContext())) {
+            Log.i(LOG, "Import startet");
+            new Thread(() -> {
+            findViewById(R.id.btnImportDhbwCourses).post(() -> findViewById(R.id.btnImportDhbwCourses).setEnabled(false));
+            findViewById(R.id.imgStatusDHBW).post(() ->findViewById(R.id.imgStatusDHBW).setVisibility(View.VISIBLE));
+            findViewById(R.id.imgStatusDHBW).post(() ->Glide.with(getContext()).load(R.drawable.sandglass).into((ImageView)findViewById(R.id.imgStatusDHBW)));
             dhbwCourses = new CourseImport(getContext()).getDHBWCourses();
+            findViewById(R.id.btnImportDhbwCourses).post(() -> findViewById(R.id.btnImportDhbwCourses).setEnabled(true));
+            findViewById(R.id.imgStatusDHBW).post(() -> findViewById(R.id.imgStatusDHBW).setVisibility(View.GONE));
+            }).start();
         }
     }
 }
