@@ -41,7 +41,7 @@ public class ImportDialog extends Dialog {
     private static final String LOG = "ImportDialog";
     private boolean isValid = false;
     private String lastValidString;
-    private DhbwCourses dhbwCourses=new DhbwCourses();
+    private DhbwCourses dhbwCourses;
 
 
     public ImportDialog(@NonNull Context context) {
