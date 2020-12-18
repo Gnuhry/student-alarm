@@ -6,7 +6,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -31,7 +30,7 @@ public class DhbwCourses implements Serializable {
     public void save (@NonNull Context context){
         FileOutputStream fos;
         try {
-            fos = context.openFileOutput(filename, Context.MODE_PRIVATE);
+            fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(this);
             oos.close();
@@ -44,13 +43,13 @@ public class DhbwCourses implements Serializable {
 
     public void load (@NonNull Context context) {
         try {
-            FileInputStream fis = context.openFileInput(filename);
+            FileInputStream fis = context.openFileInput(FILENAME);
             ObjectInputStream ois = new ObjectInputStream(fis);
-            this.coursecategorys = ((DhbwCourses) ois.readObject()).getCoursecategorys();
-            Log.d("LOAD", "Loaded Coursedata from " + filename + ": SUCCESS");
+            this.courseCategorys = ((DhbwCourses) ois.readObject()).getCourseCategorys();
+            Log.d("LOAD", "Loaded Coursedata from " + FILENAME + ": SUCCESS");
             fis.close();
             ois.close();
-        } catch (FileNotFoundException e | IOException | ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

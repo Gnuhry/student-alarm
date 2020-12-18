@@ -68,15 +68,15 @@ public class ImportDialog extends Dialog {
             }else{
                 Log.i(LOG, "Import from DHBWCOURSES");
                 dhbwCourses.load(getContext());
-                if (dhbwCourses==null||dhbwCourses.getCoursecategorys()==null){
+                if (dhbwCourses==null||dhbwCourses.getCourseCategorys()==null){
                     dhbwCourseImport();
                 }
             }
-            if (dhbwCourses==null||dhbwCourses.getCoursecategorys()==null)
+            if (dhbwCourses==null||dhbwCourses.getCourseCategorys()==null)
                 return;
 
             ArrayAdapter<CourseCategory> categoryAdapter = new ArrayAdapter<>(getContext(),
-                    android.R.layout.simple_spinner_item, dhbwCourses.getCoursecategorys());
+                    android.R.layout.simple_spinner_item, dhbwCourses.getCourseCategorys());
             categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setAdapter(categoryAdapter));
             ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
