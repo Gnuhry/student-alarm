@@ -46,8 +46,7 @@ public class DhbwCourses implements Serializable {
         try {
             FileInputStream fis = context.openFileInput(filename);
             ObjectInputStream ois = new ObjectInputStream(fis);
-            tempcourses = (DhbwCourses) ois.readObject();
-            this.coursecategorys = tempcourses.getCoursecategorys();
+            this.coursecategorys = ((DhbwCourses) ois.readObject()).getCoursecategorys();
             Log.d("LOAD", "Loaded Coursedata from " + filename + ": SUCCESS");
             fis.close();
             ois.close();
