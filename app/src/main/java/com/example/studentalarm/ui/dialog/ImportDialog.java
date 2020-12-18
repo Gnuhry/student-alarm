@@ -41,8 +41,6 @@ public class ImportDialog extends Dialog {
     private static final String LOG = "ImportDialog";
     private boolean isValid = false;
     private String lastValidString;
-    private DhbwCourses dhbwCourses;
-
 
     public ImportDialog(@NonNull Context context) {
         super(context);
@@ -58,25 +56,8 @@ public class ImportDialog extends Dialog {
 
         new Thread(() -> {
             Log.i(LOG, "get DHBW course");
-
-            String[] files = getContext().fileList();
-            List<String> list = Arrays.asList(files);
-            Log.d("Check", "Is DHBWCOURSES in: "+list);
-            if (!list.contains("DHBWCOURSES")){
-                Log.i(LOG, "Import from WEB");
-                dhbwCourseImport();
-            }else{
-                Log.i(LOG, "Import from DHBWCOURSES");
-                dhbwCourses.load(getContext());
-                if (dhbwCourses==null||dhbwCourses.getCourseCategorys()==null){
-                    dhbwCourseImport();
-                }
-            }
-            if (dhbwCourses==null||dhbwCourses.getCourseCategorys()==null)
-                return;
-
             ArrayAdapter<CourseCategory> categoryAdapter = new ArrayAdapter<>(getContext(),
-                    android.R.layout.simple_spinner_item, dhbwCourses.getCourseCategorys());
+                    android.R.layout.simple_spinner_item, DhbwCourses.load(getContext()));
             categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setAdapter(categoryAdapter));
             ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -187,7 +168,13 @@ public class ImportDialog extends Dialog {
 
         findViewById(R.id.btnImportDhbwCourses).setOnClickListener(view22 -> {
             Log.i(LOG, "Start new Import");
-                dhbwCourseImport();
+            findViewById(R.id.btnImportDhbwCourses).post(() -> findViewById(R.id.btnImportDhbwCourses).setEnabled(false));
+            findViewById(R.id.imgStatusDHBW).post(() ->findViewById(R.id.imgStatusDHBW).setVisibility(View.VISIBLE));
+            findViewById(R.id.imgStatusDHBW).post(() -> Glide.with(getContext()).load(R.drawable.sandglass).into((ImageView)findViewById(R.id.imgStatusDHBW)));
+            DhbwCourses.loadFromInternet(getContext());
+            findViewById(R.id.btnImportDhbwCourses).post(() -> findViewById(R.id.btnImportDhbwCourses).setEnabled(true));
+            findViewById(R.id.imgStatusDHBW).post(() -> findViewById(R.id.imgStatusDHBW).setVisibility(View.GONE));
+
         });
 
         findViewById(R.id.btnCancel).setOnClickListener(view1 -> {
@@ -218,17 +205,4 @@ public class ImportDialog extends Dialog {
         });
     }
 
-    private void dhbwCourseImport() {
-        if (Import.checkConnection(getContext())) {
-            Log.i(LOG, "Import startet");
-            new Thread(() -> {
-            findViewById(R.id.btnImportDhbwCourses).post(() -> findViewById(R.id.btnImportDhbwCourses).setEnabled(false));
-            findViewById(R.id.imgStatusDHBW).post(() ->findViewById(R.id.imgStatusDHBW).setVisibility(View.VISIBLE));
-            findViewById(R.id.imgStatusDHBW).post(() ->Glide.with(getContext()).load(R.drawable.sandglass).into((ImageView)findViewById(R.id.imgStatusDHBW)));
-            dhbwCourses = new CourseImport(getContext()).getDHBWCourses();
-            findViewById(R.id.btnImportDhbwCourses).post(() -> findViewById(R.id.btnImportDhbwCourses).setEnabled(true));
-            findViewById(R.id.imgStatusDHBW).post(() -> findViewById(R.id.imgStatusDHBW).setVisibility(View.GONE));
-            }).start();
-        }
-    }
 }

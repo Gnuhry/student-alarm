@@ -19,26 +19,19 @@ import androidx.annotation.NonNull;
 public class CourseImport {
 
     private static final String LINK_TO_COURSE = "https://vorlesungsplan.dhbw-mannheim.de/ical.php";
-    @NonNull
-    private final List<CourseCategory> dhbwCourseCategory;
-    private List<Course> tempDHBWCourses;
-    private DhbwCourses dhbwCourses;
-    private Context context;
+    private static ArrayList<CourseCategory> dhbwCourseCategory;
+    private static ArrayList<Course> tempDHBWCourses;
 
-    public CourseImport(@NonNull Context context) {
+    public static List<CourseCategory> impcourse(@NonNull Context context) {
         dhbwCourseCategory = new ArrayList<>();
         tempDHBWCourses = new ArrayList<>();
-        this.context=context;
         String parse = Import.runSynchronous(LINK_TO_COURSE);
         if (parse != null)
             parse(parse);
-        else
-            Toast.makeText(context,context.getString(R.string.connection_failed),Toast.LENGTH_SHORT).show();
-    }
-
-    @NonNull
-    public DhbwCourses getDHBWCourses() {
-        return dhbwCourses;
+        else {
+            Toast.makeText(context, context.getString(R.string.connection_failed), Toast.LENGTH_SHORT).show();
+        }
+        return dhbwCourseCategory;
     }
 
     /**
@@ -46,9 +39,9 @@ public class CourseImport {
      *
      * @param courseFile string to parse
      */
-    private void parse(@NonNull String courseFile) {
+    private static void parse(@NonNull String courseFile) {
         Log.d("HTMLImport", "ICal Kurs Detail: SUCCESS " + courseFile);
-        for (String import_row : courseFile.split("\\n"))
+        for (String import_row : courseFile.split("\\n")) {
             if (import_row.contains("<form id=\"class_form\" >")) {
                 Log.d("HTMLAnalyse", "Relevante Zeile suchen: SUCCESS " + import_row);
                 for (String opt_group : import_row.split("<optgroup")) {
@@ -66,7 +59,6 @@ public class CourseImport {
                 }
 
             }
-        dhbwCourses= new DhbwCourses(dhbwCourseCategory);
-        dhbwCourses.save(context);
+        }
     }
 }
