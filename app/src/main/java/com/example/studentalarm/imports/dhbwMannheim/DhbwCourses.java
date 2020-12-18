@@ -15,7 +15,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public class DhbwCourses implements Serializable {
-    private final String filename ="DHBWCOURSES";
+    private final String FILENAME ="DHBWCOURSES";
     private List<CourseCategory> coursecategorys;
     private DhbwCourses tempcourses;
 
