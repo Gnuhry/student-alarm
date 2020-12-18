@@ -20,8 +20,8 @@ public class DhbwCourses implements Serializable {
 
     public DhbwCourses(){}
 
-    public DhbwCourses(List<CourseCategory> coursecategorys){
-        this.coursecategorys=coursecategorys;
+    public DhbwCourses(List<CourseCategory> courseCategorys){
+        this.courseCategorys=courseCategorys;
     }
 
     public List<CourseCategory> getCoursecategorys() {
