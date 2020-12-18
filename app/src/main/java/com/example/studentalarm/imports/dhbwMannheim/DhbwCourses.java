@@ -24,8 +24,8 @@ public class DhbwCourses implements Serializable {
         this.courseCategorys=courseCategorys;
     }
 
-    public List<CourseCategory> getCoursecategorys() {
-        return coursecategorys;
+    public List<CourseCategory> getCourseCategorys() {
+        return courseCategorys;
     }
 
     public void save (@NonNull Context context){
