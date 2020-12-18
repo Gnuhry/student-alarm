@@ -51,11 +51,7 @@ public class DhbwCourses implements Serializable {
             Log.d("LOAD", "Loaded Coursedata from " + filename + ": SUCCESS");
             fis.close();
             ois.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (FileNotFoundException e | IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
