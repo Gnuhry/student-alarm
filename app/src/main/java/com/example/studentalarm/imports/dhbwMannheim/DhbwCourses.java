@@ -97,15 +97,20 @@ public class DhbwCourses{
     public static List<CourseCategory> load (@NonNull Context context){
         List<CourseCategory> erg=loadFromPhone(context);
         if(erg==null){
-            erg=loadFromInternet(context);
-            if(erg!=null)
-                save(context, erg);
+            erg=reloadFromInternet(context);
         }
         return erg;
     }
 
-    public static List<CourseCategory> loadFromInternet(@NonNull Context context){
-        if (Import.checkConnection(context)) {
+    public static List<CourseCategory> reloadFromInternet (@NonNull Context context){
+        List<CourseCategory> erg = loadFromInternet(context);
+            if(erg!=null)
+                save(context, erg);
+        return erg;
+    }
+
+    private static List<CourseCategory> loadFromInternet(@NonNull Context context){
+        if (Import.checkConnection(context,false)) {
             Log.i("Courses", "Import startet");
             return CourseImport.impcourse(context);
         }else{return null;}

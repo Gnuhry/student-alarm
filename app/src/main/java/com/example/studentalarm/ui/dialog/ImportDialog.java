@@ -54,43 +54,7 @@ public class ImportDialog extends Dialog {
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        new Thread(() -> {
-            Log.i(LOG, "get DHBW course");
-            ArrayAdapter<CourseCategory> categoryAdapter = new ArrayAdapter<>(getContext(),
-                    android.R.layout.simple_spinner_item, DhbwCourses.load(getContext()));
-            categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setAdapter(categoryAdapter));
-            ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(@NonNull AdapterView<?> adapterView, View view, int i, long l) {
-                    Log.d(LOG, "Spinner:" + adapterView.getItemAtPosition(i).toString());
-                    ArrayAdapter<Course> courseAdapter = new ArrayAdapter<>(getContext(),
-                            android.R.layout.simple_spinner_item, ((CourseCategory) adapterView.getItemAtPosition(i)).getCourses());
-                    courseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    findViewById(R.id.spDHBWMaCourse).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourse)).setAdapter(courseAdapter));
-                    String course = preferences.getString(PreferenceKeys.DHBW_MANNHEIM_COURSE, null);
-                    if (course != null)
-                        for (int in = 0; in < courseAdapter.getCount(); in++)
-                            if (0 == courseAdapter.getItem(in).compareTo(course)) {
-                                int finalIn = in;
-                                findViewById(R.id.spDHBWMaCourse).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourse)).setSelection(finalIn));
-                            }
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-                }
-            });
-
-            String category = preferences.getString(PreferenceKeys.DHBW_MANNHEIM_COURSE_CATEGORY, null);
-            if (category != null) {
-                for (int i = 0; i < categoryAdapter.getCount(); i++)
-                    if (0 == categoryAdapter.getItem(i).compareTo(category)) {
-                        int finalI = i;
-                        findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setSelection(finalI));
-                    }
-            }
-        }).start();
+        showCourseSpinner(preferences);
 
         switch (preferences.getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE)) {
             case Import.ImportFunction.NONE:
@@ -166,15 +130,24 @@ public class ImportDialog extends Dialog {
             }
         });
 
-        findViewById(R.id.btnImportDhbwCourses).setOnClickListener(view22 -> {
+        findViewById(R.id.btnImportDhbwCourses).setOnClickListener(view -> {
             Log.i(LOG, "Start new Import");
-            findViewById(R.id.btnImportDhbwCourses).post(() -> findViewById(R.id.btnImportDhbwCourses).setEnabled(false));
-            findViewById(R.id.imgStatusDHBW).post(() ->findViewById(R.id.imgStatusDHBW).setVisibility(View.VISIBLE));
-            findViewById(R.id.imgStatusDHBW).post(() -> Glide.with(getContext()).load(R.drawable.sandglass).into((ImageView)findViewById(R.id.imgStatusDHBW)));
-            DhbwCourses.loadFromInternet(getContext());
-            findViewById(R.id.btnImportDhbwCourses).post(() -> findViewById(R.id.btnImportDhbwCourses).setEnabled(true));
-            findViewById(R.id.imgStatusDHBW).post(() -> findViewById(R.id.imgStatusDHBW).setVisibility(View.GONE));
-
+            findViewById(R.id.btnImportDhbwCourses).setEnabled(false);
+            findViewById(R.id.imgStatusDHBW).setVisibility(View.VISIBLE);
+            Glide.with(getContext()).load(R.drawable.sandglass).into((ImageView)findViewById(R.id.imgStatusDHBW));
+            new Thread(() -> {
+                if (DhbwCourses.reloadFromInternet(getContext())==null){
+                    findViewById(R.id.btnImportDhbwCourses).post(() ->Toast.makeText(getContext(), R.string.no_connection, Toast.LENGTH_SHORT).show());//btnImportDhbwCourses ist ein Element auf der Seite
+                }
+                ArrayAdapter<CourseCategory> categoryAdapter = new ArrayAdapter<>(getContext(),
+                        android.R.layout.simple_spinner_item, DhbwCourses.load(getContext()));
+                categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setAdapter(categoryAdapter));
+                findViewById(R.id.btnImportDhbwCourses).post(()-> {//one post for performance important if Ids change
+                    findViewById(R.id.btnImportDhbwCourses).setEnabled(true);
+                    findViewById(R.id.imgStatusDHBW).setVisibility(View.GONE);
+                });
+            }).start();
         });
 
         findViewById(R.id.btnCancel).setOnClickListener(view1 -> {
@@ -189,7 +162,7 @@ public class ImportDialog extends Dialog {
                 Toast.makeText(getContext(), R.string.string_is_not_a_valid_url, Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (!Import.checkConnection(getContext())) return;
+            if (!Import.checkConnection(getContext(),true)) return;
             findViewById(R.id.btnCheckLink).setEnabled(false);
             ImageView imageView = findViewById(R.id.imgStatus);
             Glide.with(getContext()).load(R.drawable.sandglass).into(imageView);
@@ -203,6 +176,46 @@ public class ImportDialog extends Dialog {
                 if (isValid) lastValidString = text;
             }).start();
         });
+    }
+
+    private void showCourseSpinner(SharedPreferences preferences) {
+        new Thread(() -> {
+            Log.i(LOG, "get DHBW course");
+            ArrayAdapter<CourseCategory> categoryAdapter = new ArrayAdapter<>(getContext(),
+                    android.R.layout.simple_spinner_item, DhbwCourses.load(getContext()));
+            categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setAdapter(categoryAdapter));
+            ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(@NonNull AdapterView<?> adapterView, View view, int i, long l) {
+                    Log.d(LOG, "Spinner:" + adapterView.getItemAtPosition(i).toString());
+                    ArrayAdapter<Course> courseAdapter = new ArrayAdapter<>(getContext(),
+                            android.R.layout.simple_spinner_item, ((CourseCategory) adapterView.getItemAtPosition(i)).getCourses());
+                    courseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    findViewById(R.id.spDHBWMaCourse).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourse)).setAdapter(courseAdapter));
+                    String course = preferences.getString(PreferenceKeys.DHBW_MANNHEIM_COURSE, null);
+                    if (course != null)
+                        for (int in = 0; in < courseAdapter.getCount(); in++)
+                            if (0 == courseAdapter.getItem(in).compareTo(course)) {
+                                int finalIn = in;
+                                findViewById(R.id.spDHBWMaCourse).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourse)).setSelection(finalIn));
+                            }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                }
+            });
+
+            String category = preferences.getString(PreferenceKeys.DHBW_MANNHEIM_COURSE_CATEGORY, null);
+            if (category != null) {
+                for (int i = 0; i < categoryAdapter.getCount(); i++)
+                    if (0 == categoryAdapter.getItem(i).compareTo(category)) {
+                        int finalI = i;
+                        findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setSelection(finalI));
+                    }
+            }
+        }).start();
     }
 
 }
