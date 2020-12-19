@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -62,10 +63,16 @@ public class ImportDialog extends Dialog {
             case Import.ImportFunction.DHBWMA:
                 ((RadioButton) findViewById(R.id.rBtnDHBWMa)).setChecked(true);
                 findViewById(R.id.LLDHBWMaCourse).setVisibility(View.VISIBLE);
+                ((RadioButton) findViewById(R.id.rBtnDHBWMa)).setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT));
+                findViewById(R.id.LLRefresh).setVisibility(View.VISIBLE);
                 break;
         }
         ((RadioButton) findViewById(R.id.rBtnICS)).setOnCheckedChangeListener((compoundButton, b) -> findViewById(R.id.LLLink).setVisibility(b ? View.VISIBLE : View.GONE));
-        ((RadioButton) findViewById(R.id.rBtnDHBWMa)).setOnCheckedChangeListener((compoundButton, b) -> findViewById(R.id.LLDHBWMaCourse).setVisibility(b ? View.VISIBLE : View.GONE));
+        ((RadioButton) findViewById(R.id.rBtnDHBWMa)).setOnCheckedChangeListener((compoundButton, b) -> {
+            ((RadioButton) findViewById(R.id.rBtnDHBWMa)).setLayoutParams(new LinearLayout.LayoutParams(b ? LinearLayout.LayoutParams.WRAP_CONTENT : LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+            findViewById(R.id.LLDHBWMaCourse).setVisibility(b ? View.VISIBLE : View.GONE);
+            findViewById(R.id.LLRefresh).setVisibility(b ? View.VISIBLE : View.GONE);
+        });
 
         findViewById(R.id.btnSave).setOnClickListener(view1 -> {
             Log.i(LOG, "save");
@@ -146,7 +153,7 @@ public class ImportDialog extends Dialog {
                 Toast.makeText(getContext(), R.string.string_is_not_a_valid_url, Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (!Import.checkConnection(getContext(),true)) return;
+            if (!Import.checkConnection(getContext(), true)) return;
             findViewById(R.id.btnCheckLink).setEnabled(false);
             ImageView imageView = findViewById(R.id.imgStatus);
             Glide.with(getContext()).load(R.drawable.sandglass).into(imageView);
@@ -223,10 +230,9 @@ public class ImportDialog extends Dialog {
                     categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
                     findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setAdapter(categoryAdapter));
-                }
-                else
-                    findViewById(R.id.btnImportDhbwCourses).post(() ->Toast.makeText(getContext(), R.string.no_connection, Toast.LENGTH_SHORT).show());//btnImportDhbwCourses ist ein Element auf der Seite
-                findViewById(R.id.btnImportDhbwCourses).post(()-> {//one post for performance important if Ids change
+                } else
+                    findViewById(R.id.btnImportDhbwCourses).post(() -> Toast.makeText(getContext(), R.string.no_connection, Toast.LENGTH_SHORT).show());//btnImportDhbwCourses ist ein Element auf der Seite
+                findViewById(R.id.btnImportDhbwCourses).post(() -> {//one post for performance important if Ids change
                     findViewById(R.id.btnImportDhbwCourses).setEnabled(true);
                     findViewById(R.id.imgStatusDHBW).setVisibility(View.GONE);
                 });

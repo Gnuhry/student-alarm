@@ -77,6 +77,32 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/LLRefresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="96dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/radioGroup">
+
+                <Button
+                    android:id="@+id/btnImportDhbwCourses"
+                    style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/refresh" />
+
+                <ImageView
+                    android:id="@+id/imgStatusDHBW"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/status"
+                    android:visibility="gone" />
+            </LinearLayout>
+
             <RadioGroup
                 android:id="@+id/radioGroup"
                 android:layout_width="match_parent"
@@ -96,35 +122,11 @@
                     android:layout_height="wrap_content"
                     android:text="@string/ics" />
 
-                <LinearLayout
+                <RadioButton
+                    android:id="@+id/rBtnDHBWMa"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent">
-
-                    <RadioButton
-                        android:id="@+id/rBtnDHBWMa"
-                        android:layout_width="232dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/DHBWMa" />
-
-                    <Button
-                        android:id="@+id/btnImportDhbwCourses"
-                        style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/refresh" />
-
-                    <ImageView
-                        android:id="@+id/imgStatusDHBW"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/status"
-                        android:visibility="gone"/>
-                </LinearLayout>
+                    android:text="@string/DHBWMa" />
 
             </RadioGroup>
 
