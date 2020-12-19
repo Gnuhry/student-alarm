@@ -112,5 +112,6 @@
     <string name="ok">Ok</string>
     <string name="number">Zahl</string>
     <string name="no_connection">Keine Verbindung</string>
+    <string name="import_color">Import Farbe</string>
 
 </resources>
