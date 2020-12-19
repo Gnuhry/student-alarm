@@ -117,7 +117,7 @@ public class ImportDialog extends Dialog {
     /**
      * init the ICS part
      */
-    private void initICS(SharedPreferences preferences) {
+    private void initICS(@NonNull SharedPreferences preferences) {
         String s_import = preferences.getString(PreferenceKeys.LINK, null);
         if (s_import != null) {
             lastValidString = s_import;
@@ -167,7 +167,7 @@ public class ImportDialog extends Dialog {
     /**
      * init the DHBW part
      */
-    private void initDHBW(SharedPreferences preferences) {
+    private void initDHBW(@NonNull SharedPreferences preferences) {
         new Thread(() -> {
             Log.i(LOG, "get DHBW course");
             List<CourseCategory> courseCategories = DhbwCourses.load(getContext());

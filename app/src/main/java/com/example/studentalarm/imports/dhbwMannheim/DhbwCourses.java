@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class DhbwCourses {
     private static final String FILE_NAME = "DHBW_COURSES", LOG = "Dhbw_Courses";
@@ -24,6 +25,7 @@ public class DhbwCourses {
      * @param context context of application
      * @return list of course categories
      */
+    @Nullable
     public static List<CourseCategory> load(@NonNull Context context) {
         List<CourseCategory> erg = loadFromPhone(context);
         if (erg == null)
@@ -37,6 +39,7 @@ public class DhbwCourses {
      * @param context context of application
      * @return list of course categories
      */
+    @Nullable
     public static List<CourseCategory> reloadFromInternet(@NonNull Context context) {
         List<CourseCategory> erg = loadFromInternet(context);
         if (erg != null)
@@ -72,6 +75,7 @@ public class DhbwCourses {
      * @param context context of application
      * @return list of course categories
      */
+    @Nullable
     private static List<CourseCategory> loadFromPhone(@NonNull Context context) {
         try {
             FileInputStream fis = context.openFileInput(FILE_NAME);
@@ -81,7 +85,7 @@ public class DhbwCourses {
             fis.close();
             ois.close();
             return courseCategories;
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (@NonNull IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return null;
@@ -93,6 +97,7 @@ public class DhbwCourses {
      * @param context context of application
      * @return list of course categories
      */
+    @Nullable
     private static List<CourseCategory> loadFromInternet(@NonNull Context context) {
         return Import.checkConnection(context) ? CourseImport.importCourse(context) : null;
     }
