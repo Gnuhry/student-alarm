@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 
 public class CourseImport {
@@ -25,6 +26,7 @@ public class CourseImport {
      * @param context context of application
      * @return list of all course categories
      */
+    @Nullable
     public static List<CourseCategory> importCourse(@NonNull Context context) {
         dhbwCourseCategory = new ArrayList<>();
         tempDHBWCourses = new ArrayList<>();
