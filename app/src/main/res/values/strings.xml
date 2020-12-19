@@ -76,6 +76,11 @@
     <string name="regular_lecture">Regular lecture</string>
     <string name="holidays">Holidays</string>
     <string name="minute" tools:ignore="MissingTranslation">%d min</string>
+    <string name="personal_alarm_settings">Personal alarm settings</string>
+    <string name="edit">edit</string>
+    <string name="from_day">"From: %1$s"</string>
+    <string name="until_day">"Until: %1$s"</string>
+    <string name="holiday_events">Holiday events</string>
 
     <!--Lecture-->
     <string name="weekly">Weekly</string>
@@ -103,11 +108,7 @@
     <string name="end_must_start_after_begin">End must start after begin</string>
     <string name="wrong">Wrong</string>
 
-    <!---->
-    <string name="status">Status</string>
-    <string name="ok">OK</string>
-    <string name="number">number</string>
-    <string name="no_connection">No connection</string>
+    <!--regular lecture-->
     <string name="save">Save</string>
     <string name="do_you_want_to_delete_this_lecture">Do you want to delete this lecture?</string>
     <string name="do_you_want_to_save_your_changes">Do you want to save your changes?</string>
@@ -120,8 +121,14 @@
     <string name="monday_sunday">Monday - Sunday</string>
     <string name="days">Days:</string>
     <string name="wrong_inputs">wrong inputs</string>
-    <string name="room">Room</string>
-    <string name="personal_alarm_settings">Personal alarm settings</string>
-    <string name="edit">edit</string>
+    <string name="room">Room</string>v
+
+    <!---->
+    <string name="status">Status</string>
+    <string name="ok">OK</string>
+    <string name="number">number</string>
+    <string name="no_connection">No connection</string>
+
+
 
 </resources>

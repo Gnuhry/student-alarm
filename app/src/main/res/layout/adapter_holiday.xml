@@ -7,18 +7,17 @@
     <ImageView
         android:id="@+id/imVAdd"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="50dp"
         android:contentDescription="@string/add"
         android:src="@drawable/add_circle"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayout4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:id="@+id/linearLayout4"
+        android:id="@+id/llHoliday"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -26,6 +25,7 @@
         android:paddingTop="15dp"
         android:paddingRight="5dp"
         android:paddingBottom="15dp"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
