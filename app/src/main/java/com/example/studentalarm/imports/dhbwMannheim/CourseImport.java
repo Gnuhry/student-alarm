@@ -57,7 +57,7 @@ public class CourseImport {
                         dhbwCourseCategory.add(new CourseCategory(course_category[1], tempDHBWCourses));
                     }
                 }
-
+                return;
             }
         }
     }
