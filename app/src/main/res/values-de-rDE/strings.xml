@@ -113,5 +113,7 @@
     <string name="number">Zahl</string>
     <string name="no_connection">Keine Verbindung</string>
     <string name="import_color">Import Farbe</string>
+    <string name="chose_import_color">Wählen Sie die Farbe des Imports</string>
+
 
 </resources>
