@@ -1,5 +1,6 @@
 package com.example.studentalarm.ui.fragments;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
@@ -29,6 +31,9 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
     @NonNull
     private final ReloadLecture lecture;
     private WeekView.SimpleAdapter<LectureSchedule.Lecture> adapter;
+    @Nullable
+    private ProgressDialog progress;
+    private WeekView weekview;
 
     public WeeklyFragment() {
         lecture = this;
@@ -40,7 +45,11 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
         Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.fragment_weekly, container, false);
         if (getContext() == null || getActivity() == null) return view;
-        WeekView weekview = view.findViewById(R.id.weekView);
+        weekview = view.findViewById(R.id.weekView);
+        progress = new ProgressDialog(getContext());
+        progress.setTitle("Loading");
+        progress.setMessage("Wait while loading...");
+        progress.setCancelable(false);
 
         initAppBar(weekview, this.getActivity().findViewById(R.id.my_toolbar));
         initWeekView(weekview);
@@ -65,7 +74,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
         if (getContext() != null &&
                 PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) != Import.ImportFunction.NONE &&
                 getActivity() != null &&
-                Import.checkConnection(getContext(),true))
+                Import.checkConnection(getContext(), true))
             new Thread(() -> {
                 Log.d(LOG, "refresh thread start");
                 if (getActivity() == null) return;
@@ -85,8 +94,10 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
      */
     public void loadData() {
         Log.i(LOG, "load data");
+        weekview.post(() -> progress.show());
         if (getContext() != null)
             adapter.submitList(LectureSchedule.load(getContext()).getAllLecture(getContext()));
+        weekview.post(() -> progress.dismiss());
     }
 
     class Adapter extends WeekView.SimpleAdapter<LectureSchedule.Lecture> {
