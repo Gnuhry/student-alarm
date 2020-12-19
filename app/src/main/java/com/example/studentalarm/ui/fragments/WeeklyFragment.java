@@ -8,12 +8,12 @@ import android.view.ViewGroup;
 
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEntity;
-import com.example.studentalarm.alarm.AlarmManager;
-import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
-import com.example.studentalarm.ui.dialog.EventDialog;
+import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.Import;
 import com.example.studentalarm.imports.LectureSchedule;
+import com.example.studentalarm.save.PreferenceKeys;
+import com.example.studentalarm.ui.dialog.EventDialog;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -44,7 +44,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
 
         initAppBar(weekview, this.getActivity().findViewById(R.id.my_toolbar));
         initWeekView(weekview);
-        new Thread(this::loadData).start(); //TODO Threading or not?
+        new Thread(this::loadData).start();
 
         view.findViewById(R.id.fabAdd).setOnClickListener(view1 -> new EventDialog(null, LectureSchedule.load(getContext()), this).show(getActivity().getSupportFragmentManager(), "dialog"));
         return view;
@@ -54,7 +54,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
     public void onResume() {
         super.onResume();
         Log.i(LOG, "resume");
-        new Thread(this::loadData).start();  //TODO Threading or not?
+        new Thread(this::loadData).start();
     }
 
     /**
@@ -65,7 +65,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
         if (getContext() != null &&
                 PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) != Import.ImportFunction.NONE &&
                 getActivity() != null &&
-                Import.checkConnection(getContext()))
+                Import.checkConnection(getContext(),true))
             new Thread(() -> {
                 Log.d(LOG, "refresh thread start");
                 if (getActivity() == null) return;
@@ -121,6 +121,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
                 erg.setSubtitle(item.getLocation());
             erg.setStyle(builder.build());
             erg.setId(item.getId());
+            erg.setAllDay(item.isAllDayEvent());
             return erg.build();
         }
     }

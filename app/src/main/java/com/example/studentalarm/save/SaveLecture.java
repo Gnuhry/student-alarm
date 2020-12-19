@@ -14,6 +14,6 @@ public class SaveLecture implements Serializable {
         public Date start, end;
         public int color;
         public int id;
-        public boolean isImport;
+        public boolean isImport, isAllDayEvent;
     }
 }

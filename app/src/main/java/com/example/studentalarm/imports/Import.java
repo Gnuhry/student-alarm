@@ -113,11 +113,12 @@ public class Import {
      * @param context  context of application
      * @return boolean if connection is active
      */
-    public static boolean checkConnection(@NonNull Context context) {
+    public static boolean checkConnection(@NonNull Context context, boolean text) {
         Log.d(LOG, "Check connection");
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm.getActiveNetworkInfo() == null || !cm.getActiveNetworkInfo().isConnected()) {
             Log.d(LOG, "Missing connection");
+            if(text)
             try {
                 Toast.makeText(context, R.string.no_connection, Toast.LENGTH_SHORT).show();
             } catch (Resources.NotFoundException e) {

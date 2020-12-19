@@ -99,7 +99,7 @@ public class DhbwCourses {
      */
     @Nullable
     private static List<CourseCategory> loadFromInternet(@NonNull Context context) {
-        return Import.checkConnection(context) ? CourseImport.importCourse(context) : null;
+        return Import.checkConnection(context, false) ? CourseImport.importCourse(context) : null;
     }
 
     static class SaveCourse implements Serializable {
