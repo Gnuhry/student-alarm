@@ -120,9 +120,8 @@
     <string name="monday_sunday">Monday - Sunday</string>
     <string name="days">Days:</string>
     <string name="wrong_inputs">wrong inputs</string>
-    <string name="room">Room</string>v
-
-    <!---->
+    <string name="room">Room</string>
+    <string name="connection_failed">Connection failed</string>
     <string name="status">Status</string>
     <string name="ok">OK</string>
     <string name="number">number</string>
