@@ -20,6 +20,7 @@ import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.dialog.DeleteLectureDialog;
 import com.example.studentalarm.ui.dialog.ExportDialog;
+import com.example.studentalarm.ui.dialog.ImportColorDialog;
 import com.example.studentalarm.ui.dialog.ImportDialog;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -174,23 +175,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         importColorPref.setSummaryProvider(preference -> {
-            SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
-            int mode = preferences.getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE);
-            Log.d("set-frag-array", "int: " + mode + " Array: " + Import.ImportFunction.IMPORTS);
-            StringBuilder sb = new StringBuilder(Import.ImportFunction.IMPORTS.get(mode));
-            if (mode == Import.ImportFunction.ICS)
-                sb.append(" - ").append(preferences.getString(PreferenceKeys.LINK, null));
-            else if (mode == Import.ImportFunction.DHBWMA)
-                sb.append(" - ").append(preferences.getString(PreferenceKeys.DHBW_MANNHEIM_COURSE, null));
+            //SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
+            StringBuilder sb = new StringBuilder("Test");
             return sb.toString();
         });
         importColorPref.setOnPreferenceClickListener(preference -> {
-            if (getContext() == null) return false;
-            if (Import.checkConnection(getContext(),true)) {
-                ImportDialog importDialog = new ImportDialog(this.getContext());
-                importDialog.setOnCancelListener(dialogInterface -> reload());
-                importDialog.show();
-            }
+            if (getContext() != null && getActivity() != null)
+                new ImportColorDialog(getContext()).show();
             return true;
         });
 

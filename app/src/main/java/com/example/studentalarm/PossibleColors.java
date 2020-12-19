@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PossibleColors {
-
+/*
     private final List<RegularLectureDialog.EventColor> colors;
     colors = new ArrayList<>();
         colors.add(new EventColor(R.string.red, Color.RED));
@@ -49,4 +49,6 @@ public class PossibleColors {
             return false;
         }
     }
+
+ */
 }

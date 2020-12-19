@@ -127,6 +127,9 @@
     <string name="number">number</string>
     <string name="no_connection">No connection</string>
     <string name="import_color">Import Color</string>
+    <string name="chose_import_color">Chose Import Color</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>
