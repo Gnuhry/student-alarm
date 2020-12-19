@@ -59,6 +59,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 alarmChange = findPreference(PreferenceKeys.ALARM_CHANGE),
                 autoImport = findPreference(PreferenceKeys.AUTO_IMPORT);
         Preference importPref = findPreference("IMPORT"),
+                importColorPref = findPreference("IMPORT_COLOR"),
                 eventDeleteAll = findPreference("EVENT_DELETE_ALL"),
                 export = findPreference("EXPORT"),
                 reset = findPreference("RESET");
@@ -73,6 +74,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 alarmChange == null ||
                 autoImport == null ||
                 importPref == null ||
+                importColorPref == null||
                 eventDeleteAll == null ||
                 snooze == null ||
                 importTime == null ||
@@ -170,6 +172,28 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
             return true;
         });
+
+        importColorPref.setSummaryProvider(preference -> {
+            SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
+            int mode = preferences.getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE);
+            Log.d("set-frag-array", "int: " + mode + " Array: " + Import.ImportFunction.IMPORTS);
+            StringBuilder sb = new StringBuilder(Import.ImportFunction.IMPORTS.get(mode));
+            if (mode == Import.ImportFunction.ICS)
+                sb.append(" - ").append(preferences.getString(PreferenceKeys.LINK, null));
+            else if (mode == Import.ImportFunction.DHBWMA)
+                sb.append(" - ").append(preferences.getString(PreferenceKeys.DHBW_MANNHEIM_COURSE, null));
+            return sb.toString();
+        });
+        importColorPref.setOnPreferenceClickListener(preference -> {
+            if (getContext() == null) return false;
+            if (Import.checkConnection(getContext(),true)) {
+                ImportDialog importDialog = new ImportDialog(this.getContext());
+                importDialog.setOnCancelListener(dialogInterface -> reload());
+                importDialog.show();
+            }
+            return true;
+        });
+
 
         if (getPreferenceManager().getSharedPreferences().getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) == Import.ImportFunction.NONE)
             autoImport.setEnabled(false);
