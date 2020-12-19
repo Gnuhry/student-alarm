@@ -16,10 +16,13 @@ import android.widget.TextView;
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.save.PreferenceKeys;
+import com.example.studentalarm.ui.adapter.HolidayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class AlarmSettingFragment extends Fragment {
 
@@ -46,6 +49,13 @@ public class AlarmSettingFragment extends Fragment {
         timeAfter = view.findViewById(R.id.txVTimeAfter);
         if (getContext() != null)
             setTime(getContext());
+
+        RecyclerView rv = view.findViewById(R.id.rVHolidays);
+        HolidayAdapter adapter = new HolidayAdapter(getContext(), getActivity());
+        rv.setHasFixedSize(true);
+        rv.setLayoutManager(new LinearLayoutManager(getContext()));
+        rv.setAdapter(adapter);
+
         return view;
     }
 
