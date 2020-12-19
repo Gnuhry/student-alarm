@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -38,6 +39,7 @@ public class ExportLectureDialog extends Dialog {
         super.onCreate(savedInstanceState);
         Log.i(LOG, "open");
         setContentView(R.layout.dialog_delete);
+        findViewById(R.id.rdBHolidayEvents).setVisibility(View.GONE); //TODO add all day to ics export
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         ((TextView) findViewById(R.id.txVDeleteEvent)).setText(R.string.which_event_do_you_want_to_export);
         findViewById(R.id.btnCancel).setOnClickListener(view1 -> {

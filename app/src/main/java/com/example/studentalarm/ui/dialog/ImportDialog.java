@@ -51,7 +51,6 @@ public class ImportDialog extends Dialog {
         setContentView(R.layout.dialog_import);
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
         switch (preferences.getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE)) {
             case Import.ImportFunction.NONE:
                 ((RadioButton) findViewById(R.id.rBtnNone)).setChecked(true);
@@ -104,7 +103,6 @@ public class ImportDialog extends Dialog {
             }
         });
 
-
         findViewById(R.id.btnCancel).setOnClickListener(view1 -> {
             Log.i(LOG, "cancel");
             this.cancel();
@@ -148,7 +146,7 @@ public class ImportDialog extends Dialog {
                 Toast.makeText(getContext(), R.string.string_is_not_a_valid_url, Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (!Import.checkConnection(getContext())) return;
+            if (!Import.checkConnection(getContext(),true)) return;
             findViewById(R.id.btnCheckLink).setEnabled(false);
             ImageView imageView = findViewById(R.id.imgStatus);
             Glide.with(getContext()).load(R.drawable.sandglass).into(imageView);
@@ -188,7 +186,6 @@ public class ImportDialog extends Dialog {
                         findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setSelection(finalI));
                     }
             }
-
             ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(@NonNull AdapterView<?> adapterView, View view, int i, long l) {
@@ -227,11 +224,14 @@ public class ImportDialog extends Dialog {
 
                     findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setAdapter(categoryAdapter));
                 }
-                findViewById(R.id.btnImportDhbwCourses).post(() -> findViewById(R.id.btnImportDhbwCourses).setEnabled(true));
-                findViewById(R.id.imgStatusDHBW).post(() -> findViewById(R.id.imgStatusDHBW).setVisibility(View.GONE));
+                else
+                    findViewById(R.id.btnImportDhbwCourses).post(() ->Toast.makeText(getContext(), R.string.no_connection, Toast.LENGTH_SHORT).show());//btnImportDhbwCourses ist ein Element auf der Seite
+                findViewById(R.id.btnImportDhbwCourses).post(()-> {//one post for performance important if Ids change
+                    findViewById(R.id.btnImportDhbwCourses).setEnabled(true);
+                    findViewById(R.id.imgStatusDHBW).setVisibility(View.GONE);
+                });
             }).start();
         });
-
     }
 
 }

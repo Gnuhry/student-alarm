@@ -21,7 +21,7 @@ public class ImportReceiver extends BroadcastReceiver {
     public void onReceive(@NonNull Context context, Intent intent) {
         Log.d("ImportReceiver", "import");
         new Thread(() -> {
-            if (Import.checkConnection(context))
+            if (Import.checkConnection(context,true))
                 Import.importLecture(context);
             else
                 PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean(PreferenceKeys.WAIT_FOR_NETWORK, true).apply();
