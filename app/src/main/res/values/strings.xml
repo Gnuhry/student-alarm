@@ -106,6 +106,8 @@
     <string name="missing">Missing</string>
     <string name="end_must_start_after_begin">End must start after begin</string>
     <string name="wrong">Wrong</string>
+    <string name="loading">Loading</string>
+    <string name="wait_while_loading">Wait while loading…</string>
 
     <!--regular lecture-->
     <string name="save">Save</string>
@@ -126,7 +128,6 @@
     <string name="ok">OK</string>
     <string name="number">number</string>
     <string name="no_connection">No connection</string>
-
 
 
 </resources>

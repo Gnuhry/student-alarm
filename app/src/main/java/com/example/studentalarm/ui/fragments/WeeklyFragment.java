@@ -47,8 +47,8 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
         if (getContext() == null || getActivity() == null) return view;
         weekview = view.findViewById(R.id.weekView);
         progress = new ProgressDialog(getContext());
-        progress.setTitle("Loading");
-        progress.setMessage("Wait while loading...");
+        progress.setTitle(getString(R.string.loading));
+        progress.setMessage(getString(R.string.wait_while_loading));
         progress.setCancelable(false);
 
         initAppBar(weekview, this.getActivity().findViewById(R.id.my_toolbar));
