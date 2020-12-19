@@ -3,6 +3,7 @@ package com.example.studentalarm.ui.dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,14 +28,20 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 public class HolidayDialog extends DialogFragment {
-    private TextView from, until;
+    private static final String LOG = "HolidayDialog";
+    @Nullable
     private final LectureSchedule schedule;
     private final int index;
-    private LectureSchedule.Lecture lecture;
+    @Nullable
     private final LectureSchedule.Lecture old_lecture;
-    private DatePicker calendarView;
+    @NonNull
     private final Context context;
+    @NonNull
     private final HolidayAdapter adapter;
+    @Nullable
+    private LectureSchedule.Lecture lecture;
+    private DatePicker calendarView;
+    private TextView from, until;
     private boolean create = false;
 
     public HolidayDialog(@Nullable LectureSchedule schedule, @NonNull Context context, @NonNull HolidayAdapter adapter, int index) {
@@ -54,6 +61,7 @@ public class HolidayDialog extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_holidays, container, false);
+        Log.d(LOG, "open");
         from = view.findViewById(R.id.txVFrom);
         until = view.findViewById(R.id.txVUntil);
         calendarView = view.findViewById(R.id.cVHoliday);
@@ -135,12 +143,19 @@ public class HolidayDialog extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        Log.d(LOG, "destroy");
         adapter.reloadAdapter();
         AlarmManager.updateNextAlarm(context);
     }
 
+    /**
+     * get the selected date
+     *
+     * @param datePicker datePicker to get date
+     * @return date as calendar object
+     */
     @NotNull
-    private Calendar getCalendarFromDatePicker(DatePicker datePicker) {
+    private Calendar getCalendarFromDatePicker(@NonNull DatePicker datePicker) {
         Calendar calendar2 = Calendar.getInstance();
         calendar2.set(Calendar.YEAR, datePicker.getYear());
         calendar2.set(Calendar.MONTH, datePicker.getMonth());
@@ -148,6 +163,9 @@ public class HolidayDialog extends DialogFragment {
         return calendar2;
     }
 
+    /**
+     * set the date in the textBox
+     */
     private void setTextBox() {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
         from.setText(getString(R.string.from_day, format.format(lecture.getStart())));
