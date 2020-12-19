@@ -25,7 +25,7 @@ import androidx.annotation.Nullable;
 
 public class LectureSchedule {
     @NonNull
-    private final List<Lecture> lecture, importLecture;
+    private final List<Lecture> lecture, importLecture, holidays;
 
     /**
      * Create an empty lecture schedule
@@ -33,6 +33,7 @@ public class LectureSchedule {
     public LectureSchedule() {
         lecture = new ArrayList<>();
         importLecture = new ArrayList<>();
+        holidays = new ArrayList<>();
     }
 
     /**
@@ -45,10 +46,41 @@ public class LectureSchedule {
         List<Lecture> all = new ArrayList<>();
         all.addAll(lecture);
         all.addAll(importLecture);
+        all.addAll(holidays);
         Calendar from = Calendar.getInstance(), end = Calendar.getInstance();
         from.add(Calendar.YEAR, -3);
         end.add(Calendar.YEAR, 3);
         all.addAll(getRegularLecture(context, from, end));
+        Collections.sort(all);
+        return all;
+    }
+
+    /**
+     * get all lecture which are not in the holidays
+     *
+     * @return lecture which are not in the holidays
+     */
+    @NonNull
+    private List<Lecture> getAllLectureWithoutHolidayAndHolidayEvents(@NonNull Context context) {
+        List<Lecture> all = new ArrayList<>(), all2 = new ArrayList<>();
+        all.addAll(lecture);
+        all.addAll(importLecture);
+        Calendar from = Calendar.getInstance(), end = Calendar.getInstance();
+        from.add(Calendar.YEAR, -3);
+        end.add(Calendar.YEAR, 3);
+        all.addAll(getRegularLecture(context, from, end));
+        if (holidays.size() > 0) {
+            boolean skip;
+            for (Lecture l : all) {
+                skip = false;
+                for (int i = 0; i < holidays.size() && !skip; i++)
+                    if (l.getStart().after(holidays.get(i).getStart()) && l.getStart().before(holidays.get(i).getEnd())) {
+                        all2.add(l);
+                        skip = true;
+                    }
+            }
+            all.removeAll(all2);
+        }
         Collections.sort(all);
         return all;
     }
@@ -63,6 +95,11 @@ public class LectureSchedule {
         return importLecture;
     }
 
+    @NonNull
+    public List<Lecture> getHolidays() {
+        return holidays;
+    }
+
     /**
      * get the next lecture, at least starting tomorrow 00:00:00:00
      *
@@ -71,19 +108,23 @@ public class LectureSchedule {
     @Nullable
     public Lecture getNextFirstDayLecture(@NonNull Context context) {
         boolean first = true;
-        Lecture help = new Lecture(false, getDayAddDay(1), new Date()), help2 = new Lecture(false, getDayAddDay(0), new Date());
-        for (Lecture l : getAllLecture(context))
-            if (l.compareTo(help2) >= 0 && first) {
+        Lecture tomorrow = new Lecture(false, getDayAddDay(1), new Date()), today = new Lecture(false, getDayAddDay(0), new Date());
+        for (Lecture l : getAllLectureWithoutHolidayAndHolidayEvents(context))
+            if (l.compareTo(today) >= 0 && first) {
                 first = false;
                 if (l.start.after(Calendar.getInstance().getTime()))
                     return l;
-            } else if (l.compareTo(help) >= 0)
+            } else if (l.compareTo(tomorrow) >= 0)
                 return l;
         return null;
     }
 
     public void addLecture(@NonNull Lecture lecture) {
         this.lecture.add(lecture);
+    }
+
+    public void addHoliday(@NonNull Lecture lecture) {
+        this.holidays.add(lecture);
     }
 
     /**
@@ -112,10 +153,18 @@ public class LectureSchedule {
 
     @NonNull
     public LectureSchedule removeLecture(@NonNull Lecture data) {
-        int id1 = lecture.indexOf(data), id2 = importLecture.indexOf(data);
+        int id1 = lecture.indexOf(data), id2 = importLecture.indexOf(data), id3 = holidays.indexOf(data);
         if (id1 >= 0) lecture.remove(id1);
         if (id2 >= 0) importLecture.remove(id2);
+        if (id3 >= 0) holidays.remove(id3);
         return this;
+    }
+
+    /**
+     * delete all holiday events
+     */
+    public void clearHolidayEvents() {
+        this.holidays.clear();
     }
 
     /**
@@ -137,6 +186,7 @@ public class LectureSchedule {
      */
     @NonNull
     public LectureSchedule clearEvents() {
+        this.holidays.clear();
         this.importLecture.clear();
         this.lecture.clear();
         return this;
@@ -280,7 +330,7 @@ public class LectureSchedule {
     @NonNull
     private SaveLecture createSave() {
         SaveLecture saveLecture = new SaveLecture();
-        saveLecture.saves = new SaveLecture.Save[2][];
+        saveLecture.saves = new SaveLecture.Save[3][];
         saveLecture.saves[0] = new SaveLecture.Save[this.lecture.size()];
         for (int i = 0; i < this.lecture.size(); i++) {
             Lecture l = this.lecture.get(i);
@@ -293,6 +343,7 @@ public class LectureSchedule {
             save.color = l.color;
             save.id = l.id;
             save.isImport = l.isImport;
+            save.isAllDayEvent = l.isAllDayEvent;
             saveLecture.saves[0][i] = save;
         }
 
@@ -308,7 +359,22 @@ public class LectureSchedule {
             save.color = l.color;
             save.id = l.id;
             save.isImport = l.isImport;
+            save.isAllDayEvent = l.isAllDayEvent;
             saveLecture.saves[1][i] = save;
+        }
+
+        saveLecture.saves[2] = new SaveLecture.Save[this.holidays.size()];
+        for (int i = 0; i < this.holidays.size(); i++) {
+            Lecture l = this.holidays.get(i);
+            SaveLecture.Save save = new SaveLecture.Save();
+            save.name = l.name;
+            save.start = l.start;
+            save.end = l.end;
+            save.color = l.color;
+            save.id = l.id;
+            save.isImport = l.isImport;
+            save.isAllDayEvent = l.isAllDayEvent;
+            saveLecture.saves[2][i] = save;
         }
         return saveLecture;
     }
@@ -348,11 +414,15 @@ public class LectureSchedule {
         if (saveLecture == null) return lectureSchedule;
         for (int i = 0; i < saveLecture.saves[0].length; i++) {
             SaveLecture.Save save = saveLecture.saves[0][i];
-            lectureSchedule.lecture.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setLocation(save.location).setDocent(save.docent).setName(save.name));
+            lectureSchedule.lecture.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setLocation(save.location).setDocent(save.docent).setName(save.name).setAllDayEvent(save.isAllDayEvent));
         }
         for (int i = 0; i < saveLecture.saves[1].length; i++) {
             SaveLecture.Save save = saveLecture.saves[1][i];
-            lectureSchedule.importLecture.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setLocation(save.location).setDocent(save.docent).setName(save.name));
+            lectureSchedule.importLecture.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setLocation(save.location).setDocent(save.docent).setName(save.name).setAllDayEvent(save.isAllDayEvent));
+        }
+        for (int i = 0; i < saveLecture.saves[2].length; i++) {
+            SaveLecture.Save save = saveLecture.saves[2][i];
+            lectureSchedule.holidays.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setName(save.name).setAllDayEvent(save.isAllDayEvent));
         }
         return lectureSchedule;
     }
@@ -369,6 +439,7 @@ public class LectureSchedule {
         @NonNull
         private Date start, end;
         private int color = Color.RED;
+        private boolean isAllDayEvent;
 
         public Lecture(boolean isImport, @NonNull Date start, @NonNull Date end) {
             this.start = new Date(start.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
@@ -417,6 +488,10 @@ public class LectureSchedule {
             return color;
         }
 
+        public boolean isAllDayEvent() {
+            return isAllDayEvent;
+        }
+
         public boolean isImport() {
             return isImport;
         }
@@ -458,6 +533,12 @@ public class LectureSchedule {
         @NonNull
         public Lecture setColor(int color) {
             this.color = color;
+            return this;
+        }
+
+        @NonNull
+        public Lecture setAllDayEvent(boolean allDayEvent) {
+            isAllDayEvent = allDayEvent;
             return this;
         }
 
