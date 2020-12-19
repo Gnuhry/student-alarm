@@ -65,7 +65,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
         if (getContext() != null &&
                 PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) != Import.ImportFunction.NONE &&
                 getActivity() != null &&
-                Import.checkConnection(getContext()))
+                Import.checkConnection(getContext(),true))
             new Thread(() -> {
                 Log.d(LOG, "refresh thread start");
                 if (getActivity() == null) return;

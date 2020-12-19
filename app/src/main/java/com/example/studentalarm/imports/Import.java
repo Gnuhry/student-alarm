@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -112,12 +113,17 @@ public class Import {
      * @param context  context of application
      * @return boolean if connection is active
      */
-    public static boolean checkConnection(@NonNull Context context) {
+    public static boolean checkConnection(@NonNull Context context, boolean text) {
         Log.d(LOG, "Check connection");
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm.getActiveNetworkInfo() == null || !cm.getActiveNetworkInfo().isConnected()) {
             Log.d(LOG, "Missing connection");
-            Toast.makeText(context, R.string.no_connection, Toast.LENGTH_SHORT).show();
+            if(text)
+            try {
+                Toast.makeText(context, R.string.no_connection, Toast.LENGTH_SHORT).show();
+            } catch (Resources.NotFoundException e) {
+                e.printStackTrace();
+            }
             return false;
         }
         PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean(PreferenceKeys.WAIT_FOR_NETWORK,false).apply();
