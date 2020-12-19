@@ -15,7 +15,6 @@
     <string name="import_settings">Import Settings</string>
     <string name="import_">Import</string>
     <string name="import_time">Import time</string>
-    <string name="link_to_file">Link to file</string>
     <string name="automatic_daily_import">Automatic daily import</string>
     <string name="address">http://www.</string>
     <string name="string_is_not_a_valid_url">String is not a valid URL</string>

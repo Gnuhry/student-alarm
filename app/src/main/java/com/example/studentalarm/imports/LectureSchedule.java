@@ -60,6 +60,7 @@ public class LectureSchedule {
      *
      * @return lecture which are not in the holidays
      */
+    @NonNull
     private List<Lecture> getAllLectureWithoutHolidayAndHolidayEvents(@NonNull Context context) {
         List<Lecture> all = new ArrayList<>(), all2 = new ArrayList<>();
         all.addAll(lecture);

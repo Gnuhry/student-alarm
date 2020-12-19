@@ -21,7 +21,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.ViewHolder> {
     private LectureSchedule schedule;
+    @NonNull
     private final Context context;
+    @NonNull
     private final FragmentActivity activity;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -66,6 +68,9 @@ public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.ViewHold
         }
     }
 
+    /**
+     * reloading the adapter to display new data
+     */
     public void reloadAdapter() {
         this.schedule = LectureSchedule.load(context);
         notifyDataSetChanged();
