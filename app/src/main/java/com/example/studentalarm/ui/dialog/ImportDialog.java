@@ -18,21 +18,19 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.preference.PreferenceManager;
-
 import com.bumptech.glide.Glide;
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.ICS;
 import com.example.studentalarm.imports.Import;
 import com.example.studentalarm.imports.dhbwMannheim.Course;
 import com.example.studentalarm.imports.dhbwMannheim.CourseCategory;
-import com.example.studentalarm.imports.dhbwMannheim.CourseImport;
 import com.example.studentalarm.imports.dhbwMannheim.DhbwCourses;
 import com.example.studentalarm.save.PreferenceKeys;
 
-import java.util.Arrays;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 
 public class ImportDialog extends Dialog {
@@ -54,44 +52,6 @@ public class ImportDialog extends Dialog {
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        new Thread(() -> {
-            Log.i(LOG, "get DHBW course");
-            ArrayAdapter<CourseCategory> categoryAdapter = new ArrayAdapter<>(getContext(),
-                    android.R.layout.simple_spinner_item, DhbwCourses.load(getContext()));
-            categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setAdapter(categoryAdapter));
-            ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(@NonNull AdapterView<?> adapterView, View view, int i, long l) {
-                    Log.d(LOG, "Spinner:" + adapterView.getItemAtPosition(i).toString());
-                    ArrayAdapter<Course> courseAdapter = new ArrayAdapter<>(getContext(),
-                            android.R.layout.simple_spinner_item, ((CourseCategory) adapterView.getItemAtPosition(i)).getCourses());
-                    courseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    findViewById(R.id.spDHBWMaCourse).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourse)).setAdapter(courseAdapter));
-                    String course = preferences.getString(PreferenceKeys.DHBW_MANNHEIM_COURSE, null);
-                    if (course != null)
-                        for (int in = 0; in < courseAdapter.getCount(); in++)
-                            if (0 == courseAdapter.getItem(in).compareTo(course)) {
-                                int finalIn = in;
-                                findViewById(R.id.spDHBWMaCourse).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourse)).setSelection(finalIn));
-                            }
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-                }
-            });
-
-            String category = preferences.getString(PreferenceKeys.DHBW_MANNHEIM_COURSE_CATEGORY, null);
-            if (category != null) {
-                for (int i = 0; i < categoryAdapter.getCount(); i++)
-                    if (0 == categoryAdapter.getItem(i).compareTo(category)) {
-                        int finalI = i;
-                        findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setSelection(finalI));
-                    }
-            }
-        }).start();
-
         switch (preferences.getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE)) {
             case Import.ImportFunction.NONE:
                 ((RadioButton) findViewById(R.id.rBtnNone)).setChecked(true);
@@ -107,6 +67,57 @@ public class ImportDialog extends Dialog {
         }
         ((RadioButton) findViewById(R.id.rBtnICS)).setOnCheckedChangeListener((compoundButton, b) -> findViewById(R.id.LLLink).setVisibility(b ? View.VISIBLE : View.GONE));
         ((RadioButton) findViewById(R.id.rBtnDHBWMa)).setOnCheckedChangeListener((compoundButton, b) -> findViewById(R.id.LLDHBWMaCourse).setVisibility(b ? View.VISIBLE : View.GONE));
+
+        findViewById(R.id.btnSave).setOnClickListener(view1 -> {
+            Log.i(LOG, "save");
+            if (((RadioButton) findViewById(R.id.rBtnICS)).isChecked()) {
+                Log.d(LOG, "ICS");
+                if (isValid) {
+                    preferences.edit().putInt(PreferenceKeys.MODE, Import.ImportFunction.ICS).apply();
+                    preferences.edit().putString(PreferenceKeys.LINK, ((EditText) findViewById(R.id.edTLink)).getText().toString()).apply();
+                    new Thread(() -> Import.importLecture(this.getContext())).start();
+                    Toast.makeText(getContext(), R.string.it_may_take_a_minute_until_the_change_is_visible_in_the_calendar, Toast.LENGTH_LONG).show();
+                    this.cancel();
+                } else
+                    Toast.makeText(getContext(), R.string.missing_checked_valid_url, Toast.LENGTH_SHORT).show();
+            } else if (((RadioButton) findViewById(R.id.rBtnNone)).isChecked()) {
+                Log.d(LOG, "none");
+                preferences.edit().putInt(PreferenceKeys.MODE, Import.ImportFunction.NONE).apply();
+                this.cancel();
+            } else if (((RadioButton) findViewById(R.id.rBtnDHBWMa)).isChecked()) {
+                Log.d(LOG, "DHBW");
+                Course course = ((Course) ((Spinner) findViewById(R.id.spDHBWMaCourse)).getSelectedItem());
+                CourseCategory category = ((CourseCategory) ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).getSelectedItem());
+                if (course == null || category == null)
+                    Toast.makeText(getContext(), R.string.missing_selected_course, Toast.LENGTH_SHORT).show();
+                else {
+                    preferences.edit()
+                            .putInt(PreferenceKeys.MODE, Import.ImportFunction.DHBWMA)
+                            .putString(PreferenceKeys.LINK, LINK_BEGIN + course.getCourseID())
+                            .putString(PreferenceKeys.DHBW_MANNHEIM_COURSE, course.getCourseName())
+                            .putString(PreferenceKeys.DHBW_MANNHEIM_COURSE_CATEGORY, category.getCourseCategory())
+                            .apply();
+                    new Thread(() -> Import.importLecture(this.getContext())).start();
+                    Toast.makeText(getContext(), R.string.it_may_take_a_minute_until_the_change_is_visible_in_the_calendar, Toast.LENGTH_LONG).show();
+                    this.cancel();
+                }
+            }
+        });
+
+
+        findViewById(R.id.btnCancel).setOnClickListener(view1 -> {
+            Log.i(LOG, "cancel");
+            this.cancel();
+        });
+
+        initDHBW(preferences);
+        initICS(preferences);
+    }
+
+    /**
+     * init the ICS part
+     */
+    private void initICS(SharedPreferences preferences) {
         String s_import = preferences.getString(PreferenceKeys.LINK, null);
         if (s_import != null) {
             lastValidString = s_import;
@@ -130,58 +141,6 @@ public class ImportDialog extends Dialog {
             }
         });
 
-        findViewById(R.id.btnSave).setOnClickListener(view1 -> {
-            Log.i(LOG, "save");
-            if (((RadioButton) findViewById(R.id.rBtnICS)).isChecked()) {
-                Log.d(LOG, "ICS");
-                if (isValid) {
-                    preferences.edit().putInt(PreferenceKeys.MODE, Import.ImportFunction.ICS).apply();
-                    preferences.edit().putString(PreferenceKeys.LINK, ((EditText) findViewById(R.id.edTLink)).getText().toString()).apply();
-                    new Thread(() -> Import.importLecture(this.getContext())).start();
-                    Toast.makeText(getContext(), R.string.it_may_take_a_minute_until_the_change_is_visible_in_the_calendar, Toast.LENGTH_LONG).show();
-                    this.cancel();
-                } else
-                    Toast.makeText(getContext(), R.string.missing_checked_valid_url, Toast.LENGTH_SHORT).show();
-            } else if (((RadioButton) findViewById(R.id.rBtnNone)).isChecked()) {
-                Log.d(LOG, "none");
-                preferences.edit().putInt(PreferenceKeys.MODE, Import.ImportFunction.NONE).apply();
-                this.cancel();
-            } else if (((RadioButton) findViewById(R.id.rBtnDHBWMa)).isChecked()) {
-                Log.d(LOG, "dhbw");
-                Course course = ((Course) ((Spinner) findViewById(R.id.spDHBWMaCourse)).getSelectedItem());
-                CourseCategory category = ((CourseCategory) ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).getSelectedItem());
-                if (course == null || category == null)
-                    Toast.makeText(getContext(), R.string.missing_selected_course, Toast.LENGTH_SHORT).show();
-                else {
-                    preferences.edit()
-                            .putInt(PreferenceKeys.MODE, Import.ImportFunction.DHBWMA)
-                            .putString(PreferenceKeys.LINK, LINK_BEGIN + course.getCourseID())
-                            .putString(PreferenceKeys.DHBW_MANNHEIM_COURSE, course.getCourseName())
-                            .putString(PreferenceKeys.DHBW_MANNHEIM_COURSE_CATEGORY, category.getCourseCategory())
-                            .apply();
-                    new Thread(() -> Import.importLecture(this.getContext())).start();
-                    Toast.makeText(getContext(), R.string.it_may_take_a_minute_until_the_change_is_visible_in_the_calendar, Toast.LENGTH_LONG).show();
-                    this.cancel();
-                }
-            }
-        });
-
-        findViewById(R.id.btnImportDhbwCourses).setOnClickListener(view22 -> {
-            Log.i(LOG, "Start new Import");
-            findViewById(R.id.btnImportDhbwCourses).post(() -> findViewById(R.id.btnImportDhbwCourses).setEnabled(false));
-            findViewById(R.id.imgStatusDHBW).post(() ->findViewById(R.id.imgStatusDHBW).setVisibility(View.VISIBLE));
-            findViewById(R.id.imgStatusDHBW).post(() -> Glide.with(getContext()).load(R.drawable.sandglass).into((ImageView)findViewById(R.id.imgStatusDHBW)));
-            DhbwCourses.loadFromInternet(getContext());
-            findViewById(R.id.btnImportDhbwCourses).post(() -> findViewById(R.id.btnImportDhbwCourses).setEnabled(true));
-            findViewById(R.id.imgStatusDHBW).post(() -> findViewById(R.id.imgStatusDHBW).setVisibility(View.GONE));
-
-        });
-
-        findViewById(R.id.btnCancel).setOnClickListener(view1 -> {
-            Log.i(LOG, "cancel");
-            this.cancel();
-        });
-
         findViewById(R.id.btnCheckLink).setOnClickListener(view12 -> {
             String text = ((EditText) findViewById(R.id.edTLink)).getText().toString();
             Log.i(LOG, "check link: " + text);
@@ -203,6 +162,76 @@ public class ImportDialog extends Dialog {
                 if (isValid) lastValidString = text;
             }).start();
         });
+    }
+
+    /**
+     * init the DHBW part
+     */
+    private void initDHBW(SharedPreferences preferences) {
+        new Thread(() -> {
+            Log.i(LOG, "get DHBW course");
+            List<CourseCategory> courseCategories = DhbwCourses.load(getContext());
+            if (courseCategories == null) {
+                return;
+            }
+            ArrayAdapter<CourseCategory> categoryAdapter = new ArrayAdapter<>(getContext(),
+                    android.R.layout.simple_spinner_item, courseCategories);
+            categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setAdapter(categoryAdapter));
+
+            String category = preferences.getString(PreferenceKeys.DHBW_MANNHEIM_COURSE_CATEGORY, null);
+            if (category != null) {
+                for (int i = 0; i < categoryAdapter.getCount(); i++)
+                    if (0 == categoryAdapter.getItem(i).compareTo(category)) {
+                        int finalI = i;
+                        findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setSelection(finalI));
+                    }
+            }
+
+            ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(@NonNull AdapterView<?> adapterView, View view, int i, long l) {
+                    Log.d(LOG, "Spinner:" + adapterView.getItemAtPosition(i).toString());
+                    ArrayAdapter<Course> courseAdapter = new ArrayAdapter<>(getContext(),
+                            android.R.layout.simple_spinner_item, ((CourseCategory) adapterView.getItemAtPosition(i)).getCourses());
+                    courseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    ((Spinner) findViewById(R.id.spDHBWMaCourse)).setAdapter(courseAdapter);
+                    String course = preferences.getString(PreferenceKeys.DHBW_MANNHEIM_COURSE, null);
+                    if (course != null)
+                        for (int in = 0; in < courseAdapter.getCount(); in++)
+                            if (0 == courseAdapter.getItem(in).compareTo(course)) {
+                                ((Spinner) findViewById(R.id.spDHBWMaCourse)).setSelection(in);
+                                return;
+                            }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                }
+            });
+
+        }).start();
+
+        findViewById(R.id.btnImportDhbwCourses).setOnClickListener(view22 -> {
+            findViewById(R.id.btnImportDhbwCourses).setEnabled(false);
+            findViewById(R.id.imgStatusDHBW).setVisibility(View.VISIBLE);
+            Glide.with(getContext()).load(R.drawable.sandglass).into((ImageView) findViewById(R.id.imgStatusDHBW));
+            new Thread(() -> {
+                Log.i(LOG, "Start new Import");
+                List<CourseCategory> courseCategories = DhbwCourses.reloadFromInternet(getContext());
+                if (courseCategories != null) {
+                    ArrayAdapter<CourseCategory> categoryAdapter = new ArrayAdapter<>(getContext(),
+                            android.R.layout.simple_spinner_item, courseCategories);
+                    categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                    findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setAdapter(categoryAdapter));
+                }
+                findViewById(R.id.btnImportDhbwCourses).post(() -> findViewById(R.id.btnImportDhbwCourses).setEnabled(true));
+                findViewById(R.id.imgStatusDHBW).post(() -> findViewById(R.id.imgStatusDHBW).setVisibility(View.GONE));
+            }).start();
+        });
+
     }
 
 }

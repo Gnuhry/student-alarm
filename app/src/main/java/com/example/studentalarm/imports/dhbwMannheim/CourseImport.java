@@ -7,9 +7,6 @@ import android.widget.Toast;
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.Import;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,16 +19,21 @@ public class CourseImport {
     private static ArrayList<CourseCategory> dhbwCourseCategory;
     private static ArrayList<Course> tempDHBWCourses;
 
-    public static List<CourseCategory> impcourse(@NonNull Context context) {
+    /**
+     * import the course and categories from the internet
+     *
+     * @param context context of application
+     * @return list of all course categories
+     */
+    public static List<CourseCategory> importCourse(@NonNull Context context) {
         dhbwCourseCategory = new ArrayList<>();
         tempDHBWCourses = new ArrayList<>();
         String parse = Import.runSynchronous(LINK_TO_COURSE);
         if (parse != null)
             parse(parse);
-        else {
+        else
             Toast.makeText(context, context.getString(R.string.connection_failed), Toast.LENGTH_SHORT).show();
-        }
-        return dhbwCourseCategory;
+        return dhbwCourseCategory.equals(new ArrayList<>()) ? null : dhbwCourseCategory;
     }
 
     /**
@@ -57,7 +59,7 @@ public class CourseImport {
                         dhbwCourseCategory.add(new CourseCategory(course_category[1], tempDHBWCourses));
                     }
                 }
-
+                return;
             }
         }
     }
