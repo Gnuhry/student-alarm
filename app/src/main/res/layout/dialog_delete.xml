@@ -48,6 +48,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/import_events" />
+
+        <CheckBox
+            android:id="@+id/rdBHolidayEvents"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/holiday_events" />
     </LinearLayout>
 
     <TextView
