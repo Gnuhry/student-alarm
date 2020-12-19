@@ -35,8 +35,8 @@ public class DeleteLectureDialog extends Dialog {
         });
         findViewById(R.id.btnDelete).setOnClickListener(view -> {
             Log.i(LOG, "delete");
-            boolean normal = ((CheckBox) findViewById(R.id.rdBNormalEvents)).isChecked(), chBImport = ((CheckBox) findViewById(R.id.rdBImportEvents)).isChecked();
-            if (normal || chBImport){
+            boolean normal = ((CheckBox) findViewById(R.id.rdBNormalEvents)).isChecked(), chBImport = ((CheckBox) findViewById(R.id.rdBImportEvents)).isChecked(), chbHoliday = ((CheckBox) findViewById(R.id.rdBHolidayEvents)).isChecked();
+            if (normal || chBImport) {
                 Log.i(LOG, "Delete Dialog");
                 new MaterialAlertDialogBuilder(getContext())
                         .setTitle(R.string.delete_all)
@@ -49,14 +49,15 @@ public class DeleteLectureDialog extends Dialog {
                                 schedule.clearNormalEvents();
                             if (chBImport)
                                 schedule.clearImportEvents();
+                            if (chbHoliday)
+                                schedule.clearHolidayEvents();
                             schedule.save(getContext());
                             this.cancel();
                         })
                         .setNegativeButton(R.string.cancel, (dialogInterface, i) -> this.cancel())
                         .setCancelable(true)
-                        .show();}
-
-            else
+                        .show();
+            } else
                 this.cancel();
         });
     }

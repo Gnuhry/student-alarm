@@ -13,7 +13,6 @@
     <string name="import_settings">Import Einstellungen</string>
     <string name="import_">Import</string>
     <string name="import_time">Import Uhrzeit</string>
-    <string name="link_to_file">Link zur Datei</string>
     <string name="automatic_daily_import">Automatischer täglischer Import</string>
     <string name="address">http://www.</string>
     <string name="string_is_not_a_valid_url">Eingabe ist keine validierte URL</string>
@@ -65,6 +64,13 @@
     <string name="before">Früher</string>
     <string name="way">Weg</string>
     <string name="after">Später</string>
+    <string name="regular_lecture">Regelmäßiger Stundenplan</string>
+    <string name="holidays">Ferien/Urlaub</string>
+    <string name="personal_alarm_settings">Persönliche Wecker Einstellungen</string>
+    <string name="edit">bearbeiten</string>
+    <string name="from_day">"Von: %1$s"</string>
+    <string name="until_day">"Bis: %1$s"</string>
+    <string name="holiday_events">Ferien</string>
     <string name="weekly">Wöchentlich</string>
     <string name="eventList">Eventliste</string>
     <string name="refresh">Neuladen</string>
@@ -89,10 +95,6 @@
     <string name="missing">Fehlt</string>
     <string name="end_must_start_after_begin">Ende muss nach dem Begin starten</string>
     <string name="wrong">Falsch</string>
-    <string name="status">Status</string>
-    <string name="ok">Ok</string>
-    <string name="number">Zahl</string>
-    <string name="no_connection">Keine Verbindung</string>
     <string name="save">Speichern</string>
     <string name="do_you_want_to_delete_this_lecture">Möchten sie diese Vorlesung löschen?</string>
     <string name="do_you_want_to_save_your_changes">Möchten Sie ihre Änderungen speichern?</string>
@@ -105,4 +107,9 @@
     <string name="days">Tage:</string>
     <string name="wrong_inputs">Falsche Eingaben</string>
     <string name="room">Raum</string>
+    <string name="status">Status</string>
+    <string name="ok">Ok</string>
+    <string name="number">Zahl</string>
+    <string name="no_connection">Keine Verbindung</string>
+
 </resources>
