@@ -1,10 +1,14 @@
 package com.example.studentalarm.imports;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.preference.Preference;
 
+import com.bumptech.glide.load.engine.Resource;
 import com.example.studentalarm.regular.Hours;
 import com.example.studentalarm.regular.RegularLectureSchedule;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.save.SaveLecture;
 
 import java.io.FileInputStream;
@@ -19,6 +23,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.prefs.Preferences;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -446,6 +451,7 @@ public class LectureSchedule {
             this.end = new Date(end.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
             this.id = counter++;
             this.isImport = isImport;
+            //this.color=Color.parseColor(resources.getString(preferences.getInt(PreferenceKeys.IMPORT_COLOR,0)));
         }
 
         private Lecture(boolean isImport, @NonNull Date start, @NonNull Date end, int id) {
@@ -453,6 +459,7 @@ public class LectureSchedule {
             this.end = new Date(end.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
             this.id = id;
             this.isImport = isImport;
+            //this.color=Color.parseColor(resources.getString(preferences.getInt(PreferenceKeys.IMPORT_COLOR,0)));
         }
 
         @Nullable
