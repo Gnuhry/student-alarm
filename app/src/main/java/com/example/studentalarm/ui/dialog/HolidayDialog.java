@@ -52,7 +52,7 @@ public class HolidayDialog extends DialogFragment {
         this.schedule = schedule;
         this.index = index;
         if (lecture == null) {
-            this.lecture = new LectureSchedule.Lecture(false, new Date(), new Date());
+            this.lecture = new LectureSchedule.Lecture(true, new Date(), new Date());
             create = true;
         }
     }

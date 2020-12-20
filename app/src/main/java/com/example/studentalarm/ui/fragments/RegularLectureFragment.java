@@ -1,6 +1,7 @@
 package com.example.studentalarm.ui.fragments;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -158,7 +160,12 @@ public class RegularLectureFragment extends Fragment {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2020, 5, 1, 0, 0, 0);
         weekView.scrollToDate(calendar);
-        SimpleDateFormat format = new SimpleDateFormat("E", getResources().getConfiguration().locale);
+        Locale locale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            locale = getContext().getResources().getConfiguration().getLocales().get(0);
+        else
+            locale = getContext().getResources().getConfiguration().locale;
+        SimpleDateFormat format = new SimpleDateFormat("E", locale);
         weekView.setTimeFormatter(hour -> hour + 1 + getString(R.string.hour));
         weekView.setDateFormatter(date -> format.format(date.getTime()));
         weekView.setMinHour(0);

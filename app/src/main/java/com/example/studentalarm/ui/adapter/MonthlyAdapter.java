@@ -1,6 +1,7 @@
 package com.example.studentalarm.ui.adapter;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.example.studentalarm.ui.fragments.ReloadLecture;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
@@ -50,9 +52,14 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
     public MonthlyAdapter(@NonNull LectureSchedule lecture_schedule, @NonNull Context context, FragmentActivity ac, ReloadLecture reloadLecture_) {
         reloadLecture = reloadLecture_;
         activity = ac;
-        dayOfWeekName = new SimpleDateFormat("EEEE", context.getResources().getConfiguration().locale);
-        day = DateFormat.getDateInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
-        time = DateFormat.getTimeInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
+        Locale locale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            locale = context.getResources().getConfiguration().getLocales().get(0);
+        else
+            locale = context.getResources().getConfiguration().locale;
+        dayOfWeekName = new SimpleDateFormat("EEEE", locale);
+        day = DateFormat.getDateInstance(DateFormat.LONG, locale);
+        time = DateFormat.getTimeInstance(DateFormat.LONG, locale);
         this.lecture = lecture_schedule.getAllLectureWithEachHolidayAndDayTitle(context);
     }
 

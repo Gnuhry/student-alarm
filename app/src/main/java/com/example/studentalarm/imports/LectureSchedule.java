@@ -3,6 +3,7 @@ package com.example.studentalarm.imports;
 import android.content.Context;
 import android.graphics.Color;
 
+import com.example.studentalarm.R;
 import com.example.studentalarm.regular.Hours;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.save.SaveLecture;
@@ -51,7 +52,8 @@ public class LectureSchedule {
         List<Lecture> all = new ArrayList<>();
         all.addAll(lecture);
         all.addAll(importLecture);
-        all.addAll(holidays);
+        for (Lecture l : holidays)
+            all.add(l.setName(context.getString(R.string.holidays)));
         Calendar from = Calendar.getInstance(), end = Calendar.getInstance();
         from.add(Calendar.YEAR, -3);
         end.add(Calendar.YEAR, 3);
@@ -86,7 +88,7 @@ public class LectureSchedule {
                 end_C.setTimeInMillis(calendar.getTimeInMillis());
                 end_C.set(Calendar.HOUR_OF_DAY, 24);
                 end_C.set(Calendar.MINUTE, 0);
-                all.add(new LectureSchedule.Lecture(l.isImport(), calendar.getTime(), end_C.getTime()).setName(l.getName()).setColor(l.getColor()));
+                all.add(new LectureSchedule.Lecture(l.isImport(), calendar.getTime(), end_C.getTime()).setName(context.getString(R.string.holidays)).setColor(l.getColor()));
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
             }
         }
