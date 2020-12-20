@@ -28,6 +28,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.prefs.Preferences;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -59,16 +60,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 alarmPhone = findPreference(PreferenceKeys.ALARM_PHONE),
                 alarmChange = findPreference(PreferenceKeys.ALARM_CHANGE),
                 autoImport = findPreference(PreferenceKeys.AUTO_IMPORT);
-        Preference importPref = findPreference("IMPORT"),
-                importColorPref = findPreference("IMPORT_COLOR"),
-                eventDeleteAll = findPreference("EVENT_DELETE_ALL"),
-                export = findPreference("EXPORT"),
-                reset = findPreference("RESET");
+        Preference importPref = findPreference(PreferenceKeys.IMPORT),
+                importColorPref = findPreference(PreferenceKeys.IMPORT_COLOR),
+                eventDeleteAll = findPreference(PreferenceKeys.EVENT_DELETE_ALL),
+                export = findPreference(PreferenceKeys.EXPORT),
+                reset = findPreference(PreferenceKeys.RESET);
         EditTextPreference snooze = findPreference(PreferenceKeys.SNOOZE),
                 importTime = findPreference(PreferenceKeys.IMPORT_TIME);
         ListPreference language = findPreference(PreferenceKeys.LANGUAGE),
                 ringtone = findPreference(PreferenceKeys.RINGTONE),
-                theme = findPreference("THEME");
+                theme = findPreference(PreferenceKeys.THEME);
 
         if (alarmOn == null ||
                 alarmPhone == null ||
@@ -175,13 +176,14 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         importColorPref.setSummaryProvider(preference -> {
-            //SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
-            StringBuilder sb = new StringBuilder("Test");
-            return sb.toString();
+            SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
+            return getResources().getString(preferences.getInt(PreferenceKeys.IMPORT_COLOR,R.string.error));//Uses String ID to use String ini XML
         });
         importColorPref.setOnPreferenceClickListener(preference -> {
+            SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
             if (getContext() != null && getActivity() != null)
-                new ImportColorDialog(getContext()).show();
+                new ImportColorDialog(preferences).show(getActivity().getSupportFragmentManager(), "dialog");
+            Log.d(LOG, "NEW pref colorName: "+getResources().getString(preferences.getInt(PreferenceKeys.IMPORT_COLOR,R.string.error)));
             return true;
         });
 

@@ -1,5 +1,6 @@
 package com.example.studentalarm.ui.dialog;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,6 +15,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.studentalarm.EventColor;
+import com.example.studentalarm.PossibleColors;
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.ui.adapter.RoomAdapter;
@@ -37,7 +40,7 @@ public class RegularLectureDialog extends DialogFragment {
     @NonNull
     private final RegularLectureFragment fragment;
     @NonNull
-    private final List<EventColor> colors;
+    private List<EventColor> colors;
     private final String oldTitle, oldDocent;
 
     private EditText title, docent;
@@ -51,11 +54,16 @@ public class RegularLectureDialog extends DialogFragment {
         this.fragment = fragment;
         this.data = data;
         this.index = index;
+        /*
+        Log.d(LOG, "Context is: "+getContext());
+        colors= new PossibleColors(getContext()).colorList();
+
         colors = new ArrayList<>();
         colors.add(new EventColor(R.string.red, Color.RED));
         colors.add(new EventColor(R.string.green, Color.GREEN));
         colors.add(new EventColor(R.string.blue, Color.BLUE));
         colors.add(new EventColor(R.string.yellow, Color.YELLOW));
+        */
         if (data != null && index >= 0) {
             RegularLectureSchedule.RegularLecture lecture = data.getLectures().get(index);
             oldTitle = lecture.getName();
@@ -81,6 +89,9 @@ public class RegularLectureDialog extends DialogFragment {
         cancel = view.findViewById(R.id.txVCancel);
         delete = view.findViewById(R.id.txVDelete);
         spinner = view.findViewById(R.id.spColor);
+
+        Log.d(LOG, "Context is: "+getContext());
+        colors= new PossibleColors(getContext()).colorList();
 
         init();
         if (data != null && index >= 0 && index < data.getLectures().size())
@@ -165,7 +176,7 @@ public class RegularLectureDialog extends DialogFragment {
         ArrayAdapter<EventColor> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item);
         adapter.addAll(colors);
         spinner.setAdapter(adapter);
-        spinner.setSelection(colors.indexOf(new EventColor(Color.BLUE)));
+        spinner.setSelection(colors.indexOf(new EventColor(Color.BLUE,getContext())));
 
         title.addTextChangedListener(new TextWatcher() {
             @Override
@@ -230,7 +241,7 @@ public class RegularLectureDialog extends DialogFragment {
         RegularLectureSchedule.RegularLecture lecture = data.getLectures().get(index);
         title.setText(lecture.getName());
         docent.setText(lecture.getDocent());
-        spinner.setSelection(colors.indexOf(new EventColor(lecture.getColor())));
+        spinner.setSelection(colors.indexOf(new EventColor(lecture.getColor(),getContext())));
         delete.setVisibility(View.VISIBLE);
     }
 
@@ -238,12 +249,11 @@ public class RegularLectureDialog extends DialogFragment {
      * set cancel direct, if data is the same
      */
     private void checkCancelDirect() {
-        cancelDirect = ((EventColor) spinner.getSelectedItem()).color == oldColor && docent.getText().toString().equals(oldDocent) && title.getText().toString().equals(oldTitle);
+        cancelDirect = ((EventColor) spinner.getSelectedItem()).getColor() == oldColor && docent.getText().toString().equals(oldDocent) && title.getText().toString().equals(oldTitle);
     }
 
-    /**
-     * class to create a adapter with colors for spinner
-     */
+
+    /*
     public class EventColor {
         private final int name, color;
 
@@ -273,6 +283,6 @@ public class RegularLectureDialog extends DialogFragment {
                 return color == ((EventColor) obj).color;
             return false;
         }
-    }
+    }*/
 }
 
