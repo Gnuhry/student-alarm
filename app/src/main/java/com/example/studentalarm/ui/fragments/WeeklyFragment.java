@@ -66,6 +66,13 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
         new Thread(this::loadData).start();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (progress.isShowing())
+            progress.dismiss();
+    }
+
     /**
      * Refresh the Lecture Schedule
      */
