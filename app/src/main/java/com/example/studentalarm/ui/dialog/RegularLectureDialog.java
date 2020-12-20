@@ -54,16 +54,6 @@ public class RegularLectureDialog extends DialogFragment {
         this.fragment = fragment;
         this.data = data;
         this.index = index;
-        /*
-        Log.d(LOG, "Context is: "+getContext());
-        colors= new PossibleColors(getContext()).colorList();
-
-        colors = new ArrayList<>();
-        colors.add(new EventColor(R.string.red, Color.RED));
-        colors.add(new EventColor(R.string.green, Color.GREEN));
-        colors.add(new EventColor(R.string.blue, Color.BLUE));
-        colors.add(new EventColor(R.string.yellow, Color.YELLOW));
-        */
         if (data != null && index >= 0) {
             RegularLectureSchedule.RegularLecture lecture = data.getLectures().get(index);
             oldTitle = lecture.getName();
@@ -252,37 +242,5 @@ public class RegularLectureDialog extends DialogFragment {
         cancelDirect = ((EventColor) spinner.getSelectedItem()).getColor() == oldColor && docent.getText().toString().equals(oldDocent) && title.getText().toString().equals(oldTitle);
     }
 
-
-    /*
-    public class EventColor {
-        private final int name, color;
-
-        private EventColor(int color) {
-            name = 0;
-            this.color = color;
-        }
-
-        private EventColor(int name, int color) {
-            this.name = name;
-            this.color = color;
-        }
-
-        public int getColor() {
-            return color;
-        }
-
-        @NonNull
-        @Override
-        public String toString() {
-            return getString(name);
-        }
-
-        @Override
-        public boolean equals(@Nullable Object obj) {
-            if (obj instanceof EventColor)
-                return color == ((EventColor) obj).color;
-            return false;
-        }
-    }*/
 }
 
