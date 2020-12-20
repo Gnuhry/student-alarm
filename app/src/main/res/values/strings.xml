@@ -128,6 +128,7 @@
     <string name="ok">OK</string>
     <string name="number">number</string>
     <string name="no_connection">No connection</string>
+    <string name="vert_line" translatable="false">|</string>
 
 
 </resources>

@@ -13,11 +13,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
@@ -25,7 +27,10 @@ import androidx.annotation.Nullable;
 
 public class LectureSchedule {
     @NonNull
+    public static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
+    @NonNull
     private final List<Lecture> lecture, importLecture, holidays;
+    private static int positionScroll = -1;
 
     /**
      * Create an empty lecture schedule
@@ -53,6 +58,65 @@ public class LectureSchedule {
         all.addAll(getRegularLecture(context, from, end));
         Collections.sort(all);
         return all;
+    }
+
+    /**
+     * get all lectures from Lecture_Schedule with holiday as each lecture per day
+     *
+     * @return all Lectures
+     */
+    @NonNull
+    public List<Lecture> getAllLectureWithEachHoliday(@NonNull Context context) {
+        List<Lecture> all = new ArrayList<>();
+        all.addAll(lecture);
+        all.addAll(importLecture);
+        Calendar from = Calendar.getInstance(), end = Calendar.getInstance();
+        from.add(Calendar.YEAR, -3);
+        end.add(Calendar.YEAR, 3);
+        all.addAll(getRegularLecture(context, from, end));
+        for (Lecture l : holidays) {
+            Calendar calendar = Calendar.getInstance(), later = Calendar.getInstance(), end_C = Calendar.getInstance();
+            calendar.setTime(l.getStart());
+            calendar.set(Calendar.MILLISECOND, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            later.setTime(l.getEnd());
+            while (later.after(calendar)) {
+                end_C.setTimeInMillis(calendar.getTimeInMillis());
+                end_C.set(Calendar.HOUR_OF_DAY, 24);
+                end_C.set(Calendar.MINUTE, 0);
+                all.add(new LectureSchedule.Lecture(l.isImport(), calendar.getTime(), end_C.getTime()).setName(l.getName()).setColor(l.getColor()));
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+            }
+        }
+        Collections.sort(all);
+        return all;
+    }
+
+    /**
+     * get all lectures from Lecture_Schedule with holiday as each lecture per day and day title as lecture with id -1
+     *
+     * @return all Lectures
+     */
+    @NonNull
+    public List<Lecture> getAllLectureWithEachHolidayAndDayTitle(@NonNull Context context) {
+        positionScroll = -1;
+        List<Lecture> erg = new ArrayList<>();
+        String formatS = "01.01.1900", format2S;
+        for (LectureSchedule.Lecture l : getAllLectureWithEachHoliday(context)) {
+            format2S = FORMAT.format(l.getStart());
+            if (!format2S.equals(formatS)) {
+                formatS = format2S;
+                if (positionScroll == -1 && l.getStart().after(Calendar.getInstance().getTime()))
+                    positionScroll = erg.size();
+                erg.add(new LectureSchedule.Lecture(false, l.getStart(), new Date(), -1));
+            }
+            erg.add(l);
+        }
+        if (positionScroll == -1 && lecture.size() > 0)
+            positionScroll = lecture.size() - 1;
+        return erg;
     }
 
     /**
@@ -98,6 +162,10 @@ public class LectureSchedule {
     @NonNull
     public List<Lecture> getHolidays() {
         return holidays;
+    }
+
+    public static int getPositionScroll() {
+        return positionScroll;
     }
 
     /**
