@@ -19,6 +19,7 @@ import com.example.studentalarm.ui.dialog.EventDialog;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -151,11 +152,16 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
      */
     private void initWeekView(@NonNull WeekView weekView) {
         Log.i(LOG, "init week view");
-        SimpleDateFormat format = new SimpleDateFormat("E", getResources().getConfiguration().locale);
-        DateFormat dateformat = DateFormat.getDateInstance(DateFormat.SHORT, getResources().getConfiguration().locale);
+        Locale locale;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N)
+            locale = getResources().getConfiguration().getLocales().get(0);
+        else
+            locale = getResources().getConfiguration().locale;
+        SimpleDateFormat format = new SimpleDateFormat("E", locale);
+        DateFormat dateformat = DateFormat.getDateInstance(DateFormat.SHORT, locale);
         adapter = new Adapter();
         weekView.setAdapter(adapter);
-        weekView.setTimeFormatter(hour -> getResources().getConfiguration().locale.getLanguage().equals("en") ? (hour == 12 ? "12 pm" : (hour > 21 ? (hour - 12) + " pm" : (hour > 12 ? "0" + (hour - 12) + " pm" : (hour >= 10 ? hour + " am" : "0" + hour + " am")))) : hour >= 10 ? hour + " h" : "0" + hour + " h");
+        weekView.setTimeFormatter(hour -> locale.getLanguage().equals("en") ? (hour == 12 ? "12 pm" : (hour > 21 ? (hour - 12) + " pm" : (hour > 12 ? "0" + (hour - 12) + " pm" : (hour >= 10 ? hour + " am" : "0" + hour + " am")))) : hour >= 10 ? hour + " h" : "0" + hour + " h");
         weekView.setDateFormatter(date -> String.format("%s %s", format.format(date.getTime()), dateformat.format(date.getTime())));
     }
 

@@ -2,6 +2,7 @@ package com.example.studentalarm.ui.dialog;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -474,8 +475,13 @@ public class EventDialog extends DialogFragment {
      */
     @NonNull
     private String formatDate(@NonNull Date date) {
-        SimpleDateFormat format = new SimpleDateFormat("E", getResources().getConfiguration().locale);
-        DateFormat dateformat = DateFormat.getDateInstance(DateFormat.MEDIUM, getResources().getConfiguration().locale);
+        Locale locale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            locale = getContext().getResources().getConfiguration().getLocales().get(0);
+        else
+            locale = getContext().getResources().getConfiguration().locale;
+        SimpleDateFormat format = new SimpleDateFormat("E", locale);
+        DateFormat dateformat = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
         return String.format("%s %s", format.format(date.getTime()), dateformat.format(date.getTime()));
     }
 
@@ -499,7 +505,12 @@ public class EventDialog extends DialogFragment {
      */
     @Nullable
     private Date convertDate(@NonNull String string, int pos) {
-        DateFormat dateformat = DateFormat.getDateInstance(DateFormat.MEDIUM, getResources().getConfiguration().locale);
+        Locale locale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            locale = getContext().getResources().getConfiguration().getLocales().get(0);
+        else
+            locale = getContext().getResources().getConfiguration().locale;
+        DateFormat dateformat = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
         Calendar calendar = Calendar.getInstance(), calendar1 = Calendar.getInstance();
         try {
             Date date = dateformat.parse(string.substring(4, pos));

@@ -1,9 +1,7 @@
 package com.example.studentalarm.ui.widget;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Binder;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -11,6 +9,7 @@ import android.widget.RemoteViewsService;
 
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.LectureSchedule;
+import com.example.studentalarm.save.PreferenceKeys;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -19,6 +18,7 @@ import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
 
 import static com.example.studentalarm.ui.adapter.MonthlyAdapter.cutTime;
 
@@ -36,18 +36,14 @@ public class RemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory
     @Override
     public void onCreate() {
         lectures = LectureSchedule.load(context).getAllLectureWithEachHolidayAndDayTitle(context);
-        dayOfWeekName = new SimpleDateFormat("EEEE", context.getResources().getConfiguration().locale);
-        day = DateFormat.getDateInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
-        time = DateFormat.getTimeInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
+        reload();
     }
 
     @Override
     public void onDataSetChanged() {
         final long identityToken = Binder.clearCallingIdentity();
         lectures = LectureSchedule.load(context).getAllLectureWithEachHolidayAndDayTitle(context);
-        dayOfWeekName = new SimpleDateFormat("EEEE", context.getResources().getConfiguration().locale);
-        day = DateFormat.getDateInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
-        time = DateFormat.getTimeInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
+        reload();
         Binder.restoreCallingIdentity(identityToken);
     }
 
@@ -64,6 +60,7 @@ public class RemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory
     @NonNull
     @Override
     public RemoteViews getViewAt(int i) {
+        reload();
         RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.app_widget_item);
         LectureSchedule.Lecture l = lectures.get(i);
         if (l.getId() == -1) {
@@ -106,5 +103,15 @@ public class RemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory
     @Override
     public boolean hasStableIds() {
         return true;
+    }
+
+    /**
+     * loading the data
+     */
+    private void reload() {
+        Locale locale = new Locale(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.LANGUAGE, PreferenceKeys.defaultLanguage(context)).toLowerCase());
+        dayOfWeekName = new SimpleDateFormat("EEEE", locale);
+        day = DateFormat.getDateInstance(DateFormat.LONG, locale);
+        time = DateFormat.getTimeInstance(DateFormat.LONG, locale);
     }
 }
