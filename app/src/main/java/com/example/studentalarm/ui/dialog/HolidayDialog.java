@@ -44,8 +44,8 @@ public class HolidayDialog extends DialogFragment {
     private TextView from, until;
     private boolean create = false;
 
-    public HolidayDialog(@Nullable LectureSchedule schedule, @NonNull Context context, @NonNull HolidayAdapter adapter, int index) {
-        this.lecture = schedule == null ? null : schedule.getHolidays().get(index);
+    public HolidayDialog(@NonNull LectureSchedule schedule, @NonNull Context context, @NonNull HolidayAdapter adapter, int index) {
+        this.lecture = index < 0 ? null : schedule.getHolidays().get(index);
         old_lecture = lecture;
         this.context = context;
         this.adapter = adapter;
