@@ -119,36 +119,6 @@ public class LectureSchedule {
         return erg;
     }
 
-    /**
-     * get all lecture which are not in the holidays
-     *
-     * @return lecture which are not in the holidays
-     */
-    @NonNull
-    private List<Lecture> getAllLectureWithoutHolidayAndHolidayEvents(@NonNull Context context) {
-        List<Lecture> all = new ArrayList<>(), all2 = new ArrayList<>();
-        all.addAll(lecture);
-        all.addAll(importLecture);
-        Calendar from = Calendar.getInstance(), end = Calendar.getInstance();
-        from.add(Calendar.YEAR, -3);
-        end.add(Calendar.YEAR, 3);
-        all.addAll(getRegularLecture(context, from, end));
-        if (holidays.size() > 0) {
-            boolean skip;
-            for (Lecture l : all) {
-                skip = false;
-                for (int i = 0; i < holidays.size() && !skip; i++)
-                    if (l.getStart().after(holidays.get(i).getStart()) && l.getStart().before(holidays.get(i).getEnd())) {
-                        all2.add(l);
-                        skip = true;
-                    }
-            }
-            all.removeAll(all2);
-        }
-        Collections.sort(all);
-        return all;
-    }
-
     @NonNull
     public List<Lecture> getLecture() {
         return lecture;
@@ -260,6 +230,35 @@ public class LectureSchedule {
         return this;
     }
 
+    /**
+     * get all lecture which are not in the holidays
+     *
+     * @return lecture which are not in the holidays
+     */
+    @NonNull
+    private List<Lecture> getAllLectureWithoutHolidayAndHolidayEvents(@NonNull Context context) {
+        List<Lecture> all = new ArrayList<>(), all2 = new ArrayList<>();
+        all.addAll(lecture);
+        all.addAll(importLecture);
+        Calendar from = Calendar.getInstance(), end = Calendar.getInstance();
+        from.add(Calendar.YEAR, -3);
+        end.add(Calendar.YEAR, 3);
+        all.addAll(getRegularLecture(context, from, end));
+        if (holidays.size() > 0) {
+            boolean skip;
+            for (Lecture l : all) {
+                skip = false;
+                for (int i = 0; i < holidays.size() && !skip; i++)
+                    if (l.getStart().after(holidays.get(i).getStart()) && l.getStart().before(holidays.get(i).getEnd())) {
+                        all2.add(l);
+                        skip = true;
+                    }
+            }
+            all.removeAll(all2);
+        }
+        Collections.sort(all);
+        return all;
+    }
 
     /**
      * get all regular lecture as lecture

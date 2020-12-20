@@ -15,6 +15,7 @@ import com.example.studentalarm.imports.LectureSchedule;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,21 +31,20 @@ public class RemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory
 
     public RemoteViewsFactory(@NonNull Context context) {
         this.context = context;
+    }
+
+    @Override
+    public void onCreate() {
+        lectures = LectureSchedule.load(context).getAllLectureWithEachHolidayAndDayTitle(context);
         dayOfWeekName = new SimpleDateFormat("EEEE", context.getResources().getConfiguration().locale);
         day = DateFormat.getDateInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
         time = DateFormat.getTimeInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
     }
 
     @Override
-    public void onCreate() {
-        lectures = LectureSchedule.load(context).getAllLectureWithEachHolidayAndDayTitle(context);
-    }
-
-    @Override
     public void onDataSetChanged() {
         final long identityToken = Binder.clearCallingIdentity();
         lectures = LectureSchedule.load(context).getAllLectureWithEachHolidayAndDayTitle(context);
-        Log.d("Data", "CHANGED");
         dayOfWeekName = new SimpleDateFormat("EEEE", context.getResources().getConfiguration().locale);
         day = DateFormat.getDateInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
         time = DateFormat.getTimeInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
@@ -84,7 +84,6 @@ public class RemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory
             rv.setTextColor(R.id.txVBarrier1, l.getColor());
             rv.setTextColor(R.id.txVBarrier2, l.getColor());
         }
-        Log.d("Data", "set");
         return rv;
     }
 
