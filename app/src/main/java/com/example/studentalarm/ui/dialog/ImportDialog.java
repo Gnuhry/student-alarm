@@ -26,7 +26,7 @@ import com.example.studentalarm.imports.ICS;
 import com.example.studentalarm.imports.Import;
 import com.example.studentalarm.imports.dhbwMannheim.Course;
 import com.example.studentalarm.imports.dhbwMannheim.CourseCategory;
-import com.example.studentalarm.imports.dhbwMannheim.DhbwCourses;
+import com.example.studentalarm.imports.dhbwMannheim.CourseImport;
 import com.example.studentalarm.save.PreferenceKeys;
 
 import java.util.List;
@@ -184,7 +184,7 @@ public class ImportDialog extends Dialog {
         new Thread(() -> {
             findViewById(R.id.spDHBWMaCourseCategory).post(() -> progress.show());
             Log.i(LOG, "get DHBW course");
-            List<CourseCategory> courseCategories = DhbwCourses.load(getContext());
+            List<CourseCategory> courseCategories = CourseImport.load(getContext());
             if (courseCategories == null) {
                 return;
             }
@@ -232,7 +232,7 @@ public class ImportDialog extends Dialog {
             Glide.with(getContext()).load(R.drawable.sandglass).into((ImageView) findViewById(R.id.imgStatusDHBW));
             new Thread(() -> {
                 Log.i(LOG, "Start new Import");
-                List<CourseCategory> courseCategories = DhbwCourses.reloadFromInternet(getContext());
+                List<CourseCategory> courseCategories = CourseImport.reloadFromInternet(getContext());
                 if (courseCategories != null) {
                     ArrayAdapter<CourseCategory> categoryAdapter = new ArrayAdapter<>(getContext(),
                             android.R.layout.simple_spinner_item, courseCategories);
