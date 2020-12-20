@@ -16,15 +16,19 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import static com.example.studentalarm.ui.adapter.MonthlyAdapter.cutTime;
 
 public class RemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
+    @NonNull
     private final Context context;
     private List<LectureSchedule.Lecture> lectures;
     private static SimpleDateFormat dayOfWeekName;
     private static DateFormat day, time;
 
-    public RemoteViewsFactory(Context context) {
+    public RemoteViewsFactory(@NonNull Context context) {
         this.context = context;
         dayOfWeekName = new SimpleDateFormat("EEEE", context.getResources().getConfiguration().locale);
         day = DateFormat.getDateInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
@@ -57,6 +61,7 @@ public class RemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory
         return lectures.size();
     }
 
+    @NonNull
     @Override
     public RemoteViews getViewAt(int i) {
         RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.app_widget_item);
@@ -84,6 +89,7 @@ public class RemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory
         return rv;
     }
 
+    @Nullable
     @Override
     public RemoteViews getLoadingView() {
         return null;
