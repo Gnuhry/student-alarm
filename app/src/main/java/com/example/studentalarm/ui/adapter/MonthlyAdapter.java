@@ -15,7 +15,6 @@ import com.example.studentalarm.ui.fragments.ReloadLecture;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;

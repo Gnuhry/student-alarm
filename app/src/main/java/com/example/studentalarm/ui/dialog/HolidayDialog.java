@@ -29,7 +29,7 @@ import androidx.fragment.app.DialogFragment;
 
 public class HolidayDialog extends DialogFragment {
     private static final String LOG = "HolidayDialog";
-    @Nullable
+    @NonNull
     private final LectureSchedule schedule;
     private final int index;
     @Nullable
