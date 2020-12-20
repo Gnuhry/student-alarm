@@ -57,7 +57,7 @@ public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.ViewHold
         if (schedule.getHolidays().size() == position) {
             holder.llHolidays.setVisibility(View.GONE);
             holder.add.setVisibility(View.VISIBLE);
-            holder.add.setOnClickListener(view -> new HolidayDialog(null, context, this, 0).show(activity.getSupportFragmentManager(), "dialog"));
+            holder.add.setOnClickListener(view -> new HolidayDialog(schedule, context, this, -1).show(activity.getSupportFragmentManager(), "dialog"));
         } else {
             holder.add.setVisibility(View.GONE);
             holder.llHolidays.setVisibility(View.VISIBLE);
