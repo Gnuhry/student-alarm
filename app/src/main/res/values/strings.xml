@@ -128,6 +128,8 @@
     <string name="ok">OK</string>
     <string name="number">number</string>
     <string name="no_connection">No connection</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
 
 </resources>
