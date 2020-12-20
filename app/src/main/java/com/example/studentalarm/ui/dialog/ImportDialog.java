@@ -1,6 +1,7 @@
 package com.example.studentalarm.ui.dialog;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import com.example.studentalarm.save.PreferenceKeys;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
 
@@ -40,9 +42,15 @@ public class ImportDialog extends Dialog {
     private static final String LOG = "ImportDialog";
     private boolean isValid = false;
     private String lastValidString;
+    @Nullable
+    private ProgressDialog progress;
 
     public ImportDialog(@NonNull Context context) {
         super(context);
+        progress = new ProgressDialog(context);
+        progress.setTitle(context.getString(R.string.loading));
+        progress.setMessage(context.getString(R.string.wait_while_loading));
+        progress.setCancelable(false);
     }
 
     @Override
@@ -174,6 +182,7 @@ public class ImportDialog extends Dialog {
      */
     private void initDHBW(@NonNull SharedPreferences preferences) {
         new Thread(() -> {
+            findViewById(R.id.spDHBWMaCourseCategory).post(() -> progress.show());
             Log.i(LOG, "get DHBW course");
             List<CourseCategory> courseCategories = DhbwCourses.load(getContext());
             if (courseCategories == null) {
@@ -214,7 +223,7 @@ public class ImportDialog extends Dialog {
                 public void onNothingSelected(AdapterView<?> adapterView) {
                 }
             });
-
+            findViewById(R.id.spDHBWMaCourseCategory).post(() -> progress.dismiss());
         }).start();
 
         findViewById(R.id.btnImportDhbwCourses).setOnClickListener(view22 -> {
