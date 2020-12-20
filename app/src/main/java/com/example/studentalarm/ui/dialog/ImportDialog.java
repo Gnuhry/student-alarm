@@ -43,7 +43,7 @@ public class ImportDialog extends Dialog {
     private boolean isValid = false;
     private String lastValidString;
     @Nullable
-    private ProgressDialog progress;
+    private final ProgressDialog progress;
 
     public ImportDialog(@NonNull Context context) {
         super(context);

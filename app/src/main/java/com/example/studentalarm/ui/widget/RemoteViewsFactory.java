@@ -70,7 +70,6 @@ public class RemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory
             rv.setTextViewTextSize(R.id.txVTitle, TypedValue.COMPLEX_UNIT_SP, 18);
             rv.setViewVisibility(R.id.txVBarrier1, View.INVISIBLE);
             rv.setViewVisibility(R.id.LLEvent2, View.INVISIBLE);
-            rv.setTextColor(R.id.txVTitle, Color.BLACK);
             rv.setTextViewText(R.id.txVTitle, String.format("-- %s %s --", dayOfWeekName.format(l.getStart()), day.format(l.getStart())));
             rv.setTextViewText(R.id.txVFrom, null);
         } else {
