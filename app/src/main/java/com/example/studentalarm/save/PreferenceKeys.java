@@ -32,6 +32,12 @@ public class PreferenceKeys {
             DHBW_MANNHEIM_COURSE_CATEGORY = "DHBWMANNHEIMCOURSECATEGORY",
             DHBW_MANNHEIM_COURSE = "DHBWMANNHEIMCOURSE",
             WAIT_FOR_NETWORK="WAIT_FOR_NETWORK",
+            IMPORT ="IMPORT",
+            IMPORT_COLOR="IMPORT_COLOR",
+            EVENT_DELETE_ALL="EVENT_DELETE_ALL",
+            EXPORT="EXPORT",
+            RESET="RESET",
+            THEME="THEME",
 
     DEFAULT_RINGTONE = "Default",
             DEFAULT_LANGUAGE = "EN",
@@ -69,6 +75,8 @@ public class PreferenceKeys {
             preferences.edit().putString(PreferenceKeys.SNOOZE, DEFAULT_SNOOZE).apply();
         if (preferences.getString(PreferenceKeys.IMPORT_TIME, null) == null)
             preferences.edit().putString(PreferenceKeys.IMPORT_TIME, DEFAULT_IMPORT_TIME).apply();
+        if (preferences.getString(PreferenceKeys.IMPORT_COLOR, null) == null)
+            preferences.edit().putInt(PreferenceKeys.IMPORT_COLOR, R.string.red).apply();//red als default Colour
         return erg;
     }
 

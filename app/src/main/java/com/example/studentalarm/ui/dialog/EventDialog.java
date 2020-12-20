@@ -18,6 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.studentalarm.EventColor;
+import com.example.studentalarm.PossibleColors;
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.LectureSchedule;
@@ -47,7 +49,7 @@ public class EventDialog extends DialogFragment {
     private final LectureSchedule schedule;
     private final ReloadLecture lecture;
     @NonNull
-    private final List<EventColor> colors;
+    private List<EventColor> colors;
 
     private EditText title, docent, location, begin, end;
     private LinearLayout LBegin, LEnd;
@@ -61,11 +63,18 @@ public class EventDialog extends DialogFragment {
         this.lecture = lecture;
         this.data = data;
         this.schedule = schedule;
+
+        /*
+        Log.d(LOG, "Context is: "+getContext());
+        colors= new PossibleColors(getContext()).colorList();
+
+
         colors = new ArrayList<>();
         colors.add(new EventColor(R.string.red, Color.RED));
         colors.add(new EventColor(R.string.green, Color.GREEN));
         colors.add(new EventColor(R.string.blue, Color.BLUE));
         colors.add(new EventColor(R.string.yellow, Color.YELLOW));
+        */
         if (data != null)
             Log.d(LOG, data.toString());
     }
@@ -93,6 +102,9 @@ public class EventDialog extends DialogFragment {
         cancel = view.findViewById(R.id.txVCancel);
         delete = view.findViewById(R.id.txVDelete);
         spinner = view.findViewById(R.id.spColor);
+
+        Log.d(LOG, "Context is: "+getContext());
+        colors= new PossibleColors(getContext()).colorList();
 
         initSpinner();
         if (data != null) {
@@ -157,7 +169,7 @@ public class EventDialog extends DialogFragment {
         ArrayAdapter<EventColor> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item);
         adapter.addAll(colors);
         spinner.setAdapter(adapter);
-        spinner.setSelection(colors.indexOf(new EventColor(Color.BLUE)));
+        spinner.setSelection(colors.indexOf(new EventColor(Color.BLUE,getContext())));
     }
 
     /**
@@ -346,7 +358,7 @@ public class EventDialog extends DialogFragment {
         dPEnd.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), (datePicker, i, i1, i2) -> setDateTime(txVEnd, dPEnd, end));
         setDateTime(txVBegin, dPBegin, begin);
         setDateTime(txVEnd, dPEnd, end);
-        spinner.setSelection(colors.indexOf(new EventColor(data.getColor())));
+        spinner.setSelection(colors.indexOf(new EventColor(data.getColor(),getContext())));
     }
 
     /**
@@ -538,6 +550,7 @@ public class EventDialog extends DialogFragment {
     /**
      * class to create a adapter with colors for spinner
      */
+    /*
     public class EventColor {
         private final int name, color;
 
@@ -568,4 +581,5 @@ public class EventDialog extends DialogFragment {
             return false;
         }
     }
+     */
 }
