@@ -19,13 +19,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ExportDialog extends Dialog {
 
+    private static final String LOG = "ExportDialog";
     @NonNull
     private final Context context;
     @NonNull
     private final Activity activity;
     private RecyclerView recyclerView;
     private boolean pause = false;
-    private static final String LOG = "ExportDialog";
 
     public ExportDialog(@NonNull Context context, @NonNull Activity activity) {
         super(context);

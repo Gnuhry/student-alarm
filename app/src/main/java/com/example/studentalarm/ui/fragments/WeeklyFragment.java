@@ -1,5 +1,6 @@
 package com.example.studentalarm.ui.fragments;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,8 +19,10 @@ import com.example.studentalarm.ui.dialog.EventDialog;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
@@ -29,6 +32,9 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
     @NonNull
     private final ReloadLecture lecture;
     private WeekView.SimpleAdapter<LectureSchedule.Lecture> adapter;
+    @Nullable
+    private ProgressDialog progress;
+    private WeekView weekview;
 
     public WeeklyFragment() {
         lecture = this;
@@ -40,7 +46,11 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
         Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.fragment_weekly, container, false);
         if (getContext() == null || getActivity() == null) return view;
-        WeekView weekview = view.findViewById(R.id.weekView);
+        weekview = view.findViewById(R.id.weekView);
+        progress = new ProgressDialog(getContext());
+        progress.setTitle(getString(R.string.loading));
+        progress.setMessage(getString(R.string.wait_while_loading));
+        progress.setCancelable(false);
 
         initAppBar(weekview, this.getActivity().findViewById(R.id.my_toolbar));
         initWeekView(weekview);
@@ -57,6 +67,13 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
         new Thread(this::loadData).start();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (progress.isShowing())
+            progress.dismiss();
+    }
+
     /**
      * Refresh the Lecture Schedule
      */
@@ -65,7 +82,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
         if (getContext() != null &&
                 PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) != Import.ImportFunction.NONE &&
                 getActivity() != null &&
-                Import.checkConnection(getContext(),true))
+                Import.checkConnection(getContext(), true))
             new Thread(() -> {
                 Log.d(LOG, "refresh thread start");
                 if (getActivity() == null) return;
@@ -85,8 +102,10 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
      */
     public void loadData() {
         Log.i(LOG, "load data");
+        weekview.post(() -> progress.show());
         if (getContext() != null)
             adapter.submitList(LectureSchedule.load(getContext()).getAllLecture(getContext()));
+        weekview.post(() -> progress.dismiss());
     }
 
     class Adapter extends WeekView.SimpleAdapter<LectureSchedule.Lecture> {
@@ -133,11 +152,16 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
      */
     private void initWeekView(@NonNull WeekView weekView) {
         Log.i(LOG, "init week view");
-        SimpleDateFormat format = new SimpleDateFormat("E", getResources().getConfiguration().locale);
-        DateFormat dateformat = DateFormat.getDateInstance(DateFormat.SHORT, getResources().getConfiguration().locale);
+        Locale locale;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N)
+            locale = getResources().getConfiguration().getLocales().get(0);
+        else
+            locale = getResources().getConfiguration().locale;
+        SimpleDateFormat format = new SimpleDateFormat("E", locale);
+        DateFormat dateformat = DateFormat.getDateInstance(DateFormat.SHORT, locale);
         adapter = new Adapter();
         weekView.setAdapter(adapter);
-        weekView.setTimeFormatter(hour -> getResources().getConfiguration().locale.getLanguage().equals("en") ? (hour == 12 ? "12 pm" : (hour > 21 ? (hour - 12) + " pm" : (hour > 12 ? "0" + (hour - 12) + " pm" : (hour >= 10 ? hour + " am" : "0" + hour + " am")))) : hour >= 10 ? hour + " h" : "0" + hour + " h");
+        weekView.setTimeFormatter(hour -> locale.getLanguage().equals("en") ? (hour == 12 ? "12 pm" : (hour > 21 ? (hour - 12) + " pm" : (hour > 12 ? "0" + (hour - 12) + " pm" : (hour >= 10 ? hour + " am" : "0" + hour + " am")))) : hour >= 10 ? hour + " h" : "0" + hour + " h");
         weekView.setDateFormatter(date -> String.format("%s %s", format.format(date.getTime()), dateformat.format(date.getTime())));
     }
 
