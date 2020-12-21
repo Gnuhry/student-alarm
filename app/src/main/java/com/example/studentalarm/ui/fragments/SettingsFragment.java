@@ -170,8 +170,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
             return true;
         });
-
-        if (getPreferenceManager().getSharedPreferences().getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) == Import.ImportFunction.NONE)
+        int mode2 = getPreferenceManager().getSharedPreferences().getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE);
+        if (mode2 == Import.ImportFunction.NONE || mode2 == Import.ImportFunction.PHONE)
             autoImport.setEnabled(false);
         autoImport.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.i(LOG, "alarm import change to " + newValue);
