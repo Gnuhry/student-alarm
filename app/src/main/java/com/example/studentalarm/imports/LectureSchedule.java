@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.preference.Preference;
 
 import com.bumptech.glide.load.engine.Resource;
+import com.example.studentalarm.EventColor;
+import com.example.studentalarm.PossibleColors;
 import com.example.studentalarm.regular.Hours;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
@@ -140,18 +142,19 @@ public class LectureSchedule {
      * @param calendar the ics file object
      */
     @NonNull
-    public LectureSchedule importICS(@NonNull ICS calendar) {
+    public LectureSchedule importICS(@NonNull ICS calendar,Context context) {
         importLecture.clear();
         List<ICS.vEvent> list = calendar.getVEventList();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        int color = preferences.getInt();
+        List<EventColor> colors= new PossibleColors(context).colorList();
+        EventColor color = colors.get(colors.indexOf(new EventColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR,0),context)));
         if (list != null)
             for (ICS.vEvent ev : list) {
                 try {
                     if (ev.DTStart != null && ev.DTend != null && ev.SUMMARY != null) {
                         Date start = ICS.stringToDate(ev.DTStart), end = ICS.stringToDate(ev.DTend);
                         if (start != null && end != null)
-                            importLecture.add(new Lecture(true, start, end).setName(ev.SUMMARY).setLocation(ev.LOCATION).setColor(color));
+                            importLecture.add(new Lecture(true, start, end).setName(ev.SUMMARY).setLocation(ev.LOCATION).setColor(color.getColor()));
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();

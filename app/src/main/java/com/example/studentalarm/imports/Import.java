@@ -77,7 +77,7 @@ public class Import {
                 String icsFile = runSynchronous(link);
                 if (icsFile == null) return;
                 ICS ics = new ICS(icsFile);
-                lecture_schedule.importICS(ics).save(context);
+                lecture_schedule.importICS(ics,context).save(context);
         }
     }
 

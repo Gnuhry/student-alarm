@@ -115,6 +115,8 @@
     <string name="import_color">Import Farbe</string>
     <string name="chose_import_color">Wählen Sie die Farbe des Imports</string>
     <string name="error">FEHLER</string>
+    <string name="color_change_after_reloade">Die Farbe wird beim nächsten Import angepasst</string>
+
 
 
 
