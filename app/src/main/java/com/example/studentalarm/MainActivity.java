@@ -1,13 +1,17 @@
 package com.example.studentalarm;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 
-import com.example.studentalarm.ui.fragments.SettingsFragment;
 import com.example.studentalarm.receiver.NetworkReceiver;
 import com.example.studentalarm.save.PreferenceKeys;
+import com.example.studentalarm.ui.dialog.ImportDialog;
+import com.example.studentalarm.ui.fragments.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
@@ -33,5 +37,13 @@ public class MainActivity extends AppCompatActivity {
             PreferenceKeys.setDefault(this);
         else if (!lan.equals(PreferenceKeys.defaultLanguage(this)))
             new SettingsFragment().changeLanguage(lan, this, this);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == 2 && resultCode == Activity.RESULT_OK)
+            ImportDialog.setResultIntent(data, this);
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

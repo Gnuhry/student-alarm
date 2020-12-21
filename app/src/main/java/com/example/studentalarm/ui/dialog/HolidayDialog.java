@@ -29,7 +29,7 @@ import androidx.fragment.app.DialogFragment;
 
 public class HolidayDialog extends DialogFragment {
     private static final String LOG = "HolidayDialog";
-    @Nullable
+    @NonNull
     private final LectureSchedule schedule;
     private final int index;
     @Nullable
@@ -44,15 +44,15 @@ public class HolidayDialog extends DialogFragment {
     private TextView from, until;
     private boolean create = false;
 
-    public HolidayDialog(@Nullable LectureSchedule schedule, @NonNull Context context, @NonNull HolidayAdapter adapter, int index) {
-        this.lecture = schedule == null ? null : schedule.getHolidays().get(index);
+    public HolidayDialog(@NonNull LectureSchedule schedule, @NonNull Context context, @NonNull HolidayAdapter adapter, int index) {
+        this.lecture = index < 0 ? null : schedule.getHolidays().get(index);
         old_lecture = lecture;
         this.context = context;
         this.adapter = adapter;
         this.schedule = schedule;
         this.index = index;
         if (lecture == null) {
-            this.lecture = new LectureSchedule.Lecture(false, new Date(), new Date());
+            this.lecture = new LectureSchedule.Lecture(true, new Date(), new Date());
             create = true;
         }
     }

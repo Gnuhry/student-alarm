@@ -1,7 +1,7 @@
 package com.example.studentalarm.ui.adapter;
 
 import android.content.Context;
-import android.util.Log;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +15,6 @@ import com.example.studentalarm.ui.fragments.ReloadLecture;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,16 +23,12 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHolder> {
-    @NonNull
-    public static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
-    private static final String LOG = "LectureAdapter";
     private static SimpleDateFormat dayOfWeekName;
     private static DateFormat day, time;
     private static FragmentActivity activity;
     private static ReloadLecture reloadLecture;
     @NonNull
     private final List<LectureSchedule.Lecture> lecture;
-    private int positionToday = -1;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView title, from, detail, until, date;
@@ -59,26 +52,15 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
     public MonthlyAdapter(@NonNull LectureSchedule lecture_schedule, @NonNull Context context, FragmentActivity ac, ReloadLecture reloadLecture_) {
         reloadLecture = reloadLecture_;
         activity = ac;
-        dayOfWeekName = new SimpleDateFormat("EEEE", context.getResources().getConfiguration().locale);
-        day = DateFormat.getDateInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
-        time = DateFormat.getTimeInstance(DateFormat.LONG, context.getResources().getConfiguration().locale);
-        this.lecture = new ArrayList<>();
-        String formatS = "01.01.1900", format2S;
-        for (LectureSchedule.Lecture l : lecture_schedule.getAllLecture(context)) {
-            format2S = FORMAT.format(l.getStart());
-            if (!format2S.equals(formatS)) {
-                formatS = format2S;
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(l.getStart());
-                if (positionToday == -1 && calendar.after(Calendar.getInstance()))
-                    positionToday = this.lecture.size();
-                this.lecture.add(new LectureSchedule.Lecture(false, l.getStart(), new Date()));
-                Log.d(LOG, "add Time: " + l.getStart().toString());
-            }
-            this.lecture.add(l);
-        }
-        if (positionToday == -1 && lecture.size() > 0)
-            positionToday = lecture.size() - 1;
+        Locale locale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            locale = context.getResources().getConfiguration().getLocales().get(0);
+        else
+            locale = context.getResources().getConfiguration().locale;
+        dayOfWeekName = new SimpleDateFormat("EEEE", locale);
+        day = DateFormat.getDateInstance(DateFormat.LONG, locale);
+        time = DateFormat.getTimeInstance(DateFormat.LONG, locale);
+        this.lecture = lecture_schedule.getAllLectureWithEachHolidayAndDayTitle(context);
     }
 
     @NonNull
@@ -90,7 +72,7 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
         LectureSchedule.Lecture l = lecture.get(position);
-        if (!l.getName().equals("")) {
+        if (l.getId() >= 0) {
             viewHolder.TLEvent.setVisibility(View.VISIBLE);
             viewHolder.barrier.setVisibility(View.GONE);
             viewHolder.date.setVisibility(View.GONE);
@@ -126,7 +108,7 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
      * @return position of today
      */
     public int getPositionToday() {
-        return positionToday == -1 ? 0 : positionToday;
+        return LectureSchedule.getPositionScroll() == -1 ? 0 : LectureSchedule.getPositionScroll();
     }
 
     /**
@@ -136,7 +118,7 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
      * @return time format to am/pm format
      */
     @NonNull
-    private String cutTime(@NonNull String time) {
+    public static String cutTime(@NonNull String time) {
         StringBuilder erg = new StringBuilder();
         String[] help = time.split(":");
         erg.append(help[0]).append(":").append(help[1]);

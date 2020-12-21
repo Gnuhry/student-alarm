@@ -3,6 +3,7 @@ package com.example.studentalarm.imports;
 import android.content.Context;
 import android.graphics.Color;
 
+import com.example.studentalarm.R;
 import com.example.studentalarm.regular.Hours;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.save.SaveLecture;
@@ -13,11 +14,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
@@ -25,7 +28,10 @@ import androidx.annotation.Nullable;
 
 public class LectureSchedule {
     @NonNull
+    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN), TIME_FORMAT = new SimpleDateFormat("HH:mm:ss:SS", Locale.GERMAN);
+    @NonNull
     private final List<Lecture> lecture, importLecture, holidays;
+    private static int positionScroll = -1;
 
     /**
      * Create an empty lecture schedule
@@ -46,7 +52,8 @@ public class LectureSchedule {
         List<Lecture> all = new ArrayList<>();
         all.addAll(lecture);
         all.addAll(importLecture);
-        all.addAll(holidays);
+        for (Lecture l : holidays)
+            all.add(l.setName(context.getString(R.string.holidays)));
         Calendar from = Calendar.getInstance(), end = Calendar.getInstance();
         from.add(Calendar.YEAR, -3);
         end.add(Calendar.YEAR, 3);
@@ -56,33 +63,62 @@ public class LectureSchedule {
     }
 
     /**
-     * get all lecture which are not in the holidays
+     * get all lectures from Lecture_Schedule with holiday as each lecture per day
      *
-     * @return lecture which are not in the holidays
+     * @return all Lectures
      */
     @NonNull
-    private List<Lecture> getAllLectureWithoutHolidayAndHolidayEvents(@NonNull Context context) {
-        List<Lecture> all = new ArrayList<>(), all2 = new ArrayList<>();
+    public List<Lecture> getAllLectureWithEachHoliday(@NonNull Context context) {
+        List<Lecture> all = new ArrayList<>();
         all.addAll(lecture);
         all.addAll(importLecture);
         Calendar from = Calendar.getInstance(), end = Calendar.getInstance();
         from.add(Calendar.YEAR, -3);
         end.add(Calendar.YEAR, 3);
         all.addAll(getRegularLecture(context, from, end));
-        if (holidays.size() > 0) {
-            boolean skip;
-            for (Lecture l : all) {
-                skip = false;
-                for (int i = 0; i < holidays.size() && !skip; i++)
-                    if (l.getStart().after(holidays.get(i).getStart()) && l.getStart().before(holidays.get(i).getEnd())) {
-                        all2.add(l);
-                        skip = true;
-                    }
+        for (Lecture l : holidays) {
+            Calendar calendar = Calendar.getInstance(), later = Calendar.getInstance(), end_C = Calendar.getInstance();
+            calendar.setTime(l.getStart());
+            calendar.set(Calendar.MILLISECOND, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            later.setTime(l.getEnd());
+            while (later.after(calendar)) {
+                end_C.setTimeInMillis(calendar.getTimeInMillis());
+                end_C.set(Calendar.HOUR_OF_DAY, 24);
+                end_C.set(Calendar.MINUTE, 0);
+                all.add(new LectureSchedule.Lecture(l.isImport(), calendar.getTime(), end_C.getTime()).setName(context.getString(R.string.holidays)).setColor(l.getColor()));
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
             }
-            all.removeAll(all2);
         }
         Collections.sort(all);
         return all;
+    }
+
+    /**
+     * get all lectures from Lecture_Schedule with holiday as each lecture per day and day title as lecture with id -1
+     *
+     * @return all Lectures
+     */
+    @NonNull
+    public List<Lecture> getAllLectureWithEachHolidayAndDayTitle(@NonNull Context context) {
+        positionScroll = -1;
+        List<Lecture> erg = new ArrayList<>();
+        String formatS = "01.01.1900", format2S;
+        for (LectureSchedule.Lecture l : getAllLectureWithEachHoliday(context)) {
+            format2S = FORMAT.format(l.getStart());
+            if (!format2S.equals(formatS)) {
+                formatS = format2S;
+                if (positionScroll == -1 && l.getStart().after(Calendar.getInstance().getTime()))
+                    positionScroll = erg.size();
+                erg.add(new LectureSchedule.Lecture(false, l.getStart(), new Date(), -1));
+            }
+            erg.add(l);
+        }
+        if (positionScroll == -1 && lecture.size() > 0)
+            positionScroll = lecture.size() - 1;
+        return erg;
     }
 
     @NonNull
@@ -98,6 +134,10 @@ public class LectureSchedule {
     @NonNull
     public List<Lecture> getHolidays() {
         return holidays;
+    }
+
+    public static int getPositionScroll() {
+        return positionScroll;
     }
 
     /**
@@ -141,8 +181,9 @@ public class LectureSchedule {
                 try {
                     if (ev.DTStart != null && ev.DTend != null && ev.SUMMARY != null) {
                         Date start = ICS.stringToDate(ev.DTStart), end = ICS.stringToDate(ev.DTend);
-                        if (start != null && end != null)
-                            importLecture.add(new Lecture(true, start, end).setName(ev.SUMMARY).setLocation(ev.LOCATION));
+                        if (start != null && end != null) {
+                            importLecture.add(new Lecture(true, start, end).setName(ev.SUMMARY).setLocation(ev.LOCATION).setAllDayEvent((TIME_FORMAT.format(start).equals("00:00:00:00") || TIME_FORMAT.format(start).equals("0:00:00:00")) && (TIME_FORMAT.format(end).equals("00:00:00:00") || TIME_FORMAT.format(end).equals("0:00:00:00"))));
+                        }
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -192,6 +233,35 @@ public class LectureSchedule {
         return this;
     }
 
+    /**
+     * get all lecture which are not in the holidays
+     *
+     * @return lecture which are not in the holidays
+     */
+    @NonNull
+    private List<Lecture> getAllLectureWithoutHolidayAndHolidayEvents(@NonNull Context context) {
+        List<Lecture> all = new ArrayList<>(), all2 = new ArrayList<>();
+        all.addAll(lecture);
+        all.addAll(importLecture);
+        Calendar from = Calendar.getInstance(), end = Calendar.getInstance();
+        from.add(Calendar.YEAR, -3);
+        end.add(Calendar.YEAR, 3);
+        all.addAll(getRegularLecture(context, from, end));
+        if (holidays.size() > 0) {
+            boolean skip;
+            for (Lecture l : all) {
+                skip = false;
+                for (int i = 0; i < holidays.size() && !skip; i++)
+                    if (l.getStart().after(holidays.get(i).getStart()) && l.getStart().before(holidays.get(i).getEnd())) {
+                        all2.add(l);
+                        skip = true;
+                    }
+            }
+            all.removeAll(all2);
+        }
+        Collections.sort(all);
+        return all;
+    }
 
     /**
      * get all regular lecture as lecture
