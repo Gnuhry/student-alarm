@@ -28,7 +28,7 @@ import androidx.annotation.Nullable;
 
 public class LectureSchedule {
     @NonNull
-    public static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
+    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN), TIME_FORMAT = new SimpleDateFormat("HH:mm:ss:SS", Locale.GERMAN);
     @NonNull
     private final List<Lecture> lecture, importLecture, holidays;
     private static int positionScroll = -1;
@@ -181,8 +181,9 @@ public class LectureSchedule {
                 try {
                     if (ev.DTStart != null && ev.DTend != null && ev.SUMMARY != null) {
                         Date start = ICS.stringToDate(ev.DTStart), end = ICS.stringToDate(ev.DTend);
-                        if (start != null && end != null)
-                            importLecture.add(new Lecture(true, start, end).setName(ev.SUMMARY).setLocation(ev.LOCATION));
+                        if (start != null && end != null) {
+                            importLecture.add(new Lecture(true, start, end).setName(ev.SUMMARY).setLocation(ev.LOCATION).setAllDayEvent((TIME_FORMAT.format(start).equals("00:00:00:00") || TIME_FORMAT.format(start).equals("0:00:00:00")) && (TIME_FORMAT.format(end).equals("00:00:00:00") || TIME_FORMAT.format(end).equals("0:00:00:00"))));
+                        }
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
