@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
@@ -51,6 +52,7 @@ public class ImportColorDialog extends DialogFragment {
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         settingsFragment.reload();
+        Toast.makeText(getContext(), getString(R.string.color_change_after_reloade), Toast.LENGTH_SHORT).show();
         super.onDismiss(dialog);
     }
 

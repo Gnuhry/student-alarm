@@ -130,6 +130,8 @@
     <string name="chose_import_color">Chose Import Color</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="error">ERROR</string>
+    <string name="color_change_after_reloade">Color is Changed with next Import</string>
+
 
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
