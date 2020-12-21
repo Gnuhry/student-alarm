@@ -12,6 +12,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.studentalarm.EventColor;
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.Import;
@@ -177,13 +178,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         importColorPref.setSummaryProvider(preference -> {
             SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
-            return getResources().getString(preferences.getInt(PreferenceKeys.IMPORT_COLOR,R.string.error));//Uses String ID to use String ini XML
+
+            colors.indexOf(new EventColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR,0),getContext()))
+
+            return (preferences.getInt(PreferenceKeys.IMPORT_COLOR,R.string.error));//Uses String ID to use String ini XML
         });
         importColorPref.setOnPreferenceClickListener(preference -> {
             SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
             if (getContext() != null && getActivity() != null)
-                new ImportColorDialog(preferences).show(getActivity().getSupportFragmentManager(), "dialog");
-            Log.d(LOG, "NEW pref colorName: "+getResources().getString(preferences.getInt(PreferenceKeys.IMPORT_COLOR,R.string.error)));
+                new ImportColorDialog(preferences, this).show(getActivity().getSupportFragmentManager(), "dialog");
             return true;
         });
 
@@ -322,7 +325,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     /**
      * Reload the fragment
      */
-    private void reload() {
+    public void reload() {
         if (getActivity() == null) return;
         NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_);
         if (navHostFragment != null)

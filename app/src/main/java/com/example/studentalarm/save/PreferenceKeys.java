@@ -2,6 +2,7 @@ package com.example.studentalarm.save;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.util.Log;
 
 import com.example.studentalarm.R;
@@ -76,7 +77,7 @@ public class PreferenceKeys {
         if (preferences.getString(PreferenceKeys.IMPORT_TIME, null) == null)
             preferences.edit().putString(PreferenceKeys.IMPORT_TIME, DEFAULT_IMPORT_TIME).apply();
         if (preferences.getString(PreferenceKeys.IMPORT_COLOR, null) == null)
-            preferences.edit().putInt(PreferenceKeys.IMPORT_COLOR, R.string.red).apply();//red als default Colour
+            preferences.edit().putInt(PreferenceKeys.IMPORT_COLOR, Color.RED).apply();//red als default Colour
         return erg;
     }
 
