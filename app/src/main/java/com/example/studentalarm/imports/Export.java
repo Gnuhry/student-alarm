@@ -44,8 +44,25 @@ public class Export {
                 event.SUMMARY = lecture.getName();
                 event.LOCATION = lecture.getLocation();
                 event.UID = format.format(Calendar.getInstance().getTime()).replace("-", "T") + "Z-" + lecture.getId();
-                event.DTStart = format.format(lecture.getStart()).replace("-", "T");
-                event.DTend = format.format(lecture.getEnd()).replace("-", "T");
+                if (lecture.isAllDayEvent()) {
+                    Calendar start_c = Calendar.getInstance(), end_c = Calendar.getInstance();
+                    start_c.setTime(lecture.getStart());
+                    end_c.setTime(lecture.getEnd());
+                    start_c.set(Calendar.HOUR_OF_DAY, 0);
+                    start_c.set(Calendar.MINUTE, 0);
+                    start_c.set(Calendar.SECOND, 0);
+                    start_c.set(Calendar.MILLISECOND, 0);
+                    end_c.add(Calendar.DAY_OF_MONTH, 1);
+                    end_c.set(Calendar.HOUR_OF_DAY, 0);
+                    end_c.set(Calendar.MINUTE, 0);
+                    end_c.set(Calendar.SECOND, 0);
+                    end_c.set(Calendar.MILLISECOND, 0);
+                    event.DTStart = format.format(start_c.getTime()).replace("-", "T");
+                    event.DTend = format.format(end_c.getTime()).replace("-", "T");
+                } else {
+                    event.DTStart = format.format(lecture.getStart()).replace("-", "T");
+                    event.DTend = format.format(lecture.getEnd()).replace("-", "T");
+                }
                 event.DTStamp = format.format(Calendar.getInstance().getTime()).replace("-", "T");
                 erg.add(event);
             }

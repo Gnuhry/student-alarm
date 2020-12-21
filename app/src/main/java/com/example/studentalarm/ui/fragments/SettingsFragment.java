@@ -63,16 +63,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 alarmPhone = findPreference(PreferenceKeys.ALARM_PHONE),
                 alarmChange = findPreference(PreferenceKeys.ALARM_CHANGE),
                 autoImport = findPreference(PreferenceKeys.AUTO_IMPORT);
-        Preference importPref = findPreference(PreferenceKeys.IMPORT),
+        Preference importPref = findPreference("IMPORT"),
                 importColorPref = findPreference(PreferenceKeys.IMPORT_COLOR),
-                eventDeleteAll = findPreference(PreferenceKeys.EVENT_DELETE_ALL),
-                export = findPreference(PreferenceKeys.EXPORT),
-                reset = findPreference(PreferenceKeys.RESET);
+                eventDeleteAll = findPreference("EVENT_DELETE_ALL"),
+                export = findPreference("EXPORT"),
+                reset = findPreference("RESET");
         EditTextPreference snooze = findPreference(PreferenceKeys.SNOOZE),
                 importTime = findPreference(PreferenceKeys.IMPORT_TIME);
         ListPreference language = findPreference(PreferenceKeys.LANGUAGE),
                 ringtone = findPreference(PreferenceKeys.RINGTONE),
-                theme = findPreference(PreferenceKeys.THEME);
+                theme = findPreference("THEME");
 
         if (alarmOn == null ||
                 alarmPhone == null ||
@@ -170,8 +170,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
         importPref.setOnPreferenceClickListener(preference -> {
             if (getContext() == null) return false;
-            if (Import.checkConnection(getContext(),true)) {
-                ImportDialog importDialog = new ImportDialog(this.getContext());
+            if (Import.checkConnection(getContext(), true)) {
+                ImportDialog importDialog = new ImportDialog(this.getContext(), this.getActivity());
                 importDialog.setOnCancelListener(dialogInterface -> reload());
                 importDialog.show();
             }
@@ -196,7 +196,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
 
-        if (getPreferenceManager().getSharedPreferences().getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) == Import.ImportFunction.NONE)
+        int mode2 = getPreferenceManager().getSharedPreferences().getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE);
+        if (mode2 == Import.ImportFunction.NONE || mode2 == Import.ImportFunction.PHONE)
             autoImport.setEnabled(false);
         autoImport.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.i(LOG, "alarm import change to " + newValue);
@@ -336,5 +337,4 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         if (navHostFragment != null)
             navHostFragment.getNavController().navigate(R.id.settingsFragment_);
     }
-
 }

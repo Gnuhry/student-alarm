@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -39,7 +38,6 @@ public class ExportLectureDialog extends Dialog {
         super.onCreate(savedInstanceState);
         Log.i(LOG, "open");
         setContentView(R.layout.dialog_delete);
-        findViewById(R.id.rdBHolidayEvents).setVisibility(View.GONE); //TODO add all day to ics export
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         ((TextView) findViewById(R.id.txVDeleteEvent)).setText(R.string.which_event_do_you_want_to_export);
         findViewById(R.id.btnCancel).setOnClickListener(view1 -> {
@@ -49,8 +47,8 @@ public class ExportLectureDialog extends Dialog {
         ((Button) findViewById(R.id.btnDelete)).setText(R.string.export);
         findViewById(R.id.btnDelete).setOnClickListener(view -> {
             Log.i(LOG, "delete");
-            boolean normal = ((CheckBox) findViewById(R.id.rdBNormalEvents)).isChecked(), import_ = ((CheckBox) findViewById(R.id.rdBImportEvents)).isChecked();
-            if (normal || import_) {
+            boolean normal = ((CheckBox) findViewById(R.id.rdBNormalEvents)).isChecked(), import_ = ((CheckBox) findViewById(R.id.rdBImportEvents)).isChecked(), holiday = ((CheckBox) findViewById(R.id.rdBHolidayEvents)).isChecked();
+            if (normal || import_ || holiday) {
                 if (getContext() == null) return;
                 List<LectureSchedule.Lecture> export = new ArrayList<>();
                 LectureSchedule schedule = LectureSchedule.load(getContext());
@@ -58,6 +56,8 @@ public class ExportLectureDialog extends Dialog {
                     export.addAll(schedule.getLecture());
                 if (import_)
                     export.addAll(schedule.getImportLecture());
+                if (holiday)
+                    export.addAll(schedule.getHolidays());
                 Export.exportToICS(context, activity, export);
             }
             this.cancel();

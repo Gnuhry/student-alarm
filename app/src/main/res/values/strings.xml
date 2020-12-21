@@ -50,6 +50,9 @@
     <string name="missing_selected_course">Missing selected course</string>
     <string name="it_may_take_a_minute_until_the_change_is_visible_in_the_calendar">It may take a minute until the change is visible in the calendar</string>
     <string name="do_you_want_to_delete_this_exports">Do you want to delete this exports?</string>
+    <string name="file_is_not_a_ics_file">File is not a ics file</string>
+    <string name="wrong_file">Wrong file</string>
+    <string name="phone_import">Phone import</string>
 
     <!--Alarm-->
     <string name="next_alarm_in">Next alarm in</string>
@@ -106,6 +109,8 @@
     <string name="missing">Missing</string>
     <string name="end_must_start_after_begin">End must start after begin</string>
     <string name="wrong">Wrong</string>
+    <string name="loading">Loading</string>
+    <string name="wait_while_loading">Wait while loading…</string>
 
     <!--regular lecture-->
     <string name="save">Save</string>
@@ -135,6 +140,7 @@
 
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="vert_line" translatable="false">|</string>
 
 
 </resources>
