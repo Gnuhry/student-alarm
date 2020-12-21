@@ -1,6 +1,7 @@
 package com.example.studentalarm.imports;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.preference.Preference;
@@ -27,6 +28,7 @@ import java.util.prefs.Preferences;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
 
 public class LectureSchedule {
     @NonNull
@@ -141,13 +143,15 @@ public class LectureSchedule {
     public LectureSchedule importICS(@NonNull ICS calendar) {
         importLecture.clear();
         List<ICS.vEvent> list = calendar.getVEventList();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        int color = preferences.getInt();
         if (list != null)
             for (ICS.vEvent ev : list) {
                 try {
                     if (ev.DTStart != null && ev.DTend != null && ev.SUMMARY != null) {
                         Date start = ICS.stringToDate(ev.DTStart), end = ICS.stringToDate(ev.DTend);
                         if (start != null && end != null)
-                            importLecture.add(new Lecture(true, start, end).setName(ev.SUMMARY).setLocation(ev.LOCATION));
+                            importLecture.add(new Lecture(true, start, end).setName(ev.SUMMARY).setLocation(ev.LOCATION).setColor(color));
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
