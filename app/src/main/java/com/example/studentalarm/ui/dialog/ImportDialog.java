@@ -51,10 +51,11 @@ public class ImportDialog extends Dialog {
     private static final String LOG = "ImportDialog";
     @Nullable
     private final ProgressDialog progress;
+    @NonNull
     private final Activity activity;
-    private boolean isValid = false;
     private static boolean phone = false;
     private static ICS ics;
+    private boolean isValid = false;
     private String lastValidString;
 
     public ImportDialog(@NonNull Context context, @NonNull Activity activity) {
@@ -167,7 +168,7 @@ public class ImportDialog extends Dialog {
      * @param intent   intent from the result
      * @param activity activity of app
      */
-    public static void setResultIntent(Intent intent, Activity activity) {
+    public static void setResultIntent(@Nullable Intent intent, @NonNull Activity activity) {
         if (intent != null) {
             Uri uri = intent.getData();
             if (uri != null) {
@@ -332,7 +333,8 @@ public class ImportDialog extends Dialog {
      * @param activity activity to app
      * @return text
      */
-    private static String readTextFromUri(Uri uri, Activity activity) throws IOException {
+    @NonNull
+    private static String readTextFromUri(Uri uri, @NonNull Activity activity) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         try (InputStream inputStream = activity.getContentResolver().openInputStream(uri);
              BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
