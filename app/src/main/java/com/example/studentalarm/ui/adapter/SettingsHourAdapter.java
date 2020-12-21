@@ -126,6 +126,24 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
         return hours.size() + 1;
     }
 
+    /**
+     * save if all inputs are right
+     *
+     * @return {true} if saved {false} if wrong inputs
+     */
+    public int save() {
+        for (int f = 0; f < holders.size(); f++) {
+            hours.get((int) holders.get(f).llTime.getTag())
+                    .setFrom(holders.get(f).from.getText().toString())
+                    .setUntil(holders.get(f).until.getText().toString());
+            if (holders.get(f).until.getError() != null || holders.get(f).from.getError() != null)
+                return -1;
+        }
+        Hours.save(context, hours);
+        return hours.size();
+    }
+
+
     private void initTimeEditTextBeforeAfter(@NonNull EditText before, @Nullable EditText until) {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.getDefault());
         try {
@@ -210,23 +228,4 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
             return true;
         });
     }
-
-    /**
-     * save if all inputs are right
-     *
-     * @return {true} if saved {false} if wrong inputs
-     */
-    public int save() {
-        for (int f = 0; f < holders.size(); f++) {
-            hours.get((int) holders.get(f).llTime.getTag())
-                    .setFrom(holders.get(f).from.getText().toString())
-                    .setUntil(holders.get(f).until.getText().toString());
-            if (holders.get(f).until.getError() != null || holders.get(f).from.getError() != null)
-                return -1;
-        }
-        Hours.save(context, hours);
-        return hours.size();
-    }
-
-
 }

@@ -1,9 +1,12 @@
 package com.example.studentalarm.ui.dialog;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,12 +27,18 @@ import com.bumptech.glide.Glide;
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.ICS;
 import com.example.studentalarm.imports.Import;
+import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.imports.dhbwMannheim.Course;
 import com.example.studentalarm.imports.dhbwMannheim.CourseCategory;
 import com.example.studentalarm.imports.dhbwMannheim.CourseImport;
 import com.example.studentalarm.save.PreferenceKeys;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,17 +49,22 @@ public class ImportDialog extends Dialog {
 
     private static final String LINK_BEGIN = "http://vorlesungsplan.dhbw-mannheim.de/ical.php?uid=";
     private static final String LOG = "ImportDialog";
-    private boolean isValid = false;
-    private String lastValidString;
     @Nullable
     private final ProgressDialog progress;
+    @NonNull
+    private final Activity activity;
+    private static boolean phone = false;
+    private static ICS ics;
+    private boolean isValid = false;
+    private String lastValidString;
 
-    public ImportDialog(@NonNull Context context) {
+    public ImportDialog(@NonNull Context context, @NonNull Activity activity) {
         super(context);
         progress = new ProgressDialog(context);
         progress.setTitle(context.getString(R.string.loading));
         progress.setMessage(context.getString(R.string.wait_while_loading));
         progress.setCancelable(false);
+        this.activity = activity;
     }
 
     @Override
@@ -59,10 +73,18 @@ public class ImportDialog extends Dialog {
         Log.i(LOG, "open");
         setContentView(R.layout.dialog_import);
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.KITKAT)
+            ((RadioButton) findViewById(R.id.rBtnPhone)).setVisibility(View.GONE);
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         switch (preferences.getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE)) {
             case Import.ImportFunction.NONE:
                 ((RadioButton) findViewById(R.id.rBtnNone)).setChecked(true);
+                break;
+            case Import.ImportFunction.PHONE:
+                ((RadioButton) findViewById(R.id.rBtnPhone)).setChecked(true);
+                phone = true;
                 break;
             case Import.ImportFunction.ICS:
                 ((RadioButton) findViewById(R.id.rBtnICS)).setChecked(true);
@@ -75,6 +97,10 @@ public class ImportDialog extends Dialog {
                 findViewById(R.id.LLRefresh).setVisibility(View.VISIBLE);
                 break;
         }
+        ((RadioButton) findViewById(R.id.rBtnPhone)).setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b)
+                initFilePicker();
+        });
         ((RadioButton) findViewById(R.id.rBtnICS)).setOnCheckedChangeListener((compoundButton, b) -> findViewById(R.id.LLLink).setVisibility(b ? View.VISIBLE : View.GONE));
         ((RadioButton) findViewById(R.id.rBtnDHBWMa)).setOnCheckedChangeListener((compoundButton, b) -> {
             ((RadioButton) findViewById(R.id.rBtnDHBWMa)).setLayoutParams(new LinearLayout.LayoutParams(b ? LinearLayout.LayoutParams.WRAP_CONTENT : LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
@@ -98,6 +124,15 @@ public class ImportDialog extends Dialog {
                 Log.d(LOG, "none");
                 preferences.edit().putInt(PreferenceKeys.MODE, Import.ImportFunction.NONE).apply();
                 this.cancel();
+            } else if (((RadioButton) findViewById(R.id.rBtnPhone)).isChecked()) {
+                Log.d(LOG, "phone");
+                if (phone && ics != null) {
+                    preferences.edit().putInt(PreferenceKeys.MODE, Import.ImportFunction.PHONE).apply();
+                    LectureSchedule.load(getContext()).importICS(ics).save(getContext());
+                    Toast.makeText(getContext(), R.string.it_may_take_a_minute_until_the_change_is_visible_in_the_calendar, Toast.LENGTH_LONG).show();
+                    this.cancel();
+                } else
+                    Toast.makeText(getContext(), R.string.file_is_not_a_ics_file, Toast.LENGTH_SHORT).show();
             } else if (((RadioButton) findViewById(R.id.rBtnDHBWMa)).isChecked()) {
                 Log.d(LOG, "DHBW");
                 Course course = ((Course) ((Spinner) findViewById(R.id.spDHBWMaCourse)).getSelectedItem());
@@ -125,6 +160,33 @@ public class ImportDialog extends Dialog {
 
         initDHBW(preferences);
         initICS(preferences);
+    }
+
+    /**
+     * set result Intent
+     *
+     * @param intent   intent from the result
+     * @param activity activity of app
+     */
+    public static void setResultIntent(@Nullable Intent intent, @NonNull Activity activity) {
+        if (intent != null) {
+            Uri uri = intent.getData();
+            if (uri != null) {
+                try {
+                    ics = new ICS(readTextFromUri(uri, activity));
+                    if (!ics.isSuccessful()) {
+                        Toast.makeText(activity, R.string.wrong_file, Toast.LENGTH_SHORT).show();
+                        phone = false;
+                        return;
+                    }
+                    phone = true;
+                } catch (IOException e) {
+                    phone = false;
+                    Toast.makeText(activity, R.string.wrong_file, Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     /**
@@ -182,7 +244,7 @@ public class ImportDialog extends Dialog {
      */
     private void initDHBW(@NonNull SharedPreferences preferences) {
         new Thread(() -> {
-            findViewById(R.id.spDHBWMaCourseCategory).post(() -> progress.show());
+            findViewById(R.id.spDHBWMaCourseCategory).post(progress::show);
             Log.i(LOG, "get DHBW course");
             List<CourseCategory> courseCategories = CourseImport.load(getContext());
             if (courseCategories == null) {
@@ -223,7 +285,7 @@ public class ImportDialog extends Dialog {
                 public void onNothingSelected(AdapterView<?> adapterView) {
                 }
             });
-            findViewById(R.id.spDHBWMaCourseCategory).post(() -> progress.dismiss());
+            findViewById(R.id.spDHBWMaCourseCategory).post(progress::dismiss);
         }).start();
 
         findViewById(R.id.btnImportDhbwCourses).setOnClickListener(view22 -> {
@@ -248,5 +310,40 @@ public class ImportDialog extends Dialog {
             }).start();
         });
     }
+
+    /**
+     * init the filePicker
+     */
+    private void initFilePicker() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            phone = false;
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("*/*");
+
+            activity.startActivityForResult(intent, 2);
+        }
+    }
+
+    /**
+     * read text from uri file
+     *
+     * @param uri      uri to file
+     * @param activity activity to app
+     * @return text
+     */
+    @NonNull
+    private static String readTextFromUri(Uri uri, @NonNull Activity activity) throws IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+        try (InputStream inputStream = activity.getContentResolver().openInputStream(uri);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
+            String line;
+            while ((line = reader.readLine()) != null)
+                stringBuilder.append(line).append("\n");
+        }
+        return stringBuilder.toString();
+    }
+
 
 }
