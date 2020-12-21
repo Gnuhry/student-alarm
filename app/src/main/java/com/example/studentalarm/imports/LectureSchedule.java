@@ -212,6 +212,15 @@ public class LectureSchedule {
         if (id3 >= 0) holidays.remove(id3);
         return this;
     }
+    /**
+     * change all Imported Colors
+     * @param color colorcode for the Imported Files
+     */
+    public void changeImportedColor(int color){
+        for (Lecture importedlectures:importLecture){
+            importedlectures.setColor(color);
+        }
+    }
 
     /**
      * delete all holiday events
