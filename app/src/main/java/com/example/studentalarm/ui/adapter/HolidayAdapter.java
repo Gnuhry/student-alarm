@@ -20,11 +20,11 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.ViewHolder> {
-    private LectureSchedule schedule;
     @NonNull
     private final Context context;
     @NonNull
     private final FragmentActivity activity;
+    private LectureSchedule schedule;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView holiday;

@@ -42,13 +42,13 @@ import androidx.fragment.app.DialogFragment;
 
 public class EventDialog extends DialogFragment {
     private static final String LOG = "EventDialogFragment";
-    private static boolean working;
     @Nullable
     private final LectureSchedule.Lecture data;
     private final LectureSchedule schedule;
     private final ReloadLecture lecture;
     @NonNull
     private final List<EventColor> colors;
+    private static boolean working;
 
     private EditText title, docent, location, begin, end;
     private LinearLayout LBegin, LEnd;

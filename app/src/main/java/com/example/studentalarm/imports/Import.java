@@ -9,9 +9,9 @@ import android.net.ConnectivityManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.R;
 import com.example.studentalarm.receiver.ImportReceiver;
+import com.example.studentalarm.save.PreferenceKeys;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -69,6 +69,7 @@ public class Import {
         LectureSchedule lecture_schedule = LectureSchedule.load(context);
         switch (PreferenceManager.getDefaultSharedPreferences(context).getInt(PreferenceKeys.MODE, 0)) {
             case ImportFunction.NONE:
+            case ImportFunction.PHONE:
                 return;
             case ImportFunction.ICS:
             case ImportFunction.DHBWMA:
@@ -110,7 +111,7 @@ public class Import {
     /**
      * Check for connection
      *
-     * @param context  context of application
+     * @param context context of application
      * @return boolean if connection is active
      */
     public static boolean checkConnection(@NonNull Context context, boolean text) {
@@ -118,15 +119,15 @@ public class Import {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm.getActiveNetworkInfo() == null || !cm.getActiveNetworkInfo().isConnected()) {
             Log.d(LOG, "Missing connection");
-            if(text)
-            try {
-                Toast.makeText(context, R.string.no_connection, Toast.LENGTH_SHORT).show();
-            } catch (Resources.NotFoundException e) {
-                e.printStackTrace();
-            }
+            if (text)
+                try {
+                    Toast.makeText(context, R.string.no_connection, Toast.LENGTH_SHORT).show();
+                } catch (Resources.NotFoundException e) {
+                    e.printStackTrace();
+                }
             return false;
         }
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean(PreferenceKeys.WAIT_FOR_NETWORK,false).apply();
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean(PreferenceKeys.WAIT_FOR_NETWORK, false).apply();
         return true;
     }
 
@@ -134,9 +135,9 @@ public class Import {
      * Display the different import possibilities
      */
     public static class ImportFunction {
-        public static final int NONE = 0, ICS = 1, DHBWMA = 2;
+        public static final int NONE = 0, ICS = 1, DHBWMA = 2, PHONE = 3;
         @NonNull
-        public static final List<String> IMPORTS = Arrays.asList("None", "ICS", "DHBWMa");
+        public static final List<String> IMPORTS = Arrays.asList("None", "ICS", "DHBWMa", "Phone");
     }
 
 }
