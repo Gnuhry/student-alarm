@@ -45,8 +45,11 @@
     <string name="which_event_do_you_want_to_export">Welche Ereignisse möchten Sie exportieren?</string>
     <string name="DHBWMa">DHBW Mannheim</string>
     <string name="missing_selected_course">Kurs nicht ausgewählt</string>
-    <string name="it_may_take_a_minute_until_the_change_is_visible_in_the_calendar">IEs kann bis zu eine Minute dauern, bis der Import im Kalendar sichtbar ist</string>
+    <string name="it_may_take_a_minute_until_the_change_is_visible_in_the_calendar">Es kann bis zu eine Minute dauern, bis der Import im Kalendar sichtbar ist</string>
     <string name="do_you_want_to_delete_this_exports">Möchten Sie diese Export Dateien löschen?</string>
+    <string name="file_is_not_a_ics_file">Datei ist keine ics Datei</string>
+    <string name="wrong_file">Falsche Datei</string>
+    <string name="phone_import">Datei Import</string>
     <string name="share">Teilen</string>
     <string name="next_alarm_in">Nächster Alarm in</string>
     <string name="time_format">%d h - %d min</string>

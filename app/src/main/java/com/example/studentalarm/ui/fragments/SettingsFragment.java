@@ -163,8 +163,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
         importPref.setOnPreferenceClickListener(preference -> {
             if (getContext() == null) return false;
-            if (Import.checkConnection(getContext(),true)) {
-                ImportDialog importDialog = new ImportDialog(this.getContext());
+            if (Import.checkConnection(getContext(), true)) {
+                ImportDialog importDialog = new ImportDialog(this.getContext(), this.getActivity());
                 importDialog.setOnCancelListener(dialogInterface -> reload());
                 importDialog.show();
             }
@@ -311,5 +311,4 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         if (navHostFragment != null)
             navHostFragment.getNavController().navigate(R.id.settingsFragment_);
     }
-
 }
