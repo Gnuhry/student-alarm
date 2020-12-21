@@ -25,9 +25,9 @@ import static com.example.studentalarm.ui.adapter.MonthlyAdapter.cutTime;
 public class RemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     @NonNull
     private final Context context;
-    private List<LectureSchedule.Lecture> lectures;
     private static SimpleDateFormat dayOfWeekName;
     private static DateFormat day, time;
+    private List<LectureSchedule.Lecture> lectures;
 
     public RemoteViewsFactory(@NonNull Context context) {
         this.context = context;
