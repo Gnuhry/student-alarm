@@ -63,16 +63,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 alarmPhone = findPreference(PreferenceKeys.ALARM_PHONE),
                 alarmChange = findPreference(PreferenceKeys.ALARM_CHANGE),
                 autoImport = findPreference(PreferenceKeys.AUTO_IMPORT);
-        Preference importPref = findPreference("IMPORT"),
+        Preference importPref = findPreference(PreferenceKeys.IMPORT),
                 importColorPref = findPreference(PreferenceKeys.IMPORT_COLOR),
-                eventDeleteAll = findPreference("EVENT_DELETE_ALL"),
-                export = findPreference("EXPORT"),
-                reset = findPreference("RESET");
+                eventDeleteAll = findPreference(PreferenceKeys.EVENT_DELETE_ALL),
+                export = findPreference(PreferenceKeys.EXPORT),
+                reset = findPreference(PreferenceKeys.RESET);
         EditTextPreference snooze = findPreference(PreferenceKeys.SNOOZE),
                 importTime = findPreference(PreferenceKeys.IMPORT_TIME);
         ListPreference language = findPreference(PreferenceKeys.LANGUAGE),
                 ringtone = findPreference(PreferenceKeys.RINGTONE),
-                theme = findPreference("THEME");
+                theme = findPreference(PreferenceKeys.THEME);
 
         if (alarmOn == null ||
                 alarmPhone == null ||

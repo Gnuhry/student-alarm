@@ -52,7 +52,6 @@ public class ImportColorDialog extends DialogFragment {
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         settingsFragment.reload();
-        Toast.makeText(getContext(), getString(R.string.color_change_after_reloade), Toast.LENGTH_SHORT).show();
         super.onDismiss(dialog);
     }
 
@@ -80,6 +79,7 @@ public class ImportColorDialog extends DialogFragment {
             Log.d(LOG, "Colorint: "+color);
             //Log.d(LOG, "colorName: ");
             preferences.edit().putInt(PreferenceKeys.IMPORT_COLOR,color).apply();
+            Toast.makeText(getContext(), getString(R.string.color_change_after_reloade), Toast.LENGTH_SHORT).show();
             this.dismiss();
         });
 

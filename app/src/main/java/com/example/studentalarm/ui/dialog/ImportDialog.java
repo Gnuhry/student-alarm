@@ -128,7 +128,7 @@ public class ImportDialog extends Dialog {
                 Log.d(LOG, "phone");
                 if (phone && ics != null) {
                     preferences.edit().putInt(PreferenceKeys.MODE, Import.ImportFunction.PHONE).apply();
-                    LectureSchedule.load(getContext()).importICS(ics).save(getContext());
+                    LectureSchedule.load(getContext()).importICS(ics,getContext()).save(getContext());
                     Toast.makeText(getContext(), R.string.it_may_take_a_minute_until_the_change_is_visible_in_the_calendar, Toast.LENGTH_LONG).show();
                     this.cancel();
                 } else
