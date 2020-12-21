@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.studentalarm.EventColor;
 import com.example.studentalarm.PossibleColors;
 import com.example.studentalarm.R;
+import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.adapter.ExportAdapter;
 import com.example.studentalarm.ui.fragments.SettingsFragment;
@@ -79,7 +80,11 @@ public class ImportColorDialog extends DialogFragment {
             Log.d(LOG, "Colorint: "+color);
             //Log.d(LOG, "colorName: ");
             preferences.edit().putInt(PreferenceKeys.IMPORT_COLOR,color).apply();
-            Toast.makeText(getContext(), getString(R.string.color_change_after_reloade), Toast.LENGTH_SHORT).show();
+            LectureSchedule lecture_schedule = LectureSchedule.load(getContext());
+            lecture_schedule.changeImportedColor(color);
+            lecture_schedule.save(getContext());
+            Toast.makeText(getContext(), getString(R.string.color_change_takes_time), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getContext(), getString(R.string.color_change_after_reloade), Toast.LENGTH_SHORT).show();
             this.dismiss();
         });
 
