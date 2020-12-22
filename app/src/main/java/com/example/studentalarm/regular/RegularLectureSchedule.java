@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.studentalarm.R;
+import com.example.studentalarm.save.SaveKeys;
 import com.example.studentalarm.save.SaveRegularLectureSchedule;
 
 import java.io.FileInputStream;
@@ -128,7 +129,7 @@ public class RegularLectureSchedule {
     private static void saving(@Nullable SaveRegularLectureSchedule schedule, @NonNull Context context) {
         FileOutputStream fos;
         try {
-            fos = context.openFileOutput("REGULAR_LECTURE", Context.MODE_PRIVATE);
+            fos = context.openFileOutput(SaveKeys.REGULAR_LECTURE, Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(schedule);
             oos.close();
@@ -183,7 +184,7 @@ public class RegularLectureSchedule {
         Log.i(LOG, "load");
         if (context == null) return new RegularLectureSchedule();
         try {
-            FileInputStream fis = context.openFileInput("REGULAR_LECTURE");
+            FileInputStream fis = context.openFileInput(SaveKeys.REGULAR_LECTURE);
             ObjectInputStream ois = new ObjectInputStream(fis);
             RegularLectureSchedule help = convertSave((SaveRegularLectureSchedule) ois.readObject());
             fis.close();

@@ -5,17 +5,17 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.NavigationUI;
-import androidx.preference.PreferenceManager;
-
 import com.example.studentalarm.receiver.NetworkReceiver;
 import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.dialog.ImportDialog;
 import com.example.studentalarm.ui.fragments.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
+import androidx.preference.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,16 +32,15 @@ public class MainActivity extends AppCompatActivity {
         if (navHostFragment != null)
             NavigationUI.setupWithNavController((BottomNavigationView) findViewById(R.id.bottomNav), navHostFragment.getNavController());
 
+        PreferenceKeys.setDefault(this);
         String lan = PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceKeys.LANGUAGE, null);
-        if (lan == null)
-            PreferenceKeys.setDefault(this);
-        else if (!lan.equals(PreferenceKeys.defaultLanguage(this)))
+        if (lan != null && !lan.equals(PreferenceKeys.defaultLanguage(this)))
             new SettingsFragment().changeLanguage(lan, this, this);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == 2 && resultCode == Activity.RESULT_OK)
+        if (requestCode == ImportDialog.REQUEST_CODE && resultCode == Activity.RESULT_OK)
             ImportDialog.setResultIntent(data, this);
 
         super.onActivityResult(requestCode, resultCode, data);

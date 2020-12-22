@@ -23,10 +23,6 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.preference.PreferenceManager;
-
 import com.bumptech.glide.Glide;
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.ICS;
@@ -44,11 +40,16 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
+
 
 public class ImportDialog extends Dialog {
 
     private static final String LINK_BEGIN = "http://vorlesungsplan.dhbw-mannheim.de/ical.php?uid=";
     private static final String LOG = "ImportDialog";
+    public static final int REQUEST_CODE = 2;
     @Nullable
     private final ProgressDialog progress;
     @NonNull
@@ -322,7 +323,7 @@ public class ImportDialog extends Dialog {
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("*/*");
 
-            activity.startActivityForResult(intent, 2);
+            activity.startActivityForResult(intent, REQUEST_CODE);
         }
     }
 
