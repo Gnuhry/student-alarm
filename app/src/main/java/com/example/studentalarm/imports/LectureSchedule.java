@@ -10,6 +10,7 @@ import com.example.studentalarm.R;
 import com.example.studentalarm.regular.Hours;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
+import com.example.studentalarm.save.SaveKeys;
 import com.example.studentalarm.save.SaveLecture;
 
 import java.io.FileInputStream;
@@ -407,7 +408,7 @@ public class LectureSchedule {
     public void save(@NonNull Context context) {
         FileOutputStream fos;
         try {
-            fos = context.openFileOutput("LECTURE", Context.MODE_PRIVATE);
+            fos = context.openFileOutput(SaveKeys.LECTURE, Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(createSave());
             oos.close();
@@ -482,7 +483,7 @@ public class LectureSchedule {
     @NonNull
     public static LectureSchedule load(@NonNull Context context) {
         try {
-            FileInputStream fis = context.openFileInput("LECTURE");
+            FileInputStream fis = context.openFileInput(SaveKeys.LECTURE);
             ObjectInputStream ois = new ObjectInputStream(fis);
             LectureSchedule erg = convertSave((SaveLecture) ois.readObject());
             LectureSchedule.Lecture.setCounter(erg.getHighestID() + 1);
