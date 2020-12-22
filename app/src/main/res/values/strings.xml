@@ -140,7 +140,7 @@
 
 
     <string name="vert_line" translatable="false">|</string>
-    <string name="color_change_takes_time">the color change might take time</string>
+    <string name="color_change_takes_time">The color change might take time</string>
 
 
 </resources>
