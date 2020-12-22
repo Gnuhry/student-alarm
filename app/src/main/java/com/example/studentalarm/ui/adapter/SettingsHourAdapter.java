@@ -14,10 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.Hours;
 
@@ -26,6 +22,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapter.ViewHolder> {
     private final static String LOG = "SettingsHourAdapter";
@@ -138,6 +138,12 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
                     .setUntil(holders.get(f).until.getText().toString());
             if (holders.get(f).until.getError() != null || holders.get(f).from.getError() != null)
                 return -1;
+            if (f - 1 >= 0 && hours.get((int) holders.get(f).llTime.getTag()).getFromAsDate().before(hours.get((int) holders.get(f - 1).llTime.getTag()).getUntilAsDate())) {
+                holders.get(f).from.setError(context.getString(R.string.can_not_start_before_the_hour_before));
+                return -1;
+            } else {
+                holders.get(f).from.setError(null);
+            }
         }
         Hours.save(context, hours);
         return hours.size();
@@ -150,7 +156,7 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
             if (!format.parse(before.getText().toString()).before(format.parse(until.getText().toString())))
                 until.setError(context.getString(R.string.end_must_start_after_begin));
         } catch (ParseException e) {
-            e.printStackTrace();
+            Log.d(LOG, "no date");
         }
     }
 
