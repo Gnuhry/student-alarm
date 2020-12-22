@@ -321,14 +321,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     /**
-     * remove all import lecture events
-     */
-    private void removeAllEventsLecture() {
-        if (getContext() != null)
-            LectureSchedule.load(getContext()).clearEvents().save(getContext());
-    }
-
-    /**
      * Reload the fragment
      */
     public void reload() {
@@ -336,5 +328,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_);
         if (navHostFragment != null)
             navHostFragment.getNavController().navigate(R.id.settingsFragment_);
+    }
+
+    /**
+     * remove all import lecture events
+     */
+    private void removeAllEventsLecture() {
+        if (getContext() != null)
+            LectureSchedule.load(getContext()).clearEvents().save(getContext());
     }
 }
