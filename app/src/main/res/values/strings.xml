@@ -133,9 +133,9 @@
     <string name="no_connection">No connection</string>
     <string name="import_color">Import Color</string>
     <string name="chose_import_color">Chose Import Color</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="error">ERROR</string>
     <string name="vert_line" translatable="false">|</string>
+    <string name="can_not_start_before_the_hour_before">Can not start before the hour before</string>
 
 
 </resources>
