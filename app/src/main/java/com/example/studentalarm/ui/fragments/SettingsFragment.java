@@ -12,6 +12,17 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
+import androidx.preference.SwitchPreference;
+
 import com.example.studentalarm.EventColor;
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
@@ -30,17 +41,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.preference.EditTextPreference;
-import androidx.preference.ListPreference;
-import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceManager;
-import androidx.preference.SwitchPreference;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
@@ -77,7 +77,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 alarmChange == null ||
                 autoImport == null ||
                 importPref == null ||
-                importColorPref == null||
+                importColorPref == null ||
                 eventDeleteAll == null ||
                 snooze == null ||
                 importTime == null ||
@@ -178,8 +178,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         importColorPref.setSummaryProvider(preference -> {
             SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
-            List<EventColor> colors= EventColor.possibleColors(getContext());
-            int index =colors.indexOf(new EventColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR,0)));
+            List<EventColor> colors = EventColor.possibleColors(getContext());
+            int index = colors.indexOf(new EventColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR, 0)));
             Log.d(LOG, "Index Of Color " + index);
             EventColor color = colors.get(index);
             Log.d(LOG, "Name of Color " + getResources().getString(color.getName()));
