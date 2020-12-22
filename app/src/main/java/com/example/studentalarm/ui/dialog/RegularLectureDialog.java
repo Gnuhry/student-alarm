@@ -1,6 +1,5 @@
 package com.example.studentalarm.ui.dialog;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,14 +15,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.studentalarm.EventColor;
-import com.example.studentalarm.PossibleColors;
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.ui.adapter.RoomAdapter;
 import com.example.studentalarm.ui.fragments.RegularLectureFragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -39,7 +36,6 @@ public class RegularLectureDialog extends DialogFragment {
     private final int index, oldColor;
     @NonNull
     private final RegularLectureFragment fragment;
-    @NonNull
     private List<EventColor> colors;
     private final String oldTitle, oldDocent;
 
@@ -81,7 +77,7 @@ public class RegularLectureDialog extends DialogFragment {
         spinner = view.findViewById(R.id.spColor);
 
         Log.d(LOG, "Context is: "+getContext());
-        colors= new PossibleColors(getContext()).colorList();
+        colors= EventColor.possibleColors(getContext());
 
         init();
         if (data != null && index >= 0 && index < data.getLectures().size())
@@ -166,7 +162,7 @@ public class RegularLectureDialog extends DialogFragment {
         ArrayAdapter<EventColor> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item);
         adapter.addAll(colors);
         spinner.setAdapter(adapter);
-        spinner.setSelection(colors.indexOf(new EventColor(Color.BLUE,getContext())));
+        spinner.setSelection(colors.indexOf(new EventColor(Color.BLUE)));
 
         title.addTextChangedListener(new TextWatcher() {
             @Override
@@ -231,7 +227,7 @@ public class RegularLectureDialog extends DialogFragment {
         RegularLectureSchedule.RegularLecture lecture = data.getLectures().get(index);
         title.setText(lecture.getName());
         docent.setText(lecture.getDocent());
-        spinner.setSelection(colors.indexOf(new EventColor(lecture.getColor(),getContext())));
+        spinner.setSelection(colors.indexOf(new EventColor(lecture.getColor())));
         delete.setVisibility(View.VISIBLE);
     }
 
