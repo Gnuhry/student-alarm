@@ -75,7 +75,8 @@ public class RegularLectureSchedule {
      * @param lecture lecture to add
      */
     public void addTime(int day, int hour, @NonNull RegularLectureSchedule.RegularLecture lecture) {
-        if (day >= this.days || hour >= this.hours)
+        Log.d("time", day + ". " + this.days+". "+(day > this.days || hour >= this.hours));
+        if (day > this.days || hour >= this.hours)
             return;
         removeTime(day, hour);
         regularLectures.add(new RegularLectureSchedule.RegularLecture.RegularLectureTime(day, hour, lecture.getActiveRoom(), lecture));
@@ -88,7 +89,7 @@ public class RegularLectureSchedule {
      * @param hour hour to remove
      */
     public void removeTime(int day, int hour) {
-        if (day >= this.days || hour >= this.hours)
+        if (day > this.days || hour >= this.hours)
             return;
         for (Iterator<RegularLecture.RegularLectureTime> iterator = regularLectures.iterator(); iterator.hasNext(); ) {
             RegularLectureSchedule.RegularLecture.RegularLectureTime time = iterator.next();
