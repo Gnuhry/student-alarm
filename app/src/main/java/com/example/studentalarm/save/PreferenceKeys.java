@@ -76,7 +76,7 @@ public class PreferenceKeys {
             preferences.edit().putString(PreferenceKeys.SNOOZE, DEFAULT_SNOOZE).apply();
         if (preferences.getString(PreferenceKeys.IMPORT_TIME, null) == null)
             preferences.edit().putString(PreferenceKeys.IMPORT_TIME, DEFAULT_IMPORT_TIME).apply();
-        if (preferences.getString(PreferenceKeys.IMPORT_COLOR, null) == null)
+        if (preferences.getInt(PreferenceKeys.IMPORT_COLOR, -1) == -1)
             preferences.edit().putInt(PreferenceKeys.IMPORT_COLOR, Color.RED).apply();//red als default Colour
         return erg;
     }
