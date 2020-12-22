@@ -63,7 +63,7 @@ public class RemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory
         reload();
         RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.app_widget_item);
         LectureSchedule.Lecture l = lectures.get(i);
-        if (l.getId() == -1) {
+        if (l.getId() == Integer.MIN_VALUE) {
             rv.setTextViewTextSize(R.id.txVTitle, TypedValue.COMPLEX_UNIT_SP, 18);
             rv.setViewVisibility(R.id.txVBarrier1, View.INVISIBLE);
             rv.setViewVisibility(R.id.LLEvent2, View.INVISIBLE);
@@ -74,10 +74,17 @@ public class RemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory
             rv.setViewVisibility(R.id.txVBarrier1, View.VISIBLE);
             rv.setViewVisibility(R.id.LLEvent2, View.VISIBLE);
             rv.setTextViewText(R.id.txVTitle, l.getName());
-            rv.setTextViewText(R.id.txVFrom, cutTime(time.format(l.getStart())));
+            if (l.getId() >= 0) {
+                rv.setViewVisibility(R.id.txVFrom, View.VISIBLE);
+                rv.setViewVisibility(R.id.txVUntil, View.VISIBLE);
+                rv.setTextViewText(R.id.txVFrom, cutTime(time.format(l.getStart())));
+                rv.setTextViewText(R.id.txVUntil, cutTime(time.format(l.getEnd())));
+            } else {
+                rv.setViewVisibility(R.id.txVFrom, View.GONE);
+                rv.setViewVisibility(R.id.txVUntil, View.GONE);
+            }
             boolean aa = l.getDocent() != null, ab = l.getLocation() != null;
             rv.setTextViewText(R.id.txVDetails, aa && ab ? l.getDocent() + " - " + l.getLocation() : aa ? l.getDocent() : ab ? l.getLocation() : null);
-            rv.setTextViewText(R.id.txVUntil, cutTime(time.format(l.getEnd())));
             rv.setTextColor(R.id.txVBarrier1, l.getColor());
             rv.setTextColor(R.id.txVBarrier2, l.getColor());
         }

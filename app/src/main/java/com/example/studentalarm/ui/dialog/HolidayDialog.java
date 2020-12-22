@@ -121,7 +121,7 @@ public class HolidayDialog extends DialogFragment {
                             .setTitle(R.string.delete)
                             .setMessage(R.string.do_you_want_to_delete_this_events)
                             .setPositiveButton(R.string.delete, (dialogInterface, i) -> {
-                                LectureSchedule.load(getContext()).removeLecture(old_lecture).save(context);
+                                LectureSchedule.load(getContext()).removeHoliday(old_lecture).save(context);
                                 this.dismiss();
                             })
                             .setNegativeButton(R.string.cancel, (dialogInterface, i) -> this.dismiss())

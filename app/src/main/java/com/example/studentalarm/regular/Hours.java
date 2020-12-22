@@ -1,9 +1,7 @@
 package com.example.studentalarm.regular;
 
 import android.content.Context;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.util.Log;
 
 import com.example.studentalarm.save.SaveHour;
 
@@ -18,6 +16,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class Hours {
     private final int id;
@@ -124,10 +125,8 @@ public class Hours {
             fis.close();
             ois.close();
             return erg;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (IOException | ClassNotFoundException e) {
+            Log.d("Hours", "can't load");
         }
         return new ArrayList<>();
     }
