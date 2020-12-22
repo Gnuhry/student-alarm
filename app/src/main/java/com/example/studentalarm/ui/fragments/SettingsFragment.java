@@ -13,7 +13,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.studentalarm.EventColor;
-import com.example.studentalarm.PossibleColors;
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.Import;
@@ -31,7 +30,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.prefs.Preferences;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -180,12 +178,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         importColorPref.setSummaryProvider(preference -> {
             SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
-            List<EventColor> colors= new PossibleColors(getContext()).colorList();
-            int index =colors.indexOf(new EventColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR,0),getContext()));
+            List<EventColor> colors= EventColor.possibleColors(getContext());
+            int index =colors.indexOf(new EventColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR,0)));
             Log.d(LOG, "Index Of Color " + index);
             EventColor color = colors.get(index);
-            Log.d(LOG, "Name of Color " + getResources().getString(color.getname()));
-            return getResources().getString(color.getname());
+            Log.d(LOG, "Name of Color " + getResources().getString(color.getName()));
+            return getResources().getString(color.getName());
             //return getResources().getString(preferences.getInt(PreferenceKeys.IMPORT_COLOR,R.string.error));//Uses String ID to use String ini XML
         });
         importColorPref.setOnPreferenceClickListener(preference -> {

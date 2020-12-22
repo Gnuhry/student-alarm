@@ -2,13 +2,9 @@ package com.example.studentalarm.imports;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.preference.Preference;
 
-import com.bumptech.glide.load.engine.Resource;
 import com.example.studentalarm.EventColor;
-import com.example.studentalarm.PossibleColors;
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.Hours;
 import com.example.studentalarm.regular.RegularLectureSchedule;
@@ -29,7 +25,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.prefs.Preferences;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -186,8 +181,8 @@ public class LectureSchedule {
         importLecture.clear();
         List<ICS.vEvent> list = calendar.getVEventList();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        List<EventColor> colors= new PossibleColors(context).colorList();
-        EventColor color = colors.get(colors.indexOf(new EventColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR,0),context)));
+        List<EventColor> colors=  EventColor.possibleColors(context);
+        EventColor color = colors.get(colors.indexOf(new EventColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR,0))));
         if (list != null)
             for (ICS.vEvent ev : list) {
                 try {
