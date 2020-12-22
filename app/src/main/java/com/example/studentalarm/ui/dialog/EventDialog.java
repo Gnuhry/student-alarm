@@ -19,6 +19,11 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.DialogFragment;
+
 import com.example.studentalarm.EventColor;
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
@@ -34,11 +39,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.DialogFragment;
 
 public class EventDialog extends DialogFragment {
     private static final String LOG = "EventDialogFragment";
@@ -89,8 +89,8 @@ public class EventDialog extends DialogFragment {
         delete = view.findViewById(R.id.txVDelete);
         spinner = view.findViewById(R.id.spColor);
 
-        Log.d(LOG, "Context is: "+getContext());
-        colors= EventColor.possibleColors(getContext());
+        Log.d(LOG, "Context is: " + getContext());
+        colors = EventColor.possibleColors(getContext());
 
         initSpinner();
         if (data != null) {

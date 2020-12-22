@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
+
 import com.example.studentalarm.EventColor;
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.Hours;
@@ -25,10 +29,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.preference.PreferenceManager;
 
 public class LectureSchedule {
     @NonNull
@@ -177,12 +177,12 @@ public class LectureSchedule {
      * @param calendar the ics file object
      */
     @NonNull
-    public LectureSchedule importICS(@NonNull ICS calendar,Context context) {
+    public LectureSchedule importICS(@NonNull ICS calendar, Context context) {
         importLecture.clear();
         List<ICS.vEvent> list = calendar.getVEventList();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        List<EventColor> colors=  EventColor.possibleColors(context);
-        EventColor color = colors.get(colors.indexOf(new EventColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR,0))));
+        List<EventColor> colors = EventColor.possibleColors(context);
+        EventColor color = colors.get(colors.indexOf(new EventColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR, 0))));
         if (list != null)
             for (ICS.vEvent ev : list) {
                 try {
@@ -207,12 +207,14 @@ public class LectureSchedule {
         if (id3 >= 0) holidays.remove(id3);
         return this;
     }
+
     /**
      * change all Imported Colors
+     *
      * @param color colorcode for the Imported Files
      */
-    public void changeImportedColor(int color){
-        for (Lecture importedlectures:importLecture){
+    public void changeImportedColor(int color) {
+        for (Lecture importedlectures : importLecture) {
             importedlectures.setColor(color);
         }
     }

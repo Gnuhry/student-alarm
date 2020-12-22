@@ -11,7 +11,7 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spnColor">
+        app:layout_constraintTop_toBottomOf="@+id/ragColor">
 
         <Button
             android:id="@+id/btnCancel"
@@ -30,12 +30,13 @@
             android:text="@string/save" />
     </LinearLayout>
 
-    <Spinner
-        android:id="@+id/spnColor"
+    <RadioGroup
+        android:id="@+id/ragColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txVImportColor"/>
+
 
     <TextView
         android:id="@+id/txVImportColor"
