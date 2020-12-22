@@ -187,7 +187,7 @@ public class RegularLectureFragment extends Fragment {
         Log.i(LOG, "load weekView");
         for (Iterator<RegularLectureSchedule.RegularLecture.RegularLectureTime> iterator = regularLectureSchedule.getRegularLectures().iterator(); iterator.hasNext(); ) {
             RegularLectureSchedule.RegularLecture.RegularLectureTime time = iterator.next();
-            if (!regularLectureSchedule.getLectures().contains(time.lecture) || time.day >= regularLectureSchedule.getDays() || time.hour >= regularLectureSchedule.getHours())
+            if (!regularLectureSchedule.getLectures().contains(time.lecture) || time.day > regularLectureSchedule.getDays() || time.hour >= regularLectureSchedule.getHours())
                 iterator.remove();
 
         }

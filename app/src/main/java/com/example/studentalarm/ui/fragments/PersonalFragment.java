@@ -1,17 +1,18 @@
 package com.example.studentalarm.ui.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.studentalarm.R;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import com.example.studentalarm.R;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class PersonalFragment extends Fragment {
 
@@ -37,23 +38,25 @@ public class PersonalFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        checkSave();
+        if (getContext() != null)
+            checkSave(getContext());
     }
 
     /**
      * open a fragment
      *
-     * @param fragment the fragment to open
+     * @param fragment2 the fragment to open
      */
-    public void openFragment(@NonNull Fragment fragment) {
+    public void openFragment(@NonNull Fragment fragment2) {
         if (getActivity() != null) {
-            Log.i(LOG, "open Fragment: " + fragment.getClass().toString());
-            if (fragment != this.fragment)
-                checkSave();
+            Log.i(LOG, "open Fragment: " + fragment2.getClass().toString());
+            if (fragment2 != fragment)
+                if (getContext() != null)
+                    checkSave(getContext());
             getActivity()
                     .getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.frLPersonal, fragment, "TAG")
+                    .replace(R.id.frLPersonal, fragment2, "TAG")
                     .addToBackStack(null)
                     .commit();
         }
@@ -73,14 +76,13 @@ public class PersonalFragment extends Fragment {
     /**
      * check if save dialog should displayed
      */
-    private void checkSave() {
+    private void checkSave(@NonNull Context context) {
         if (fragment != null && !fragment.hasNoChanges()) {
             new MaterialAlertDialogBuilder(getContext())
                     .setTitle(R.string.dismiss)
                     .setMessage(R.string.do_you_want_to_save_your_changes)
                     .setPositiveButton(R.string.save, (dialogInterface, i) -> {
-                        if (getContext() != null)
-                            fragment.getRegularLectureSchedule().save(getContext());
+                        fragment.getRegularLectureSchedule().save(context);
                         fragment = null;
                     })
                     .setNegativeButton(R.string.dismiss, (dialogInterface, i) -> fragment = null)
