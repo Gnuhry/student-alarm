@@ -10,14 +10,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.Export;
 import com.example.studentalarm.imports.LectureSchedule;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 public class ExportLectureDialog extends Dialog {
 

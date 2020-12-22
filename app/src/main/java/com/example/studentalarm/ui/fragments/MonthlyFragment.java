@@ -6,14 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.studentalarm.R;
-import com.example.studentalarm.alarm.AlarmManager;
-import com.example.studentalarm.imports.Import;
-import com.example.studentalarm.imports.LectureSchedule;
-import com.example.studentalarm.save.PreferenceKeys;
-import com.example.studentalarm.ui.adapter.MonthlyAdapter;
-import com.example.studentalarm.ui.dialog.EventDialog;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -21,6 +13,14 @@ import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.studentalarm.R;
+import com.example.studentalarm.alarm.AlarmManager;
+import com.example.studentalarm.imports.Import;
+import com.example.studentalarm.imports.LectureSchedule;
+import com.example.studentalarm.save.PreferenceKeys;
+import com.example.studentalarm.ui.adapter.MonthlyAdapter;
+import com.example.studentalarm.ui.dialog.EventDialog;
 
 public class MonthlyFragment extends Fragment implements ReloadLecture {
 
@@ -75,7 +75,7 @@ public class MonthlyFragment extends Fragment implements ReloadLecture {
         if (getContext() != null &&
                 PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE) != Import.ImportFunction.NONE &&
                 getActivity() != null &&
-                Import.checkConnection(getContext(),true))
+                Import.checkConnection(getContext(), true))
             new Thread(() -> {
                 Log.d(LOG, "start thread");
                 if (getActivity() == null) return;

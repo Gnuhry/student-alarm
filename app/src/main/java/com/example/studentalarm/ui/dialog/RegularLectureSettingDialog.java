@@ -11,17 +11,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.studentalarm.R;
-import com.example.studentalarm.regular.RegularLectureSchedule;
-import com.example.studentalarm.ui.adapter.SettingsHourAdapter;
-import com.example.studentalarm.ui.fragments.RegularLectureFragment;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.studentalarm.R;
+import com.example.studentalarm.regular.RegularLectureSchedule;
+import com.example.studentalarm.ui.adapter.SettingsHourAdapter;
+import com.example.studentalarm.ui.fragments.RegularLectureFragment;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class RegularLectureSettingDialog extends DialogFragment {
 

@@ -9,6 +9,10 @@ import android.net.ConnectivityManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
+
 import com.example.studentalarm.R;
 import com.example.studentalarm.receiver.ImportReceiver;
 import com.example.studentalarm.save.PreferenceKeys;
@@ -18,9 +22,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.preference.PreferenceManager;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -78,7 +79,7 @@ public class Import {
                 String icsFile = runSynchronous(link);
                 if (icsFile == null) return;
                 ICS ics = new ICS(icsFile);
-                lecture_schedule.importICS(ics).save(context);
+                lecture_schedule.importICS(ics, context).save(context);
         }
     }
 

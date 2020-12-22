@@ -2,15 +2,16 @@ package com.example.studentalarm.save;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.util.Log;
-
-import com.example.studentalarm.R;
-
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
+
+import com.example.studentalarm.R;
+
+import java.util.Locale;
 
 public class PreferenceKeys {
     @NonNull
@@ -31,7 +32,13 @@ public class PreferenceKeys {
             RINGTONE = "RINGTONE",
             DHBW_MANNHEIM_COURSE_CATEGORY = "DHBWMANNHEIMCOURSECATEGORY",
             DHBW_MANNHEIM_COURSE = "DHBWMANNHEIMCOURSE",
-            WAIT_FOR_NETWORK="WAIT_FOR_NETWORK",
+            WAIT_FOR_NETWORK = "WAIT_FOR_NETWORK",
+            IMPORT = "IMPORT",
+            IMPORT_COLOR = "IMPORT_COLOR",
+            EVENT_DELETE_ALL = "EVENT_DELETE_ALL",
+            EXPORT = "EXPORT",
+            RESET = "RESET",
+            THEME = "THEME",
 
     DEFAULT_RINGTONE = "Default",
             DEFAULT_LANGUAGE = "EN",
@@ -69,6 +76,8 @@ public class PreferenceKeys {
             preferences.edit().putString(PreferenceKeys.SNOOZE, DEFAULT_SNOOZE).apply();
         if (preferences.getString(PreferenceKeys.IMPORT_TIME, null) == null)
             preferences.edit().putString(PreferenceKeys.IMPORT_TIME, DEFAULT_IMPORT_TIME).apply();
+        if (preferences.getInt(PreferenceKeys.IMPORT_COLOR, -1) == -1)
+            preferences.edit().putInt(PreferenceKeys.IMPORT_COLOR, Color.RED).apply();//red als default Colour
         return erg;
     }
 

@@ -34,6 +34,9 @@
         <Preference
             android:key="IMPORT"
             app:title="@string/import_" />
+        <Preference
+            android:key="IMPORT_COLOR"
+            app:title="@string/import_color" />
         <SwitchPreference
             android:defaultValue="false"
             android:key="AUTO_IMPORT"
