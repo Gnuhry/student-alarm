@@ -20,7 +20,9 @@ public class EventColor {
     private Context context;
 
     /**
-     * only used for Comparison => no context needed.
+     * only used for Comparison only one param necessary.
+     *
+     * @param color int with Color. identification
      */
     public EventColor(int color) {
         this.name = 0;
@@ -28,6 +30,11 @@ public class EventColor {
         Log.d(LOG, "Create 2var, name: " + name + " Color: " + color);
     }
 
+    /**
+     * @param name    int to identify name of the color in string XML
+     * @param color   int with Color. identification
+     * @param context Context needed for toString function
+     */
     public EventColor(int name, int color, @NonNull Context context) {
         this.name = name;
         this.color = color;
@@ -43,6 +50,9 @@ public class EventColor {
         return name;
     }
 
+    /**
+     * @return String with the real name string from string XML
+     */
     @NonNull
     @Override
     public String toString() {
@@ -55,6 +65,12 @@ public class EventColor {
         return (obj instanceof EventColor) && color == ((EventColor) obj).color;
     }
 
+    /**
+     * static funktion to get a List with all choosable
+     *
+     * @param context Context is needed for the EventColor Objects
+     * @return List<EventColor> list with all possible choosable colors
+     */
     public static List<EventColor> possibleColors(@NonNull Context context) {
         Log.d(LOG, "Create possibleColor List context:" + context);
         List<EventColor> colors = new ArrayList<>();

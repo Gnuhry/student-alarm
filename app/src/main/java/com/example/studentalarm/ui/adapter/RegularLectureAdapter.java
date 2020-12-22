@@ -9,6 +9,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.ui.dialog.ChangeRoomDialog;
@@ -16,10 +20,6 @@ import com.example.studentalarm.ui.dialog.RegularLectureDialog;
 import com.example.studentalarm.ui.fragments.RegularLectureFragment;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class RegularLectureAdapter extends RecyclerView.Adapter<RegularLectureAdapter.ViewHolder> {
 

@@ -12,13 +12,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
-import com.example.studentalarm.save.PreferenceKeys;
-import com.example.studentalarm.R;
-
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
+
+import com.example.studentalarm.R;
+import com.example.studentalarm.save.PreferenceKeys;
 
 import static android.app.Notification.EXTRA_NOTIFICATION_ID;
 

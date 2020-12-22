@@ -8,12 +8,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.studentalarm.R;
-import com.google.android.material.tabs.TabLayout;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+
+import com.example.studentalarm.R;
+import com.google.android.material.tabs.TabLayout;
 
 
 public class LectureFragment extends Fragment {
@@ -83,7 +83,7 @@ public class LectureFragment extends Fragment {
     /**
      * Remove menu item
      */
-    public static void removeLectureMenu(@NonNull Activity activity){
+    public static void removeLectureMenu(@NonNull Activity activity) {
         Toolbar toolbar = activity.findViewById(R.id.my_toolbar);
         if (toolbar != null) {
             toolbar.getMenu().getItem(0).setVisible(false);

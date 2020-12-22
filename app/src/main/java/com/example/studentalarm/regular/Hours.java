@@ -2,6 +2,9 @@ package com.example.studentalarm.regular;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.example.studentalarm.save.SaveHour;
 
 import java.io.FileInputStream;
@@ -15,9 +18,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class Hours {
     private final int id;
