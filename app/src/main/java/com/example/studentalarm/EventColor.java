@@ -56,7 +56,6 @@ public class EventColor {
     @NonNull
     @Override
     public String toString() {
-        Log.d(LOG, "ToString, context: " + context + " name: " + name);
         return (name != 0) ? context.getString(name) : context.getString(R.string.error);
     }
 

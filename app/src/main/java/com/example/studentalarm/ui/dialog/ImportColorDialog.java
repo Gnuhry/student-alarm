@@ -84,9 +84,7 @@ public class ImportColorDialog extends DialogFragment {
             } else {
                 Log.d(LOG, "Colorint: " + color);
                 preferences.edit().putInt(PreferenceKeys.IMPORT_COLOR, color).apply();
-                LectureSchedule lecture_schedule = LectureSchedule.load(getContext());
-                lecture_schedule.changeImportedColor(color);
-                lecture_schedule.save(getContext());
+                LectureSchedule.load(getContext()).changeImportedColor(color).save(getContext());
             }
             this.dismiss();
         });
