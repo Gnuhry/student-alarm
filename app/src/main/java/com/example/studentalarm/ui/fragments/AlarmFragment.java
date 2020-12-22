@@ -8,18 +8,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.studentalarm.save.PreferenceKeys;
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
+
 import com.example.studentalarm.R;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
-
-import androidx.annotation.NonNull;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.fragment.app.Fragment;
-import androidx.preference.PreferenceManager;
 
 public class AlarmFragment extends Fragment {
 

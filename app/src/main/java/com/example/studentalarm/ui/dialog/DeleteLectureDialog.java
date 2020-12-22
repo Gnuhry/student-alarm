@@ -7,11 +7,11 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 
+import androidx.annotation.NonNull;
+
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.LectureSchedule;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
-import androidx.annotation.NonNull;
 
 public class DeleteLectureDialog extends Dialog {
 

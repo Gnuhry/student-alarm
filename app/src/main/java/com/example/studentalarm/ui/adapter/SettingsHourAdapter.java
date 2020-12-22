@@ -14,6 +14,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.Hours;
 
@@ -22,10 +26,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapter.ViewHolder> {
     private final static String LOG = "SettingsHourAdapter";

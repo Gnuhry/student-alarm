@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -70,7 +69,7 @@ public class ImportColorDialog extends DialogFragment {
         }
 
 
-        view.findViewById(R.id.btnCancel).setOnClickListener(view1 -> {
+        view.findViewById(R.id.btnSave).setOnClickListener(view1 -> {
             Log.i(LOG, "Save");
             int color = -1;
             for (int i = 0; i < radioGroupColours.getChildCount(); i++) {
@@ -92,7 +91,7 @@ public class ImportColorDialog extends DialogFragment {
             this.dismiss();
         });
 
-        view.findViewById(R.id.btnSave).setOnClickListener(view1 -> {
+        view.findViewById(R.id.btnCancel).setOnClickListener(view1 -> {
             Log.i(LOG, "Cancel");
             this.dismiss();
         });

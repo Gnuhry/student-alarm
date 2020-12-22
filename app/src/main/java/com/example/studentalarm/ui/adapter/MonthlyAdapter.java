@@ -8,6 +8,10 @@ import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.ui.dialog.EventDialog;
@@ -17,10 +21,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHolder> {
     private static SimpleDateFormat dayOfWeekName;
