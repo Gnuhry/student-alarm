@@ -26,11 +26,9 @@ import java.util.List;
 public class ImportColorDialog extends DialogFragment {
     @NonNull
     private static final String LOG = "ImportColorDialog";
-    private List<EventColor> colors;
     private RadioGroup radioGroupColours;
-    private Button cancel, save;
     private final SharedPreferences preferences;
-    private SettingsFragment settingsFragment;
+    private final SettingsFragment settingsFragment;
 
 
     public ImportColorDialog(SharedPreferences preferences, SettingsFragment settingsFragment) {
@@ -58,7 +56,7 @@ public class ImportColorDialog extends DialogFragment {
         radioGroupColours = view.findViewById(R.id.ragColor);
 
         Log.d(LOG, "Context is: " + getContext());
-        colors = EventColor.possibleColors(getContext());
+        List<EventColor> colors = EventColor.possibleColors(getContext());
         for (EventColor color : colors) {
             RadioButton radioButton = new RadioButton(getContext());
             radioButton.setText(color.toString());
@@ -71,16 +69,11 @@ public class ImportColorDialog extends DialogFragment {
 
         }
 
-        cancel = view.findViewById(R.id.btnCancel);
-        save = view.findViewById(R.id.btnSave);
 
-
-        save.setOnClickListener(view1 -> {
+        view.findViewById(R.id.btnCancel).setOnClickListener(view1 -> {
             Log.i(LOG, "Save");
             int color = -1;
             for (int i = 0; i < radioGroupColours.getChildCount(); i++) {
-                if (radioGroupColours.getChildAt(i) == null)
-                    Log.d(LOG, "Child is Zerro ");
                 if (radioGroupColours.getChildAt(i) != null && ((RadioButton) radioGroupColours.getChildAt(i)).isChecked()) {
                     color = ((EventColor) radioGroupColours.getChildAt(i).getTag()).getColor();
                     Log.d(LOG, "Color is: " + color);
@@ -99,7 +92,7 @@ public class ImportColorDialog extends DialogFragment {
             this.dismiss();
         });
 
-        cancel.setOnClickListener(view1 -> {
+        view.findViewById(R.id.btnSave).setOnClickListener(view1 -> {
             Log.i(LOG, "Cancel");
             this.dismiss();
         });
