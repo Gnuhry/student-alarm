@@ -7,16 +7,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import android.widget.Toast;
 
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEntity;
 import com.example.studentalarm.R;
+import com.example.studentalarm.regular.Hours;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.ui.adapter.RegularLectureAdapter;
 import com.example.studentalarm.ui.dialog.RegularLectureSettingDialog;
@@ -26,6 +22,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class RegularLectureFragment extends Fragment {
     private static final String LOG = "RegularLectureFragment";
@@ -238,6 +240,10 @@ public class RegularLectureFragment extends Fragment {
             Log.i(LOG, "adapter-emptyClick");
             RegularLectureSchedule.RegularLecture selected = regularLectureAdapter.getSelected();
             if (selected == null) return;
+            if (Hours.load(getContext()).isEmpty()) {
+                Toast.makeText(getContext(), "Missing hour settings", Toast.LENGTH_LONG).show();
+                return;
+            }
             regularLectureSchedule.addTime(time.get(Calendar.DAY_OF_MONTH), time.get(Calendar.HOUR), selected);
             loadDataWeekView();
             changes = true;
