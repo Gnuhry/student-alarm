@@ -5,6 +5,9 @@ import android.graphics.Color;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.example.studentalarm.R;
 import com.example.studentalarm.save.SaveRegularLectureSchedule;
 
@@ -16,9 +19,6 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class RegularLectureSchedule {
 

@@ -5,17 +5,17 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 
-import com.example.studentalarm.receiver.NetworkReceiver;
-import com.example.studentalarm.save.PreferenceKeys;
-import com.example.studentalarm.ui.dialog.ImportDialog;
-import com.example.studentalarm.ui.fragments.SettingsFragment;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import androidx.preference.PreferenceManager;
+
+import com.example.studentalarm.receiver.NetworkReceiver;
+import com.example.studentalarm.save.PreferenceKeys;
+import com.example.studentalarm.ui.dialog.ImportDialog;
+import com.example.studentalarm.ui.fragments.SettingsFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -8,6 +8,10 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.Export;
 import com.example.studentalarm.ui.dialog.ExportDialog;
@@ -15,10 +19,6 @@ import com.example.studentalarm.ui.dialog.ExportDialog;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class ExportAdapter extends RecyclerView.Adapter<ExportAdapter.ViewHolder> {
 

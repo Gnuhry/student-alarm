@@ -1,11 +1,18 @@
 package com.example.studentalarm.imports;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
+
+import com.example.studentalarm.EventColor;
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.Hours;
 import com.example.studentalarm.regular.RegularLectureSchedule;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.save.SaveLecture;
 
 import java.io.FileInputStream;
@@ -22,9 +29,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class LectureSchedule {
     @NonNull
@@ -173,16 +177,19 @@ public class LectureSchedule {
      * @param calendar the ics file object
      */
     @NonNull
-    public LectureSchedule importICS(@NonNull ICS calendar) {
+    public LectureSchedule importICS(@NonNull ICS calendar, Context context) {
         importLecture.clear();
         List<ICS.vEvent> list = calendar.getVEventList();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        List<EventColor> colors = EventColor.possibleColors(context);
+        EventColor color = colors.get(colors.indexOf(new EventColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR, 0))));
         if (list != null)
             for (ICS.vEvent ev : list) {
                 try {
                     if (ev.DTStart != null && ev.DTend != null && ev.SUMMARY != null) {
                         Date start = ICS.stringToDate(ev.DTStart), end = ICS.stringToDate(ev.DTend);
                         if (start != null && end != null) {
-                            importLecture.add(new Lecture(true, start, end).setName(ev.SUMMARY).setLocation(ev.LOCATION).setAllDayEvent((TIME_FORMAT.format(start).equals("00:00:00:00") || TIME_FORMAT.format(start).equals("0:00:00:00")) && (TIME_FORMAT.format(end).equals("00:00:00:00") || TIME_FORMAT.format(end).equals("0:00:00:00"))));
+                            importLecture.add(new Lecture(true, start, end).setName(ev.SUMMARY).setLocation(ev.LOCATION).setAllDayEvent((TIME_FORMAT.format(start).equals("00:00:00:00") || TIME_FORMAT.format(start).equals("0:00:00:00")) && (TIME_FORMAT.format(end).equals("00:00:00:00") || TIME_FORMAT.format(end).equals("0:00:00:00"))).setColor(color.getColor()));
                         }
                     }
                 } catch (ParseException e) {
@@ -199,6 +206,17 @@ public class LectureSchedule {
         if (id2 >= 0) importLecture.remove(id2);
         if (id3 >= 0) holidays.remove(id3);
         return this;
+    }
+
+    /**
+     * change all Imported Colors
+     *
+     * @param color colorcode for the Imported Files
+     */
+    public void changeImportedColor(int color) {
+        for (Lecture importedlectures : importLecture) {
+            importedlectures.setColor(color);
+        }
     }
 
     /**

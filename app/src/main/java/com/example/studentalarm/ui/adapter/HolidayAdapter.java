@@ -8,16 +8,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.ui.dialog.HolidayDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.ViewHolder> {
     @NonNull

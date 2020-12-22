@@ -14,20 +14,20 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.studentalarm.EventColor;
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.ui.adapter.RoomAdapter;
 import com.example.studentalarm.ui.fragments.RegularLectureFragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class RegularLectureDialog extends DialogFragment {
     private static final String LOG = "RegularLectureDialog";
@@ -36,8 +36,7 @@ public class RegularLectureDialog extends DialogFragment {
     private final int index, oldColor;
     @NonNull
     private final RegularLectureFragment fragment;
-    @NonNull
-    private final List<EventColor> colors;
+    private List<EventColor> colors;
     private final String oldTitle, oldDocent;
 
     private EditText title, docent;
@@ -51,11 +50,6 @@ public class RegularLectureDialog extends DialogFragment {
         this.fragment = fragment;
         this.data = data;
         this.index = index;
-        colors = new ArrayList<>();
-        colors.add(new EventColor(R.string.red, Color.RED));
-        colors.add(new EventColor(R.string.green, Color.GREEN));
-        colors.add(new EventColor(R.string.blue, Color.BLUE));
-        colors.add(new EventColor(R.string.yellow, Color.YELLOW));
         if (data != null && index >= 0) {
             RegularLectureSchedule.RegularLecture lecture = data.getLectures().get(index);
             oldTitle = lecture.getName();
@@ -81,6 +75,9 @@ public class RegularLectureDialog extends DialogFragment {
         cancel = view.findViewById(R.id.txVCancel);
         delete = view.findViewById(R.id.txVDelete);
         spinner = view.findViewById(R.id.spColor);
+
+        Log.d(LOG, "Context is: " + getContext());
+        colors = EventColor.possibleColors(getContext());
 
         init();
         if (data != null && index >= 0 && index < data.getLectures().size())
@@ -238,41 +235,8 @@ public class RegularLectureDialog extends DialogFragment {
      * set cancel direct, if data is the same
      */
     private void checkCancelDirect() {
-        cancelDirect = ((EventColor) spinner.getSelectedItem()).color == oldColor && docent.getText().toString().equals(oldDocent) && title.getText().toString().equals(oldTitle);
+        cancelDirect = ((EventColor) spinner.getSelectedItem()).getColor() == oldColor && docent.getText().toString().equals(oldDocent) && title.getText().toString().equals(oldTitle);
     }
 
-    /**
-     * class to create a adapter with colors for spinner
-     */
-    public class EventColor {
-        private final int name, color;
-
-        private EventColor(int color) {
-            name = 0;
-            this.color = color;
-        }
-
-        private EventColor(int name, int color) {
-            this.name = name;
-            this.color = color;
-        }
-
-        public int getColor() {
-            return color;
-        }
-
-        @NonNull
-        @Override
-        public String toString() {
-            return getString(name);
-        }
-
-        @Override
-        public boolean equals(@Nullable Object obj) {
-            if (obj instanceof EventColor)
-                return color == ((EventColor) obj).color;
-            return false;
-        }
-    }
 }
 

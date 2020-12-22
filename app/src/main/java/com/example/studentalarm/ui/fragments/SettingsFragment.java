@@ -12,22 +12,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.studentalarm.R;
-import com.example.studentalarm.alarm.AlarmManager;
-import com.example.studentalarm.imports.Import;
-import com.example.studentalarm.imports.LectureSchedule;
-import com.example.studentalarm.regular.RegularLectureSchedule;
-import com.example.studentalarm.save.PreferenceKeys;
-import com.example.studentalarm.ui.dialog.DeleteLectureDialog;
-import com.example.studentalarm.ui.dialog.ExportDialog;
-import com.example.studentalarm.ui.dialog.ImportDialog;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
@@ -38,6 +22,25 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreference;
+
+import com.example.studentalarm.EventColor;
+import com.example.studentalarm.R;
+import com.example.studentalarm.alarm.AlarmManager;
+import com.example.studentalarm.imports.Import;
+import com.example.studentalarm.imports.LectureSchedule;
+import com.example.studentalarm.regular.RegularLectureSchedule;
+import com.example.studentalarm.save.PreferenceKeys;
+import com.example.studentalarm.ui.dialog.DeleteLectureDialog;
+import com.example.studentalarm.ui.dialog.ExportDialog;
+import com.example.studentalarm.ui.dialog.ImportColorDialog;
+import com.example.studentalarm.ui.dialog.ImportDialog;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Locale;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
@@ -58,21 +61,23 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 alarmPhone = findPreference(PreferenceKeys.ALARM_PHONE),
                 alarmChange = findPreference(PreferenceKeys.ALARM_CHANGE),
                 autoImport = findPreference(PreferenceKeys.AUTO_IMPORT);
-        Preference importPref = findPreference("IMPORT"),
-                eventDeleteAll = findPreference("EVENT_DELETE_ALL"),
-                export = findPreference("EXPORT"),
-                reset = findPreference("RESET");
+        Preference importPref = findPreference(PreferenceKeys.IMPORT),
+                importColorPref = findPreference(PreferenceKeys.IMPORT_COLOR),
+                eventDeleteAll = findPreference(PreferenceKeys.EVENT_DELETE_ALL),
+                export = findPreference(PreferenceKeys.EXPORT),
+                reset = findPreference(PreferenceKeys.RESET);
         EditTextPreference snooze = findPreference(PreferenceKeys.SNOOZE),
                 importTime = findPreference(PreferenceKeys.IMPORT_TIME);
         ListPreference language = findPreference(PreferenceKeys.LANGUAGE),
                 ringtone = findPreference(PreferenceKeys.RINGTONE),
-                theme = findPreference("THEME");
+                theme = findPreference(PreferenceKeys.THEME);
 
         if (alarmOn == null ||
                 alarmPhone == null ||
                 alarmChange == null ||
                 autoImport == null ||
                 importPref == null ||
+                importColorPref == null ||
                 eventDeleteAll == null ||
                 snooze == null ||
                 importTime == null ||
@@ -170,6 +175,25 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
             return true;
         });
+
+        importColorPref.setSummaryProvider(preference -> {
+            SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
+            List<EventColor> colors = EventColor.possibleColors(getContext());
+            int index = colors.indexOf(new EventColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR, 0)));
+            Log.d(LOG, "Index Of Color " + index);
+            EventColor color = colors.get(index);
+            Log.d(LOG, "Name of Color " + getResources().getString(color.getName()));
+            return getResources().getString(color.getName());
+            //return getResources().getString(preferences.getInt(PreferenceKeys.IMPORT_COLOR,R.string.error));//Uses String ID to use String ini XML
+        });
+        importColorPref.setOnPreferenceClickListener(preference -> {
+            SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
+            if (getContext() != null && getActivity() != null)
+                new ImportColorDialog(preferences, this).show(getActivity().getSupportFragmentManager(), "dialog");
+            return true;
+        });
+
+
         int mode2 = getPreferenceManager().getSharedPreferences().getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE);
         if (mode2 == Import.ImportFunction.NONE || mode2 == Import.ImportFunction.PHONE)
             autoImport.setEnabled(false);
@@ -305,7 +329,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     /**
      * Reload the fragment
      */
-    private void reload() {
+    public void reload() {
         if (getActivity() == null) return;
         NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_);
         if (navHostFragment != null)
