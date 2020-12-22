@@ -71,6 +71,7 @@ public class EventColor {
      * @param context Context is needed for the EventColor Objects
      * @return List<EventColor> list with all possible choosable colors
      */
+    @NonNull
     public static List<EventColor> possibleColors(@NonNull Context context) {
         Log.d(LOG, "Create possibleColor List context:" + context);
         List<EventColor> colors = new ArrayList<>();

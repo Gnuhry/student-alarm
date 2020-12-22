@@ -120,8 +120,8 @@ public class LectureSchedule {
             }
             erg.add(l);
         }
-        if (positionScroll == -1 && lecture.size() > 0)
-            positionScroll = lecture.size() - 1;
+        if (positionScroll == -1 && erg.size() > 0)
+            positionScroll = erg.size() - 1;
         return erg;
     }
 
@@ -177,7 +177,7 @@ public class LectureSchedule {
      * @param calendar the ics file object
      */
     @NonNull
-    public LectureSchedule importICS(@NonNull ICS calendar, Context context) {
+    public LectureSchedule importICS(@NonNull ICS calendar, @NonNull Context context) {
         importLecture.clear();
         List<ICS.vEvent> list = calendar.getVEventList();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
