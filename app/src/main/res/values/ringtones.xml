@@ -2,6 +2,6 @@
 <resources>
     <string-array name="ringtone">
         <item>Default</item>
-        <item>didudeldudu</item>
+        <item>gentle</item>
     </string-array>
 </resources>

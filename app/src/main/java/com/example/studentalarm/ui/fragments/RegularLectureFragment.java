@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEntity;
 import com.example.studentalarm.R;
+import com.example.studentalarm.regular.Hours;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.ui.adapter.RegularLectureAdapter;
 import com.example.studentalarm.ui.dialog.RegularLectureSettingDialog;
@@ -185,7 +187,7 @@ public class RegularLectureFragment extends Fragment {
         Log.i(LOG, "load weekView");
         for (Iterator<RegularLectureSchedule.RegularLecture.RegularLectureTime> iterator = regularLectureSchedule.getRegularLectures().iterator(); iterator.hasNext(); ) {
             RegularLectureSchedule.RegularLecture.RegularLectureTime time = iterator.next();
-            if (!regularLectureSchedule.getLectures().contains(time.lecture) || time.day >= regularLectureSchedule.getDays() || time.hour >= regularLectureSchedule.getHours())
+            if (!regularLectureSchedule.getLectures().contains(time.lecture) || time.day > regularLectureSchedule.getDays() || time.hour >= regularLectureSchedule.getHours())
                 iterator.remove();
 
         }
@@ -237,7 +239,14 @@ public class RegularLectureFragment extends Fragment {
             super.onEmptyViewClick(time);
             Log.i(LOG, "adapter-emptyClick");
             RegularLectureSchedule.RegularLecture selected = regularLectureAdapter.getSelected();
-            if (selected == null) return;
+            if (selected == null) {
+                Toast.makeText(getContext(), R.string.no_lecture_in_the_bottom_bar_selected, Toast.LENGTH_LONG).show();
+                return;
+            }
+            if (Hours.load(getContext()).isEmpty()) {
+                Toast.makeText(getContext(), R.string.missing_hour_settings, Toast.LENGTH_LONG).show();
+                return;
+            }
             regularLectureSchedule.addTime(time.get(Calendar.DAY_OF_MONTH), time.get(Calendar.HOUR), selected);
             loadDataWeekView();
             changes = true;

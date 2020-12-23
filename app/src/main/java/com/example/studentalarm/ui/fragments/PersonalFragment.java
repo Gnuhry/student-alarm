@@ -1,5 +1,6 @@
 package com.example.studentalarm.ui.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,7 +38,8 @@ public class PersonalFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        checkSave();
+        if (getContext() != null)
+            checkSave(getContext());
     }
 
     /**
@@ -48,8 +50,8 @@ public class PersonalFragment extends Fragment {
     public void openFragment(@NonNull Fragment fragment) {
         if (getActivity() != null) {
             Log.i(LOG, "open Fragment: " + fragment.getClass().toString());
-            if (fragment != this.fragment)
-                checkSave();
+            if (fragment != this.fragment && getContext() != null)
+                checkSave(getContext());
             getActivity()
                     .getSupportFragmentManager()
                     .beginTransaction()
@@ -73,14 +75,13 @@ public class PersonalFragment extends Fragment {
     /**
      * check if save dialog should displayed
      */
-    private void checkSave() {
+    private void checkSave(@NonNull Context context) {
         if (fragment != null && !fragment.hasNoChanges()) {
             new MaterialAlertDialogBuilder(getContext())
                     .setTitle(R.string.dismiss)
                     .setMessage(R.string.do_you_want_to_save_your_changes)
                     .setPositiveButton(R.string.save, (dialogInterface, i) -> {
-                        if (getContext() != null)
-                            fragment.getRegularLectureSchedule().save(getContext());
+                        fragment.getRegularLectureSchedule().save(context);
                         fragment = null;
                     })
                     .setNegativeButton(R.string.dismiss, (dialogInterface, i) -> fragment = null)

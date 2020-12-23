@@ -49,6 +49,7 @@ public class ImportDialog extends Dialog {
 
     private static final String LINK_BEGIN = "http://vorlesungsplan.dhbw-mannheim.de/ical.php?uid=";
     private static final String LOG = "ImportDialog";
+    public static final int REQUEST_CODE = 2;
     @Nullable
     private final ProgressDialog progress;
     @NonNull
@@ -75,7 +76,7 @@ public class ImportDialog extends Dialog {
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.KITKAT)
-            ((RadioButton) findViewById(R.id.rBtnPhone)).setVisibility(View.GONE);
+            findViewById(R.id.rBtnPhone).setVisibility(View.GONE);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         switch (preferences.getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE)) {
@@ -93,7 +94,7 @@ public class ImportDialog extends Dialog {
             case Import.ImportFunction.DHBWMA:
                 ((RadioButton) findViewById(R.id.rBtnDHBWMa)).setChecked(true);
                 findViewById(R.id.LLDHBWMaCourse).setVisibility(View.VISIBLE);
-                ((RadioButton) findViewById(R.id.rBtnDHBWMa)).setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT));
+                findViewById(R.id.rBtnDHBWMa).setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT));
                 findViewById(R.id.LLRefresh).setVisibility(View.VISIBLE);
                 break;
         }
@@ -103,7 +104,7 @@ public class ImportDialog extends Dialog {
         });
         ((RadioButton) findViewById(R.id.rBtnICS)).setOnCheckedChangeListener((compoundButton, b) -> findViewById(R.id.LLLink).setVisibility(b ? View.VISIBLE : View.GONE));
         ((RadioButton) findViewById(R.id.rBtnDHBWMa)).setOnCheckedChangeListener((compoundButton, b) -> {
-            ((RadioButton) findViewById(R.id.rBtnDHBWMa)).setLayoutParams(new LinearLayout.LayoutParams(b ? LinearLayout.LayoutParams.WRAP_CONTENT : LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+            findViewById(R.id.rBtnDHBWMa).setLayoutParams(new LinearLayout.LayoutParams(b ? LinearLayout.LayoutParams.WRAP_CONTENT : LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
             findViewById(R.id.LLDHBWMaCourse).setVisibility(b ? View.VISIBLE : View.GONE);
             findViewById(R.id.LLRefresh).setVisibility(b ? View.VISIBLE : View.GONE);
         });
@@ -322,7 +323,7 @@ public class ImportDialog extends Dialog {
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("*/*");
 
-            activity.startActivityForResult(intent, 2);
+            activity.startActivityForResult(intent, REQUEST_CODE);
         }
     }
 

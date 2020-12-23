@@ -1,11 +1,13 @@
 package com.example.studentalarm.regular;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.studentalarm.save.SaveHour;
+import com.example.studentalarm.save.SaveKeys;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -79,7 +81,7 @@ public class Hours {
     public static void save(@NonNull Context context, @NonNull List<Hours> hours) {
         FileOutputStream fos;
         try {
-            fos = context.openFileOutput("HOURS", Context.MODE_PRIVATE);
+            fos = context.openFileOutput(SaveKeys.HOURS, Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(saveHours(hours));
             oos.close();
@@ -118,16 +120,14 @@ public class Hours {
     @NonNull
     public static List<Hours> load(@NonNull Context context) {
         try {
-            FileInputStream fis = context.openFileInput("HOURS");
+            FileInputStream fis = context.openFileInput(SaveKeys.HOURS);
             ObjectInputStream ois = new ObjectInputStream(fis);
             List<Hours> erg = convertSave((SaveHour) ois.readObject());
             fis.close();
             ois.close();
             return erg;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (IOException | ClassNotFoundException e) {
+            Log.d("Hours", "can't load");
         }
         return new ArrayList<>();
     }

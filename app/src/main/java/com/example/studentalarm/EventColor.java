@@ -56,7 +56,6 @@ public class EventColor {
     @NonNull
     @Override
     public String toString() {
-        Log.d(LOG, "ToString, context: " + context + " name: " + name);
         return (name != 0) ? context.getString(name) : context.getString(R.string.error);
     }
 
@@ -71,6 +70,7 @@ public class EventColor {
      * @param context Context is needed for the EventColor Objects
      * @return List<EventColor> list with all possible choosable colors
      */
+    @NonNull
     public static List<EventColor> possibleColors(@NonNull Context context) {
         Log.d(LOG, "Create possibleColor List context:" + context);
         List<EventColor> colors = new ArrayList<>();
