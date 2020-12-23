@@ -94,8 +94,8 @@ public class AlarmReceiver extends BroadcastReceiver {
      */
     private MediaPlayer getMediaPlayer(@NonNull Context context) {
         switch (PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.RINGTONE, PreferenceKeys.DEFAULT_RINGTONE)) {
-            case "didudeldudu":
-                return MediaPlayer.create(context.getApplicationContext(), R.raw.didudeldudu);
+            case "gentle":
+                return MediaPlayer.create(context.getApplicationContext(), R.raw.alarm_gentle);
             case "DEFAULT":
             default:
                 Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

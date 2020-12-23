@@ -72,15 +72,22 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
         LectureSchedule.Lecture l = lecture.get(position);
-        if (l.getId() >= 0) {
+        if (l.getId() != Integer.MIN_VALUE) {
             viewHolder.TLEvent.setVisibility(View.VISIBLE);
             viewHolder.barrier.setVisibility(View.GONE);
             viewHolder.date.setVisibility(View.GONE);
             viewHolder.title.setText(l.getName());
-            viewHolder.from.setText(cutTime(time.format(l.getStart())));
+            if (l.getId() >= 0) {
+                viewHolder.from.setVisibility(View.VISIBLE);
+                viewHolder.until.setVisibility(View.VISIBLE);
+                viewHolder.from.setText(cutTime(time.format(l.getStart())));
+                viewHolder.until.setText(cutTime(time.format(l.getEnd())));
+            } else {
+                viewHolder.from.setVisibility(View.GONE);
+                viewHolder.until.setVisibility(View.GONE);
+            }
             boolean aa = l.getDocent() != null, ab = l.getLocation() != null;
             viewHolder.detail.setText(aa && ab ? l.getDocent() + " - " + l.getLocation() : aa ? l.getDocent() : ab ? l.getLocation() : null);
-            viewHolder.until.setText(cutTime(time.format(l.getEnd())));
             viewHolder.colorLine.setBackgroundColor(l.getColor());
             viewHolder.TLEvent.setOnClickListener(view -> new EventDialog(l, LectureSchedule.load(view.getContext()), reloadLecture).show(activity.getSupportFragmentManager(), "dialog"));
         } else {

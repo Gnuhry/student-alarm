@@ -104,7 +104,7 @@ public class Import {
             } else
                 Log.e("Synchronous", "No body");
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("Synchronous", "failed");
         }
         return null;
     }

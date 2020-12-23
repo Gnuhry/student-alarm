@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.studentalarm.R;
+import com.example.studentalarm.save.SaveKeys;
 import com.example.studentalarm.save.SaveRegularLectureSchedule;
 
 import java.io.FileInputStream;
@@ -75,7 +76,7 @@ public class RegularLectureSchedule {
      * @param lecture lecture to add
      */
     public void addTime(int day, int hour, @NonNull RegularLectureSchedule.RegularLecture lecture) {
-        if (day >= this.days || hour >= this.hours)
+        if (day > this.days || hour >= this.hours)
             return;
         removeTime(day, hour);
         regularLectures.add(new RegularLectureSchedule.RegularLecture.RegularLectureTime(day, hour, lecture.getActiveRoom(), lecture));
@@ -88,7 +89,7 @@ public class RegularLectureSchedule {
      * @param hour hour to remove
      */
     public void removeTime(int day, int hour) {
-        if (day >= this.days || hour >= this.hours)
+        if (day > this.days || hour >= this.hours)
             return;
         for (Iterator<RegularLecture.RegularLectureTime> iterator = regularLectures.iterator(); iterator.hasNext(); ) {
             RegularLectureSchedule.RegularLecture.RegularLectureTime time = iterator.next();
@@ -127,7 +128,7 @@ public class RegularLectureSchedule {
     private static void saving(@Nullable SaveRegularLectureSchedule schedule, @NonNull Context context) {
         FileOutputStream fos;
         try {
-            fos = context.openFileOutput("REGULAR_LECTURE", Context.MODE_PRIVATE);
+            fos = context.openFileOutput(SaveKeys.REGULAR_LECTURE, Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(schedule);
             oos.close();
@@ -182,16 +183,14 @@ public class RegularLectureSchedule {
         Log.i(LOG, "load");
         if (context == null) return new RegularLectureSchedule();
         try {
-            FileInputStream fis = context.openFileInput("REGULAR_LECTURE");
+            FileInputStream fis = context.openFileInput(SaveKeys.REGULAR_LECTURE);
             ObjectInputStream ois = new ObjectInputStream(fis);
             RegularLectureSchedule help = convertSave((SaveRegularLectureSchedule) ois.readObject());
             fis.close();
             ois.close();
             return help;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (IOException | ClassNotFoundException e) {
+            Log.d("RegularLectureSchedule", "can't load");
         }
         return new RegularLectureSchedule();
     }

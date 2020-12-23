@@ -3,6 +3,7 @@ package com.example.studentalarm.imports;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +14,7 @@ import com.example.studentalarm.R;
 import com.example.studentalarm.regular.Hours;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
+import com.example.studentalarm.save.SaveKeys;
 import com.example.studentalarm.save.SaveLecture;
 
 import java.io.FileInputStream;
@@ -57,7 +59,7 @@ public class LectureSchedule {
         all.addAll(lecture);
         all.addAll(importLecture);
         for (Lecture l : holidays)
-            all.add(l.setName(context.getString(R.string.holidays)));
+            all.add(new LectureSchedule.Lecture(l.isImport(), l.getStart(), l.getEnd(), -l.getId()).setName(context.getString(R.string.holidays)).setAllDayEvent(true).setColor(l.getColor()));
         Calendar from = Calendar.getInstance(), end = Calendar.getInstance();
         from.add(Calendar.YEAR, -3);
         end.add(Calendar.YEAR, 3);
@@ -92,7 +94,7 @@ public class LectureSchedule {
                 end_C.setTimeInMillis(calendar.getTimeInMillis());
                 end_C.set(Calendar.HOUR_OF_DAY, 24);
                 end_C.set(Calendar.MINUTE, 0);
-                all.add(new LectureSchedule.Lecture(l.isImport(), calendar.getTime(), end_C.getTime()).setName(context.getString(R.string.holidays)).setColor(l.getColor()));
+                all.add(new LectureSchedule.Lecture(l.isImport(), calendar.getTime(), end_C.getTime(), -1).setName(context.getString(R.string.holidays)).setColor(l.getColor()));
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
             }
         }
@@ -116,12 +118,12 @@ public class LectureSchedule {
                 formatS = format2S;
                 if (positionScroll == -1 && l.getStart().after(Calendar.getInstance().getTime()))
                     positionScroll = erg.size();
-                erg.add(new LectureSchedule.Lecture(false, l.getStart(), new Date(), -1));
+                erg.add(new LectureSchedule.Lecture(false, l.getStart(), new Date(), Integer.MIN_VALUE));
             }
             erg.add(l);
         }
-        if (positionScroll == -1 && lecture.size() > 0)
-            positionScroll = lecture.size() - 1;
+        if (positionScroll == -1 && erg.size() > 0)
+            positionScroll = erg.size() - 1;
         return erg;
     }
 
@@ -177,7 +179,7 @@ public class LectureSchedule {
      * @param calendar the ics file object
      */
     @NonNull
-    public LectureSchedule importICS(@NonNull ICS calendar, Context context) {
+    public LectureSchedule importICS(@NonNull ICS calendar, @NonNull Context context) {
         importLecture.clear();
         List<ICS.vEvent> list = calendar.getVEventList();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -201,22 +203,30 @@ public class LectureSchedule {
 
     @NonNull
     public LectureSchedule removeLecture(@NonNull Lecture data) {
-        int id1 = lecture.indexOf(data), id2 = importLecture.indexOf(data), id3 = holidays.indexOf(data);
+        int id1 = lecture.indexOf(data), id2 = importLecture.indexOf(data);
         if (id1 >= 0) lecture.remove(id1);
         if (id2 >= 0) importLecture.remove(id2);
-        if (id3 >= 0) holidays.remove(id3);
         return this;
     }
+
+    @NonNull
+    public LectureSchedule removeHoliday(@NonNull Lecture data) {
+        int id1 = holidays.indexOf(data);
+        if (id1 >= 0) lecture.remove(id1);
+        return this;
+    }
+
 
     /**
      * change all Imported Colors
      *
      * @param color colorcode for the Imported Files
      */
-    public void changeImportedColor(int color) {
-        for (Lecture importedlectures : importLecture) {
-            importedlectures.setColor(color);
-        }
+    @NonNull
+    public LectureSchedule changeImportedColor(int color) {
+        for (Lecture importLectures : importLecture)
+            importLectures.setColor(color);
+        return this;
     }
 
     /**
@@ -327,13 +337,13 @@ public class LectureSchedule {
 
         Calendar startC = Calendar.getInstance(), endC = Calendar.getInstance();
         startC.setTime(date);
-        startC.set(Calendar.HOUR_OF_DAY, startAsC.get(Calendar.HOUR));
+        startC.set(Calendar.HOUR_OF_DAY, startAsC.get(Calendar.HOUR_OF_DAY));
         startC.set(Calendar.MINUTE, startAsC.get(Calendar.MINUTE));
         startC.set(Calendar.SECOND, 0);
         startC.set(Calendar.MILLISECOND, 0);
 
         endC.setTime(date);
-        endC.set(Calendar.HOUR_OF_DAY, endAsC.get(Calendar.HOUR));
+        endC.set(Calendar.HOUR_OF_DAY, endAsC.get(Calendar.HOUR_OF_DAY));
         endC.set(Calendar.MINUTE, endAsC.get(Calendar.MINUTE));
         endC.set(Calendar.SECOND, 0);
         endC.set(Calendar.MILLISECOND, 0);
@@ -400,7 +410,7 @@ public class LectureSchedule {
     public void save(@NonNull Context context) {
         FileOutputStream fos;
         try {
-            fos = context.openFileOutput("LECTURE", Context.MODE_PRIVATE);
+            fos = context.openFileOutput(SaveKeys.LECTURE, Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(createSave());
             oos.close();
@@ -475,17 +485,15 @@ public class LectureSchedule {
     @NonNull
     public static LectureSchedule load(@NonNull Context context) {
         try {
-            FileInputStream fis = context.openFileInput("LECTURE");
+            FileInputStream fis = context.openFileInput(SaveKeys.LECTURE);
             ObjectInputStream ois = new ObjectInputStream(fis);
             LectureSchedule erg = convertSave((SaveLecture) ois.readObject());
             LectureSchedule.Lecture.setCounter(erg.getHighestID() + 1);
             fis.close();
             ois.close();
             return erg;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (IOException | ClassNotFoundException e) {
+            Log.d("Lecture load", "failed");
         }
         return new LectureSchedule();
     }

@@ -1,6 +1,5 @@
 package com.example.studentalarm.ui.adapter;
 
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -99,7 +98,7 @@ public class RegularLectureAdapter extends RecyclerView.Adapter<RegularLectureAd
                     if (selected != null)
                         selected.setBackground(null);
                     selected = holder.linearLayout;
-                    selected.setBackgroundColor(Color.RED);
+                    selected.setBackgroundResource(R.drawable.textview_border);
                     selected_id = position;
                 }
             };
