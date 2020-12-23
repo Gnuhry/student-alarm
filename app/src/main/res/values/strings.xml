@@ -1,3 +1,143 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">studentalarm</string>
+    <string name="alarm">Alarm</string>
+    <string name="lecture">Lecture</string>
+    <string name="settings">Settings</string>
+    <string name="personal">Personal</string>
+
+    <!--Settings-->
+    <string name="alarm_in_phone_watch_app">Alarm in phone watch app</string>
+    <string name="change_alarm_if_lecture_is_changing">Change alarm, if lecture is changing</string>
+    <string name="create_alarm_for_the_next_day">Create alarm for the next day</string>
+    <string name="if_alarm_is_set_in_phone_alarm_app_this_application_can_not_delete_it">If alarm is set in phone alarm app, this application can not delete it!</string>
+    <string name="snooze_duration">Snooze duration</string>
+
+    <string name="import_settings">Import Settings</string>
+    <string name="import_">Import</string>
+    <string name="import_time">Import time</string>
+    <string name="automatic_daily_import">Automatic daily import</string>
+    <string name="address">http://www.</string>
+    <string name="string_is_not_a_valid_url">String is not a valid URL</string>
+    <string name="delete_all_events">Delete all events</string>
+    <string name="missing_checked_valid_url">Missing checked valid url</string>
+    <string name="do_you_want_to_delete_this_events">Do you want to delete this events?</string>
+    <string name="cancel">@android:string/cancel</string>
+    <string name="check">Check</string>
+    <string name="saveRegularLecture">Save</string>
+    <string name="none">None</string>
+    <string name="ics">ICS</string>
+    <string name="delete_all">Delete all</string>
+    <string name="delete">Delete</string>
+    <string name="wrong_time_format">Wrong time format</string>
+    <string name="hh_mm">HH:mm</string>
+    <string name="_time">%1$s</string>
+    <string name="_min">%1$s min</string>
+    <string name="language">Language</string>
+    <string name="reset">Reset</string>
+    <string name="do_you_want_to_reset_this_application">Do you want to reset this application?</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="missing_events">Missing events</string>
+    <string name="ringtone">Ringtone</string>
+    <string name="theme">Theme</string>
+    <string name="normal_events">Normal events</string>
+    <string name="import_events">Import events</string>
+    <string name="which_events_do_you_want_to_delete">Which events do you want to delete?</string>
+    <string name="export">Export</string>
+    <string name="which_event_do_you_want_to_export">Which events do you want to export?</string>
+    <string name="DHBWMa">DHBW Mannheim</string>
+    <string name="share">Share</string>
+    <string name="missing_selected_course">Missing selected course</string>
+    <string name="it_may_take_a_minute_until_the_change_is_visible_in_the_calendar">It may take a minute until the change is visible in the calendar</string>
+    <string name="do_you_want_to_delete_this_exports">Do you want to delete this exports?</string>
+    <string name="file_is_not_a_ics_file">File is not a ics file</string>
+    <string name="wrong_file">Wrong file</string>
+    <string name="phone_import">Phone import</string>
+
+    <!--Alarm-->
+    <string name="next_alarm_in">Next alarm in</string>
+    <string name="time_format">%d h - %d min</string>
+    <string name="zero_time">00 h - 00 min</string>
+    <string name="no_alarm_set">No alarm set or alarm in phone watch app</string>
+    <string name="alarm_at">Alarm at: %1$s</string>
+    <string name="snooze">Snooze</string>
+    <string name="alarm_off">Alarm Off</string>
+    <string name="alarm_is_set">Alarm is set</string>
+
+    <!--Notification permission-->
+    <string name="notification_permission_missing">Notification permission missing</string>
+    <string name="notification_permission_are_missing_without_them_the_alarm_will_not_work_properly">Notification permissions are missing. Without them the alarm will not work properly</string>
+
+    <!--Personal-->
+    <string name="wake_up_earlier">Wake up earlier</string>
+    <string name="way_duration">way duration</string>
+    <string name="time_earlier">time earlier</string>
+    <string name="before">Before</string>
+    <string name="way">Way</string>
+    <string name="after">After</string>
+    <string name="regular_lecture">Regular lecture</string>
+    <string name="holidays">Holidays</string>
+    <string name="minute" tools:ignore="MissingTranslation">%d min</string>
+    <string name="personal_alarm_settings">Personal alarm settings</string>
+    <string name="edit">edit</string>
+    <string name="from_day">"From: %1$s"</string>
+    <string name="until_day">"Until: %1$s"</string>
+    <string name="holiday_events">Holiday events</string>
+
+    <!--Lecture-->
+    <string name="weekly">Weekly</string>
+    <string name="eventList">EventList</string>
+    <string name="refresh">Refresh</string>
+    <string name="go_to_today">Go to today</string>
+    <string name="add_event">Add event</string>
+    <string name="time">Time</string>
+    <string name="event">Event</string>
+    <string name="add">Add</string>
+    <string name="title">Title</string>
+    <string name="docent">Docent</string>
+    <string name="location">Location</string>
+    <string name="begin">Begin</string>
+    <string name="end">End</string>
+    <string name="do_you_want_to_dismiss_all_your_changes">Do you want to dismiss all your changes</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="color">Color</string>
+    <string name="red">Red</string>
+    <string name="blue">Blue</string>
+    <string name="green">Green</string>
+    <string name="yellow">Yellow</string>
+    <string name="update">Update</string>
+    <string name="missing">Missing</string>
+    <string name="end_must_start_after_begin">End must start after begin</string>
+    <string name="wrong">Wrong</string>
+    <string name="loading">Loading</string>
+    <string name="wait_while_loading">Wait while loading…</string>
+
+    <!--regular lecture-->
+    <string name="save">Save</string>
+    <string name="do_you_want_to_delete_this_lecture">Do you want to delete this lecture?</string>
+    <string name="do_you_want_to_save_your_changes">Do you want to save your changes?</string>
+    <string name="hour">" hour"</string>
+    <string name="line" translatable="false">-</string>
+    <string name="hour_back">"hour %d"</string>
+    <string name="remove">Remove</string>
+    <string name="monday_friday">Monday - Friday</string>
+    <string name="monday_saturday">Monday - Saturday</string>
+    <string name="monday_sunday">Monday - Sunday</string>
+    <string name="days">Days:</string>
+    <string name="wrong_inputs">wrong inputs</string>
+    <string name="room">Room</string>
+    <string name="connection_failed">Connection failed</string>
+    <string name="status">Status</string>
+    <string name="ok">OK</string>
+    <string name="number">number</string>
+    <string name="no_connection">No connection</string>
+    <string name="import_color">Import Color</string>
+    <string name="chose_import_color">Chose Import Color</string>
+    <string name="error">ERROR</string>
+    <string name="vert_line" translatable="false">|</string>
+    <string name="can_not_start_before_the_hour_before">Can not start before the hour before</string>
+    <string name="no_lecture_in_the_bottom_bar_selected">No Lecture in the bottom bar selected</string>
+    <string name="missing_hour_settings">Missing hour settings (top right corner)</string>
+
+
 </resources>
