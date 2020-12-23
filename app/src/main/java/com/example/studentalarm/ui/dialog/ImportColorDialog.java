@@ -2,6 +2,10 @@ package com.example.studentalarm.ui.dialog;
 
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,7 +47,8 @@ public class ImportColorDialog extends DialogFragment {
 
     @Override
     public void onResume() {
-        getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        if(getDialog()!=null && getDialog().getWindow()!=null)
+            getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         super.onResume();
     }
 
@@ -55,12 +60,29 @@ public class ImportColorDialog extends DialogFragment {
         radioGroupColours = view.findViewById(R.id.ragColor);
 
         Log.d(LOG, "Context is: " + getContext());
+        if(getContext()==null)
+            return view;
         List<EventColor> colors = EventColor.possibleColors(getContext());
         for (EventColor color : colors) {
             RadioButton radioButton = new RadioButton(getContext());
             radioButton.setText(color.toString());
             radioButton.setTag(color);
             radioGroupColours.addView(radioButton);
+            if (Build.VERSION.SDK_INT >= 21) {
+                ColorStateList colorStateList = new ColorStateList(
+                        new int[][]{
+
+                                new int[]{-android.R.attr.state_enabled},
+                                new int[]{android.R.attr.state_enabled}
+                        },
+                        new int[]{
+                                Color.BLACK
+                                , color.getColor()
+                        }
+                );
+                radioButton.setButtonTintList(colorStateList);
+                radioButton.invalidate();
+            }
             if (color.equals(new EventColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR, 0)))) {
                 radioButton.setChecked(true);
                 Log.d(LOG, "SelectedColor: " + color.toString());
