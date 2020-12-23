@@ -12,13 +12,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
+import com.example.studentalarm.R;
+import com.example.studentalarm.save.PreferenceKeys;
+
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
-
-import com.example.studentalarm.R;
-import com.example.studentalarm.save.PreferenceKeys;
 
 import static android.app.Notification.EXTRA_NOTIFICATION_ID;
 
@@ -94,8 +94,8 @@ public class AlarmReceiver extends BroadcastReceiver {
      */
     private MediaPlayer getMediaPlayer(@NonNull Context context) {
         switch (PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.RINGTONE, PreferenceKeys.DEFAULT_RINGTONE)) {
-            case "didudeldudu":
-                return MediaPlayer.create(context.getApplicationContext(), R.raw.didudeldudu);
+            case "gentle":
+                return MediaPlayer.create(context.getApplicationContext(), R.raw.alarm_gentle);
             case "DEFAULT":
             default:
                 Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
