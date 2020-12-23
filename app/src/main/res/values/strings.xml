@@ -136,6 +136,8 @@
     <string name="error">ERROR</string>
     <string name="vert_line" translatable="false">|</string>
     <string name="can_not_start_before_the_hour_before">Can not start before the hour before</string>
+    <string name="no_lecture_in_the_bottom_bar_selected">No Lecture in the bottom bar selected</string>
+    <string name="missing_hour_settings">Missing hour settings (top right corner)</string>
 
 
 </resources>

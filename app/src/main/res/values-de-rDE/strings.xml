@@ -121,7 +121,8 @@
     <string name="chose_import_color">Wählen Sie die Farbe des Imports</string>
     <string name="error">FEHLER</string>
     <string name="can_not_start_before_the_hour_before">Kann nicht vor dem Beenden der vorherigen Stunde starten</string>
-
+    <string name="no_lecture_in_the_bottom_bar_selected">Keine Vorlesung aus der unteren Leiste ausgewählt</string>
+    <string name="missing_hour_settings">Fehlende Stunden Einstellung (oben rechts)</string>
 
 
 
