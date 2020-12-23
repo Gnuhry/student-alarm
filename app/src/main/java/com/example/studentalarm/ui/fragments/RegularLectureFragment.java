@@ -239,9 +239,12 @@ public class RegularLectureFragment extends Fragment {
             super.onEmptyViewClick(time);
             Log.i(LOG, "adapter-emptyClick");
             RegularLectureSchedule.RegularLecture selected = regularLectureAdapter.getSelected();
-            if (selected == null) return;
+            if (selected == null){
+                Toast.makeText(getContext(), R.string.no_lecture_in_the_bottom_bar_selected, Toast.LENGTH_LONG).show();
+                return;
+            }
             if (Hours.load(getContext()).isEmpty()) {
-                Toast.makeText(getContext(), "Missing hour settings", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), R.string.missing_hour_settings, Toast.LENGTH_LONG).show();
                 return;
             }
             regularLectureSchedule.addTime(time.get(Calendar.DAY_OF_MONTH), time.get(Calendar.HOUR), selected);
