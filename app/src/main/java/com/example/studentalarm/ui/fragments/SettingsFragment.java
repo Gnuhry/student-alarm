@@ -272,6 +272,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     break;
             }
             AppCompatDelegate.setDefaultNightMode(mode);
+            reload();
             return true;
         });
 
