@@ -5,10 +5,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.preference.PreferenceManager;
-
 import com.example.studentalarm.EventColor;
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.Hours;
@@ -32,9 +28,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
+
 public class LectureSchedule {
     @NonNull
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN), TIME_FORMAT = new SimpleDateFormat("HH:mm:ss:SS", Locale.GERMAN);
+    private static final Calendar regular_from = Calendar.getInstance(), regular_until = Calendar.getInstance();
     @NonNull
     private final List<Lecture> lecture, importLecture, holidays;
     private static int positionScroll = -1;
@@ -46,6 +47,10 @@ public class LectureSchedule {
         lecture = new ArrayList<>();
         importLecture = new ArrayList<>();
         holidays = new ArrayList<>();
+        regular_from.setTime(Calendar.getInstance().getTime());
+        regular_until.setTime(Calendar.getInstance().getTime());
+        regular_from.add(Calendar.YEAR, -3);
+        regular_until.add(Calendar.YEAR, 3);
     }
 
     /**
@@ -60,10 +65,7 @@ public class LectureSchedule {
         all.addAll(importLecture);
         for (Lecture l : holidays)
             all.add(new LectureSchedule.Lecture(l.isImport(), l.getStart(), l.getEnd(), -l.getId()).setName(context.getString(R.string.holidays)).setAllDayEvent(true).setColor(l.getColor()));
-        Calendar from = Calendar.getInstance(), end = Calendar.getInstance();
-        from.add(Calendar.YEAR, -3);
-        end.add(Calendar.YEAR, 3);
-        all.addAll(getRegularLecture(context, from, end));
+        all.addAll(getRegularLecture(context));
         Collections.sort(all);
         return all;
     }
@@ -78,10 +80,7 @@ public class LectureSchedule {
         List<Lecture> all = new ArrayList<>();
         all.addAll(lecture);
         all.addAll(importLecture);
-        Calendar from = Calendar.getInstance(), end = Calendar.getInstance();
-        from.add(Calendar.YEAR, -3);
-        end.add(Calendar.YEAR, 3);
-        all.addAll(getRegularLecture(context, from, end));
+        all.addAll(getRegularLecture(context));
         for (Lecture l : holidays) {
             Calendar calendar = Calendar.getInstance(), later = Calendar.getInstance(), end_C = Calendar.getInstance();
             calendar.setTime(l.getStart());
@@ -147,6 +146,23 @@ public class LectureSchedule {
     }
 
     /**
+     * getting the dates for the regular lecture time
+     *
+     * @param lecture lecture to get the dates from
+     * @param hours   list of all hours
+     * @return array of calendar start and end
+     */
+    public Calendar[] getRegularLectureStartDates(@NonNull RegularLectureSchedule.RegularLecture.RegularLectureTime lecture, @NonNull List<Hours> hours) {
+        Calendar start = Calendar.getInstance(), end = Calendar.getInstance();
+        start.setTime(regular_from.getTime());
+        start.add(Calendar.DAY_OF_MONTH, (7 - (regular_from.get(Calendar.DAY_OF_WEEK) > 1 ? regular_from.get(Calendar.DAY_OF_WEEK) - 1 : 7) + (lecture.day + 1)) % 7);
+        Date[] dates = getDateWithTime(start.getTime(), hours.get(lecture.hour));
+        start.setTime(dates[0]);
+        end.setTime(dates[1]);
+        return new Calendar[]{start, end};
+    }
+
+    /**
      * get the next lecture, at least starting tomorrow 00:00:00:00
      *
      * @return next lecture
@@ -185,11 +201,39 @@ public class LectureSchedule {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         List<EventColor> colors = EventColor.possibleColors(context);
         EventColor color = colors.get(colors.indexOf(new EventColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR, 0))));
-        if (list != null)
+        if (list != null) {
+//            RegularLectureSchedule regularLectureSchedule = RegularLectureSchedule.load(context);
             for (ICS.vEvent ev : list) {
                 try {
                     if (ev.DTStart != null && ev.DTend != null && ev.SUMMARY != null) {
                         Date start = ICS.stringToDate(ev.DTStart), end = ICS.stringToDate(ev.DTend);
+//                        -----------------Can't import regular Lecture, because the hour settings could be different
+//                        if (ev.RRule != null) {
+//                            if (ev.RRule.FREQ != null && ev.RRule.FREQ.equals("WEEKLY") && ev.RRule.BY_DAY != null) {
+//                                if (ev.RRule.INTERVAL == null || (ev.RRule.INTERVAL != null && ev.RRule.INTERVAL.equals("1"))) {
+//                                    int day = -1;
+//                                    switch (ev.RRule.BY_DAY) {
+//                                        case "MO":
+//                                            day = 0;
+//                                        case "TU":
+//                                            day = 1;
+//                                        case "WE":
+//                                            day = 2;
+//                                        case "TH":
+//                                            day = 3;
+//                                        case "FR":
+//                                            day = 4;
+//                                        case "SA":
+//                                            day = 5;
+//                                        case "SO":
+//                                            day = 6;
+//                                    }
+//                                    if(day!=-1){
+//                                        regularLectureSchedule.addTime(day, );
+//                                    }
+//                                }
+//                            }
+//                        } else
                         if (start != null && end != null) {
                             importLecture.add(new Lecture(true, start, end).setName(ev.SUMMARY).setLocation(ev.LOCATION).setAllDayEvent((TIME_FORMAT.format(start).equals("00:00:00:00") || TIME_FORMAT.format(start).equals("0:00:00:00")) && (TIME_FORMAT.format(end).equals("00:00:00:00") || TIME_FORMAT.format(end).equals("0:00:00:00"))).setColor(color.getColor()));
                         }
@@ -198,6 +242,7 @@ public class LectureSchedule {
                     e.printStackTrace();
                 }
             }
+        }
         return this;
     }
 
@@ -271,10 +316,7 @@ public class LectureSchedule {
         List<Lecture> all = new ArrayList<>(), all2 = new ArrayList<>();
         all.addAll(lecture);
         all.addAll(importLecture);
-        Calendar from = Calendar.getInstance(), end = Calendar.getInstance();
-        from.add(Calendar.YEAR, -3);
-        end.add(Calendar.YEAR, 3);
-        all.addAll(getRegularLecture(context, from, end));
+        all.addAll(getRegularLecture(context));
         if (holidays.size() > 0) {
             boolean skip;
             for (Lecture l : all) {
@@ -295,14 +337,12 @@ public class LectureSchedule {
      * get all regular lecture as lecture
      *
      * @param context context of app
-     * @param from    date where the regularity should start
-     * @param until   date where the regularity should end
      * @return list of lecture
      */
     @NonNull
-    private List<Lecture> getRegularLecture(@NonNull Context context, @NonNull Calendar from, @NonNull Calendar until) {
+    private List<Lecture> getRegularLecture(@NonNull Context context) {
         List<Lecture> erg = new ArrayList<>();
-        List<List<Date>> help = getAllDaysWeek(from, until);
+        List<List<Date>> help = getAllDaysWeek();
         RegularLectureSchedule schedule = RegularLectureSchedule.load(context);
         List<Hours> hours = Hours.load(context);
         for (RegularLectureSchedule.RegularLecture.RegularLectureTime fragmentLecture : schedule.getRegularLectures()) {
@@ -353,16 +393,16 @@ public class LectureSchedule {
     /**
      * get all days sort by weekdays
      *
-     * @param from  date where the regularity should start
-     * @param until date where the regularity should end
      * @return List of list of date (1 layer - weekday, 2 layer - dates)
      */
     @NonNull
-    private List<List<Date>> getAllDaysWeek(@NonNull Calendar from, @NonNull Calendar until) {
+    private List<List<Date>> getAllDaysWeek() {
         List<List<Date>> erg = new ArrayList<>();
         for (int f = 0; f < 7; f++)
             erg.add(new ArrayList<>());
-        while (!from.after(until)) {
+        Calendar from = Calendar.getInstance();
+        from.setTime(regular_from.getTime());
+        while (!from.after(regular_until)) {
             erg.get(from.get(Calendar.DAY_OF_WEEK) - 1).add(from.getTime());
             from.add(Calendar.DAY_OF_MONTH, 1);
         }
@@ -389,7 +429,7 @@ public class LectureSchedule {
      * @return next day as date
      */
     @NonNull
-    private static Date getDayAddDay(int addDay) {
+    private Date getDayAddDay(int addDay) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, addDay);
         calendar.set(Calendar.HOUR_OF_DAY, 0);

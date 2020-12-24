@@ -2,9 +2,6 @@ package com.example.studentalarm.imports;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import org.dmfs.rfc5545.DateTime;
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException;
 import org.dmfs.rfc5545.recur.RecurrenceRule;
@@ -17,6 +14,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class ICS {
     @NonNull
@@ -32,6 +32,10 @@ public class ICS {
             VEVENT_DT_STAMP = "DTSTAMP",
             VEVENT_DT_START = "DTSTART",
             VEVENT_DT_END = "DTEND",
+            VEVENT_RRULE = "RRULE",
+            VEVENT_RRULE_FREQ = "FREQ",
+            VEVENT_RRULE_BYDAY = "BYDAY",
+            VEVENT_RRULE_INTERVAL = "INTERVAL",
             BEGIN_TIMEZONE_DAY_LIGHT = "BEGIN:DAYLIGHT",
             END_TIMEZONE_DAY_LIGHT = "END:DAYLIGHT",
             BEGIN_TIMEZONE_STANDARD = "BEGIN:STANDARD",
@@ -101,15 +105,29 @@ public class ICS {
                 .append(VERSION).append("\n")
                 .append(METHOD).append("\n")
                 .append(CAL_SCALE).append("\n");
-        for (vEvent event : events)
+        for (vEvent event : events) {
             erg.append(BEGIN_VEVENT).append("\n")
                     .append(VEVENT_UID).append(":").append(event.UID).append("\n")
-                    .append(VEVENT_LOCATION).append(":").append(event.LOCATION).append("\n")
                     .append(VEVENT_SUMMARY).append(":").append(event.SUMMARY).append("\n")
                     .append(VEVENT_DT_START).append(":").append(event.DTStart).append("\n")
                     .append(VEVENT_DT_END).append(":").append(event.DTend).append("\n")
-                    .append(VEVENT_DT_STAMP).append(":").append(event.DTStamp).append("\n")
-                    .append(END_VEVENT).append("\n");
+                    .append(VEVENT_DT_STAMP).append(":").append(event.DTStamp).append("\n");
+            if (event.LOCATION != null)
+                erg.append(VEVENT_LOCATION).append(":").append(event.LOCATION).append("\n");
+            if (event.RRule != null) {
+                StringBuilder rule = new StringBuilder();
+                rule.append(VEVENT_RRULE).append(":");
+                if (event.RRule.FREQ != null)
+                    rule.append(VEVENT_RRULE_FREQ).append("=").append(event.RRule.FREQ).append(";");
+                if (event.RRule.INTERVAL != null)
+                    rule.append(VEVENT_RRULE_INTERVAL).append("=").append(event.RRule.INTERVAL).append(";");
+                if (event.RRule.BY_DAY != null)
+                    rule.append(VEVENT_RRULE_BYDAY).append("=").append(event.RRule.BY_DAY).append(";");
+                if (!rule.toString().equals(VEVENT_RRULE + ":"))
+                    erg.append(rule.delete(rule.length() - 1, rule.length())).append("\n");
+            }
+            erg.append(END_VEVENT).append("\n");
+        }
         return erg.append(END_VCALENDAR).toString();
     }
 
@@ -265,6 +283,7 @@ public class ICS {
     public static class vEvent {
         @Nullable
         public String UID, LOCATION, SUMMARY, DTStart, DTend, DTStamp;
+        public vRRule RRule;
 
         public vEvent() {
         }
@@ -290,6 +309,32 @@ public class ICS {
                             break;
                         case VEVENT_DT_STAMP:
                             DTStamp = s.split(":")[1];
+                            break;
+                        case VEVENT_RRULE:
+                            RRule = new vRRule(s.split(":")[1].split(";"));
+                            break;
+                    }
+        }
+    }
+
+    public static class vRRule {
+        public String FREQ, BY_DAY, INTERVAL;
+
+        public vRRule() {
+        }
+
+        public vRRule(@NonNull String[] strings) {
+            for (String s : strings)
+                if (s.split("=").length > 1)
+                    switch (s.split("=")[0]) {
+                        case VEVENT_RRULE_FREQ:
+                            FREQ = s.split("=")[1];
+                            break;
+                        case VEVENT_RRULE_BYDAY:
+                            BY_DAY = s.split("=")[1];
+                            break;
+                        case VEVENT_RRULE_INTERVAL:
+                            INTERVAL = s.split("=")[1];
                             break;
                     }
         }
