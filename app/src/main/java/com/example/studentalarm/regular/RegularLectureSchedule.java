@@ -189,7 +189,7 @@ public class RegularLectureSchedule {
             fis.close();
             ois.close();
             return help;
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (@NonNull IOException | ClassNotFoundException e) {
             Log.d("RegularLectureSchedule", "can't load");
         }
         return new RegularLectureSchedule();

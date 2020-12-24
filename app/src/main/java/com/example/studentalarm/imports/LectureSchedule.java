@@ -152,6 +152,7 @@ public class LectureSchedule {
      * @param hours   list of all hours
      * @return array of calendar start and end
      */
+    @NonNull
     public Calendar[] getRegularLectureStartDates(@NonNull RegularLectureSchedule.RegularLecture.RegularLectureTime lecture, @NonNull List<Hours> hours) {
         Calendar start = Calendar.getInstance(), end = Calendar.getInstance();
         start.setTime(regular_from.getTime());
@@ -532,7 +533,7 @@ public class LectureSchedule {
             fis.close();
             ois.close();
             return erg;
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (@NonNull IOException | ClassNotFoundException e) {
             Log.d("Lecture load", "failed");
         }
         return new LectureSchedule();
