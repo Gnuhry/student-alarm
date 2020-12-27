@@ -10,14 +10,15 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.Export;
 import com.example.studentalarm.imports.LectureSchedule;
+import com.example.studentalarm.regular.RegularLectureSchedule;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public class ExportLectureDialog extends Dialog {
 
@@ -47,18 +48,24 @@ public class ExportLectureDialog extends Dialog {
         ((Button) findViewById(R.id.btnDelete)).setText(R.string.export);
         findViewById(R.id.btnDelete).setOnClickListener(view -> {
             Log.i(LOG, "delete");
-            boolean normal = ((CheckBox) findViewById(R.id.rdBNormalEvents)).isChecked(), import_ = ((CheckBox) findViewById(R.id.rdBImportEvents)).isChecked(), holiday = ((CheckBox) findViewById(R.id.rdBHolidayEvents)).isChecked();
-            if (normal || import_ || holiday) {
+            boolean normal = ((CheckBox) findViewById(R.id.rdBNormalEvents)).isChecked(),
+                    chBImport = ((CheckBox) findViewById(R.id.rdBImportEvents)).isChecked(),
+                    chbHoliday = ((CheckBox) findViewById(R.id.rdBHolidayEvents)).isChecked(),
+                    chBRegular = ((CheckBox) findViewById(R.id.rdBRegularEvents)).isChecked();
+            if (normal || chBImport || chbHoliday || chBRegular) {
                 if (getContext() == null) return;
                 List<LectureSchedule.Lecture> export = new ArrayList<>();
+                List<RegularLectureSchedule.RegularLecture.RegularLectureTime> export2 = new ArrayList<>();
                 LectureSchedule schedule = LectureSchedule.load(getContext());
                 if (normal)
                     export.addAll(schedule.getLecture());
-                if (import_)
+                if (chBImport)
                     export.addAll(schedule.getImportLecture());
-                if (holiday)
+                if (chbHoliday)
                     export.addAll(schedule.getHolidays());
-                Export.exportToICS(context, activity, export);
+                if (chBRegular)
+                    export2.addAll(RegularLectureSchedule.load(getContext()).getRegularLectures());
+                Export.exportToICS(context, activity, export, export2);
             }
             this.cancel();
         });

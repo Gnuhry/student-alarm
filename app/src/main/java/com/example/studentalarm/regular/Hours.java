@@ -126,7 +126,7 @@ public class Hours {
             fis.close();
             ois.close();
             return erg;
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (@NonNull IOException | ClassNotFoundException e) {
             Log.d("Hours", "can't load");
         }
         return new ArrayList<>();

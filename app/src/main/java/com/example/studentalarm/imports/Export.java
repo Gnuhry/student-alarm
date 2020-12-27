@@ -8,10 +8,8 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ShareCompat;
-import androidx.core.content.FileProvider;
+import com.example.studentalarm.regular.Hours;
+import com.example.studentalarm.regular.RegularLectureSchedule;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,6 +20,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ShareCompat;
+import androidx.core.content.FileProvider;
 
 public class Export {
 
@@ -34,7 +37,7 @@ public class Export {
      * @param activity activity of app
      * @param list     events list
      */
-    public static void exportToICS(@NonNull Context context, @NonNull Activity activity, @NonNull List<LectureSchedule.Lecture> list) {
+    public static void exportToICS(@NonNull Context context, @NonNull Activity activity, @NonNull List<LectureSchedule.Lecture> list, @NonNull List<RegularLectureSchedule.RegularLecture.RegularLectureTime> lectures) {
         Log.d(LOG, "Start");
         try {
             List<ICS.vEvent> erg = new ArrayList<>();
@@ -64,6 +67,23 @@ public class Export {
                     event.DTend = format.format(lecture.getEnd()).replace("-", "T");
                 }
                 event.DTStamp = format.format(Calendar.getInstance().getTime()).replace("-", "T");
+                erg.add(event);
+            }
+            List<Hours> hours = Hours.load(context);
+            for (RegularLectureSchedule.RegularLecture.RegularLectureTime lecture : lectures) {
+                ICS.vEvent event = new ICS.vEvent();
+                event.SUMMARY = lecture.lecture.getName();
+                event.LOCATION = lecture.getActiveRoom();
+                event.UID = format.format(Calendar.getInstance().getTime()).replace("-", "T") + "Z-" + lecture.lecture.getId();
+                event.DTStamp = format.format(Calendar.getInstance().getTime()).replace("-", "T");
+                event.RRule=new ICS.vRRule();
+                event.RRule.FREQ = "WEEKLY";
+                event.RRule.INTERVAL = "1";
+                if (lecture.day < 7)
+                    event.RRule.BY_DAY = lecture.day == 0 ? "MO" : lecture.day == 1 ? "TU" : lecture.day == 2 ? "WE" : lecture.day == 3 ? "TH" : lecture.day == 4 ? "FR" : lecture.day == 5 ? "SA" : "SO";
+                Calendar[] calendars = new LectureSchedule().getRegularLectureStartDates(lecture, hours);
+                event.DTStart = format.format(calendars[0].getTime()).replace("-", "T");
+                event.DTend = format.format(calendars[1].getTime()).replace("-", "T");
                 erg.add(event);
             }
             File help = writeFile(context, ICS.exportToICS(erg));
