@@ -258,7 +258,8 @@ public class LectureSchedule {
     @NonNull
     public LectureSchedule removeHoliday(@NonNull Lecture data) {
         int id1 = holidays.indexOf(data);
-        if (id1 >= 0) lecture.remove(id1);
+        Log.d("REMOVE HOLID","Data: "+data.getName()+" ID: "+id1);
+        if (id1 >= 0) holidays.remove(id1);
         return this;
     }
 
