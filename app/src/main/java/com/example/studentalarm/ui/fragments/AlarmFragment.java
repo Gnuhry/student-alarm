@@ -63,8 +63,7 @@ public class AlarmFragment extends Fragment {
     public void onResume() {
         Log.d(LOG, "Resume");
         super.onResume();
-        this.showAlarmshutdown(view);
-        setTimer(view);
+
     }
 
     /**
