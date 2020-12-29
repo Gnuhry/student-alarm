@@ -15,8 +15,10 @@ import androidx.preference.PreferenceManager;
 
 import com.example.studentalarm.R;
 import com.example.studentalarm.save.PreferenceKeys;
+import com.example.studentalarm.ui.dialog.AlarmShutdownDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -25,6 +27,7 @@ public class AlarmFragment extends Fragment {
 
     private static final String LOG = "Alarm_Fragment";
     private CountDownTimer timer;
+    private View view;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -38,7 +41,9 @@ public class AlarmFragment extends Fragment {
         if (getContext() == null) return view;
 
         checkNotification();
+        this.view = view;
         setTimer(view);
+        showAlarmshutdown(view);
 
         return view;
     }
@@ -52,6 +57,54 @@ public class AlarmFragment extends Fragment {
         super.onDestroyView();
         if (timer != null)
             timer.cancel();
+    }
+
+    @Override
+    public void onResume() {
+        Log.d(LOG, "Resume");
+        super.onResume();
+        this.showAlarmshutdown(view);
+        setTimer(view);
+    }
+
+    /**
+     * If preferences not initialised => doesnt show
+     *
+     * @param view
+     */
+    private void showAlarmshutdown(@NonNull View view) {
+        if (getContext() == null) return;
+        Log.i(LOG, "check / show Button");
+        Log.d(LOG, "ALARM_ON: " + PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_ON, false));
+        Log.d(LOG, "ALARM_PHONE: " + PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_PHONE, true));
+
+        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_ON, false)) {
+            if (!PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_PHONE, true)) {
+                Log.d(LOG, "Button VISIBLE");
+                view.findViewById(R.id.btntmpalarmshutdown).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.btntmpalarmshutdown).setOnClickListener(view1 -> {
+                    Log.i(LOG, "Button pressed");
+                    new AlarmShutdownDialog().show(getActivity().getSupportFragmentManager(), "dialog");
+                });
+                if (PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) != 0) {
+                    Log.d(LOG, "Text VISIBLE");
+                    Date date = new Date(PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0));
+                    ((TextView) view.findViewById(R.id.txtalarmshutdownuntil)).setText(date.toString());
+                    view.findViewById(R.id.txtalarmshutdownuntil).setVisibility(View.VISIBLE);
+                } else {
+                    view.findViewById(R.id.txtalarmshutdownuntil).setVisibility(View.GONE);
+                }
+            } else {
+                if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_PHONE, true)) {
+                    Log.d(LOG, "Alarm on phone message");
+                    ((TextView) view.findViewById(R.id.textView4)).setText(R.string.alarm_in_phone);
+                }
+            }
+        } else {
+            Log.d(LOG, "no alarm at all");
+            ((TextView) view.findViewById(R.id.textView4)).setText(R.string.no_alarms);
+        }
+
     }
 
     /**
@@ -90,8 +143,9 @@ public class AlarmFragment extends Fragment {
                 }
             }.start();
             ((TextView) view.findViewById(R.id.txVAlarm)).setText(getString(R.string.alarm_at, new SimpleDateFormat("HH:mm", Locale.GERMAN).format(time)));
-        } else
+        } else {
             ((TextView) view.findViewById(R.id.textView4)).setText(R.string.no_alarm_set);
+        }
     }
 
     /**

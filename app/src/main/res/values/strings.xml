@@ -58,7 +58,9 @@
     <string name="next_alarm_in">Next alarm in</string>
     <string name="time_format">%d h - %d min</string>
     <string name="zero_time">00 h - 00 min</string>
-    <string name="no_alarm_set">No alarm set or alarm in phone watch app</string>
+    <string name="no_alarm_set">No current alarm set</string>
+    <string name="alarm_in_phone">Alarm in phone watch app</string>
+    <string name="no_alarms">Alarm function disabled</string>
     <string name="alarm_at">Alarm at: %1$s</string>
     <string name="snooze">Snooze</string>
     <string name="alarm_off">Alarm Off</string>
@@ -138,6 +140,8 @@
     <string name="can_not_start_before_the_hour_before">Can not start before the hour before</string>
     <string name="no_lecture_in_the_bottom_bar_selected">No Lecture in the bottom bar selected</string>
     <string name="missing_hour_settings">Missing hour settings (top right corner)</string>
+    <string name="temporary_alarmshutdown">Shut down alarm for...</string>
+    <string name="no_alarmshutdown">dont shutdown the alarm</string>
 
 
 </resources>

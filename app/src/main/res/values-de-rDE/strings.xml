@@ -54,7 +54,9 @@
     <string name="next_alarm_in">Nächster Alarm in</string>
     <string name="time_format">%d h - %d min</string>
     <string name="zero_time">00 h - 00 min</string>
-    <string name="no_alarm_set">Kein Wecker ist gesetzt oder der Wecker ist in der Handy Uhr App</string>
+    <string name="no_alarm_set">Aktuell kein Wecker gesetzt</string>
+    <string name="alarm_in_phone">Alarm wird in der Handy Uhr App angezeigt</string>
+    <string name="no_alarms">Alarmfunktion ist abgeschaltet</string>
     <string name="alarm_at">Wecker um: %1$s Uhr</string>
     <string name="snooze">Schlummern</string>
     <string name="alarm_off">Wecker aus</string>
