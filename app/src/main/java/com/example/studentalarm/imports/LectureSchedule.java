@@ -134,10 +134,11 @@ public class LectureSchedule {
             format2S = FORMAT.format(l.getStart());
             if (!format2S.equals(formatS)) {
                 formatS = format2S;
-                if (positionScroll == -1 && l.getStart().after(Calendar.getInstance().getTime())) {
+                if (positionScroll == -1 && l.getStart().after(Calendar.getInstance().getTime()))
                     positionScroll = erg.size();
+                if(l.getStart().after(Calendar.getInstance().getTime()))
                     erg.add(new LectureSchedule.Lecture(false, l.getStart(), new Date(), Integer.MIN_VALUE));
-                }
+
             }
             if (l.getStart().after(Calendar.getInstance().getTime()))
                 erg.add(l);
