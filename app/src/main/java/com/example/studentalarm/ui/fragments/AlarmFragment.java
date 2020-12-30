@@ -1,8 +1,6 @@
 package com.example.studentalarm.ui.fragments;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -14,7 +12,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
 
 import com.example.studentalarm.R;
@@ -46,8 +43,8 @@ public class AlarmFragment extends Fragment {
         Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.fragment_alarm, container, false);
         if (getContext() == null) return view;
-        if(PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) <= Calendar.getInstance().getTime().getTime())
-            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN,0).apply();
+        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) <= Calendar.getInstance().getTime().getTime())
+            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
         checkNotification();
         this.view = view;
         setTimer(view);
@@ -70,15 +67,15 @@ public class AlarmFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_TIME, 0) <= Calendar.getInstance().getTime().getTime())
-            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN,0).apply();
+        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_TIME, 0) <= Calendar.getInstance().getTime().getTime())
+            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
         showAlarmshutdown(view);
     }
 
     /**
      * relode after temporary alarmcancelation
      */
-    public void reload(){
+    public void reload() {
         Log.d(LOG, "reload");
         if (timer != null)
             timer.cancel();
@@ -86,7 +83,7 @@ public class AlarmFragment extends Fragment {
         showAlarmshutdown(view);
     }
 
-    public void stopLoad(){
+    public void stopLoad() {
         progress.dismiss();
     }
 
@@ -96,7 +93,7 @@ public class AlarmFragment extends Fragment {
      * @param view needs View
      */
     private void showAlarmshutdown(@NonNull View view) {
-        Log.d(LOG,"GetContext: "+getContext());
+        Log.d(LOG, "GetContext: " + getContext());
         if (getContext() == null) return;
         Log.i(LOG, "check / show Button");
         Log.d(LOG, "ALARM_ON: " + PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_ON, false));
@@ -111,12 +108,12 @@ public class AlarmFragment extends Fragment {
                 progress.setCancelable(false);
                 view.findViewById(R.id.btntmpalarmshutdown).setVisibility(View.VISIBLE);
                 progress.show();
-                lectureSchedule=LectureSchedule.load(getContext());
+                lectureSchedule = LectureSchedule.load(getContext());
                 progress.dismiss();
                 view.findViewById(R.id.btntmpalarmshutdown).setOnClickListener(view1 -> {
                     Log.i(LOG, "Button pressed");
                     progress.show();
-                    new AlarmShutdownDialog(this,lectureSchedule).show(getActivity().getSupportFragmentManager(), "dialog");
+                    new AlarmShutdownDialog(this, lectureSchedule).show(getActivity().getSupportFragmentManager(), "dialog");
                 });
                 if (PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) != 0) {
                     Log.d(LOG, "Text VISIBLE");
