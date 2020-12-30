@@ -34,8 +34,8 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
     private static DateFormat day, time;
     private static FragmentActivity activity;
     private static ReloadLecture reloadLecture;
-    private static Context context;
-    private static AlarmShutdownDialog dialog;
+    private final Context context;
+    private final AlarmShutdownDialog dialog;
     @NonNull
     private final List<LectureSchedule.Lecture> lecture;
 
@@ -70,7 +70,7 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
         dayOfWeekName = new SimpleDateFormat("EEEE", locale);
         day = DateFormat.getDateInstance(DateFormat.LONG, locale);
         time = DateFormat.getTimeInstance(DateFormat.LONG, locale);
-        this.lecture = lecture_schedule.getAllLecturesForShutdown(context);
+        this.lecture = lecture_schedule.getAllLecturesFromNow(context);
     }
 
     @NonNull

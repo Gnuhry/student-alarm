@@ -126,14 +126,9 @@ public class LectureSchedule {
         return erg;
     }
 
-    public List<Lecture> getAllLecturesForShutdown(@NonNull Context context) {
+    public List<Lecture> getAllLecturesFromNow(@NonNull Context context) {
         positionScroll = -1;
         List<Lecture> erg = new ArrayList<>();
-        LectureSchedule.Lecture lec = new LectureSchedule.Lecture(false, new Date(0), new Date(0));
-        lec.setStart(new Date(0));//necessary, new Date(0) sets Time to 02:00:00 ifthis is not set
-        Log.d("LecSched", "Datum: " + lec.getStart() + " gleich " + new Date(0));
-        lec.setName(context.getResources().getString(R.string.no_alarmshutdown));
-        erg.add(lec);
         String formatS = "01.01.1900", format2S;
         for (LectureSchedule.Lecture l : getAllLectureWithEachHoliday(context)) {
             format2S = FORMAT.format(l.getStart());
@@ -342,7 +337,7 @@ public class LectureSchedule {
      * @return lecture which are not in the holidays
      */
     @NonNull
-    public List<Lecture> getAllLectureWithoutHolidayAndHolidayEvents(@NonNull Context context) {
+    private List<Lecture> getAllLectureWithoutHolidayAndHolidayEvents(@NonNull Context context) {
         List<Lecture> all = new ArrayList<>(), all2 = new ArrayList<>();
         all.addAll(lecture);
         all.addAll(importLecture);

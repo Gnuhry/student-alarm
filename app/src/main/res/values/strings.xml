@@ -140,8 +140,9 @@
     <string name="can_not_start_before_the_hour_before">Can not start before the hour before</string>
     <string name="no_lecture_in_the_bottom_bar_selected">No Lecture in the bottom bar selected</string>
     <string name="missing_hour_settings">Missing hour settings (top right corner)</string>
-    <string name="temporary_alarmshutdown">Shut down alarm for...</string>
+    <string name="temporary_alarmshutdown">Shut down alarm until…</string>
     <string name="no_alarmshutdown">dont shutdown the alarm</string>
+    <string name="chose_last_lecture_with_noalarm">Chose the last lecture where no alarm is wanted</string>
 
 
 </resources>
