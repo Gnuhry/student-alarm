@@ -121,11 +121,9 @@ public class AlarmFragment extends Fragment {
                     view.findViewById(R.id.txtalarmshutdownuntil).setVisibility(View.VISIBLE);
                 } else 
                     view.findViewById(R.id.txtalarmshutdownuntil).setVisibility(View.GONE);
-            } else {
-                if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_PHONE, true)) {
+            } else if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_PHONE, true)) {
                     Log.d(LOG, "Alarm on phone message");
-                    ((TextView) view.findViewById(R.id.textView4)).setText(R.string.alarm_in_phone);
-                }
+                    ((TextView) view.findViewById(R.id.textView4)).setText(R.string.alarm_in_phone);             
             }
         } else {
             Log.d(LOG, "no alarm at all");
