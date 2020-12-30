@@ -117,8 +117,7 @@ public class AlarmFragment extends Fragment {
                 });
                 if (PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) != 0) {
                     Log.d(LOG, "Text VISIBLE");
-                    Date date = new Date(PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0));
-                    ((TextView) view.findViewById(R.id.txtalarmshutdownuntil)).setText(date.toString());
+                    ((TextView) view.findViewById(R.id.txtalarmshutdownuntil)).setText(new Date(PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0)).toString());
                     view.findViewById(R.id.txtalarmshutdownuntil).setVisibility(View.VISIBLE);
                 } else 
                     view.findViewById(R.id.txtalarmshutdownuntil).setVisibility(View.GONE);
