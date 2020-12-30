@@ -105,14 +105,16 @@ public class AlarmFragment extends Fragment {
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_ON, false)) {
             if (!PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_PHONE, true)) {
                 Log.d(LOG, "Button VISIBLE");
+                progress = new ProgressDialog(getContext());
+                progress.setTitle(getContext().getString(R.string.loading));
+                progress.setMessage(getContext().getString(R.string.wait_while_loading));
+                progress.setCancelable(false);
                 view.findViewById(R.id.btntmpalarmshutdown).setVisibility(View.VISIBLE);
+                progress.show();
                 lectureSchedule=LectureSchedule.load(getContext());
+                progress.dismiss();
                 view.findViewById(R.id.btntmpalarmshutdown).setOnClickListener(view1 -> {
                     Log.i(LOG, "Button pressed");
-                    progress = new ProgressDialog(getContext());
-                    progress.setTitle(getContext().getString(R.string.loading));
-                    progress.setMessage(getContext().getString(R.string.wait_while_loading));
-                    progress.setCancelable(false);
                     progress.show();
                     new AlarmShutdownDialog(this,lectureSchedule).show(getActivity().getSupportFragmentManager(), "dialog");
                 });
