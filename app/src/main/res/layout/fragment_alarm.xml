@@ -42,6 +42,26 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txVCountdown" />
+
+        <Button
+            android:id="@+id/btntmpalarmshutdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/temporary_alarmshutdown"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txVAlarm" />
+
+        <TextView
+            android:id="@+id/txtalarmshutdownuntil"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/error"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btntmpalarmshutdown" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

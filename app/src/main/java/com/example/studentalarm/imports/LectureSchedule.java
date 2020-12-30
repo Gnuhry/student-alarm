@@ -5,6 +5,10 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
+
 import com.example.studentalarm.EventColor;
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.Hours;
@@ -27,10 +31,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.preference.PreferenceManager;
 
 public class LectureSchedule {
     @NonNull
@@ -126,6 +126,27 @@ public class LectureSchedule {
         return erg;
     }
 
+    public List<Lecture> getAllLecturesFromNow(@NonNull Context context) {
+        positionScroll = -1;
+        List<Lecture> erg = new ArrayList<>();
+        String formatS = "01.01.1900", format2S;
+        for (LectureSchedule.Lecture l : getAllLectureWithEachHoliday(context)) {
+            format2S = FORMAT.format(l.getStart());
+            if (!format2S.equals(formatS)) {
+                formatS = format2S;
+                if (positionScroll == -1 && l.getStart().after(Calendar.getInstance().getTime())) {
+                    positionScroll = erg.size();
+                    erg.add(new LectureSchedule.Lecture(false, l.getStart(), new Date(), Integer.MIN_VALUE));
+                }
+            }
+            if (l.getStart().after(Calendar.getInstance().getTime()))
+                erg.add(l);
+        }
+        if (positionScroll == -1 && erg.size() > 0)
+            positionScroll = erg.size() - 1;
+        return erg;
+    }
+
     @NonNull
     public List<Lecture> getLecture() {
         return lecture;
@@ -173,12 +194,14 @@ public class LectureSchedule {
         boolean first = true;
         Lecture tomorrow = new Lecture(false, getDayAddDay(1), new Date()), today = new Lecture(false, getDayAddDay(0), new Date());
         for (Lecture l : getAllLectureWithoutHolidayAndHolidayEvents(context))
-            if (l.compareTo(today) >= 0 && first) {
-                first = false;
-                if (l.start.after(Calendar.getInstance().getTime()))
+            if (l.getStart().after(new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, Calendar.getInstance().getTime().getTime())))) {
+                if (l.compareTo(today) >= 0 && first) {
+                    first = false;
+                    if (l.getStart().after(Calendar.getInstance().getTime()))
+                        return l;
+                } else if (l.compareTo(tomorrow) >= 0)
                     return l;
-            } else if (l.compareTo(tomorrow) >= 0)
-                return l;
+            }
         return null;
     }
 
@@ -258,7 +281,8 @@ public class LectureSchedule {
     @NonNull
     public LectureSchedule removeHoliday(@NonNull Lecture data) {
         int id1 = holidays.indexOf(data);
-        if (id1 >= 0) lecture.remove(id1);
+        Log.d("REMOVE HOLID", "Data: " + data.getName() + " ID: " + id1);
+        if (id1 >= 0) holidays.remove(id1);
         return this;
     }
 
