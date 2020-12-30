@@ -1,5 +1,7 @@
 package com.example.studentalarm.ui.fragments;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -28,6 +30,7 @@ public class AlarmFragment extends Fragment {
     private static final String LOG = "Alarm_Fragment";
     private CountDownTimer timer;
     private View view;
+    private static ProgressDialog progress;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -66,10 +69,14 @@ public class AlarmFragment extends Fragment {
 
     }
 
+    public static void stopload(){
+        progress.dismiss();
+    }
+
     /**
      * If preferences not initialised => doesnt show
      *
-     * @param view
+     * @param view needs View
      */
     private void showAlarmshutdown(@NonNull View view) {
         if (getContext() == null) return;
@@ -81,8 +88,14 @@ public class AlarmFragment extends Fragment {
             if (!PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_PHONE, true)) {
                 Log.d(LOG, "Button VISIBLE");
                 view.findViewById(R.id.btntmpalarmshutdown).setVisibility(View.VISIBLE);
+                Context context = getContext();
                 view.findViewById(R.id.btntmpalarmshutdown).setOnClickListener(view1 -> {
                     Log.i(LOG, "Button pressed");
+                    progress = new ProgressDialog(context);
+                    progress.setTitle(getString(R.string.loading));
+                    progress.setMessage(getString(R.string.wait_while_loading));
+                    progress.setCancelable(false);
+                    progress.show();
                     new AlarmShutdownDialog().show(getActivity().getSupportFragmentManager(), "dialog");
                 });
                 if (PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) != 0) {

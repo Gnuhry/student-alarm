@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.ui.adapter.AlarmShutdownAdapter;
+import com.example.studentalarm.ui.fragments.AlarmFragment;
 
 public class AlarmShutdownDialog extends DialogFragment {
     private static final String LOG = "AlarmShutdownDialog";
@@ -31,7 +32,7 @@ public class AlarmShutdownDialog extends DialogFragment {
             rv.setLayoutManager(new LinearLayoutManager(getContext()));
             rv.setAdapter(adapter);
         }
-
+        AlarmFragment.stopload();
 
         return view;
     }
