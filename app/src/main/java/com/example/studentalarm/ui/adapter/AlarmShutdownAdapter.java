@@ -70,7 +70,7 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
         dayOfWeekName = new SimpleDateFormat("EEEE", locale);
         day = DateFormat.getDateInstance(DateFormat.LONG, locale);
         time = DateFormat.getTimeInstance(DateFormat.LONG, locale);
-        this.lecture = lecture_schedule.getAllLecturesFromNow(context);
+        this.lecture = lecture_schedule.getAllLecturesFromNowWithoutHoliday(context);
     }
 
     @NonNull
