@@ -126,11 +126,11 @@ public class LectureSchedule {
         return erg;
     }
 
-    public List<Lecture> getAllLecturesFromNow(@NonNull Context context) {
+    public List<Lecture> getAllLecturesFromNowWithoutHoliday(@NonNull Context context) {
         positionScroll = -1;
         List<Lecture> erg = new ArrayList<>();
         String formatS = "01.01.1900", format2S;
-        for (LectureSchedule.Lecture l : getAllLectureWithEachHoliday(context)) {
+        for (LectureSchedule.Lecture l : getAllLectureWithoutHolidayAndHolidayEvents(context)) {
             format2S = FORMAT.format(l.getStart());
             if (!format2S.equals(formatS)) {
                 formatS = format2S;
