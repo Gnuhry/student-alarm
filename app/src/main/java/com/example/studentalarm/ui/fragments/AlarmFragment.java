@@ -1,5 +1,6 @@
 package com.example.studentalarm.ui.fragments;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
 
 import com.example.studentalarm.R;
@@ -28,13 +30,17 @@ import java.util.Locale;
 public class AlarmFragment extends Fragment {
 
     private static final String LOG = "Alarm_Fragment";
-    private CountDownTimer timer;
-    private View view;
+    private static CountDownTimer timer;
+    private static View view;
+    private static Context context;
+    private static FragmentManager fragmanager;
     private static ProgressDialog progress;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_TIME, 0) <= Calendar.getInstance().getTime().getTime())
+            PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN,0).apply();
         if (getActivity() != null) {
             RegularLectureFragment.removeRegularLectureMenu(getActivity());
             LectureFragment.removeLectureMenu(getActivity());
@@ -45,6 +51,8 @@ public class AlarmFragment extends Fragment {
 
         checkNotification();
         this.view = view;
+        context=getContext();
+        fragmanager=getActivity().getSupportFragmentManager();
         setTimer(view);
         showAlarmshutdown(view);
 
@@ -64,9 +72,21 @@ public class AlarmFragment extends Fragment {
 
     @Override
     public void onResume() {
-        Log.d(LOG, "Resume");
         super.onResume();
+        if(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_TIME, 0) <= Calendar.getInstance().getTime().getTime())
+            PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN,0).apply();
+        showAlarmshutdown(view);
+    }
 
+    /**
+     * relode after temporary alarmcancelation
+     */
+    public static void reloade(){
+        Log.d(LOG, "reloade");
+        if (timer != null)
+            timer.cancel();
+        setTimer(view);
+        showAlarmshutdown(view);
     }
 
     public static void stopload(){
@@ -78,36 +98,36 @@ public class AlarmFragment extends Fragment {
      *
      * @param view needs View
      */
-    private void showAlarmshutdown(@NonNull View view) {
-        if (getContext() == null) return;
+    private static void showAlarmshutdown(@NonNull View view) {
+        Log.d(LOG,"GetContext: "+context);
+        if (context == null) return;
         Log.i(LOG, "check / show Button");
-        Log.d(LOG, "ALARM_ON: " + PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_ON, false));
-        Log.d(LOG, "ALARM_PHONE: " + PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_PHONE, true));
+        Log.d(LOG, "ALARM_ON: " + PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.ALARM_ON, false));
+        Log.d(LOG, "ALARM_PHONE: " + PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.ALARM_PHONE, true));
 
-        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_ON, false)) {
-            if (!PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_PHONE, true)) {
+        if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.ALARM_ON, false)) {
+            if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.ALARM_PHONE, true)) {
                 Log.d(LOG, "Button VISIBLE");
                 view.findViewById(R.id.btntmpalarmshutdown).setVisibility(View.VISIBLE);
-                Context context = getContext();
                 view.findViewById(R.id.btntmpalarmshutdown).setOnClickListener(view1 -> {
                     Log.i(LOG, "Button pressed");
                     progress = new ProgressDialog(context);
-                    progress.setTitle(getString(R.string.loading));
-                    progress.setMessage(getString(R.string.wait_while_loading));
+                    progress.setTitle(context.getString(R.string.loading));
+                    progress.setMessage(context.getString(R.string.wait_while_loading));
                     progress.setCancelable(false);
                     progress.show();
-                    new AlarmShutdownDialog().show(getActivity().getSupportFragmentManager(), "dialog");
+                    new AlarmShutdownDialog().show(fragmanager, "dialog");
                 });
-                if (PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) != 0) {
+                if (PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) != 0) {
                     Log.d(LOG, "Text VISIBLE");
-                    Date date = new Date(PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0));
+                    Date date = new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0));
                     ((TextView) view.findViewById(R.id.txtalarmshutdownuntil)).setText(date.toString());
                     view.findViewById(R.id.txtalarmshutdownuntil).setVisibility(View.VISIBLE);
                 } else {
                     view.findViewById(R.id.txtalarmshutdownuntil).setVisibility(View.GONE);
                 }
             } else {
-                if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_PHONE, true)) {
+                if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.ALARM_PHONE, true)) {
                     Log.d(LOG, "Alarm on phone message");
                     ((TextView) view.findViewById(R.id.textView4)).setText(R.string.alarm_in_phone);
                 }
@@ -124,10 +144,10 @@ public class AlarmFragment extends Fragment {
      *
      * @param view view to display the timer
      */
-    private void setTimer(@NonNull View view) {
-        if (getContext() == null) return;
+    private static void setTimer(@NonNull View view) {
+        if (context == null) return;
         Log.i(LOG, "Set timer");
-        long time = PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_TIME, 0);
+        long time = PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_TIME, 0);
         if (time != 0 && time > Calendar.getInstance().getTimeInMillis()) {
             TextView txVTimer = view.findViewById(R.id.txVCountdown);
             timer = new CountDownTimer(time - Calendar.getInstance().getTimeInMillis(), 1000) {
@@ -135,7 +155,7 @@ public class AlarmFragment extends Fragment {
                 public void onTick(long l) {
                     Calendar ca = Calendar.getInstance();
                     ca.setTimeInMillis(l);
-                    txVTimer.setText(getString(R.string.time_format, getHour(ca), ca.get(Calendar.MINUTE) + 1));
+                    txVTimer.setText(context.getString(R.string.time_format, getHour(ca), ca.get(Calendar.MINUTE) + 1));
                 }
 
                 /**
@@ -154,7 +174,7 @@ public class AlarmFragment extends Fragment {
                     txVTimer.setText(R.string.zero_time);
                 }
             }.start();
-            ((TextView) view.findViewById(R.id.txVAlarm)).setText(getString(R.string.alarm_at, new SimpleDateFormat("HH:mm", Locale.GERMAN).format(time)));
+            ((TextView) view.findViewById(R.id.txVAlarm)).setText(context.getString(R.string.alarm_at, new SimpleDateFormat("HH:mm", Locale.GERMAN).format(time)));
         } else {
             ((TextView) view.findViewById(R.id.textView4)).setText(R.string.no_alarm_set);
         }

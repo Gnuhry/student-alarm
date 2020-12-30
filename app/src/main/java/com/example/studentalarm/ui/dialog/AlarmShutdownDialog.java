@@ -20,6 +20,12 @@ public class AlarmShutdownDialog extends DialogFragment {
     private static final String LOG = "AlarmShutdownDialog";
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        AlarmFragment.reloade();
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(LOG, "open");
