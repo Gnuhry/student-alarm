@@ -120,9 +120,8 @@ public class AlarmFragment extends Fragment {
                     Date date = new Date(PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0));
                     ((TextView) view.findViewById(R.id.txtalarmshutdownuntil)).setText(date.toString());
                     view.findViewById(R.id.txtalarmshutdownuntil).setVisibility(View.VISIBLE);
-                } else {
+                } else 
                     view.findViewById(R.id.txtalarmshutdownuntil).setVisibility(View.GONE);
-                }
             } else {
                 if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_PHONE, true)) {
                     Log.d(LOG, "Alarm on phone message");
