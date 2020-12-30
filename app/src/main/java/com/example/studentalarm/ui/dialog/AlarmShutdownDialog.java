@@ -24,9 +24,9 @@ public class AlarmShutdownDialog extends DialogFragment {
     private final AlarmFragment alarmFragment;
     private LectureSchedule lectureSchedule;
 
-    public AlarmShutdownDialog(AlarmFragment alarmFragment,LectureSchedule lectureSchedule){
-        this.alarmFragment=alarmFragment;
-        this.lectureSchedule=lectureSchedule;
+    public AlarmShutdownDialog(AlarmFragment alarmFragment, LectureSchedule lectureSchedule){
+        this.alarmFragment = alarmFragment;
+        this.lectureSchedule = lectureSchedule;
     }
 
     @Override
