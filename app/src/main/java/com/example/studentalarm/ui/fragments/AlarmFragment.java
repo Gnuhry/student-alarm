@@ -23,6 +23,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class AlarmFragment extends Fragment {
@@ -31,7 +32,7 @@ public class AlarmFragment extends Fragment {
     private CountDownTimer timer;
     private View view;
     private ProgressDialog progress;
-    private LectureSchedule lectureSchedule;
+    private List<LectureSchedule.Lecture> lectureSchedule;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -108,7 +109,7 @@ public class AlarmFragment extends Fragment {
                 progress.setCancelable(false);
                 view.findViewById(R.id.btntmpalarmshutdown).setVisibility(View.VISIBLE);
                 progress.show();
-                lectureSchedule = LectureSchedule.load(getContext());
+                lectureSchedule = LectureSchedule.load(getContext()).getAllLecturesFromNowWithoutHoliday(getContext());
                 progress.dismiss();
                 view.findViewById(R.id.btntmpalarmshutdown).setOnClickListener(view1 -> {
                     Log.i(LOG, "Button pressed");
