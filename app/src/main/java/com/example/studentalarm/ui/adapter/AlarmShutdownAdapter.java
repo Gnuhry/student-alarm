@@ -92,12 +92,6 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
                 viewHolder.until.setVisibility(View.VISIBLE);
                 viewHolder.from.setText(cutTime(time.format(l.getStart())));
                 viewHolder.until.setText(cutTime(time.format(l.getEnd())));
-                Log.d(LOG, "Startdate: " + l.getStart() + " smaler as: " + new Date(0) + " Bool:" + l.getStart().equals(new Date(0)));
-                if (l.getStart().equals(new Date(0))) {
-                    viewHolder.colorLine.setVisibility(View.INVISIBLE);
-                    viewHolder.from.setVisibility(View.INVISIBLE);
-                    viewHolder.until.setVisibility(View.INVISIBLE);
-                }
                 Log.d(LOG, "Startdatum: " + l.getStart() + " Vergleichsdatum" + new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0)));
                 if (l.getStart().equals(new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0)))) {
                     viewHolder.TLEvent.setBackgroundColor(Color.YELLOW);
