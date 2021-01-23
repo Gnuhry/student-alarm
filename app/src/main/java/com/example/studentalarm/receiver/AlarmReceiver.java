@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -37,7 +38,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         Log.d("Alarm Bell", "Alarm just fired");
         mp = getMediaPlayer(context);
         if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
-            setNotification(context);
+             setNotification(context);
             mp.setLooping(true);
         }
         mp.start();
@@ -65,25 +66,20 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .addAction(R.drawable.alarm, context.getString(R.string.snooze), PendingIntent.getBroadcast(context, 0, snoozeIntent, 0))
                 .addAction(R.drawable.alarm, context.getString(R.string.alarm_off), PendingIntent.getBroadcast(context, 0, alarmOffIntent, 0))
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
-        createNotificationChannel(context);
-        NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build());
-    }
-
-    /**
-     * Create notification channel to publish
-     *
-     * @param context context of the application
-     */
-    private void createNotificationChannel(@NonNull Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = context.getString(R.string.alarm);
             String description = context.getString(R.string.alarm);
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
+            channel.enableLights(true);
+            channel.setLightColor(Color.RED);
+            channel.enableVibration(true);
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
-        }
+            notificationManager.notify(NOTIFICATION_ID, builder.build());
+        } else
+            NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build());
     }
 
     /**
