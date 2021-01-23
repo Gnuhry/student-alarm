@@ -19,11 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.DialogFragment;
-
 import com.example.studentalarm.EventColor;
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
@@ -39,6 +34,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.DialogFragment;
 
 public class EventDialog extends DialogFragment {
     private static final String LOG = "EventDialogFragment";
@@ -136,14 +136,40 @@ public class EventDialog extends DialogFragment {
         cancel.setOnClickListener(view -> {
             if (cancelDirect)
                 this.dismiss();
-            else if (getContext() != null)
-                new MaterialAlertDialogBuilder(getContext())
-                        .setTitle(R.string.dismiss)
-                        .setMessage(R.string.do_you_want_to_dismiss_all_your_changes)
-                        .setPositiveButton(R.string.dismiss, (dialogInterface, i) -> this.dismiss())
-                        .setNegativeButton(R.string.no, null)
-                        .setCancelable(true)
-                        .show();
+            else if (data == null) {
+                if (title.getText().toString().equals("") && docent.getText().toString().equals("") && location.getText().toString().equals("") &&
+                        txVBegin.getText().toString().equals("") && txVEnd.getText().toString().equals(""))
+                    this.dismiss();
+                else {
+                    if (getContext() != null)
+                        new MaterialAlertDialogBuilder(getContext())
+                                .setTitle(R.string.dismiss)
+                                .setMessage(R.string.do_you_want_to_dismiss_all_your_changes)
+                                .setPositiveButton(R.string.dismiss, (dialogInterface, i) -> this.dismiss())
+                                .setNegativeButton(R.string.no, null)
+                                .setCancelable(true)
+                                .show();
+                }
+            } else {
+                String docentString = data.getDocent();
+                if (docentString == null) docentString = "";
+                String locationString = data.getLocation();
+                if (locationString == null) locationString = "";
+                if (title.getText().toString().equals(data.getName()) && docent.getText().toString().equals(docentString) && location.getText().toString().equals(locationString) &&
+                        txVBegin.getText().toString().equals(formatDate(data.getStartWithDefaultTimeZone()) + "   " + formatTime(data.getStartWithDefaultTimeZone())) &&
+                        txVEnd.getText().toString().equals(formatDate(data.getEndWithDefaultTimezone()) + "   " + formatTime(data.getEndWithDefaultTimezone())))
+                    this.dismiss();
+                else {
+                    if (getContext() != null)
+                        new MaterialAlertDialogBuilder(getContext())
+                                .setTitle(R.string.dismiss)
+                                .setMessage(R.string.do_you_want_to_dismiss_all_your_changes)
+                                .setPositiveButton(R.string.dismiss, (dialogInterface, i) -> this.dismiss())
+                                .setNegativeButton(R.string.no, null)
+                                .setCancelable(true)
+                                .show();
+                }
+            }
         });
     }
 
