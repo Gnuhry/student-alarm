@@ -14,12 +14,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.studentalarm.EventColor;
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.RegularLectureSchedule;
@@ -28,6 +22,12 @@ import com.example.studentalarm.ui.fragments.RegularLectureFragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class RegularLectureDialog extends DialogFragment {
     private static final String LOG = "RegularLectureDialog";
@@ -68,6 +68,7 @@ public class RegularLectureDialog extends DialogFragment {
                              Bundle savedInstanceState) {
         Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.dialog_regular_lecture, container, false);
+        if (getContext() == null) return view;
         title = view.findViewById(R.id.edTTitleReg);
         docent = view.findViewById(R.id.edTDocentReg);
         recyclerView = view.findViewById(R.id.rVRoom);
@@ -110,14 +111,14 @@ public class RegularLectureDialog extends DialogFragment {
                 return;
             }
 
-            if (index < 0) {
+            if (index < 0 && data != null) {
                 Log.i(LOG, "Create Lecture");
                 fragment.setChanges(true);
                 data.addLecture(new RegularLectureSchedule.RegularLecture(title.getText().toString())
                         .setDocent(docent.getText().toString())
                         .setColor(((EventColor) spinner.getSelectedItem()).getColor())
                         .setAllRooms(adapter.getAllRooms()));
-            } else {
+            } else if (data != null) {
                 Log.i(LOG, "Update Lecture");
                 fragment.setChanges(true);
                 data.getLectures().get(index)

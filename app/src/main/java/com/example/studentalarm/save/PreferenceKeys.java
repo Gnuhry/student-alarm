@@ -3,15 +3,17 @@ package com.example.studentalarm.save;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.util.Log;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.preference.PreferenceManager;
 
 import com.example.studentalarm.R;
 
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.PreferenceManager;
 
 public class PreferenceKeys {
     @NonNull
@@ -97,5 +99,22 @@ public class PreferenceKeys {
             }
         }
         return DEFAULT_LANGUAGE;
+    }
+
+    /**
+     * get locale
+     *
+     * @param context context of app
+     * @return locale object
+     */
+    public static Locale getLocale(@Nullable Context context) {
+        if (context == null)
+            return Locale.getDefault();
+        Locale locale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            locale = context.getResources().getConfiguration().getLocales().get(0);
+        else
+            locale = context.getResources().getConfiguration().locale;
+        return locale;
     }
 }

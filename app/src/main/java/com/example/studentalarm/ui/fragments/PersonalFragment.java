@@ -7,12 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.studentalarm.R;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import com.example.studentalarm.R;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class PersonalFragment extends Fragment {
 
@@ -76,7 +76,7 @@ public class PersonalFragment extends Fragment {
      * check if save dialog should displayed
      */
     private void checkSave(@NonNull Context context) {
-        if (fragment != null && !fragment.hasNoChanges()) {
+        if (fragment != null && fragment.hasChanges() && getContext() != null) {
             new MaterialAlertDialogBuilder(getContext())
                     .setTitle(R.string.dismiss)
                     .setMessage(R.string.do_you_want_to_save_your_changes)

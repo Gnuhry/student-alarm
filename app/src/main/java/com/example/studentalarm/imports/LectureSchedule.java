@@ -152,12 +152,14 @@ public class LectureSchedule {
      * @param hours   list of all hours
      * @return array of calendar start and end
      */
-    @NonNull
+    @Nullable
     public Calendar[] getRegularLectureStartDates(@NonNull RegularLectureSchedule.RegularLecture.RegularLectureTime lecture, @NonNull List<Hours> hours) {
         Calendar start = Calendar.getInstance(), end = Calendar.getInstance();
         start.setTime(regular_from.getTime());
         start.add(Calendar.DAY_OF_MONTH, (7 - (regular_from.get(Calendar.DAY_OF_WEEK) > 1 ? regular_from.get(Calendar.DAY_OF_WEEK) - 1 : 7) + (lecture.day + 1)) % 7);
         Date[] dates = getDateWithTime(start.getTime(), hours.get(lecture.hour));
+        if (dates == null)
+            return null;
         start.setTime(dates[0]);
         end.setTime(dates[1]);
         return new Calendar[]{start, end};
@@ -353,7 +355,7 @@ public class LectureSchedule {
             Hours hour = hours.get(fragmentLecture.hour);
             for (Date date : help.get(fragmentLecture.getCalendarDay() - 1)) {
                 Date[] dates = getDateWithTime(date, hour);
-                if (date != null)
+                if (dates != null)
                     erg.add(new Lecture(true, dates[0], dates[1])
                             .setName(fragmentLecture.lecture.getName())
                             .setDocent(fragmentLecture.lecture.getDocent())
@@ -371,7 +373,7 @@ public class LectureSchedule {
      * @param hours time to combine
      * @return date start and end
      */
-    @NonNull
+    @Nullable
     private Date[] getDateWithTime(@NonNull Date date, @NonNull Hours hours) {
         Date start = hours.getFromAsDate(), end = hours.getUntilAsDate();
         if (start == null || end == null) return null;
@@ -554,15 +556,18 @@ public class LectureSchedule {
         if (saveLecture == null) return lectureSchedule;
         for (int i = 0; i < saveLecture.saves[0].length; i++) {
             SaveLecture.Save save = saveLecture.saves[0][i];
-            lectureSchedule.lecture.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setLocation(save.location).setDocent(save.docent).setName(save.name).setAllDayEvent(save.isAllDayEvent));
+            if (save != null && save.name != null)
+                lectureSchedule.lecture.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setLocation(save.location).setDocent(save.docent).setName(save.name).setAllDayEvent(save.isAllDayEvent));
         }
         for (int i = 0; i < saveLecture.saves[1].length; i++) {
             SaveLecture.Save save = saveLecture.saves[1][i];
-            lectureSchedule.importLecture.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setLocation(save.location).setDocent(save.docent).setName(save.name).setAllDayEvent(save.isAllDayEvent));
+            if (save != null && save.name != null)
+                lectureSchedule.importLecture.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setLocation(save.location).setDocent(save.docent).setName(save.name).setAllDayEvent(save.isAllDayEvent));
         }
         for (int i = 0; i < saveLecture.saves[2].length; i++) {
             SaveLecture.Save save = saveLecture.saves[2][i];
-            lectureSchedule.holidays.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setName(save.name).setAllDayEvent(save.isAllDayEvent));
+            if (save != null && save.name != null)
+                lectureSchedule.holidays.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setName(save.name).setAllDayEvent(save.isAllDayEvent));
         }
         return lectureSchedule;
     }

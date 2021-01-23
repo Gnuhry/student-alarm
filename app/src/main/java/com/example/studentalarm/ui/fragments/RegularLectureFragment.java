@@ -1,7 +1,6 @@
 package com.example.studentalarm.ui.fragments;
 
 import android.app.Activity;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +27,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import static com.example.studentalarm.save.PreferenceKeys.getLocale;
 
 public class RegularLectureFragment extends Fragment {
     private static final String LOG = "RegularLectureFragment";
@@ -82,8 +83,8 @@ public class RegularLectureFragment extends Fragment {
      *
      * @return {true} if no changes {false} if changes occurs
      */
-    public boolean hasNoChanges() {
-        return !changes;
+    public boolean hasChanges() {
+        return changes;
     }
 
     public void setChanges(boolean changes) {
@@ -149,7 +150,8 @@ public class RegularLectureFragment extends Fragment {
         });
         toolbar.getMenu().getItem(4).setVisible(true);
         toolbar.getMenu().getItem(4).setOnMenuItemClickListener(menuItem -> {
-            if (!hasNoChanges())
+            if (getContext() == null) return false;
+            if (hasChanges())
                 new MaterialAlertDialogBuilder(getContext())
                         .setTitle(R.string.dismiss)
                         .setMessage(R.string.do_you_want_to_dismiss_all_your_changes)
@@ -172,11 +174,7 @@ public class RegularLectureFragment extends Fragment {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2020, 5, 1, 0, 0, 0);
         weekView.scrollToDate(calendar);
-        Locale locale;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            locale = getContext().getResources().getConfiguration().getLocales().get(0);
-        else
-            locale = getContext().getResources().getConfiguration().locale;
+        Locale locale = getLocale(getContext());
         SimpleDateFormat format = new SimpleDateFormat("E", locale);
         weekView.setTimeFormatter(hour -> hour + 1 + getString(R.string.hour));
         weekView.setDateFormatter(date -> format.format(date.getTime()));

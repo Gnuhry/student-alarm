@@ -190,6 +190,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         importColorPref.setSummaryProvider(preference -> {
+            if (getContext() == null) return "";
             SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
             List<EventColor> colors = EventColor.possibleColors(getContext());
             int index = colors.indexOf(new EventColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR, 0)));

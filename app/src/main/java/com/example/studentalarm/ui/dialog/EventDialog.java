@@ -2,7 +2,6 @@ package com.example.studentalarm.ui.dialog;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -40,6 +39,8 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 
+import static com.example.studentalarm.save.PreferenceKeys.getLocale;
+
 public class EventDialog extends DialogFragment {
     private static final String LOG = "EventDialogFragment";
     @Nullable
@@ -71,6 +72,7 @@ public class EventDialog extends DialogFragment {
                              Bundle savedInstanceState) {
         Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.dialog_event, container, false);
+        if (getContext() == null) return view;
         title = view.findViewById(R.id.edTTitle);
         docent = view.findViewById(R.id.edTDocent);
         location = view.findViewById(R.id.edTLocation);
@@ -498,11 +500,7 @@ public class EventDialog extends DialogFragment {
      */
     @NonNull
     private String formatDate(@NonNull Date date) {
-        Locale locale;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            locale = getContext().getResources().getConfiguration().getLocales().get(0);
-        else
-            locale = getContext().getResources().getConfiguration().locale;
+        Locale locale = getLocale(getContext());
         SimpleDateFormat format = new SimpleDateFormat("E", locale);
         DateFormat dateformat = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
         return String.format("%s %s", format.format(date.getTime()), dateformat.format(date.getTime()));
@@ -528,11 +526,7 @@ public class EventDialog extends DialogFragment {
      */
     @Nullable
     private Date convertDate(@NonNull String string, int pos) {
-        Locale locale;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            locale = getContext().getResources().getConfiguration().getLocales().get(0);
-        else
-            locale = getContext().getResources().getConfiguration().locale;
+        Locale locale = getLocale(getContext());
         DateFormat dateformat = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
         Calendar calendar = Calendar.getInstance(), calendar1 = Calendar.getInstance();
         try {
