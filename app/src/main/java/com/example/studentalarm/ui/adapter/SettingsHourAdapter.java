@@ -14,10 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.Hours;
 
@@ -26,6 +22,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapter.ViewHolder> {
     private final static String LOG = "SettingsHourAdapter";
@@ -129,10 +129,12 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
     /**
      * save if all inputs are right
      *
-     * @return {true} if saved {false} if wrong inputs
+     * @return -1 if error else the size of the list
      */
     public int save() {
         for (int f = 0; f < holders.size(); f++) {
+            if (holders.get(f).from.getText().toString().equals("") || holders.get(f).until.getText().toString().equals(""))
+                return -1;
             hours.get((int) holders.get(f).llTime.getTag())
                     .setFrom(holders.get(f).from.getText().toString())
                     .setUntil(holders.get(f).until.getText().toString());
