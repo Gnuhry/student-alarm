@@ -9,12 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEntity;
 import com.example.studentalarm.R;
@@ -28,6 +22,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class RegularLectureFragment extends Fragment {
     private static final String LOG = "RegularLectureFragment";
@@ -149,7 +149,17 @@ public class RegularLectureFragment extends Fragment {
         });
         toolbar.getMenu().getItem(4).setVisible(true);
         toolbar.getMenu().getItem(4).setOnMenuItemClickListener(menuItem -> {
-            new RegularLectureSettingDialog(getContext(), getActivity(), this).show(getActivity().getSupportFragmentManager(), "dialog");
+            if (!hasNoChanges())
+                new MaterialAlertDialogBuilder(getContext())
+                        .setTitle(R.string.dismiss)
+                        .setMessage(R.string.do_you_want_to_dismiss_all_your_changes)
+                        .setPositiveButton(R.string.dismiss, (dialogInterface, i) ->
+                                new RegularLectureSettingDialog(getContext(), getActivity(), this).show(getActivity().getSupportFragmentManager(), "dialog"))
+                        .setNegativeButton(R.string.no, null)
+                        .setCancelable(false)
+                        .show();
+            else
+                new RegularLectureSettingDialog(getContext(), getActivity(), this).show(getActivity().getSupportFragmentManager(), "dialog");
             return true;
         });
     }
