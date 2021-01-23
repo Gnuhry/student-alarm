@@ -164,18 +164,21 @@ public class LectureSchedule {
     }
 
     /**
-     * get the next lecture, at least starting tomorrow 00:00:00:00
+     * get the next lecture
      *
      * @return next lecture
      */
     @Nullable
-    public Lecture getNextFirstDayLecture(@NonNull Context context) {
+    public Lecture getNextLecture(@NonNull Context context) {
         boolean first = true;
         Lecture tomorrow = new Lecture(false, getDayAddDay(1), new Date()), today = new Lecture(false, getDayAddDay(0), new Date());
+        Log.d("ERROR", today.start.toString());
         for (Lecture l : getAllLectureWithoutHolidayAndHolidayEvents(context))
             if (l.compareTo(today) >= 0 && first) {
+                Log.d("ERROR", l.getStartWithDefaultTimeZone().toString());
                 first = false;
-                if (l.start.after(Calendar.getInstance().getTime()))
+                Log.d("ERROR", Calendar.getInstance().getTime().toString());
+                if (l.getStartWithDefaultTimeZone().after(Calendar.getInstance().getTime()))
                     return l;
             } else if (l.compareTo(tomorrow) >= 0)
                 return l;
@@ -258,7 +261,7 @@ public class LectureSchedule {
     @NonNull
     public LectureSchedule removeHoliday(@NonNull Lecture data) {
         int id1 = holidays.indexOf(data);
-        if (id1 >= 0) lecture.remove(id1);
+        if (id1 >= 0) holidays.remove(id1);
         return this;
     }
 

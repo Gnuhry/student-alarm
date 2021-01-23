@@ -8,11 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.fragment.app.Fragment;
-import androidx.preference.PreferenceManager;
-
 import com.example.studentalarm.R;
 import com.example.studentalarm.save.PreferenceKeys;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -20,6 +15,12 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 public class AlarmFragment extends Fragment {
 
@@ -69,7 +70,7 @@ public class AlarmFragment extends Fragment {
                 @Override
                 public void onTick(long l) {
                     Calendar ca = Calendar.getInstance();
-                    ca.setTimeInMillis(l);
+                    ca.setTimeInMillis(l - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
                     txVTimer.setText(getString(R.string.time_format, getHour(ca), ca.get(Calendar.MINUTE) + 1));
                 }
 
