@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
@@ -152,6 +155,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         ringtone.setEnabled(bool2);
         ringtone.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.i(LOG, "alarm ringtone change to " + newValue);
+            if (getContext() != null) {
+                switch ((String) newValue) {
+                    case "gentle":
+                        MediaPlayer.create(getContext().getApplicationContext(), R.raw.alarm_gentle).start();
+                    case "DEFAULT":
+                    default:
+                        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        MediaPlayer.create(getContext().getApplicationContext(), alarmSound).start();
+                }
+            }
             return true;
         });
 
