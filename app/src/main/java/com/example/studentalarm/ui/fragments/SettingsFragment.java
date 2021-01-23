@@ -20,6 +20,7 @@ import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.Import;
 import com.example.studentalarm.imports.LectureSchedule;
+import com.example.studentalarm.regular.Hours;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.dialog.DeleteLectureDialog;
@@ -149,8 +150,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         snooze.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.i(LOG, "alarm snooze change to " + newValue);
             return true;
-        })
-        ;
+        });
 
         ringtone.setEnabled(bool2);
         ringtone.setOnPreferenceChangeListener((preference, newValue) -> {
@@ -301,8 +301,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         if (!lan2.equals(lan) && getActivity() != null)
                             changeLanguage(lan2, getContext(), getActivity());
                         removeAllEventsLecture();
-                        reload();
                         RegularLectureSchedule.clearSave(getContext());
+                        Hours.clearHours(getContext());
+                        reload();
                     })
                     .setNegativeButton(R.string.no, null)
                     .setCancelable(true)
