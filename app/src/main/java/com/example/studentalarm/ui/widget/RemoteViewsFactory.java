@@ -77,8 +77,8 @@ public class RemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory
             if (l.getId() >= 0) {
                 rv.setViewVisibility(R.id.txVFrom, View.VISIBLE);
                 rv.setViewVisibility(R.id.txVUntil, View.VISIBLE);
-                rv.setTextViewText(R.id.txVFrom, cutTime(time.format(l.getStart())));
-                rv.setTextViewText(R.id.txVUntil, cutTime(time.format(l.getEnd())));
+                rv.setTextViewText(R.id.txVFrom, cutTime(time.format(l.getStartWithDefaultTimeZone())));
+                rv.setTextViewText(R.id.txVUntil, cutTime(time.format(l.getEndWithDefaultTimezone())));
             } else {
                 rv.setViewVisibility(R.id.txVFrom, View.GONE);
                 rv.setViewVisibility(R.id.txVUntil, View.GONE);

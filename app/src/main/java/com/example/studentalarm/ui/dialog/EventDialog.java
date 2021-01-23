@@ -331,16 +331,16 @@ public class EventDialog extends DialogFragment {
         title.setText(data.getName());
         docent.setText(data.getDocent());
         location.setText(data.getLocation());
-        begin.setText(formatTime(data.getStart()));
-        end.setText(formatTime(data.getEnd()));
+        begin.setText(formatTime(data.getStartWithDefaultTimeZone()));
+        end.setText(formatTime(data.getEndWithDefaultTimezone()));
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(data.getStart());
+        calendar.setTime(data.getStartWithDefaultTimeZone());
         dPBegin.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), (datePicker, i, i1, i2) -> {
             setDateTime(txVBegin, dPBegin, begin);
             calendar.set(dPBegin.getYear(), dPBegin.getMonth(), dPBegin.getDayOfMonth(), 0, 0, 0);
             dPEnd.setMinDate(calendar.getTimeInMillis());
         });
-        calendar.setTime(data.getEnd());
+        calendar.setTime(data.getEndWithDefaultTimezone());
         dPEnd.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), (datePicker, i, i1, i2) -> setDateTime(txVEnd, dPEnd, end));
         setDateTime(txVBegin, dPBegin, begin);
         setDateTime(txVEnd, dPEnd, end);

@@ -9,6 +9,7 @@ import com.example.studentalarm.save.PreferenceKeys;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
@@ -93,9 +94,10 @@ public class AlarmManager {
         calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.BEFORE, 0));
         calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.WAY, 0));
         calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.AFTER, 0));
-        if (preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false))
+        calendar.add(Calendar.MILLISECOND, TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
+        if (preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false)) {
             Alarm.setPhoneAlarm(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), context);
-        else {
+        } else {
             cancelNextAlarm(context);
             Alarm.setAlarm(calendar, context);
         }

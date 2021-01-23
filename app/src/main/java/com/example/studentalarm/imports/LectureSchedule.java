@@ -574,20 +574,28 @@ public class LectureSchedule {
         @Nullable
         private String docent, location, name;
         @NonNull
-        private Date start, end;
+        private Date start, end; //UTC
         private int color = Color.RED;
         private boolean isAllDayEvent;
 
+        /**
+         * @param start UTC Date
+         * @param end   UTC Date
+         */
         public Lecture(boolean isImport, @NonNull Date start, @NonNull Date end) {
-            this.start = new Date(start.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
-            this.end = new Date(end.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
+            this.start = start;
+            this.end = end;
             this.id = counter++;
             this.isImport = isImport;
         }
 
+        /**
+         * @param start UTC Date
+         * @param end   UTC Date
+         */
         private Lecture(boolean isImport, @NonNull Date start, @NonNull Date end, int id) {
-            this.start = new Date(start.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
-            this.end = new Date(end.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
+            this.start = start;
+            this.end = end;
             this.id = id;
             this.isImport = isImport;
         }
@@ -609,12 +617,22 @@ public class LectureSchedule {
 
         @NonNull
         public Date getStart() {
-            return start;// new Date(start.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
+            return start;
+        }
+
+        @NonNull
+        public Date getStartWithDefaultTimeZone() {
+            return new Date(start.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
         }
 
         @NonNull
         public Date getEnd() {
-            return end;// new Date(end.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
+            return end;
+        }
+
+        @NonNull
+        public Date getEndWithDefaultTimezone() {
+            return new Date(end.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
         }
 
         public int getId() {

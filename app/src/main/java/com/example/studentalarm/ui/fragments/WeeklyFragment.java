@@ -124,10 +124,10 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
             builder.setBackgroundColor(item.getColor());
 
             Calendar startCal = Calendar.getInstance();
-            startCal.setTime(item.getStart());
+            startCal.setTime(item.getStartWithDefaultTimeZone());
 
             Calendar endCal = Calendar.getInstance();
-            endCal.setTime(item.getEnd());
+            endCal.setTime(item.getEndWithDefaultTimezone());
 
             WeekViewEntity.Event.Builder<LectureSchedule.Lecture> erg = new WeekViewEntity.Event.Builder<>(item);
             StringBuilder sb = new StringBuilder(item.getName());
