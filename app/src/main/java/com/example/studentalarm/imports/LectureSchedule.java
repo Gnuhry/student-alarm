@@ -194,22 +194,6 @@ public class LectureSchedule {
      */
 
     @Nullable
-    public Lecture getNextFirstDayLecture(@NonNull Context context) {
-        boolean first = true;
-        Lecture tomorrow = new Lecture(false, getDayAddDay(1), new Date()), today = new Lecture(false, getDayAddDay(0), new Date());
-        for (Lecture l : getAllLectureWithoutHolidayAndHolidayEvents(context))
-            if (l.getStart().after(new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, Calendar.getInstance().getTime().getTime())))) {
-                if (l.compareTo(today) >= 0 && first) {
-                    first = false;
-                    if (l.getStart().after(Calendar.getInstance().getTime()))
-                        return l;
-                } else if (l.compareTo(tomorrow) >= 0)
-                    return l;
-            }
-        return null;
-    }
-
-    @Nullable
     public Lecture getNextLecture(@NonNull Context context) {
         boolean first = true;
         Lecture tomorrow = new Lecture(false, getDayAddDay(1), new Date()), today = new Lecture(false, getDayAddDay(0), new Date());
