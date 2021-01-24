@@ -126,6 +126,28 @@ public class LectureSchedule {
         return erg;
     }
 
+    public List<Lecture> getAllLecturesFromNowWithoutHoliday(@NonNull Context context) {
+        positionScroll = -1;
+        List<Lecture> erg = new ArrayList<>();
+        String formatS = "01.01.1900", format2S;
+        for (LectureSchedule.Lecture l : getAllLectureWithoutHolidayAndHolidayEvents(context)) {
+            format2S = FORMAT.format(l.getStart());
+            if (!format2S.equals(formatS)) {
+                formatS = format2S;
+                if (positionScroll == -1 && l.getStart().after(Calendar.getInstance().getTime()))
+                    positionScroll = erg.size();
+                if(l.getStart().after(Calendar.getInstance().getTime()))
+                    erg.add(new LectureSchedule.Lecture(false, l.getStart(), new Date(), Integer.MIN_VALUE));
+
+            }
+            if (l.getStart().after(Calendar.getInstance().getTime()))
+                erg.add(l);
+        }
+        if (positionScroll == -1 && erg.size() > 0)
+            positionScroll = erg.size() - 1;
+        return erg;
+    }
+
     @NonNull
     public List<Lecture> getLecture() {
         return lecture;
@@ -166,10 +188,27 @@ public class LectureSchedule {
     }
 
     /**
-     * get the next lecture
+     * get the next lecture, at least starting tomorrow 00:00:00:00
      *
      * @return next lecture
      */
+
+    @Nullable
+    public Lecture getNextFirstDayLecture(@NonNull Context context) {
+        boolean first = true;
+        Lecture tomorrow = new Lecture(false, getDayAddDay(1), new Date()), today = new Lecture(false, getDayAddDay(0), new Date());
+        for (Lecture l : getAllLectureWithoutHolidayAndHolidayEvents(context))
+            if (l.getStart().after(new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, Calendar.getInstance().getTime().getTime())))) {
+                if (l.compareTo(today) >= 0 && first) {
+                    first = false;
+                    if (l.getStart().after(Calendar.getInstance().getTime()))
+                        return l;
+                } else if (l.compareTo(tomorrow) >= 0)
+                    return l;
+            }
+        return null;
+    }
+
     @Nullable
     public Lecture getNextLecture(@NonNull Context context) {
         boolean first = true;
@@ -263,6 +302,7 @@ public class LectureSchedule {
     @NonNull
     public LectureSchedule removeHoliday(@NonNull Lecture data) {
         int id1 = holidays.indexOf(data);
+        Log.d("REMOVE HOLID", "Data: " + data.getName() + " ID: " + id1);
         if (id1 >= 0) holidays.remove(id1);
         return this;
     }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.studentalarm.receiver.NetworkReceiver;
 import com.example.studentalarm.save.PreferenceKeys;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("Main","started");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 

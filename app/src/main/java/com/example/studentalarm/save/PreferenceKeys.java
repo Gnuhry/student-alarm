@@ -26,6 +26,7 @@ public class PreferenceKeys {
             ALARM_ON = "ALARM_ON",
             ALARM_PHONE = "ALARM_PHONE",
             ALARM_CHANGE = "ALARM_CHANGE",
+            ALARM_SHUTDOWN="ALARM_SHUTDOWN",
             AUTO_IMPORT = "AUTO_IMPORT",
             ALARM_TIME = "ALARM_TIME",
             SNOOZE = "SNOOZE",
@@ -80,6 +81,8 @@ public class PreferenceKeys {
             preferences.edit().putString(PreferenceKeys.IMPORT_TIME, DEFAULT_IMPORT_TIME).apply();
         if (preferences.getInt(PreferenceKeys.IMPORT_COLOR, -1) == -1)
             preferences.edit().putInt(PreferenceKeys.IMPORT_COLOR, Color.RED).apply();//red als default Colour
+        if (preferences.getLong(PreferenceKeys.ALARM_SHUTDOWN, -1) == -1)
+            preferences.edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
         return erg;
     }
 
