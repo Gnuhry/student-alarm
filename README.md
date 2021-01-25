@@ -1,4 +1,4 @@
-# student-alarm ![app_icon](app/src/main/res/mipmap-mdpi/ic_launcher_round.png)
+# student-alarm  ![GitHub all releases](https://img.shields.io/github/downloads/Gnuhry/student-alarm/total) ![GitHub](https://img.shields.io/github/license/Gnuhry/student-alarm) ![GitHub repo size](https://img.shields.io/github/repo-size/Gnuhry/student-alarm) ![app_icon](app/src/main/res/mipmap-mdpi/ic_launcher_round.png)
 android app to create automatic alarm for the next day.
 
 This is a student project
