@@ -1,4 +1,4 @@
-# student-alarm
+# student-alarm     ![app_icon](app/src/main/res/mipmap-hdpi/ic_launcher.png)
 android app to create automatic alarm for the next day.
 
 This is a student project
@@ -21,3 +21,4 @@ See this [tutorial webiste](https://www.thecustomdroid.com/how-to-install-apk-on
 
 
 You can get the latest apk from the [release tab](https://github.com/Gnuhry/student-alarm/releases)
+
