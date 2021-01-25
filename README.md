@@ -1,4 +1,4 @@
-# student-alarm     ![app_icon](app/src/main/res/mipmap-hdpi/ic_launcher.png)
+# student-alarm ![app_icon](app/src/main/res/mipmap-mdpi/ic_launcher.png)
 android app to create automatic alarm for the next day.
 
 This is a student project
