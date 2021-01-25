@@ -17,8 +17,6 @@ This is a student project
 - English and German language support
 
 ## Installation Guide
-
-<a href="http://example.com/" target="_blank">example</a>
 See this [tutorial webiste](https://www.thecustomdroid.com/how-to-install-apk-on-android/) to install the apk on your phone
 
 
