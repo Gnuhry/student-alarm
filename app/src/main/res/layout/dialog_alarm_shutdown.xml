@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/linearLayouttxt"
+        android:id="@+id/linearLayoutTxt"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -16,7 +16,7 @@
             style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/chose_last_lecture_with_noalarm" />
+            android:text="@string/chose_last_lecture_with_no_alarm" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -36,7 +36,7 @@
                 android:id="@+id/btnNoAlarmShutdown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/no_alarmshutdown"
+                android:text="@string/no_alarm_shutdown"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

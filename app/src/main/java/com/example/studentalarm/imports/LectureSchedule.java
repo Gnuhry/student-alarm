@@ -291,7 +291,7 @@ public class LectureSchedule {
     @NonNull
     public LectureSchedule removeHoliday(@NonNull Lecture data) {
         int id1 = holidays.indexOf(data);
-        Log.d("REMOVE HOLID", "Data: " + data.getName() + " ID: " + id1);
+        Log.d("REMOVE HOLIDAY", "Data: " + data.getName() + " ID: " + id1);
         if (id1 >= 0) holidays.remove(id1);
         return this;
     }
@@ -300,7 +300,7 @@ public class LectureSchedule {
     /**
      * change all Imported Colors
      *
-     * @param color colorcode for the Imported Files
+     * @param color color code for the Imported Files
      */
     @NonNull
     public LectureSchedule changeImportedColor(int color) {
@@ -369,7 +369,7 @@ public class LectureSchedule {
         if (holidays.size() > 0)
             all.removeAll(all2);
         if (PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) != 0 && countShutdownEvents <= 0) {
-            Log.d("Lecture Schedule", "Change made last Shutdownelement disappear");
+            Log.d("Lecture Schedule", "Change made last shutdown element disappear");
             PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
             AlarmManager.updateNextAlarm(context);
             Toast.makeText(context, R.string.alarm_shutdown_changed_alarm_is_set_for_next_event, Toast.LENGTH_LONG).show();

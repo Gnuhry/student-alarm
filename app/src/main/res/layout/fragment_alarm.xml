@@ -44,24 +44,24 @@
             app:layout_constraintTop_toBottomOf="@+id/txVCountdown" />
 
         <Button
-            android:id="@+id/btntmpalarmshutdown"
+            android:id="@+id/btnTmpAlarmShutdown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/temporary_alarmshutdown"
+            android:text="@string/temporary_alarm_shutdown"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txVAlarm" />
 
         <TextView
-            android:id="@+id/txtalarmshutdownuntil"
+            android:id="@+id/txtAlarmShutdownUntil"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/error"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btntmpalarmshutdown" />
+            app:layout_constraintTop_toBottomOf="@+id/btnTmpAlarmShutdown" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

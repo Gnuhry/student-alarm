@@ -100,10 +100,10 @@ public class ImportColorDialog extends DialogFragment {
                 }
             }
             if (color == -1) {
-                Log.d(LOG, "Colorint Error Value: " + color);
+                Log.d(LOG, "Color int Error Value: " + color);
                 Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
             } else {
-                Log.d(LOG, "Colorint: " + color);
+                Log.d(LOG, "Color int: " + color);
                 preferences.edit().putInt(PreferenceKeys.IMPORT_COLOR, color).apply();
                 LectureSchedule.load(getContext()).changeImportedColor(color).save(getContext());
             }

@@ -130,18 +130,18 @@ public class CourseImport {
      */
     private static void parse(@NonNull String courseFile) {
         ArrayList<Course> tempDHBWCourses;
-        Log.d("HTMLImport", "ICal Kurs Detail: SUCCESS " + courseFile);
+        Log.d("HTMLImport", "ICal Course Detail: SUCCESS " + courseFile);
         for (String import_row : courseFile.split("\\n")) {
             if (import_row.contains("<form id=\"class_form\" >")) {
-                Log.d("HTMLAnalyse", "Relevante Zeile suchen: SUCCESS " + import_row);
+                Log.d("HTMLAnalyse", "Search for important column: SUCCESS " + import_row);
                 for (String opt_group : import_row.split("<optgroup")) {
-                    String[] course_category = opt_group.split("\"");// speichert zusätzlichen Array um Category herauszufinden
-                    tempDHBWCourses = new ArrayList<>(); //.clear funktioniert hier nicht
+                    String[] course_category = opt_group.split("\"");
+                    tempDHBWCourses = new ArrayList<>(); //.clear doesn't work
                     if (!course_category[1].equals("class_form")) {
                         for (String option : opt_group.split("<option|>"))
                             if (option.contains("label") && option.contains("value")) {
-                                Log.d("HTMLZeilenanalyse", "Zeilensegment ausgewählt: SUCCESS" + option);
-                                String[] course = option.split("\"");// Log beim Anlegen DhbwMannheimCourse
+                                Log.d("HTML column analyse ", "selected column segment: SUCCESS" + option);
+                                String[] course = option.split("\"");
                                 tempDHBWCourses.add(new Course(course[1], course[3]));
                             }
                         dhbwCourseCategory.add(new CourseCategory(course_category[1], tempDHBWCourses));
