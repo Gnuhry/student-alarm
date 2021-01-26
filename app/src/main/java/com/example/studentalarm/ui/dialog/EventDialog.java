@@ -63,7 +63,7 @@ public class EventDialog extends DialogFragment {
         this.data = data;
         this.schedule = schedule;
         if (data != null)
-            Log.d(LOG, "data: "+data.toString());
+            Log.d(LOG, "data: " + data.toString());
     }
 
 

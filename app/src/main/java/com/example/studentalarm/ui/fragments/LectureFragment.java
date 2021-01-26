@@ -8,12 +8,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.studentalarm.R;
+import com.google.android.material.tabs.TabLayout;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-
-import com.example.studentalarm.R;
-import com.google.android.material.tabs.TabLayout;
 
 
 public class LectureFragment extends Fragment {

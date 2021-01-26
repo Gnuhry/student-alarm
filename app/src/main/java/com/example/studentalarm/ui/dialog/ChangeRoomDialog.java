@@ -7,12 +7,12 @@ import android.util.Log;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import androidx.annotation.NonNull;
-
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public class ChangeRoomDialog extends Dialog {
 

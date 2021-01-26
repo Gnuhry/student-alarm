@@ -6,12 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
-import androidx.preference.PreferenceManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.LectureSchedule;
@@ -21,10 +15,16 @@ import com.example.studentalarm.ui.fragments.AlarmFragment;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 public class AlarmShutdownDialog extends DialogFragment {
     private static final String LOG = "AlarmShutdownDialog";
     private final AlarmFragment alarmFragment;
-    private List<LectureSchedule.Lecture> lectureSchedule;
+    private final List<LectureSchedule.Lecture> lectureSchedule;
 
     public AlarmShutdownDialog(AlarmFragment alarmFragment, List<LectureSchedule.Lecture> lectureSchedule) {
         this.alarmFragment = alarmFragment;
@@ -45,7 +45,7 @@ public class AlarmShutdownDialog extends DialogFragment {
 
         RecyclerView rv = view.findViewById(R.id.rVLectures);
         if (getContext() != null) {
-            AlarmShutdownAdapter adapter = new AlarmShutdownAdapter(lectureSchedule, getContext(), getActivity(),this);
+            AlarmShutdownAdapter adapter = new AlarmShutdownAdapter(lectureSchedule, getContext(), getActivity(), this);
             rv.setHasFixedSize(true);
             rv.setLayoutManager(new LinearLayoutManager(getContext()));
             rv.setAdapter(adapter);

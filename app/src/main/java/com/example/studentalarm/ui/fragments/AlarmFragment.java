@@ -9,11 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.fragment.app.Fragment;
-import androidx.preference.PreferenceManager;
-
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
@@ -126,11 +121,11 @@ public class AlarmFragment extends Fragment {
                     Log.d(LOG, "Text VISIBLE");
                     ((TextView) view.findViewById(R.id.txtalarmshutdownuntil)).setText(new Date(PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0)).toString());
                     view.findViewById(R.id.txtalarmshutdownuntil).setVisibility(View.VISIBLE);
-                } else 
+                } else
                     view.findViewById(R.id.txtalarmshutdownuntil).setVisibility(View.GONE);
             } else if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_PHONE, true)) {
-                    Log.d(LOG, "Alarm on phone message");
-                    ((TextView) view.findViewById(R.id.textView4)).setText(R.string.alarm_in_phone);             
+                Log.d(LOG, "Alarm on phone message");
+                ((TextView) view.findViewById(R.id.textView4)).setText(R.string.alarm_in_phone);
             }
         } else {
             Log.d(LOG, "no alarm at all");
@@ -175,7 +170,7 @@ public class AlarmFragment extends Fragment {
                 }
             }.start();
             ((TextView) view.findViewById(R.id.txVAlarm)).setText(getContext().getString(R.string.alarm_at, new SimpleDateFormat("HH:mm", Locale.GERMAN).format(time)));
-        } else 
+        } else
             ((TextView) view.findViewById(R.id.textView4)).setText(R.string.no_alarm_set);
     }
 

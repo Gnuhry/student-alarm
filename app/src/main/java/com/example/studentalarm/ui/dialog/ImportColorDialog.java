@@ -14,9 +14,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
-
 import com.example.studentalarm.EventColor;
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.LectureSchedule;
@@ -24,6 +21,9 @@ import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.fragments.SettingsFragment;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 
 public class ImportColorDialog extends DialogFragment {
     @NonNull

@@ -26,7 +26,7 @@ public class PreferenceKeys {
             ALARM_ON = "ALARM_ON",
             ALARM_PHONE = "ALARM_PHONE",
             ALARM_CHANGE = "ALARM_CHANGE",
-            ALARM_SHUTDOWN="ALARM_SHUTDOWN",
+            ALARM_SHUTDOWN = "ALARM_SHUTDOWN",
             AUTO_IMPORT = "AUTO_IMPORT",
             ALARM_TIME = "ALARM_TIME",
             SNOOZE = "SNOOZE",

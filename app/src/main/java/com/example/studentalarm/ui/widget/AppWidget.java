@@ -20,14 +20,14 @@ public class AppWidget extends AppWidgetProvider {
 
     private static Handler sWorkerQueue;
 
-    public AppWidget(){
+    public AppWidget() {
         HandlerThread sWorkerThread = new HandlerThread("MyWidgetProvider-worker");
         sWorkerThread.start();
         sWorkerQueue = new Handler(sWorkerThread.getLooper());
     }
 
     private static void updateAppWidget(@NonNull Context context, @NonNull AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+                                        int appWidgetId) {
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.app_widget);
 

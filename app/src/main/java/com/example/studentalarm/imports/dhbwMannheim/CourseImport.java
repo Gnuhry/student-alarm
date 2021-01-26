@@ -4,9 +4,6 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.Import;
 
@@ -18,6 +15,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class CourseImport {
     private static final String FILE_NAME = "DHBW_COURSES", LOG = "Dhbw_Courses", LINK_TO_COURSE = "https://vorlesungsplan.dhbw-mannheim.de/ical.php";
