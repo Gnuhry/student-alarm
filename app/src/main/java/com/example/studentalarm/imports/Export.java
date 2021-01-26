@@ -76,15 +76,17 @@ public class Export {
                 event.LOCATION = lecture.getActiveRoom();
                 event.UID = format.format(Calendar.getInstance().getTime()).replace("-", "T") + "Z-" + lecture.lecture.getId();
                 event.DTStamp = format.format(Calendar.getInstance().getTime()).replace("-", "T");
-                event.RRule=new ICS.vRRule();
+                event.RRule = new ICS.vRRule();
                 event.RRule.FREQ = "WEEKLY";
                 event.RRule.INTERVAL = "1";
                 if (lecture.day < 7)
                     event.RRule.BY_DAY = lecture.day == 0 ? "MO" : lecture.day == 1 ? "TU" : lecture.day == 2 ? "WE" : lecture.day == 3 ? "TH" : lecture.day == 4 ? "FR" : lecture.day == 5 ? "SA" : "SO";
                 Calendar[] calendars = new LectureSchedule().getRegularLectureStartDates(lecture, hours);
-                event.DTStart = format.format(calendars[0].getTime()).replace("-", "T");
-                event.DTend = format.format(calendars[1].getTime()).replace("-", "T");
-                erg.add(event);
+                if (calendars != null) {
+                    event.DTStart = format.format(calendars[0].getTime()).replace("-", "T");
+                    event.DTend = format.format(calendars[1].getTime()).replace("-", "T");
+                    erg.add(event);
+                }
             }
             File help = writeFile(context, ICS.exportToICS(erg));
             if (help == null) return;

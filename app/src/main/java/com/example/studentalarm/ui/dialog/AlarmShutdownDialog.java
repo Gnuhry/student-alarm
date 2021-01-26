@@ -19,12 +19,14 @@ import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.adapter.AlarmShutdownAdapter;
 import com.example.studentalarm.ui.fragments.AlarmFragment;
 
+import java.util.List;
+
 public class AlarmShutdownDialog extends DialogFragment {
     private static final String LOG = "AlarmShutdownDialog";
     private final AlarmFragment alarmFragment;
-    private LectureSchedule lectureSchedule;
+    private List<LectureSchedule.Lecture> lectureSchedule;
 
-    public AlarmShutdownDialog(AlarmFragment alarmFragment, LectureSchedule lectureSchedule){
+    public AlarmShutdownDialog(AlarmFragment alarmFragment, List<LectureSchedule.Lecture> lectureSchedule) {
         this.alarmFragment = alarmFragment;
         this.lectureSchedule = lectureSchedule;
     }
@@ -43,19 +45,19 @@ public class AlarmShutdownDialog extends DialogFragment {
 
         RecyclerView rv = view.findViewById(R.id.rVLectures);
         if (getContext() != null) {
-            AlarmShutdownAdapter adapter = new AlarmShutdownAdapter(lectureSchedule, getContext(), getActivity(), this);
+            AlarmShutdownAdapter adapter = new AlarmShutdownAdapter(lectureSchedule, getContext(), getActivity(),this);
             rv.setHasFixedSize(true);
             rv.setLayoutManager(new LinearLayoutManager(getContext()));
             rv.setAdapter(adapter);
         }
-        view.findViewById(R.id.btnNoAlarmShutdown).setOnClickListener(view2->{
+        view.findViewById(R.id.btnNoAlarmShutdown).setOnClickListener(view2 -> {
             if (getContext() != null) {
                 PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
                 AlarmManager.updateNextAlarm(getContext());
                 this.dismiss();
             }
         });
-        alarmFragment.stopLoad();
+        alarmFragment.stopLoad();// from Progress Show
         return view;
     }
 

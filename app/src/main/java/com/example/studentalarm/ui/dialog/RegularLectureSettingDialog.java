@@ -11,17 +11,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.ui.adapter.SettingsHourAdapter;
 import com.example.studentalarm.ui.fragments.RegularLectureFragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class RegularLectureSettingDialog extends DialogFragment {
 
@@ -45,6 +45,7 @@ public class RegularLectureSettingDialog extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_lecture_setting, container, false);
+        if (getDialog() == null || getContext() == null) return view;
         getDialog().getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item);
@@ -85,12 +86,13 @@ public class RegularLectureSettingDialog extends DialogFragment {
      * cancel play error
      */
     private void cancel() {
-        new MaterialAlertDialogBuilder(getContext())
-                .setTitle(R.string.dismiss)
-                .setMessage(R.string.do_you_want_to_dismiss_all_your_changes)
-                .setPositiveButton(R.string.dismiss, (dialogInterface, i) -> dismiss())
-                .setNegativeButton(R.string.cancel, null)
-                .setCancelable(true)
-                .show();
+        if (getContext() != null)
+            new MaterialAlertDialogBuilder(getContext())
+                    .setTitle(R.string.dismiss)
+                    .setMessage(R.string.do_you_want_to_dismiss_all_your_changes)
+                    .setPositiveButton(R.string.dismiss, (dialogInterface, i) -> dismiss())
+                    .setNegativeButton(R.string.cancel, null)
+                    .setCancelable(true)
+                    .show();
     }
 }

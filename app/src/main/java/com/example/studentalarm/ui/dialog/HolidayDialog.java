@@ -10,10 +10,6 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.LectureSchedule;
@@ -27,6 +23,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+
 public class HolidayDialog extends DialogFragment {
     private static final String LOG = "HolidayDialog";
     @NonNull
@@ -38,23 +38,23 @@ public class HolidayDialog extends DialogFragment {
     private final Context context;
     @NonNull
     private final HolidayAdapter adapter;
-    @Nullable
-    private LectureSchedule.Lecture lecture;
+    @NonNull
+    private final LectureSchedule.Lecture lecture;
     private DatePicker calendarView;
     private TextView from, until;
     private boolean create = false;
 
     public HolidayDialog(@NonNull LectureSchedule schedule, @NonNull Context context, @NonNull HolidayAdapter adapter, int index) {
-        this.lecture = index < 0 ? null : schedule.getHolidays().get(index);
+        if (index < 0) {
+            this.lecture = new LectureSchedule.Lecture(true, new Date(), new Date());
+            create = true;
+        } else
+            this.lecture = schedule.getHolidays().get(index);
         old_lecture = lecture;
         this.context = context;
         this.adapter = adapter;
         this.schedule = schedule;
         this.index = index;
-        if (lecture == null) {
-            this.lecture = new LectureSchedule.Lecture(true, new Date(), new Date());
-            create = true;
-        }
     }
 
     @Nullable
@@ -102,9 +102,11 @@ public class HolidayDialog extends DialogFragment {
 
         });
         view.findViewById(R.id.txVCancel).setOnClickListener(view1 -> {
-            if (old_lecture != null && lecture != null && old_lecture.getStart().equals(lecture.getStart()) && old_lecture.getEnd().equals(lecture.getEnd()))
+            if (old_lecture != null && old_lecture.getStart().equals(lecture.getStart()) && old_lecture.getEnd().equals(lecture.getEnd()))
                 dismiss();
             else {
+                if (getContext() == null)
+                    return;
                 new MaterialAlertDialogBuilder(getContext())
                         .setTitle(R.string.dismiss)
                         .setMessage(R.string.do_you_want_to_dismiss_all_your_changes)
@@ -116,17 +118,20 @@ public class HolidayDialog extends DialogFragment {
         });
         if (!create) {
             view.findViewById(R.id.imVDelete).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.imVDelete).setOnClickListener(view1 ->
+            view.findViewById(R.id.imVDelete).setOnClickListener(view1 -> {
+                if (getContext() != null)
                     new MaterialAlertDialogBuilder(getContext())
                             .setTitle(R.string.delete)
                             .setMessage(R.string.do_you_want_to_delete_this_events)
                             .setPositiveButton(R.string.delete, (dialogInterface, i) -> {
-                                LectureSchedule.load(getContext()).removeHoliday(old_lecture).save(context);
+                                if (old_lecture != null)
+                                    LectureSchedule.load(getContext()).removeHoliday(old_lecture).save(context);
                                 this.dismiss();
                             })
                             .setNegativeButton(R.string.cancel, (dialogInterface, i) -> this.dismiss())
                             .setCancelable(true)
-                            .show());
+                            .show();
+            });
         }
 
         setTextBox();

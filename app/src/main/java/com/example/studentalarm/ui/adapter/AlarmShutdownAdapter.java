@@ -58,7 +58,7 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
     }
 
 
-    public AlarmShutdownAdapter(@NonNull LectureSchedule lecture_schedule, @NonNull Context context, FragmentActivity ac, AlarmShutdownDialog dialog) {
+    public AlarmShutdownAdapter(@NonNull List<LectureSchedule.Lecture> lecture_schedule, @NonNull Context context, FragmentActivity ac, AlarmShutdownDialog dialog) {
         this.dialog = dialog;
         this.context = context;
         activity = ac;
@@ -70,7 +70,7 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
         dayOfWeekName = new SimpleDateFormat("EEEE", locale);
         day = DateFormat.getDateInstance(DateFormat.LONG, locale);
         time = DateFormat.getTimeInstance(DateFormat.LONG, locale);
-        this.lecture = lecture_schedule.getAllLecturesFromNowWithoutHoliday(context);
+        this.lecture = lecture_schedule;
     }
 
     @NonNull
@@ -92,15 +92,12 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
                 viewHolder.until.setVisibility(View.VISIBLE);
                 viewHolder.from.setText(cutTime(time.format(l.getStart())));
                 viewHolder.until.setText(cutTime(time.format(l.getEnd())));
-                Log.d(LOG, "Startdate: " + l.getStart() + " smaler as: " + new Date(0) + " Bool:" + l.getStart().equals(new Date(0)));
-                if (l.getStart().equals(new Date(0))) {
-                    viewHolder.colorLine.setVisibility(View.INVISIBLE);
-                    viewHolder.from.setVisibility(View.INVISIBLE);
-                    viewHolder.until.setVisibility(View.INVISIBLE);
-                }
                 Log.d(LOG, "Startdatum: " + l.getStart() + " Vergleichsdatum" + new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0)));
                 if (l.getStart().equals(new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0)))) {
-                    viewHolder.TLEvent.setBackgroundColor(Color.YELLOW);
+                    Log.d(LOG, "ID: "+l.getId()+" Raum: "+l.getLocation());
+                    viewHolder.TLEvent.setBackgroundColor(Color.parseColor("#da2c43"));
+                }else{
+                    viewHolder.TLEvent.setBackgroundColor(Color.TRANSPARENT);// slows process down but necessary because otherwise random error that background becomes Yellow
                 }
             } else {
                 viewHolder.from.setVisibility(View.GONE);

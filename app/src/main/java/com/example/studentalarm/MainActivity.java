@@ -6,17 +6,18 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.NavigationUI;
-import androidx.preference.PreferenceManager;
-
 import com.example.studentalarm.receiver.NetworkReceiver;
 import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.dialog.ImportDialog;
 import com.example.studentalarm.ui.fragments.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
+import androidx.preference.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,6 +35,20 @@ public class MainActivity extends AppCompatActivity {
         if (navHostFragment != null)
             NavigationUI.setupWithNavController((BottomNavigationView) findViewById(R.id.bottomNav), navHostFragment.getNavController());
         PreferenceKeys.setDefault(this);
+
+        int mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
+        switch (PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceKeys.THEME, "")) {
+            case "Default":
+                mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
+                break;
+            case "Light":
+                mode = AppCompatDelegate.MODE_NIGHT_NO;
+                break;
+            case "Dark":
+                mode = AppCompatDelegate.MODE_NIGHT_YES;
+                break;
+        }
+        AppCompatDelegate.setDefaultNightMode(mode);
 
         String lan = PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceKeys.LANGUAGE, null);
         if (lan != null && !lan.equals(PreferenceKeys.defaultLanguage(this)))

@@ -8,10 +8,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.ui.dialog.ChangeRoomDialog;
@@ -19,6 +15,10 @@ import com.example.studentalarm.ui.dialog.RegularLectureDialog;
 import com.example.studentalarm.ui.fragments.RegularLectureFragment;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class RegularLectureAdapter extends RecyclerView.Adapter<RegularLectureAdapter.ViewHolder> {
 
@@ -67,18 +67,20 @@ public class RegularLectureAdapter extends RecyclerView.Adapter<RegularLectureAd
             holder.imageView.setVisibility(View.VISIBLE);
             holder.imageView.setOnClickListener(view -> {
                 Log.d(LOG, "add regular lecture");
-                new RegularLectureDialog(regularLectureSchedule, -1, fragment).show(fragment.getActivity().getSupportFragmentManager(), "dialog");
+                if (fragment.getActivity() != null)
+                    new RegularLectureDialog(regularLectureSchedule, -1, fragment).show(fragment.getActivity().getSupportFragmentManager(), "dialog");
             });
         } else {
             RegularLectureSchedule.RegularLecture regularLecture = this.regularLecture.get(position);
             holder.title.setText(regularLecture.getName());
             holder.docent.setText(regularLecture.getDocent());
             Log.d("adapter_room", "" + regularLecture.getRooms().size());
-            if (regularLecture.getRooms() != null && regularLecture.getRooms().size() > 0) {
+            if (regularLecture.getRooms().size() > 0) {
                 holder.location.setText(regularLecture.getActiveRoom());
                 if (regularLecture.getRooms().size() > 1) {
                     View.OnLongClickListener longClickListener = view -> {
                         Log.d(LOG, "change room");
+                        if (fragment.getContext() == null) return false;
                         ChangeRoomDialog dialog = new ChangeRoomDialog(fragment.getContext(), regularLecture);
                         dialog.setOnDismissListener(dialogInterface -> fragment.loadRecyclerView());
                         dialog.show();
@@ -93,7 +95,8 @@ public class RegularLectureAdapter extends RecyclerView.Adapter<RegularLectureAd
             View.OnClickListener clickListener = view -> {
                 if (selected == view || (selected != null && selected.getTag() == view.getTag())) {
                     Log.d(LOG, "edit");
-                    new RegularLectureDialog(regularLectureSchedule, position, fragment).show(fragment.getActivity().getSupportFragmentManager(), "dialog");
+                    if (fragment.getActivity() != null)
+                        new RegularLectureDialog(regularLectureSchedule, position, fragment).show(fragment.getActivity().getSupportFragmentManager(), "dialog");
                 } else {
                     if (selected != null)
                         selected.setBackground(null);

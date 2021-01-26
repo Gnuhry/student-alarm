@@ -80,8 +80,8 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
             if (l.getId() >= 0) {
                 viewHolder.from.setVisibility(View.VISIBLE);
                 viewHolder.until.setVisibility(View.VISIBLE);
-                viewHolder.from.setText(cutTime(time.format(l.getStart())));
-                viewHolder.until.setText(cutTime(time.format(l.getEnd())));
+                viewHolder.from.setText(cutTime(time.format(l.getStartWithDefaultTimeZone())));
+                viewHolder.until.setText(cutTime(time.format(l.getEndWithDefaultTimezone())));
             } else {
                 viewHolder.from.setVisibility(View.GONE);
                 viewHolder.until.setVisibility(View.GONE);

@@ -112,6 +112,23 @@ public class Hours {
     }
 
     /**
+     * clear Hour Settings
+     * @param context context of app
+     */
+    public static void clearHours(@NonNull Context context) {
+        FileOutputStream fos;
+        try {
+            fos = context.openFileOutput(SaveKeys.HOURS, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(null);
+            oos.close();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Load the Hour from the internal storage of the application
      *
      * @param context context of the application
@@ -122,7 +139,9 @@ public class Hours {
         try {
             FileInputStream fis = context.openFileInput(SaveKeys.HOURS);
             ObjectInputStream ois = new ObjectInputStream(fis);
-            List<Hours> erg = convertSave((SaveHour) ois.readObject());
+            Object read=ois.readObject();
+            if(read==null) return new ArrayList<>();
+            List<Hours> erg = convertSave((SaveHour) read);
             fis.close();
             ois.close();
             return erg;

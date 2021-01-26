@@ -3,15 +3,17 @@ package com.example.studentalarm.save;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.util.Log;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.preference.PreferenceManager;
 
 import com.example.studentalarm.R;
 
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.PreferenceManager;
 
 public class PreferenceKeys {
     @NonNull
@@ -79,6 +81,8 @@ public class PreferenceKeys {
             preferences.edit().putString(PreferenceKeys.IMPORT_TIME, DEFAULT_IMPORT_TIME).apply();
         if (preferences.getInt(PreferenceKeys.IMPORT_COLOR, -1) == -1)
             preferences.edit().putInt(PreferenceKeys.IMPORT_COLOR, Color.RED).apply();//red als default Colour
+        if (preferences.getLong(PreferenceKeys.ALARM_SHUTDOWN, -1) == -1)
+            preferences.edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
         return erg;
     }
 
@@ -98,5 +102,22 @@ public class PreferenceKeys {
             }
         }
         return DEFAULT_LANGUAGE;
+    }
+
+    /**
+     * get locale
+     *
+     * @param context context of app
+     * @return locale object
+     */
+    public static Locale getLocale(@Nullable Context context) {
+        if (context == null)
+            return Locale.getDefault();
+        Locale locale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            locale = context.getResources().getConfiguration().getLocales().get(0);
+        else
+            locale = context.getResources().getConfiguration().locale;
+        return locale;
     }
 }

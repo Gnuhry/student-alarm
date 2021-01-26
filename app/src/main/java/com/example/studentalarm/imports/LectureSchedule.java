@@ -4,13 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.util.Log;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.preference.PreferenceManager;
+import android.widget.Toast;
 
 import com.example.studentalarm.EventColor;
 import com.example.studentalarm.R;
+import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.regular.Hours;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
@@ -31,6 +29,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
 
 public class LectureSchedule {
     @NonNull
@@ -136,7 +138,7 @@ public class LectureSchedule {
                 formatS = format2S;
                 if (positionScroll == -1 && l.getStart().after(Calendar.getInstance().getTime()))
                     positionScroll = erg.size();
-                if(l.getStart().after(Calendar.getInstance().getTime()))
+                if (l.getStart().after(Calendar.getInstance().getTime()))
                     erg.add(new LectureSchedule.Lecture(false, l.getStart(), new Date(), Integer.MIN_VALUE));
 
             }
@@ -174,31 +176,37 @@ public class LectureSchedule {
      * @param hours   list of all hours
      * @return array of calendar start and end
      */
-    @NonNull
+    @Nullable
     public Calendar[] getRegularLectureStartDates(@NonNull RegularLectureSchedule.RegularLecture.RegularLectureTime lecture, @NonNull List<Hours> hours) {
         Calendar start = Calendar.getInstance(), end = Calendar.getInstance();
         start.setTime(regular_from.getTime());
         start.add(Calendar.DAY_OF_MONTH, (7 - (regular_from.get(Calendar.DAY_OF_WEEK) > 1 ? regular_from.get(Calendar.DAY_OF_WEEK) - 1 : 7) + (lecture.day + 1)) % 7);
         Date[] dates = getDateWithTime(start.getTime(), hours.get(lecture.hour));
+        if (dates == null)
+            return null;
         start.setTime(dates[0]);
         end.setTime(dates[1]);
         return new Calendar[]{start, end};
     }
 
     /**
-     * get the next lecture, at least starting tomorrow 00:00:00:00
+     * get the next lecture after shutdown date
      *
      * @return next lecture
      */
+
     @Nullable
-    public Lecture getNextFirstDayLecture(@NonNull Context context) {
+    public Lecture getNextLecture(@NonNull Context context) {
         boolean first = true;
         Lecture tomorrow = new Lecture(false, getDayAddDay(1), new Date()), today = new Lecture(false, getDayAddDay(0), new Date());
+        Log.d("ERROR", today.start.toString());
         for (Lecture l : getAllLectureWithoutHolidayAndHolidayEvents(context))
             if (l.getStart().after(new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, Calendar.getInstance().getTime().getTime())))) {
                 if (l.compareTo(today) >= 0 && first) {
+                    Log.d("ERROR", l.getStartWithDefaultTimeZone().toString());
                     first = false;
-                    if (l.getStart().after(Calendar.getInstance().getTime()))
+                    Log.d("ERROR", Calendar.getInstance().getTime().toString());
+                    if (l.getStartWithDefaultTimeZone().after(Calendar.getInstance().getTime()))
                         return l;
                 } else if (l.compareTo(tomorrow) >= 0)
                     return l;
@@ -340,12 +348,13 @@ public class LectureSchedule {
     @NonNull
     private List<Lecture> getAllLectureWithoutHolidayAndHolidayEvents(@NonNull Context context) {
         List<Lecture> all = new ArrayList<>(), all2 = new ArrayList<>();
+        int countShutdownEvents = 0;
         all.addAll(lecture);
         all.addAll(importLecture);
         all.addAll(getRegularLecture(context));
-        if (holidays.size() > 0) {
-            boolean skip;
-            for (Lecture l : all) {
+        boolean skip;
+        for (Lecture l : all) {
+            if (holidays.size() > 0) {
                 skip = false;
                 for (int i = 0; i < holidays.size() && !skip; i++)
                     if (l.getStart().after(holidays.get(i).getStart()) && l.getStart().before(holidays.get(i).getEnd())) {
@@ -353,7 +362,16 @@ public class LectureSchedule {
                         skip = true;
                     }
             }
+            if (l.getStart().equals(new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0))))
+                countShutdownEvents++;
+        }
+        if (holidays.size() > 0)
             all.removeAll(all2);
+        if (PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) != 0 && countShutdownEvents <= 0) {
+            Log.d("Lecture Schedule", "Change made last Shutdownelement disappear");
+            PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
+            AlarmManager.updateNextAlarm(context);
+            Toast.makeText(context, R.string.alarm_shutdown_changed_alarm_is_set_for_next_event, Toast.LENGTH_LONG).show();
         }
         Collections.sort(all);
         return all;
@@ -375,7 +393,7 @@ public class LectureSchedule {
             Hours hour = hours.get(fragmentLecture.hour);
             for (Date date : help.get(fragmentLecture.getCalendarDay() - 1)) {
                 Date[] dates = getDateWithTime(date, hour);
-                if (date != null)
+                if (dates != null)
                     erg.add(new Lecture(true, dates[0], dates[1])
                             .setName(fragmentLecture.lecture.getName())
                             .setDocent(fragmentLecture.lecture.getDocent())
@@ -393,7 +411,7 @@ public class LectureSchedule {
      * @param hours time to combine
      * @return date start and end
      */
-    @NonNull
+    @Nullable
     private Date[] getDateWithTime(@NonNull Date date, @NonNull Hours hours) {
         Date start = hours.getFromAsDate(), end = hours.getUntilAsDate();
         if (start == null || end == null) return null;
@@ -576,15 +594,18 @@ public class LectureSchedule {
         if (saveLecture == null) return lectureSchedule;
         for (int i = 0; i < saveLecture.saves[0].length; i++) {
             SaveLecture.Save save = saveLecture.saves[0][i];
-            lectureSchedule.lecture.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setLocation(save.location).setDocent(save.docent).setName(save.name).setAllDayEvent(save.isAllDayEvent));
+            if (save != null && save.name != null)
+                lectureSchedule.lecture.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setLocation(save.location).setDocent(save.docent).setName(save.name).setAllDayEvent(save.isAllDayEvent));
         }
         for (int i = 0; i < saveLecture.saves[1].length; i++) {
             SaveLecture.Save save = saveLecture.saves[1][i];
-            lectureSchedule.importLecture.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setLocation(save.location).setDocent(save.docent).setName(save.name).setAllDayEvent(save.isAllDayEvent));
+            if (save != null && save.name != null)
+                lectureSchedule.importLecture.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setLocation(save.location).setDocent(save.docent).setName(save.name).setAllDayEvent(save.isAllDayEvent));
         }
         for (int i = 0; i < saveLecture.saves[2].length; i++) {
             SaveLecture.Save save = saveLecture.saves[2][i];
-            lectureSchedule.holidays.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setName(save.name).setAllDayEvent(save.isAllDayEvent));
+            if (save != null && save.name != null)
+                lectureSchedule.holidays.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setName(save.name).setAllDayEvent(save.isAllDayEvent));
         }
         return lectureSchedule;
     }
@@ -599,20 +620,28 @@ public class LectureSchedule {
         @Nullable
         private String docent, location, name;
         @NonNull
-        private Date start, end;
+        private Date start, end; //UTC
         private int color = Color.RED;
         private boolean isAllDayEvent;
 
+        /**
+         * @param start UTC Date
+         * @param end   UTC Date
+         */
         public Lecture(boolean isImport, @NonNull Date start, @NonNull Date end) {
-            this.start = new Date(start.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
-            this.end = new Date(end.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
+            this.start = start;
+            this.end = end;
             this.id = counter++;
             this.isImport = isImport;
         }
 
+        /**
+         * @param start UTC Date
+         * @param end   UTC Date
+         */
         private Lecture(boolean isImport, @NonNull Date start, @NonNull Date end, int id) {
-            this.start = new Date(start.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
-            this.end = new Date(end.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
+            this.start = start;
+            this.end = end;
             this.id = id;
             this.isImport = isImport;
         }
@@ -634,12 +663,22 @@ public class LectureSchedule {
 
         @NonNull
         public Date getStart() {
-            return start;// new Date(start.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
+            return start;
+        }
+
+        @NonNull
+        public Date getStartWithDefaultTimeZone() {
+            return new Date(start.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
         }
 
         @NonNull
         public Date getEnd() {
-            return end;// new Date(end.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
+            return end;
+        }
+
+        @NonNull
+        public Date getEndWithDefaultTimezone() {
+            return new Date(end.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
         }
 
         public int getId() {
