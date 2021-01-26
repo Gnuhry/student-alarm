@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.studentalarm.EventColor;
 import com.example.studentalarm.R;
+import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.regular.Hours;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
@@ -136,7 +138,7 @@ public class LectureSchedule {
                 formatS = format2S;
                 if (positionScroll == -1 && l.getStart().after(Calendar.getInstance().getTime()))
                     positionScroll = erg.size();
-                if(l.getStart().after(Calendar.getInstance().getTime()))
+                if (l.getStart().after(Calendar.getInstance().getTime()))
                     erg.add(new LectureSchedule.Lecture(false, l.getStart(), new Date(), Integer.MIN_VALUE));
 
             }
@@ -188,7 +190,7 @@ public class LectureSchedule {
     }
 
     /**
-     * get the next lecture, at least starting tomorrow 00:00:00:00
+     * get the next lecture after shutdown date
      *
      * @return next lecture
      */
@@ -199,14 +201,16 @@ public class LectureSchedule {
         Lecture tomorrow = new Lecture(false, getDayAddDay(1), new Date()), today = new Lecture(false, getDayAddDay(0), new Date());
         Log.d("ERROR", today.start.toString());
         for (Lecture l : getAllLectureWithoutHolidayAndHolidayEvents(context))
-            if (l.compareTo(today) >= 0 && first) {
-                Log.d("ERROR", l.getStartWithDefaultTimeZone().toString());
-                first = false;
-                Log.d("ERROR", Calendar.getInstance().getTime().toString());
-                if (l.getStartWithDefaultTimeZone().after(Calendar.getInstance().getTime()))
+            if (l.getStart().after(new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, Calendar.getInstance().getTime().getTime())))) {
+                if (l.compareTo(today) >= 0 && first) {
+                    Log.d("ERROR", l.getStartWithDefaultTimeZone().toString());
+                    first = false;
+                    Log.d("ERROR", Calendar.getInstance().getTime().toString());
+                    if (l.getStartWithDefaultTimeZone().after(Calendar.getInstance().getTime()))
+                        return l;
+                } else if (l.compareTo(tomorrow) >= 0)
                     return l;
-            } else if (l.compareTo(tomorrow) >= 0)
-                return l;
+            }
         return null;
     }
 
@@ -344,12 +348,13 @@ public class LectureSchedule {
     @NonNull
     private List<Lecture> getAllLectureWithoutHolidayAndHolidayEvents(@NonNull Context context) {
         List<Lecture> all = new ArrayList<>(), all2 = new ArrayList<>();
+        int countShutdownEvents = 0;
         all.addAll(lecture);
         all.addAll(importLecture);
         all.addAll(getRegularLecture(context));
-        if (holidays.size() > 0) {
-            boolean skip;
-            for (Lecture l : all) {
+        boolean skip;
+        for (Lecture l : all) {
+            if (holidays.size() > 0) {
                 skip = false;
                 for (int i = 0; i < holidays.size() && !skip; i++)
                     if (l.getStart().after(holidays.get(i).getStart()) && l.getStart().before(holidays.get(i).getEnd())) {
@@ -357,7 +362,16 @@ public class LectureSchedule {
                         skip = true;
                     }
             }
+            if (l.getStart().equals(new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0))))
+                countShutdownEvents++;
+        }
+        if (holidays.size() > 0)
             all.removeAll(all2);
+        if (PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) != 0 && countShutdownEvents <= 0) {
+            Log.d("Lecture Schedule", "Change made last Shutdownelement disappear");
+            PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
+            AlarmManager.updateNextAlarm(context);
+            Toast.makeText(context, R.string.alarm_shutdown_changed_alarm_is_set_for_next_event, Toast.LENGTH_LONG).show();
         }
         Collections.sort(all);
         return all;

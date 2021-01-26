@@ -57,7 +57,7 @@ public class AlarmShutdownDialog extends DialogFragment {
                 this.dismiss();
             }
         });
-        alarmFragment.stopLoad();
+        alarmFragment.stopLoad();// from Progress Show
         return view;
     }
 

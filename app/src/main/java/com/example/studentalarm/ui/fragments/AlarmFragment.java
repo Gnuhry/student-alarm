@@ -119,7 +119,7 @@ public class AlarmFragment extends Fragment {
                 progress.dismiss();
                 view.findViewById(R.id.btntmpalarmshutdown).setOnClickListener(view1 -> {
                     Log.i(LOG, "Button pressed");
-                    progress.show();
+                    progress.show(); // in AlarmShutdownDialog dismissed
                     new AlarmShutdownDialog(this, lectureSchedule).show(getActivity().getSupportFragmentManager(), "dialog");
                 });
                 if (PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) != 0) {

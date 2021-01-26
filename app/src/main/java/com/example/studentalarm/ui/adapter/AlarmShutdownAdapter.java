@@ -95,9 +95,9 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
                 Log.d(LOG, "Startdatum: " + l.getStart() + " Vergleichsdatum" + new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0)));
                 if (l.getStart().equals(new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0)))) {
                     Log.d(LOG, "ID: "+l.getId()+" Raum: "+l.getLocation());
-                    viewHolder.TLEvent.setBackgroundColor(Color.YELLOW);
+                    viewHolder.TLEvent.setBackgroundColor(Color.parseColor("#da2c43"));
                 }else{
-                    viewHolder.TLEvent.setBackgroundColor(Color.TRANSPARENT);// slows process down but necessary because otherwise random error that background becomes Yello
+                    viewHolder.TLEvent.setBackgroundColor(Color.TRANSPARENT);// slows process down but necessary because otherwise random error that background becomes Yellow
                 }
             } else {
                 viewHolder.from.setVisibility(View.GONE);
