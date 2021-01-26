@@ -17,8 +17,8 @@ This is a student project
 - English and German language support
 
 ## android requirements
-- min sdk 16 (android version jelly bean)
-- recommend sdk 30 (android version 11)
+- min: sdk 16 (android version jelly bean)
+- recommend: sdk 30 (android version 11)
 
 ## installation guide
 See this [tutorial webiste](https://www.thecustomdroid.com/how-to-install-apk-on-android/) (external website) to install the apk on your phone
