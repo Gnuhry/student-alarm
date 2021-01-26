@@ -102,7 +102,6 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
             viewHolder.TLEvent.setOnClickListener(view -> {
                 Log.d(LOG, "Time: " + l.getStart().getTime());
                 PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, l.getStart().getTime()).apply();
-                AlarmManager.updateNextAlarm(context);
                 dialog.dismiss();
             });
         } else {

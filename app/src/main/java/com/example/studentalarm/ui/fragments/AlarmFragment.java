@@ -57,7 +57,8 @@ public class AlarmFragment extends Fragment {
         return view;
     }
 
-    /**!
+    /**
+     * !
      * If change fragment, the countdown can stop
      */
     @Override
@@ -177,8 +178,12 @@ public class AlarmFragment extends Fragment {
                 }
             }.start();
             ((TextView) view.findViewById(R.id.txVAlarm)).setText(getContext().getString(R.string.alarm_at, new SimpleDateFormat("HH:mm", Locale.GERMAN).format(time)));
-        } else
+            ((TextView) view.findViewById(R.id.textView4)).setText(R.string.next_alarm_in);
+        } else {
+            ((TextView) view.findViewById(R.id.txVAlarm)).setText(null);
+            ((TextView) view.findViewById(R.id.txVCountdown)).setText(null);
             ((TextView) view.findViewById(R.id.textView4)).setText(R.string.no_alarm_set);
+        }
     }
 
     /**

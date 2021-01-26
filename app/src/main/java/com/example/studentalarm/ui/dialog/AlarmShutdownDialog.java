@@ -34,6 +34,8 @@ public class AlarmShutdownDialog extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (getContext() != null)
+            AlarmManager.updateNextAlarm(getContext());
         alarmFragment.reload();
     }
 
@@ -51,11 +53,8 @@ public class AlarmShutdownDialog extends DialogFragment {
             rv.setAdapter(adapter);
         }
         view.findViewById(R.id.btnNoAlarmShutdown).setOnClickListener(view2 -> {
-            if (getContext() != null) {
-                PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
-                AlarmManager.updateNextAlarm(getContext());
-                this.dismiss();
-            }
+            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
+            this.dismiss();
         });
         alarmFragment.stopLoad();// from Progress Show
         return view;
