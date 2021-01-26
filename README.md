@@ -3,7 +3,7 @@ android app to create automatic alarm for the next day.
 
 This is a student project
 
-## App Features
+## app features
 
 - Automatic alarm for the first event of the day
 - Personalize alarm settings
@@ -16,16 +16,26 @@ This is a student project
 - Dark Theme Support
 - English and German language support
 
-## Installation Guide
+## android requirements
+- min sdk 16 (android version jelly bean)
+- recommend sdk 30 (android version 11)
+
+## installation guide
 See this [tutorial webiste](https://www.thecustomdroid.com/how-to-install-apk-on-android/) (external website) to install the apk on your phone
 
 
 You can get the latest apk from the [release tab](https://github.com/Gnuhry/student-alarm/releases)
 
-## Planed Features
+## planed features
 
 - earlier alarm option if high traffic volume, or train is canceld and you have to get the earlier one (including maps and train APIs)
 - option to have more than one regular lecture schedule, which switch each week
 - import of regular lecture schedule
 - other imports sources
 - more code efficiency 
+
+## code dependencies
+- [Android-Week-View from thellemund](https://github.com/thellmund/Android-Week-View) 
+- [glide from bumtech](https://github.com/bumptech/glide)
+- [okhhtp from square](https://github.com/square/okhttp)
+- [lib-recur from dmfs](https://github.com/dmfs/lib-recur)
