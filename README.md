@@ -35,7 +35,7 @@ You can get the latest apk from the [release tab](https://github.com/Gnuhry/stud
 - more code efficiency 
 
 ## code dependencies
-- [Android-Week-View from thellemund](https://github.com/thellmund/Android-Week-View) 
-- [glide from bumtech](https://github.com/bumptech/glide)
-- [okhhtp from square](https://github.com/square/okhttp)
-- [lib-recur from dmfs](https://github.com/dmfs/lib-recur)
+- https://github.com/thellmund/Android-Week-View
+- https://github.com/bumptech/glide
+- https://github.com/square/okhttp
+- https://github.com/dmfs/lib-recur
