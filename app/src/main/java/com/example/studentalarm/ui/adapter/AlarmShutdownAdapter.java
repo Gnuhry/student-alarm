@@ -15,7 +15,6 @@ import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.dialog.AlarmShutdownDialog;
-import com.example.studentalarm.ui.fragments.ReloadLecture;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -24,7 +23,6 @@ import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,8 +30,6 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
     private static final String LOG = "AlarmshutdownAd";
     private static SimpleDateFormat dayOfWeekName;
     private static DateFormat day, time;
-    private static FragmentActivity activity;
-    private static ReloadLecture reloadLecture;
     private final Context context;
     private final AlarmShutdownDialog dialog;
     @NonNull
@@ -58,10 +54,9 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
     }
 
 
-    public AlarmShutdownAdapter(@NonNull List<LectureSchedule.Lecture> lecture_schedule, @NonNull Context context, FragmentActivity ac, AlarmShutdownDialog dialog) {
+    public AlarmShutdownAdapter(@NonNull List<LectureSchedule.Lecture> lecture_schedule, @NonNull Context context, AlarmShutdownDialog dialog) {
         this.dialog = dialog;
         this.context = context;
-        activity = ac;
         Locale locale;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             locale = context.getResources().getConfiguration().getLocales().get(0);
@@ -126,15 +121,6 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
     @Override
     public int getItemCount() {
         return lecture.size();
-    }
-
-    /**
-     * Get the position, where the element with the date of today is
-     *
-     * @return position of today
-     */
-    public int getPositionToday() {
-        return LectureSchedule.getPositionScroll() == -1 ? 0 : LectureSchedule.getPositionScroll();
     }
 
     /**

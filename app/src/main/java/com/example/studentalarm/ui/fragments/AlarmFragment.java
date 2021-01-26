@@ -69,7 +69,7 @@ public class AlarmFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_TIME, 0) <= Calendar.getInstance().getTime().getTime())
+        if (getContext() != null && PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_TIME, 0) <= Calendar.getInstance().getTime().getTime())
             PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
         showAlarmshutdown(view);
     }
@@ -113,11 +113,12 @@ public class AlarmFragment extends Fragment {
                 lectureSchedule = LectureSchedule.load(getContext()).getAllLecturesFromNowWithoutHoliday(getContext());
                 progress.dismiss();
                 view.findViewById(R.id.btntmpalarmshutdown).setOnClickListener(view1 -> {
+                    if (getActivity() == null) return;
                     Log.i(LOG, "Button pressed");
                     progress.show(); // in AlarmShutdownDialog dismissed
                     new AlarmShutdownDialog(this, lectureSchedule).show(getActivity().getSupportFragmentManager(), "dialog");
                 });
-                if (PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) != 0) {
+                if (getContext() != null && PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) != 0) {
                     Log.d(LOG, "Text VISIBLE");
                     ((TextView) view.findViewById(R.id.txtalarmshutdownuntil)).setText(new Date(PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0)).toString());
                     view.findViewById(R.id.txtalarmshutdownuntil).setVisibility(View.VISIBLE);
@@ -150,7 +151,8 @@ public class AlarmFragment extends Fragment {
                 public void onTick(long l) {
                     Calendar ca = Calendar.getInstance();
                     ca.setTimeInMillis(l - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
-                    txVTimer.setText(getContext().getString(R.string.time_format, getHour(ca), ca.get(Calendar.MINUTE) + 1));
+                    if (getContext() != null)
+                        txVTimer.setText(getContext().getString(R.string.time_format, getHour(ca), ca.get(Calendar.MINUTE) + 1));
                 }
 
                 /**

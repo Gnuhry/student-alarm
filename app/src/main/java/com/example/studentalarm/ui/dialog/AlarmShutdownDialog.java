@@ -45,7 +45,7 @@ public class AlarmShutdownDialog extends DialogFragment {
 
         RecyclerView rv = view.findViewById(R.id.rVLectures);
         if (getContext() != null) {
-            AlarmShutdownAdapter adapter = new AlarmShutdownAdapter(lectureSchedule, getContext(), getActivity(), this);
+            AlarmShutdownAdapter adapter = new AlarmShutdownAdapter(lectureSchedule, getContext(), this);
             rv.setHasFixedSize(true);
             rv.setLayoutManager(new LinearLayoutManager(getContext()));
             rv.setAdapter(adapter);
