@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
@@ -32,6 +33,7 @@ public class AlarmFragment extends Fragment {
     private static final String LOG = "Alarm_Fragment";
     private CountDownTimer timer;
     private View view;
+    @Nullable
     private ProgressDialog progress;
     private List<LectureSchedule.Lecture> lectureSchedule;
 
@@ -86,7 +88,8 @@ public class AlarmFragment extends Fragment {
     }
 
     public void stopLoad() {
-        progress.dismiss();
+        if (progress != null)
+            progress.dismiss();
     }
 
     /**

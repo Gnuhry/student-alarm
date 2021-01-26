@@ -30,6 +30,7 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
     private static final String LOG = "AlarmshutdownAd";
     private static SimpleDateFormat dayOfWeekName;
     private static DateFormat day, time;
+    @NonNull
     private final Context context;
     private final AlarmShutdownDialog dialog;
     @NonNull
@@ -103,11 +104,9 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
             viewHolder.colorLine.setBackgroundColor(l.getColor());
             viewHolder.TLEvent.setOnClickListener(view -> {
                 Log.d(LOG, "Time: " + l.getStart().getTime());
-                if (context != null) {
-                    PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, l.getStart().getTime()).apply();
-                    AlarmManager.updateNextAlarm(context);
-                    dialog.dismiss();
-                }
+                PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, l.getStart().getTime()).apply();
+                AlarmManager.updateNextAlarm(context);
+                dialog.dismiss();
             });
         } else {
             viewHolder.TLEvent.setVisibility(View.GONE);

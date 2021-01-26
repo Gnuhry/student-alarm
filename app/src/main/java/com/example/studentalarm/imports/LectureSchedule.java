@@ -128,6 +128,7 @@ public class LectureSchedule {
         return erg;
     }
 
+    @NonNull
     public List<Lecture> getAllLecturesFromNowWithoutHoliday(@NonNull Context context) {
         positionScroll = -1;
         List<Lecture> erg = new ArrayList<>();
