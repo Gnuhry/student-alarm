@@ -572,11 +572,14 @@ public class LectureSchedule {
         try {
             FileInputStream fis = context.openFileInput(SaveKeys.LECTURE);
             ObjectInputStream ois = new ObjectInputStream(fis);
-            LectureSchedule erg = convertSave((SaveLecture) ois.readObject());
-            LectureSchedule.Lecture.setCounter(erg.getHighestID() + 1);
+            Object helpObject = ois.readObject();
             fis.close();
             ois.close();
-            return erg;
+            if (helpObject != null) {
+                LectureSchedule erg = convertSave((SaveLecture) helpObject);
+                LectureSchedule.Lecture.setCounter(erg.getHighestID() + 1);
+                return erg;
+            }
         } catch (@NonNull IOException | ClassNotFoundException e) {
             Log.d("Lecture load", "failed");
         }

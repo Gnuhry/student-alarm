@@ -185,10 +185,11 @@ public class RegularLectureSchedule {
         try {
             FileInputStream fis = context.openFileInput(SaveKeys.REGULAR_LECTURE);
             ObjectInputStream ois = new ObjectInputStream(fis);
-            RegularLectureSchedule help = convertSave((SaveRegularLectureSchedule) ois.readObject());
+            Object objectHelp = ois.readObject();
             fis.close();
             ois.close();
-            return help;
+            if (objectHelp != null)
+                return convertSave((SaveRegularLectureSchedule) objectHelp);
         } catch (@NonNull IOException | ClassNotFoundException e) {
             Log.d("RegularLectureSchedule", "can't load");
         }
