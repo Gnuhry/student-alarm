@@ -123,11 +123,6 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
     }
 
 
-    /**
-     * Get the amount of lecture
-     *
-     * @return lecture amount
-     */
     @Override
     public int getItemCount() {
         return lecture.size();

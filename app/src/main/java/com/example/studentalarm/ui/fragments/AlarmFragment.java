@@ -124,17 +124,13 @@ public class AlarmFragment extends Fragment {
                 });
                 if (PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) != 0) {
                     Log.d(LOG, "Text VISIBLE");
-                    Date date = new Date(PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0));
-                    ((TextView) view.findViewById(R.id.txtalarmshutdownuntil)).setText(date.toString());
+                    ((TextView) view.findViewById(R.id.txtalarmshutdownuntil)).setText(new Date(PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0)).toString());
                     view.findViewById(R.id.txtalarmshutdownuntil).setVisibility(View.VISIBLE);
-                } else {
+                } else 
                     view.findViewById(R.id.txtalarmshutdownuntil).setVisibility(View.GONE);
-                }
-            } else {
-                if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_PHONE, true)) {
+            } else if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_PHONE, true)) {
                     Log.d(LOG, "Alarm on phone message");
-                    ((TextView) view.findViewById(R.id.textView4)).setText(R.string.alarm_in_phone);
-                }
+                    ((TextView) view.findViewById(R.id.textView4)).setText(R.string.alarm_in_phone);             
             }
         } else {
             Log.d(LOG, "no alarm at all");
@@ -179,9 +175,8 @@ public class AlarmFragment extends Fragment {
                 }
             }.start();
             ((TextView) view.findViewById(R.id.txVAlarm)).setText(getContext().getString(R.string.alarm_at, new SimpleDateFormat("HH:mm", Locale.GERMAN).format(time)));
-        } else {
+        } else 
             ((TextView) view.findViewById(R.id.textView4)).setText(R.string.no_alarm_set);
-        }
     }
 
     /**
