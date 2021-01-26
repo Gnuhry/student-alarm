@@ -79,7 +79,7 @@
     <string name="after">After</string>
     <string name="regular_lecture">Regular lecture</string>
     <string name="holidays">Holidays</string>
-    <string name="minute" tools:ignore="MissingTranslation">%d min</string>
+    <string name="minute" translatable="false">%d min</string>
     <string name="personal_alarm_settings">Personal alarm settings</string>
     <string name="edit">edit</string>
     <string name="from_day">"From: %1$s"</string>
