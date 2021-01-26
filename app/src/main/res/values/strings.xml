@@ -143,6 +143,7 @@
     <string name="temporary_alarmshutdown">Shut down alarm until…</string>
     <string name="no_alarmshutdown">dont shutdown the alarm</string>
     <string name="chose_last_lecture_with_noalarm">Chose the last lecture where no alarm is wanted</string>
+    <string name="alarm_shutdown_changed_alarm_is_set_for_next_event">alarm shutdown changed. Alarm is set for next event</string>
 
 
 </resources>
