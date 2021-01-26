@@ -17,7 +17,7 @@ This is a student project
 - English and German language support
 
 ## Installation Guide
-See this [tutorial webiste](https://www.thecustomdroid.com/how-to-install-apk-on-android/) to install the apk on your phone
+See this [tutorial webiste](https://www.thecustomdroid.com/how-to-install-apk-on-android/) (external website) to install the apk on your phone
 
 
 You can get the latest apk from the [release tab](https://github.com/Gnuhry/student-alarm/releases)
