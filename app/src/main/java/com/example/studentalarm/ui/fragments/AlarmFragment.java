@@ -9,11 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.fragment.app.Fragment;
-import androidx.preference.PreferenceManager;
-
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
@@ -28,6 +23,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
@@ -37,6 +33,7 @@ public class AlarmFragment extends Fragment {
     private static final String LOG = "Alarm_Fragment";
     private CountDownTimer timer;
     private View view;
+    @Nullable
     private ProgressDialog progress;
     private List<LectureSchedule.Lecture> lectureSchedule;
 
@@ -74,7 +71,7 @@ public class AlarmFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_TIME, 0) <= Calendar.getInstance().getTime().getTime())
+        if (getContext() != null && PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_TIME, 0) <= Calendar.getInstance().getTime().getTime())
             PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
         showAlarmshutdown(view);
     }
@@ -91,7 +88,8 @@ public class AlarmFragment extends Fragment {
     }
 
     public void stopLoad() {
-        progress.dismiss();
+        if (progress != null)
+            progress.dismiss();
     }
 
     /**
@@ -118,19 +116,20 @@ public class AlarmFragment extends Fragment {
                 lectureSchedule = LectureSchedule.load(getContext()).getAllLecturesFromNowWithoutHoliday(getContext());
                 progress.dismiss();
                 view.findViewById(R.id.btntmpalarmshutdown).setOnClickListener(view1 -> {
+                    if (getActivity() == null) return;
                     Log.i(LOG, "Button pressed");
                     progress.show(); // in AlarmShutdownDialog dismissed
                     new AlarmShutdownDialog(this, lectureSchedule).show(getActivity().getSupportFragmentManager(), "dialog");
                 });
-                if (PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) != 0) {
+                if (getContext() != null && PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) != 0) {
                     Log.d(LOG, "Text VISIBLE");
                     ((TextView) view.findViewById(R.id.txtalarmshutdownuntil)).setText(new Date(PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0)).toString());
                     view.findViewById(R.id.txtalarmshutdownuntil).setVisibility(View.VISIBLE);
-                } else 
+                } else
                     view.findViewById(R.id.txtalarmshutdownuntil).setVisibility(View.GONE);
             } else if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_PHONE, true)) {
-                    Log.d(LOG, "Alarm on phone message");
-                    ((TextView) view.findViewById(R.id.textView4)).setText(R.string.alarm_in_phone);             
+                Log.d(LOG, "Alarm on phone message");
+                ((TextView) view.findViewById(R.id.textView4)).setText(R.string.alarm_in_phone);
             }
         } else {
             Log.d(LOG, "no alarm at all");
@@ -155,7 +154,8 @@ public class AlarmFragment extends Fragment {
                 public void onTick(long l) {
                     Calendar ca = Calendar.getInstance();
                     ca.setTimeInMillis(l - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
-                    txVTimer.setText(getContext().getString(R.string.time_format, getHour(ca), ca.get(Calendar.MINUTE) + 1));
+                    if (getContext() != null)
+                        txVTimer.setText(getContext().getString(R.string.time_format, getHour(ca), ca.get(Calendar.MINUTE) + 1));
                 }
 
                 /**
@@ -175,7 +175,7 @@ public class AlarmFragment extends Fragment {
                 }
             }.start();
             ((TextView) view.findViewById(R.id.txVAlarm)).setText(getContext().getString(R.string.alarm_at, new SimpleDateFormat("HH:mm", Locale.GERMAN).format(time)));
-        } else 
+        } else
             ((TextView) view.findViewById(R.id.textView4)).setText(R.string.no_alarm_set);
     }
 

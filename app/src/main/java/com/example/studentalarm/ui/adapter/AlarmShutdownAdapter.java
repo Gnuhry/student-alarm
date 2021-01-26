@@ -10,17 +10,11 @@ import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
-import androidx.preference.PreferenceManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.dialog.AlarmShutdownDialog;
-import com.example.studentalarm.ui.fragments.ReloadLecture;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -28,12 +22,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdapter.ViewHolder> {
     private static final String LOG = "AlarmshutdownAd";
     private static SimpleDateFormat dayOfWeekName;
     private static DateFormat day, time;
-    private static FragmentActivity activity;
-    private static ReloadLecture reloadLecture;
+    @NonNull
     private final Context context;
     private final AlarmShutdownDialog dialog;
     @NonNull
@@ -58,10 +55,9 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
     }
 
 
-    public AlarmShutdownAdapter(@NonNull List<LectureSchedule.Lecture> lecture_schedule, @NonNull Context context, FragmentActivity ac, AlarmShutdownDialog dialog) {
+    public AlarmShutdownAdapter(@NonNull List<LectureSchedule.Lecture> lecture_schedule, @NonNull Context context, AlarmShutdownDialog dialog) {
         this.dialog = dialog;
         this.context = context;
-        activity = ac;
         Locale locale;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             locale = context.getResources().getConfiguration().getLocales().get(0);
@@ -94,9 +90,9 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
                 viewHolder.until.setText(cutTime(time.format(l.getEnd())));
                 Log.d(LOG, "Startdatum: " + l.getStart() + " Vergleichsdatum" + new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0)));
                 if (l.getStart().equals(new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0)))) {
-                    Log.d(LOG, "ID: "+l.getId()+" Raum: "+l.getLocation());
+                    Log.d(LOG, "ID: " + l.getId() + " Raum: " + l.getLocation());
                     viewHolder.TLEvent.setBackgroundColor(Color.parseColor("#da2c43"));
-                }else{
+                } else {
                     viewHolder.TLEvent.setBackgroundColor(Color.TRANSPARENT);// slows process down but necessary because otherwise random error that background becomes Yellow
                 }
             } else {
@@ -108,11 +104,9 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
             viewHolder.colorLine.setBackgroundColor(l.getColor());
             viewHolder.TLEvent.setOnClickListener(view -> {
                 Log.d(LOG, "Time: " + l.getStart().getTime());
-                if (context != null) {
-                    PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, l.getStart().getTime()).apply();
-                    AlarmManager.updateNextAlarm(context);
-                    dialog.dismiss();
-                }
+                PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, l.getStart().getTime()).apply();
+                AlarmManager.updateNextAlarm(context);
+                dialog.dismiss();
             });
         } else {
             viewHolder.TLEvent.setVisibility(View.GONE);
@@ -126,15 +120,6 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
     @Override
     public int getItemCount() {
         return lecture.size();
-    }
-
-    /**
-     * Get the position, where the element with the date of today is
-     *
-     * @return position of today
-     */
-    public int getPositionToday() {
-        return LectureSchedule.getPositionScroll() == -1 ? 0 : LectureSchedule.getPositionScroll();
     }
 
     /**

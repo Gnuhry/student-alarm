@@ -3,9 +3,6 @@ package com.example.studentalarm.regular;
 import android.content.Context;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.example.studentalarm.save.SaveHour;
 import com.example.studentalarm.save.SaveKeys;
 
@@ -20,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class Hours {
     private final int id;
@@ -113,6 +113,7 @@ public class Hours {
 
     /**
      * clear Hour Settings
+     *
      * @param context context of app
      */
     public static void clearHours(@NonNull Context context) {
@@ -139,8 +140,8 @@ public class Hours {
         try {
             FileInputStream fis = context.openFileInput(SaveKeys.HOURS);
             ObjectInputStream ois = new ObjectInputStream(fis);
-            Object read=ois.readObject();
-            if(read==null) return new ArrayList<>();
+            Object read = ois.readObject();
+            if (read == null) return new ArrayList<>();
             List<Hours> erg = convertSave((SaveHour) read);
             fis.close();
             ois.close();

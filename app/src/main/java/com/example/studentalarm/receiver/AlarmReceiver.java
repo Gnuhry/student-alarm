@@ -13,13 +13,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
+import com.example.studentalarm.R;
+import com.example.studentalarm.save.PreferenceKeys;
+
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
-
-import com.example.studentalarm.R;
-import com.example.studentalarm.save.PreferenceKeys;
 
 import static android.app.Notification.EXTRA_NOTIFICATION_ID;
 
@@ -38,7 +38,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         Log.d("Alarm Bell", "Alarm just fired");
         mp = getMediaPlayer(context);
         if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
-             setNotification(context);
+            setNotification(context);
             mp.setLooping(true);
         }
         mp.start();
