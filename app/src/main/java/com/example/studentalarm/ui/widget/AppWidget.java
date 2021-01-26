@@ -4,6 +4,8 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.widget.RemoteViews;
 
 import com.example.studentalarm.R;
@@ -16,13 +18,24 @@ import androidx.annotation.NonNull;
  */
 public class AppWidget extends AppWidgetProvider {
 
-    static void updateAppWidget(@NonNull Context context, @NonNull AppWidgetManager appWidgetManager,
+    private static Handler sWorkerQueue;
+
+    public AppWidget(){
+        HandlerThread sWorkerThread = new HandlerThread("MyWidgetProvider-worker");
+        sWorkerThread.start();
+        sWorkerQueue = new Handler(sWorkerThread.getLooper());
+    }
+
+    private static void updateAppWidget(@NonNull Context context, @NonNull AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.app_widget);
 
         views.setRemoteAdapter(R.id.lvWidget, new Intent(context, RemoteViewsService.class));
-        views.setScrollPosition(R.id.lvWidget, LectureSchedule.getPositionScroll());
+        sWorkerQueue.postDelayed(() -> {
+            views.setScrollPosition(R.id.lvWidget, LectureSchedule.getPositionScroll());
+            appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views);
+        }, 5000);
 
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
