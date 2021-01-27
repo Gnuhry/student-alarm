@@ -14,18 +14,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.Hours;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapter.ViewHolder> {
     private final static String LOG = "SettingsHourAdapter";
@@ -48,7 +49,7 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
             super(view);
             hour = view.findViewById(R.id.txVHour);
             from = view.findViewById(R.id.edTFrom);
-            until = view.findViewById(R.id.edTUnti);
+            until = view.findViewById(R.id.edTUntil);
             llAddDelete = view.findViewById(R.id.LLAddDelete);
             llTime = view.findViewById(R.id.LLTime);
             add = view.findViewById(R.id.imVAdd);
@@ -129,16 +130,19 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
     /**
      * save if all inputs are right
      *
-     * @return {true} if saved {false} if wrong inputs
+     * @return -1 if error else the size of the list
      */
     public int save() {
         for (int f = 0; f < holders.size(); f++) {
+            if (holders.get(f).from.getText().toString().equals("") || holders.get(f).until.getText().toString().equals(""))
+                return -1;
             hours.get((int) holders.get(f).llTime.getTag())
                     .setFrom(holders.get(f).from.getText().toString())
                     .setUntil(holders.get(f).until.getText().toString());
             if (holders.get(f).until.getError() != null || holders.get(f).from.getError() != null)
                 return -1;
-            if (f - 1 >= 0 && hours.get((int) holders.get(f).llTime.getTag()).getFromAsDate().before(hours.get((int) holders.get(f - 1).llTime.getTag()).getUntilAsDate())) {
+            Date date = hours.get((int) holders.get(f).llTime.getTag()).getFromAsDate();
+            if (f - 1 >= 0 && date != null && date.before(hours.get((int) holders.get(f - 1).llTime.getTag()).getUntilAsDate())) {
                 holders.get(f).from.setError(context.getString(R.string.can_not_start_before_the_hour_before));
                 return -1;
             } else
@@ -152,7 +156,8 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
     private void initTimeEditTextBeforeAfter(@NonNull EditText before, @Nullable EditText until) {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.getDefault());
         try {
-            if (!format.parse(before.getText().toString()).before(format.parse(until.getText().toString())))
+            Date beforeDate = format.parse(before.getText().toString());
+            if (until != null && beforeDate != null && !beforeDate.before(format.parse(until.getText().toString())))
                 until.setError(context.getString(R.string.end_must_start_after_begin));
         } catch (ParseException e) {
             Log.d(LOG, "no date");
@@ -227,7 +232,7 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
             }
         });
         text.setOnEditorActionListener((textView1, i, keyEvent) -> {
-            if (keyEvent != null || activity == null) return false;
+            if (keyEvent != null) return false;
             InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(text.getWindowToken(), 0);
             return true;

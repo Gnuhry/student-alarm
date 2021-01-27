@@ -3,15 +3,17 @@ package com.example.studentalarm.save;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.util.Log;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.preference.PreferenceManager;
 
 import com.example.studentalarm.R;
 
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.PreferenceManager;
 
 public class PreferenceKeys {
     @NonNull
@@ -24,14 +26,15 @@ public class PreferenceKeys {
             ALARM_ON = "ALARM_ON",
             ALARM_PHONE = "ALARM_PHONE",
             ALARM_CHANGE = "ALARM_CHANGE",
+            ALARM_SHUTDOWN = "ALARM_SHUTDOWN",
             AUTO_IMPORT = "AUTO_IMPORT",
             ALARM_TIME = "ALARM_TIME",
             SNOOZE = "SNOOZE",
             IMPORT_TIME = "IMPORT_TIME",
             LANGUAGE = "LANGUAGE",
             RINGTONE = "RINGTONE",
-            DHBW_MANNHEIM_COURSE_CATEGORY = "DHBWMANNHEIMCOURSECATEGORY",
-            DHBW_MANNHEIM_COURSE = "DHBWMANNHEIMCOURSE",
+            DHBW_MANNHEIM_COURSE_CATEGORY = "DHBW_MANNHEIM_COURSE_CATEGORY",
+            DHBW_MANNHEIM_COURSE = "DHBW_MANNHEIM_COURSE",
             WAIT_FOR_NETWORK = "WAIT_FOR_NETWORK",
             IMPORT = "IMPORT",
             IMPORT_COLOR = "IMPORT_COLOR",
@@ -78,6 +81,8 @@ public class PreferenceKeys {
             preferences.edit().putString(PreferenceKeys.IMPORT_TIME, DEFAULT_IMPORT_TIME).apply();
         if (preferences.getInt(PreferenceKeys.IMPORT_COLOR, -1) == -1)
             preferences.edit().putInt(PreferenceKeys.IMPORT_COLOR, Color.RED).apply();//red als default Colour
+        if (preferences.getLong(PreferenceKeys.ALARM_SHUTDOWN, -1) == -1)
+            preferences.edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
         return erg;
     }
 
@@ -97,5 +102,22 @@ public class PreferenceKeys {
             }
         }
         return DEFAULT_LANGUAGE;
+    }
+
+    /**
+     * get locale
+     *
+     * @param context context of app
+     * @return locale object
+     */
+    public static Locale getLocale(@Nullable Context context) {
+        if (context == null)
+            return Locale.getDefault();
+        Locale locale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            locale = context.getResources().getConfiguration().getLocales().get(0);
+        else
+            locale = context.getResources().getConfiguration().locale;
+        return locale;
     }
 }

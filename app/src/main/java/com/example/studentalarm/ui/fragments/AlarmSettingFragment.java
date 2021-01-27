@@ -13,16 +13,17 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.preference.PreferenceManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.adapter.HolidayAdapter;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class AlarmSettingFragment extends Fragment {
 
@@ -32,6 +33,12 @@ public class AlarmSettingFragment extends Fragment {
 
     public AlarmSettingFragment(PersonalFragment fragment) {
         this.fragment = fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     @Override
@@ -51,10 +58,12 @@ public class AlarmSettingFragment extends Fragment {
             setTime(getContext());
 
         RecyclerView rv = view.findViewById(R.id.rVHolidays);
-        HolidayAdapter adapter = new HolidayAdapter(getContext(), getActivity());
-        rv.setHasFixedSize(true);
-        rv.setLayoutManager(new LinearLayoutManager(getContext()));
-        rv.setAdapter(adapter);
+        if (getActivity() != null) {
+            HolidayAdapter adapter = new HolidayAdapter(getContext(), getActivity());
+            rv.setHasFixedSize(true);
+            rv.setLayoutManager(new LinearLayoutManager(getContext()));
+            rv.setAdapter(adapter);
+        }
 
         return view;
     }

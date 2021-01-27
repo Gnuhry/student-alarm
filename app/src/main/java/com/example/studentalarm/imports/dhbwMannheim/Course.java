@@ -1,8 +1,8 @@
 package com.example.studentalarm.imports.dhbwMannheim;
 
-import androidx.annotation.NonNull;
-
 import java.io.Serializable;
+
+import androidx.annotation.NonNull;
 
 public class Course implements Comparable<String>, Serializable {
     private final String courseName, courseISCID;

@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.preference.PreferenceManager;
-
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.Import;
 import com.example.studentalarm.save.PreferenceKeys;
+
+import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 public class BootReceiver extends BroadcastReceiver {
 

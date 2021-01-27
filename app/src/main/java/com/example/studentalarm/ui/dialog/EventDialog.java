@@ -1,8 +1,8 @@
 package com.example.studentalarm.ui.dialog;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,11 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.DialogFragment;
-
 import com.example.studentalarm.EventColor;
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
@@ -39,6 +34,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.DialogFragment;
+
+import static com.example.studentalarm.save.PreferenceKeys.getLocale;
 
 public class EventDialog extends DialogFragment {
     private static final String LOG = "EventDialogFragment";
@@ -62,7 +64,14 @@ public class EventDialog extends DialogFragment {
         this.data = data;
         this.schedule = schedule;
         if (data != null)
-            Log.d(LOG, data.toString());
+            Log.d(LOG, "data: " + data.toString());
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        setRetainInstance(true);
+        return super.onCreateDialog(savedInstanceState);
     }
 
 
@@ -71,6 +80,7 @@ public class EventDialog extends DialogFragment {
                              Bundle savedInstanceState) {
         Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.dialog_event, container, false);
+        if (getContext() == null) return view;
         title = view.findViewById(R.id.edTTitle);
         docent = view.findViewById(R.id.edTDocent);
         location = view.findViewById(R.id.edTLocation);
@@ -136,14 +146,40 @@ public class EventDialog extends DialogFragment {
         cancel.setOnClickListener(view -> {
             if (cancelDirect)
                 this.dismiss();
-            else if (getContext() != null)
-                new MaterialAlertDialogBuilder(getContext())
-                        .setTitle(R.string.dismiss)
-                        .setMessage(R.string.do_you_want_to_dismiss_all_your_changes)
-                        .setPositiveButton(R.string.dismiss, (dialogInterface, i) -> this.dismiss())
-                        .setNegativeButton(R.string.no, null)
-                        .setCancelable(true)
-                        .show();
+            else if (data == null) {
+                if (title.getText().toString().equals("") && docent.getText().toString().equals("") && location.getText().toString().equals("") &&
+                        txVBegin.getText().toString().equals("") && txVEnd.getText().toString().equals(""))
+                    this.dismiss();
+                else {
+                    if (getContext() != null)
+                        new MaterialAlertDialogBuilder(getContext())
+                                .setTitle(R.string.dismiss)
+                                .setMessage(R.string.do_you_want_to_dismiss_all_your_changes)
+                                .setPositiveButton(R.string.dismiss, (dialogInterface, i) -> this.dismiss())
+                                .setNegativeButton(R.string.no, null)
+                                .setCancelable(true)
+                                .show();
+                }
+            } else {
+                String docentString = data.getDocent();
+                if (docentString == null) docentString = "";
+                String locationString = data.getLocation();
+                if (locationString == null) locationString = "";
+                if (title.getText().toString().equals(data.getName()) && docent.getText().toString().equals(docentString) && location.getText().toString().equals(locationString) &&
+                        txVBegin.getText().toString().equals(formatDate(data.getStartWithDefaultTimeZone()) + "   " + formatTime(data.getStartWithDefaultTimeZone())) &&
+                        txVEnd.getText().toString().equals(formatDate(data.getEndWithDefaultTimezone()) + "   " + formatTime(data.getEndWithDefaultTimezone())))
+                    this.dismiss();
+                else {
+                    if (getContext() != null)
+                        new MaterialAlertDialogBuilder(getContext())
+                                .setTitle(R.string.dismiss)
+                                .setMessage(R.string.do_you_want_to_dismiss_all_your_changes)
+                                .setPositiveButton(R.string.dismiss, (dialogInterface, i) -> this.dismiss())
+                                .setNegativeButton(R.string.no, null)
+                                .setCancelable(true)
+                                .show();
+                }
+            }
         });
     }
 
@@ -331,16 +367,16 @@ public class EventDialog extends DialogFragment {
         title.setText(data.getName());
         docent.setText(data.getDocent());
         location.setText(data.getLocation());
-        begin.setText(formatTime(data.getStart()));
-        end.setText(formatTime(data.getEnd()));
+        begin.setText(formatTime(data.getStartWithDefaultTimeZone()));
+        end.setText(formatTime(data.getEndWithDefaultTimezone()));
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(data.getStart());
+        calendar.setTime(data.getStartWithDefaultTimeZone());
         dPBegin.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), (datePicker, i, i1, i2) -> {
             setDateTime(txVBegin, dPBegin, begin);
             calendar.set(dPBegin.getYear(), dPBegin.getMonth(), dPBegin.getDayOfMonth(), 0, 0, 0);
             dPEnd.setMinDate(calendar.getTimeInMillis());
         });
-        calendar.setTime(data.getEnd());
+        calendar.setTime(data.getEndWithDefaultTimezone());
         dPEnd.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), (datePicker, i, i1, i2) -> setDateTime(txVEnd, dPEnd, end));
         setDateTime(txVBegin, dPBegin, begin);
         setDateTime(txVEnd, dPEnd, end);
@@ -472,11 +508,7 @@ public class EventDialog extends DialogFragment {
      */
     @NonNull
     private String formatDate(@NonNull Date date) {
-        Locale locale;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            locale = getContext().getResources().getConfiguration().getLocales().get(0);
-        else
-            locale = getContext().getResources().getConfiguration().locale;
+        Locale locale = getLocale(getContext());
         SimpleDateFormat format = new SimpleDateFormat("E", locale);
         DateFormat dateformat = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
         return String.format("%s %s", format.format(date.getTime()), dateformat.format(date.getTime()));
@@ -502,11 +534,7 @@ public class EventDialog extends DialogFragment {
      */
     @Nullable
     private Date convertDate(@NonNull String string, int pos) {
-        Locale locale;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            locale = getContext().getResources().getConfiguration().getLocales().get(0);
-        else
-            locale = getContext().getResources().getConfiguration().locale;
+        Locale locale = getLocale(getContext());
         DateFormat dateformat = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
         Calendar calendar = Calendar.getInstance(), calendar1 = Calendar.getInstance();
         try {

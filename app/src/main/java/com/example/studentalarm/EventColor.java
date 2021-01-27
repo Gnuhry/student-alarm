@@ -4,11 +4,11 @@ import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * class for the Event color
@@ -65,16 +65,16 @@ public class EventColor {
     }
 
     /**
-     * static funktion to get a List with all choosable
+     * static function to get a List with all colors
      *
      * @param context Context is needed for the EventColor Objects
-     * @return List<EventColor> list with all possible choosable colors
+     * @return List<EventColor> list with all possible colors
      */
     @NonNull
     public static List<EventColor> possibleColors(@NonNull Context context) {
         Log.d(LOG, "Create possibleColor List context:" + context);
         List<EventColor> colors = new ArrayList<>();
-        colors.add(new EventColor(R.string.red, Color.RED, context));//String  Farbname wird übergeben
+        colors.add(new EventColor(R.string.red, Color.RED, context));
         colors.add(new EventColor(R.string.green, Color.GREEN, context));
         colors.add(new EventColor(R.string.blue, Color.BLUE, context));
         colors.add(new EventColor(R.string.yellow, Color.YELLOW, context));

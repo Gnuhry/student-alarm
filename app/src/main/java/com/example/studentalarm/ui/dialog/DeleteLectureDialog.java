@@ -7,11 +7,12 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 
-import androidx.annotation.NonNull;
-
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.LectureSchedule;
+import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import androidx.annotation.NonNull;
 
 public class DeleteLectureDialog extends Dialog {
 
@@ -35,8 +36,11 @@ public class DeleteLectureDialog extends Dialog {
         });
         findViewById(R.id.btnDelete).setOnClickListener(view -> {
             Log.i(LOG, "delete");
-            boolean normal = ((CheckBox) findViewById(R.id.rdBNormalEvents)).isChecked(), chBImport = ((CheckBox) findViewById(R.id.rdBImportEvents)).isChecked(), chbHoliday = ((CheckBox) findViewById(R.id.rdBHolidayEvents)).isChecked();
-            if (normal || chBImport) {
+            boolean normal = ((CheckBox) findViewById(R.id.rdBNormalEvents)).isChecked(),
+                    chBImport = ((CheckBox) findViewById(R.id.rdBImportEvents)).isChecked(),
+                    chbHoliday = ((CheckBox) findViewById(R.id.rdBHolidayEvents)).isChecked(),
+                    chBRegular = ((CheckBox) findViewById(R.id.rdBRegularEvents)).isChecked();
+            if (normal || chBImport || chbHoliday || chBRegular) {
                 Log.i(LOG, "Delete Dialog");
                 new MaterialAlertDialogBuilder(getContext())
                         .setTitle(R.string.delete_all)
@@ -51,6 +55,8 @@ public class DeleteLectureDialog extends Dialog {
                                 schedule.clearImportEvents();
                             if (chbHoliday)
                                 schedule.clearHolidayEvents();
+                            if (chBRegular)
+                                RegularLectureSchedule.clearSave(getContext());
                             schedule.save(getContext());
                             this.cancel();
                         })

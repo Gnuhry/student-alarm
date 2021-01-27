@@ -5,9 +5,6 @@ import android.graphics.Color;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.example.studentalarm.R;
 import com.example.studentalarm.save.SaveKeys;
 import com.example.studentalarm.save.SaveRegularLectureSchedule;
@@ -20,6 +17,9 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class RegularLectureSchedule {
 
@@ -185,11 +185,12 @@ public class RegularLectureSchedule {
         try {
             FileInputStream fis = context.openFileInput(SaveKeys.REGULAR_LECTURE);
             ObjectInputStream ois = new ObjectInputStream(fis);
-            RegularLectureSchedule help = convertSave((SaveRegularLectureSchedule) ois.readObject());
+            Object objectHelp = ois.readObject();
             fis.close();
             ois.close();
-            return help;
-        } catch (IOException | ClassNotFoundException e) {
+            if (objectHelp != null)
+                return convertSave((SaveRegularLectureSchedule) objectHelp);
+        } catch (@NonNull IOException | ClassNotFoundException e) {
             Log.d("RegularLectureSchedule", "can't load");
         }
         return new RegularLectureSchedule();
@@ -203,8 +204,6 @@ public class RegularLectureSchedule {
     @NonNull
     private static RegularLectureSchedule convertSave(@NonNull SaveRegularLectureSchedule readObject) {
         RegularLectureSchedule schedule = new RegularLectureSchedule();
-        if (readObject == null)
-            return schedule;
         schedule.days = readObject.day;
         schedule.hours = readObject.hour;
         int id = 0;

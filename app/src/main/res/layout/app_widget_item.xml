@@ -27,7 +27,6 @@
     </LinearLayout-->
 
     <LinearLayout
-        android:id="@+id/LLEvent1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -38,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:text="@string/vert_line"
+            android:text="@string/vertical_line"
             android:textStyle="bold" />
 
         <TextView
@@ -68,7 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:text="@string/vert_line"
+            android:text="@string/vertical_line"
             android:textStyle="bold" />
 
         <TextView
@@ -86,7 +85,6 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/txVDay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="24sp"

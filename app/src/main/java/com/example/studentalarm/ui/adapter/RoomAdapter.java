@@ -8,15 +8,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
     private final RegularLectureSchedule.RegularLecture lecture;
@@ -88,7 +88,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
         for (Iterator<String> iterator = lecture.getRooms().iterator(); iterator.hasNext(); )
             if (iterator.next().equals(""))
                 iterator.remove();
-        Log.d("allromes", lecture.getRooms().size() + "");
+        Log.d("all rooms", lecture.getRooms().size() + "");
         return lecture.getRooms();
     }
 

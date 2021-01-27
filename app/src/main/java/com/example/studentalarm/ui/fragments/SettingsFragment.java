@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
@@ -17,6 +20,7 @@ import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.Import;
 import com.example.studentalarm.imports.LectureSchedule;
+import com.example.studentalarm.regular.Hours;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.dialog.DeleteLectureDialog;
@@ -146,12 +150,21 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         snooze.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.i(LOG, "alarm snooze change to " + newValue);
             return true;
-        })
-        ;
+        });
 
         ringtone.setEnabled(bool2);
         ringtone.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.i(LOG, "alarm ringtone change to " + newValue);
+            if (getContext() != null) {
+                switch ((String) newValue) {
+                    case "gentle":
+                        MediaPlayer.create(getContext().getApplicationContext(), R.raw.alarm_gentle).start();
+                    case "DEFAULT":
+                    default:
+                        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        MediaPlayer.create(getContext().getApplicationContext(), alarmSound).start();
+                }
+            }
             return true;
         });
 
@@ -177,6 +190,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         importColorPref.setSummaryProvider(preference -> {
+            if (getContext() == null) return "";
             SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
             List<EventColor> colors = EventColor.possibleColors(getContext());
             int index = colors.indexOf(new EventColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR, 0)));
@@ -288,8 +302,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         if (!lan2.equals(lan) && getActivity() != null)
                             changeLanguage(lan2, getContext(), getActivity());
                         removeAllEventsLecture();
-                        reload();
                         RegularLectureSchedule.clearSave(getContext());
+                        Hours.clearHours(getContext());
+                        reload();
                     })
                     .setNegativeButton(R.string.no, null)
                     .setCancelable(true)

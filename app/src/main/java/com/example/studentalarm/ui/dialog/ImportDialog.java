@@ -23,10 +23,6 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.preference.PreferenceManager;
-
 import com.bumptech.glide.Glide;
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.ICS;
@@ -43,6 +39,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Objects;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
 
 
 public class ImportDialog extends Dialog {
@@ -245,7 +245,8 @@ public class ImportDialog extends Dialog {
      */
     private void initDHBW(@NonNull SharedPreferences preferences) {
         new Thread(() -> {
-            findViewById(R.id.spDHBWMaCourseCategory).post(progress::show);
+            if (progress != null)
+                findViewById(R.id.spDHBWMaCourseCategory).post(progress::show);
             Log.i(LOG, "get DHBW course");
             List<CourseCategory> courseCategories = CourseImport.load(getContext());
             if (courseCategories == null) {
@@ -286,7 +287,8 @@ public class ImportDialog extends Dialog {
                 public void onNothingSelected(AdapterView<?> adapterView) {
                 }
             });
-            findViewById(R.id.spDHBWMaCourseCategory).post(progress::dismiss);
+            if (progress != null)
+                findViewById(R.id.spDHBWMaCourseCategory).post(progress::dismiss);
         }).start();
 
         findViewById(R.id.btnImportDhbwCourses).setOnClickListener(view22 -> {
@@ -303,7 +305,7 @@ public class ImportDialog extends Dialog {
 
                     findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setAdapter(categoryAdapter));
                 } else
-                    findViewById(R.id.btnImportDhbwCourses).post(() -> Toast.makeText(getContext(), R.string.no_connection, Toast.LENGTH_SHORT).show());//btnImportDhbwCourses ist ein Element auf der Seite
+                    findViewById(R.id.btnImportDhbwCourses).post(() -> Toast.makeText(getContext(), R.string.no_connection, Toast.LENGTH_SHORT).show());//btnImportDhbwCourses is a element of the site
                 findViewById(R.id.btnImportDhbwCourses).post(() -> {//one post for performance important if Ids change
                     findViewById(R.id.btnImportDhbwCourses).setEnabled(true);
                     findViewById(R.id.imgStatusDHBW).setVisibility(View.GONE);

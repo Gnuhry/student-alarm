@@ -18,6 +18,7 @@
                 android:id="@+id/txVCancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="2"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:text="@string/cancel"
@@ -32,6 +33,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="2"
                 android:text="@string/event"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -45,6 +47,8 @@
                 android:id="@+id/txVAdd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="end"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:text="@string/add"

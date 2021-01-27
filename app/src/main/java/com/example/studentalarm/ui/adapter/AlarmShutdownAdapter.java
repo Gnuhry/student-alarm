@@ -1,7 +1,9 @@
 package com.example.studentalarm.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,23 +12,26 @@ import android.widget.TextView;
 
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.LectureSchedule;
-import com.example.studentalarm.ui.dialog.EventDialog;
-import com.example.studentalarm.ui.fragments.ReloadLecture;
+import com.example.studentalarm.save.PreferenceKeys;
+import com.example.studentalarm.ui.dialog.AlarmShutdownDialog;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHolder> {
+public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdapter.ViewHolder> {
+    private static final String LOG = "AlarmShutdownAdapter";
     private static SimpleDateFormat dayOfWeekName;
     private static DateFormat day, time;
-    private static FragmentActivity activity;
-    private static ReloadLecture reloadLecture;
+    @NonNull
+    private final Context context;
+    private final AlarmShutdownDialog dialog;
     @NonNull
     private final List<LectureSchedule.Lecture> lecture;
 
@@ -49,9 +54,9 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
     }
 
 
-    public MonthlyAdapter(@NonNull LectureSchedule lecture_schedule, @NonNull Context context, FragmentActivity ac, ReloadLecture reloadLecture_) {
-        reloadLecture = reloadLecture_;
-        activity = ac;
+    public AlarmShutdownAdapter(@NonNull List<LectureSchedule.Lecture> lecture_schedule, @NonNull Context context, AlarmShutdownDialog dialog) {
+        this.dialog = dialog;
+        this.context = context;
         Locale locale;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             locale = context.getResources().getConfiguration().getLocales().get(0);
@@ -60,17 +65,17 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
         dayOfWeekName = new SimpleDateFormat("EEEE", locale);
         day = DateFormat.getDateInstance(DateFormat.LONG, locale);
         time = DateFormat.getTimeInstance(DateFormat.LONG, locale);
-        this.lecture = lecture_schedule.getAllLectureWithEachHolidayAndDayTitle(context);
+        this.lecture = lecture_schedule;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.adapter_monthly, viewGroup, false));
+    public AlarmShutdownAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        return new AlarmShutdownAdapter.ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.adapter_monthly, viewGroup, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(@NonNull AlarmShutdownAdapter.ViewHolder viewHolder, final int position) {
         LectureSchedule.Lecture l = lecture.get(position);
         if (l.getId() != Integer.MIN_VALUE) {
             viewHolder.TLEvent.setVisibility(View.VISIBLE);
@@ -80,8 +85,12 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
             if (l.getId() >= 0) {
                 viewHolder.from.setVisibility(View.VISIBLE);
                 viewHolder.until.setVisibility(View.VISIBLE);
-                viewHolder.from.setText(cutTime(time.format(l.getStartWithDefaultTimeZone())));
-                viewHolder.until.setText(cutTime(time.format(l.getEndWithDefaultTimezone())));
+                viewHolder.from.setText(cutTime(time.format(l.getStart())));
+                viewHolder.until.setText(cutTime(time.format(l.getEnd())));
+                if (l.getStart().equals(new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0))))
+                    viewHolder.TLEvent.setBackgroundColor(Color.parseColor("#da2c43"));
+                else
+                    viewHolder.TLEvent.setBackgroundColor(Color.TRANSPARENT);// slows process down but necessary because otherwise random error that background becomes Yellow
             } else {
                 viewHolder.from.setVisibility(View.GONE);
                 viewHolder.until.setVisibility(View.GONE);
@@ -89,7 +98,11 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
             boolean aa = l.getDocent() != null, ab = l.getLocation() != null;
             viewHolder.detail.setText(aa && ab ? l.getDocent() + " - " + l.getLocation() : aa ? l.getDocent() : ab ? l.getLocation() : null);
             viewHolder.colorLine.setBackgroundColor(l.getColor());
-            viewHolder.TLEvent.setOnClickListener(view -> new EventDialog(l, LectureSchedule.load(view.getContext()), reloadLecture).show(activity.getSupportFragmentManager(), "dialog"));
+            viewHolder.TLEvent.setOnClickListener(view -> {
+                Log.d(LOG, "Time: " + l.getStart().getTime());
+                PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, l.getStart().getTime()).apply();
+                dialog.dismiss();
+            });
         } else {
             viewHolder.TLEvent.setVisibility(View.GONE);
             viewHolder.barrier.setVisibility(View.VISIBLE);
@@ -99,23 +112,9 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
     }
 
 
-    /**
-     * Get the amount of lecture
-     *
-     * @return lecture amount
-     */
     @Override
     public int getItemCount() {
         return lecture.size();
-    }
-
-    /**
-     * Get the position, where the element with the date of today is
-     *
-     * @return position of today
-     */
-    public int getPositionToday() {
-        return LectureSchedule.getPositionScroll() == -1 ? 0 : LectureSchedule.getPositionScroll();
     }
 
     /**

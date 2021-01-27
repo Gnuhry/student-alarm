@@ -3,9 +3,6 @@ package com.example.studentalarm.regular;
 import android.content.Context;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.example.studentalarm.save.SaveHour;
 import com.example.studentalarm.save.SaveKeys;
 
@@ -20,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class Hours {
     private final int id;
@@ -112,6 +112,24 @@ public class Hours {
     }
 
     /**
+     * clear Hour Settings
+     *
+     * @param context context of app
+     */
+    public static void clearHours(@NonNull Context context) {
+        FileOutputStream fos;
+        try {
+            fos = context.openFileOutput(SaveKeys.HOURS, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(null);
+            oos.close();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Load the Hour from the internal storage of the application
      *
      * @param context context of the application
@@ -122,11 +140,12 @@ public class Hours {
         try {
             FileInputStream fis = context.openFileInput(SaveKeys.HOURS);
             ObjectInputStream ois = new ObjectInputStream(fis);
-            List<Hours> erg = convertSave((SaveHour) ois.readObject());
+            Object read = ois.readObject();
             fis.close();
             ois.close();
-            return erg;
-        } catch (IOException | ClassNotFoundException e) {
+            if (read != null)
+                return convertSave((SaveHour) read);
+        } catch (@NonNull IOException | ClassNotFoundException e) {
             Log.d("Hours", "can't load");
         }
         return new ArrayList<>();

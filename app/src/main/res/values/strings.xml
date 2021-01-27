@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">studentalarm</string>
     <string name="alarm">Alarm</string>
     <string name="lecture">Lecture</string>
@@ -58,7 +58,9 @@
     <string name="next_alarm_in">Next alarm in</string>
     <string name="time_format">%d h - %d min</string>
     <string name="zero_time">00 h - 00 min</string>
-    <string name="no_alarm_set">No alarm set or alarm in phone watch app</string>
+    <string name="no_alarm_set">No current alarm set</string>
+    <string name="alarm_in_phone">Alarm in phone watch app</string>
+    <string name="no_alarms">Alarm function disabled</string>
     <string name="alarm_at">Alarm at: %1$s</string>
     <string name="snooze">Snooze</string>
     <string name="alarm_off">Alarm Off</string>
@@ -77,7 +79,7 @@
     <string name="after">After</string>
     <string name="regular_lecture">Regular lecture</string>
     <string name="holidays">Holidays</string>
-    <string name="minute" tools:ignore="MissingTranslation">%d min</string>
+    <string name="minute" translatable="false">%d min</string>
     <string name="personal_alarm_settings">Personal alarm settings</string>
     <string name="edit">edit</string>
     <string name="from_day">"From: %1$s"</string>
@@ -134,10 +136,15 @@
     <string name="import_color">Import Color</string>
     <string name="chose_import_color">Chose Import Color</string>
     <string name="error">ERROR</string>
-    <string name="vert_line" translatable="false">|</string>
+    <string name="vertical_line" translatable="false">|</string>
     <string name="can_not_start_before_the_hour_before">Can not start before the hour before</string>
     <string name="no_lecture_in_the_bottom_bar_selected">No Lecture in the bottom bar selected</string>
     <string name="missing_hour_settings">Missing hour settings (top right corner)</string>
+    <string name="temporary_alarm_shutdown">Shut down alarm until…</string>
+    <string name="no_alarm_shutdown">don\'t shutdown the alarm</string>
+    <string name="chose_last_lecture_with_no_alarm">Chose the last lecture where no alarm is wanted</string>
+    <string name="please_check_accuracy_of_the_alarm">Please check accuracy of the alarm</string>
+    <string name="alarm_shutdown_change">alarm shutdown change</string>
 
 
 </resources>

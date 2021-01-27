@@ -7,12 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.preference.PreferenceManager;
-
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEntity;
 import com.example.studentalarm.R;
@@ -26,6 +20,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 public class WeeklyFragment extends Fragment implements ReloadLecture {
     private static final String LOG = "WeeklyFragment";
@@ -70,7 +70,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (progress.isShowing())
+        if (progress != null && progress.isShowing())
             progress.dismiss();
     }
 
@@ -102,10 +102,16 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
      */
     public void loadData() {
         Log.i(LOG, "load data");
-        weekview.post(() -> progress.show());
+        weekview.post(() -> {
+            if (progress != null)
+                progress.show();
+        });
         if (getContext() != null)
             adapter.submitList(LectureSchedule.load(getContext()).getAllLecture(getContext()));
-        weekview.post(() -> progress.dismiss());
+        weekview.post(() -> {
+            if (progress != null)
+                progress.dismiss();
+        });
     }
 
     class Adapter extends WeekView.SimpleAdapter<LectureSchedule.Lecture> {
@@ -124,10 +130,10 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
             builder.setBackgroundColor(item.getColor());
 
             Calendar startCal = Calendar.getInstance();
-            startCal.setTime(item.getStart());
+            startCal.setTime(item.getStartWithDefaultTimeZone());
 
             Calendar endCal = Calendar.getInstance();
-            endCal.setTime(item.getEnd());
+            endCal.setTime(item.getEndWithDefaultTimezone());
 
             WeekViewEntity.Event.Builder<LectureSchedule.Lecture> erg = new WeekViewEntity.Event.Builder<>(item);
             StringBuilder sb = new StringBuilder(item.getName());

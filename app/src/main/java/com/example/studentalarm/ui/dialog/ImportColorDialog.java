@@ -1,5 +1,6 @@
 package com.example.studentalarm.ui.dialog;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -14,9 +15,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
-
 import com.example.studentalarm.EventColor;
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.LectureSchedule;
@@ -24,6 +22,10 @@ import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.fragments.SettingsFragment;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 
 public class ImportColorDialog extends DialogFragment {
     @NonNull
@@ -36,6 +38,13 @@ public class ImportColorDialog extends DialogFragment {
     public ImportColorDialog(SharedPreferences preferences, SettingsFragment settingsFragment) {
         this.preferences = preferences;
         this.settingsFragment = settingsFragment;
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        setRetainInstance(true);
+        return super.onCreateDialog(savedInstanceState);
     }
 
     @Override
@@ -100,10 +109,10 @@ public class ImportColorDialog extends DialogFragment {
                 }
             }
             if (color == -1) {
-                Log.d(LOG, "Colorint Error Value: " + color);
+                Log.d(LOG, "Color int Error Value: " + color);
                 Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
             } else {
-                Log.d(LOG, "Colorint: " + color);
+                Log.d(LOG, "Color int: " + color);
                 preferences.edit().putInt(PreferenceKeys.IMPORT_COLOR, color).apply();
                 LectureSchedule.load(getContext()).changeImportedColor(color).save(getContext());
             }

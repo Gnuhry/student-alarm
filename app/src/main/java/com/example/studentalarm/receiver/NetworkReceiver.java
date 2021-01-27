@@ -5,10 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.example.studentalarm.save.PreferenceKeys;
+
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
-
-import com.example.studentalarm.save.PreferenceKeys;
 
 public class NetworkReceiver extends BroadcastReceiver {
     /**

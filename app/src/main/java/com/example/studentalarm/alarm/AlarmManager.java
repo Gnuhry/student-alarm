@@ -28,9 +28,9 @@ public class AlarmManager {
         Log.d(LOG, "set next alarm");
         if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.ALARM_ON, false)) {
             Log.d(LOG, "alarm on");
-            LectureSchedule.Lecture first = LectureSchedule.load(context).getNextFirstDayLecture(context);
+            LectureSchedule.Lecture first = LectureSchedule.load(context).getNextLecture(context);
             if (first != null)
-                setAlarm(first.getStart(), context);
+                setAlarm(first.getStartWithDefaultTimeZone(), context);
         }
     }
 
@@ -93,9 +93,9 @@ public class AlarmManager {
         calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.BEFORE, 0));
         calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.WAY, 0));
         calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.AFTER, 0));
-        if (preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false))
+        if (preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false)) {
             Alarm.setPhoneAlarm(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), context);
-        else {
+        } else {
             cancelNextAlarm(context);
             Alarm.setAlarm(calendar, context);
         }
