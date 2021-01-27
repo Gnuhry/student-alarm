@@ -5,15 +5,15 @@ This is a student project
 
 ## app features
 
-- Automatic alarm for the first event of the day
-- Personalize alarm settings
-- Weekly and Event List Display to show all your events
-- Imports for ICS (iCalendar) files from phone or web and for DHBW Mannheim Courses
-- Auto import posibility for ICS (iCalendar) Files from Web and for DHBW Mannheim Courses
-- Create your own events and a regular lecture schedule
-- Add Holidays for alarm breaks or choose an event until the alarm is silent
-- Export events to ics file
-- Dark Theme Support
+- automatic alarm for the first event of the day
+- personalize alarm settings
+- weekly and event list display to show all your events
+- imports for ICS (iCalendar) files from phone or web and for DHBW Mannheim courses
+- auto import posibility for ICS (iCalendar) files from web and for DHBW Mannheim courses
+- create your own events and a regular lecture schedule
+- add holidays for alarm breaks or choose an event until the alarm is silent
+- export events to ics file
+- dark theme support
 - English and German language support
 
 ## android requirements
