@@ -19,6 +19,7 @@ import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.adapter.HolidayAdapter;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,6 +33,12 @@ public class AlarmSettingFragment extends Fragment {
 
     public AlarmSettingFragment(PersonalFragment fragment) {
         this.fragment = fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     @Override
