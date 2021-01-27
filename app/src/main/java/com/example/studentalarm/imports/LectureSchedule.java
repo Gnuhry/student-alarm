@@ -390,12 +390,12 @@ public class LectureSchedule {
                 String CHANNEL_ID = "1234567";
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                         .setSmallIcon(R.drawable.alarm)
-                        .setContentTitle(context.getString(R.string.alarmshutdown_change))
+                        .setContentTitle(context.getString(R.string.alarm_shutdown_change))
                         .setContentText(context.getString(R.string.please_check_accuracy_of_the_alarm))
                         .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK), 0))
                         .setPriority(NotificationCompat.PRIORITY_HIGH);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    CharSequence name = context.getString(R.string.alarmshutdown_change);
+                    CharSequence name = context.getString(R.string.alarm_shutdown_change);
                     String description = context.getString(R.string.please_check_accuracy_of_the_alarm);
                     int importance = NotificationManager.IMPORTANCE_DEFAULT;
                     NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);

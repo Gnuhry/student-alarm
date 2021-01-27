@@ -129,7 +129,7 @@
     <string name="no_alarm_shutdown">Den Alarm nicht abschalten</string>
     <string name="chose_last_lecture_with_no_alarm">Wählen Sie die letzte Vorlesung zu der es keinen Alarm geben soll</string>
     <string name="please_check_accuracy_of_the_alarm">Bitte überprüfen Sie den Alarm </string>
-    <string name="alarmshutdown_change">Alarm Statusänderung</string>
+    <string name="alarm_shutdown_change">Alarm Statusänderung</string>
 
 
 

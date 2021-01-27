@@ -11,7 +11,6 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.example.studentalarm.R;
-import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.dialog.AlarmShutdownDialog;

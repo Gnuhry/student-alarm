@@ -144,7 +144,7 @@
     <string name="no_alarm_shutdown">don\'t shutdown the alarm</string>
     <string name="chose_last_lecture_with_no_alarm">Chose the last lecture where no alarm is wanted</string>
     <string name="please_check_accuracy_of_the_alarm">Please check accuracy of the alarm</string>
-    <string name="alarmshutdown_change">alarmshutdown change</string>
+    <string name="alarm_shutdown_change">alarm shutdown change</string>
 
 
 </resources>
