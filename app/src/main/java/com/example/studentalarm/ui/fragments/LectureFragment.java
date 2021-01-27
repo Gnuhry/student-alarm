@@ -143,4 +143,11 @@ public class LectureFragment extends Fragment {
         if (animateBool)
             setAnimation(activity, item, res == R.drawable.hourglass_bottom ? R.drawable.hourglass_top : R.drawable.hourglass_bottom);
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
 }
