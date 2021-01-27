@@ -350,9 +350,11 @@ public class LectureSchedule {
     private List<Lecture> getAllLectureWithoutHolidayAndHolidayEvents(@NonNull Context context) {
         List<Lecture> all = new ArrayList<>(), all2 = new ArrayList<>();
         int countShutdownEvents = 0;
+        long penultimateShutdownEvent =0;
         all.addAll(lecture);
         all.addAll(importLecture);
         all.addAll(getRegularLecture(context));
+        Collections.sort(all);
         boolean skip;
         for (Lecture l : all) {
             if (holidays.size() > 0) {
@@ -363,18 +365,21 @@ public class LectureSchedule {
                         skip = true;
                     }
             }
-            if (l.getStart().equals(new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0))))
-                countShutdownEvents++;
+            if (!l.getStart().after(new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0)))) {
+                penultimateShutdownEvent = l.getStart().getTime();
+                if (l.getStart().equals(new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0))))
+                    countShutdownEvents++;
+            }
         }
         if (holidays.size() > 0)
             all.removeAll(all2);
         if (PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) != 0 && countShutdownEvents <= 0) {
             Log.d("Lecture Schedule", "Change made last shutdown element disappear");
-            PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
+            PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, penultimateShutdownEvent).apply();
             AlarmManager.updateNextAlarm(context);
             Toast.makeText(context, R.string.alarm_shutdown_changed_alarm_is_set_for_next_event, Toast.LENGTH_LONG).show();
         }
-        Collections.sort(all);
+
         return all;
     }
 

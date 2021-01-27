@@ -128,7 +128,7 @@
     <string name="temporary_alarm_shutdown">Den Alarm abschalten bis …</string>
     <string name="no_alarm_shutdown">Den Alarm nicht abschalten</string>
     <string name="chose_last_lecture_with_no_alarm">Wählen Sie die letzte Vorlesung zu der es keinen Alarm geben soll</string>
-    <string name="alarm_shutdown_changed_alarm_is_set_for_next_event">Der Alarm wurde wegen einer Änderrung im Terminkallender auf den nächsten Termin gelegt </string>
+    <string name="alarm_shutdown_changed_alarm_is_set_for_next_event">Der Alarm wurde wegen einer Änderrung im Terminkallender geändert. Bitte überprüfen Sie die Richtigkeit. </string>
 
 
 
