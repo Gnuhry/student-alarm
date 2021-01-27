@@ -1,5 +1,6 @@
 package com.example.studentalarm.ui.dialog;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import com.example.studentalarm.ui.fragments.AlarmFragment;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,6 +36,8 @@ public class AlarmShutdownDialog extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (getContext() != null)
+            AlarmManager.updateNextAlarm(getContext());
         alarmFragment.reload();
     }
 
@@ -51,14 +55,17 @@ public class AlarmShutdownDialog extends DialogFragment {
             rv.setAdapter(adapter);
         }
         view.findViewById(R.id.btnNoAlarmShutdown).setOnClickListener(view2 -> {
-            if (getContext() != null) {
-                PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
-                AlarmManager.updateNextAlarm(getContext());
-                this.dismiss();
-            }
+            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
+            this.dismiss();
         });
         alarmFragment.stopLoad();// from Progress Show
         return view;
     }
 
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        setRetainInstance(true);
+        return super.onCreateDialog(savedInstanceState);
+    }
 }

@@ -88,7 +88,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
         for (Iterator<String> iterator = lecture.getRooms().iterator(); iterator.hasNext(); )
             if (iterator.next().equals(""))
                 iterator.remove();
-        Log.d("allromes", lecture.getRooms().size() + "");
+        Log.d("all rooms", lecture.getRooms().size() + "");
         return lecture.getRooms();
     }
 

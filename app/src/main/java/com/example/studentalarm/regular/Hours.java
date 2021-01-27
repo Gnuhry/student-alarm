@@ -141,11 +141,10 @@ public class Hours {
             FileInputStream fis = context.openFileInput(SaveKeys.HOURS);
             ObjectInputStream ois = new ObjectInputStream(fis);
             Object read = ois.readObject();
-            if (read == null) return new ArrayList<>();
-            List<Hours> erg = convertSave((SaveHour) read);
             fis.close();
             ois.close();
-            return erg;
+            if (read != null)
+                return convertSave((SaveHour) read);
         } catch (@NonNull IOException | ClassNotFoundException e) {
             Log.d("Hours", "can't load");
         }

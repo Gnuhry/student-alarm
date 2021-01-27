@@ -49,7 +49,7 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
             super(view);
             hour = view.findViewById(R.id.txVHour);
             from = view.findViewById(R.id.edTFrom);
-            until = view.findViewById(R.id.edTUnti);
+            until = view.findViewById(R.id.edTUntil);
             llAddDelete = view.findViewById(R.id.LLAddDelete);
             llTime = view.findViewById(R.id.LLTime);
             add = view.findViewById(R.id.imVAdd);

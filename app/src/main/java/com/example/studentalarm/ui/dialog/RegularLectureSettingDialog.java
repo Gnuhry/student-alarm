@@ -1,6 +1,7 @@
 package com.example.studentalarm.ui.dialog;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -39,6 +40,13 @@ public class RegularLectureSettingDialog extends DialogFragment {
         this.fragment = fragment;
         schedule = RegularLectureSchedule.load(context);
         this.context = context;
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        setRetainInstance(true);
+        return super.onCreateDialog(savedInstanceState);
     }
 
     @Nullable

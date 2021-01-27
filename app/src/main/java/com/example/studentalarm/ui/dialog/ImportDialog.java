@@ -305,7 +305,7 @@ public class ImportDialog extends Dialog {
 
                     findViewById(R.id.spDHBWMaCourseCategory).post(() -> ((Spinner) findViewById(R.id.spDHBWMaCourseCategory)).setAdapter(categoryAdapter));
                 } else
-                    findViewById(R.id.btnImportDhbwCourses).post(() -> Toast.makeText(getContext(), R.string.no_connection, Toast.LENGTH_SHORT).show());//btnImportDhbwCourses ist ein Element auf der Seite
+                    findViewById(R.id.btnImportDhbwCourses).post(() -> Toast.makeText(getContext(), R.string.no_connection, Toast.LENGTH_SHORT).show());//btnImportDhbwCourses is a element of the site
                 findViewById(R.id.btnImportDhbwCourses).post(() -> {//one post for performance important if Ids change
                     findViewById(R.id.btnImportDhbwCourses).setEnabled(true);
                     findViewById(R.id.imgStatusDHBW).setVisibility(View.GONE);

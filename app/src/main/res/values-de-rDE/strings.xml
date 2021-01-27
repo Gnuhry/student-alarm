@@ -125,10 +125,11 @@
     <string name="can_not_start_before_the_hour_before">Can not start before the hour before</string>
     <string name="no_lecture_in_the_bottom_bar_selected">No Lecture in the bottom bar selected</string>
     <string name="missing_hour_settings">Missing hour settings (top right corner)</string>
-    <string name="temporary_alarmshutdown">Den Alarm abschalten bis …</string>
-    <string name="no_alarmshutdown">Den Alarm nicht abschalten</string>
-    <string name="chose_last_lecture_with_noalarm">Wählen Sie die letzte Vorlesung zu der es keinen Alarm geben soll</string>
-    <string name="alarm_shutdown_changed_alarm_is_set_for_next_event">Der Alarm wurde wegen einer Änderrung im Terminkallender auf den nächsten Termin gelegt </string>
+    <string name="temporary_alarm_shutdown">Den Alarm abschalten bis …</string>
+    <string name="no_alarm_shutdown">Den Alarm nicht abschalten</string>
+    <string name="chose_last_lecture_with_no_alarm">Wählen Sie die letzte Vorlesung zu der es keinen Alarm geben soll</string>
+    <string name="please_check_accuracy_of_the_alarm">Bitte überprüfen Sie den Alarm </string>
+    <string name="alarm_shutdown_change">Alarm Statusänderung</string>
 
 
 

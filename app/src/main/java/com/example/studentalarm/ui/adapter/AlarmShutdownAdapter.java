@@ -11,7 +11,6 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.example.studentalarm.R;
-import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.dialog.AlarmShutdownDialog;
@@ -27,7 +26,7 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdapter.ViewHolder> {
-    private static final String LOG = "AlarmshutdownAd";
+    private static final String LOG = "AlarmShutdownAdapter";
     private static SimpleDateFormat dayOfWeekName;
     private static DateFormat day, time;
     @NonNull
@@ -88,13 +87,10 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
                 viewHolder.until.setVisibility(View.VISIBLE);
                 viewHolder.from.setText(cutTime(time.format(l.getStart())));
                 viewHolder.until.setText(cutTime(time.format(l.getEnd())));
-                Log.d(LOG, "Startdatum: " + l.getStart() + " Vergleichsdatum" + new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0)));
-                if (l.getStart().equals(new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0)))) {
-                    Log.d(LOG, "ID: " + l.getId() + " Raum: " + l.getLocation());
+                if (l.getStart().equals(new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0))))
                     viewHolder.TLEvent.setBackgroundColor(Color.parseColor("#da2c43"));
-                } else {
+                else
                     viewHolder.TLEvent.setBackgroundColor(Color.TRANSPARENT);// slows process down but necessary because otherwise random error that background becomes Yellow
-                }
             } else {
                 viewHolder.from.setVisibility(View.GONE);
                 viewHolder.until.setVisibility(View.GONE);
@@ -105,7 +101,6 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
             viewHolder.TLEvent.setOnClickListener(view -> {
                 Log.d(LOG, "Time: " + l.getStart().getTime());
                 PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, l.getStart().getTime()).apply();
-                AlarmManager.updateNextAlarm(context);
                 dialog.dismiss();
             });
         } else {
