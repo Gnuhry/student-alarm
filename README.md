@@ -26,7 +26,7 @@ See this [tutorial webiste](https://www.thecustomdroid.com/how-to-install-apk-on
 
 You can get the latest apk from the [release tab](https://github.com/Gnuhry/student-alarm/releases)
 
-## planed features
+## planned features
 
 - earlier alarm option if high traffic volume, or train is canceld and you have to get the earlier one (including maps and train APIs)
 - option to have more than one regular lecture schedule, which switch each week
