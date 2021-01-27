@@ -1,12 +1,17 @@
 package com.example.studentalarm.imports;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.studentalarm.EventColor;
+import com.example.studentalarm.MainActivity;
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.regular.Hours;
@@ -32,6 +37,8 @@ import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
 public class LectureSchedule {
@@ -377,7 +384,32 @@ public class LectureSchedule {
             Log.d("Lecture Schedule", "Change made last shutdown element disappear");
             PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, penultimateShutdownEvent).apply();
             AlarmManager.updateNextAlarm(context);
-            Toast.makeText(context, R.string.alarm_shutdown_changed_alarm_is_set_for_next_event, Toast.LENGTH_LONG).show();
+            if (NotificationManagerCompat.from(context).areNotificationsEnabled())
+            {
+                int NOTIFICATION_ID = 1234567;
+                String CHANNEL_ID = "1234567";
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.alarm)
+                        .setContentTitle(context.getString(R.string.alarmshutdown_change))
+                        .setContentText(context.getString(R.string.please_check_accuracy_of_the_alarm))
+                        .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK), 0))
+                        .setPriority(NotificationCompat.PRIORITY_HIGH);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    CharSequence name = context.getString(R.string.alarmshutdown_change);
+                    String description = context.getString(R.string.please_check_accuracy_of_the_alarm);
+                    int importance = NotificationManager.IMPORTANCE_DEFAULT;
+                    NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+                    channel.setDescription(description);
+                    channel.enableLights(true);
+                    channel.setLightColor(Color.YELLOW);
+                    channel.enableVibration(false);
+                    NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+                    notificationManager.createNotificationChannel(channel);
+                    notificationManager.notify(NOTIFICATION_ID, builder.build());
+                } else
+                    NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build());
+            }
+            // Toast.makeText(context, R.string.alarm_shutdown_changed_alarm_is_set_for_next_event, Toast.LENGTH_LONG).show(); Notification is better for Visibility
         }
 
         return all;
