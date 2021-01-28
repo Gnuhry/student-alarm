@@ -1,6 +1,5 @@
 package com.example.studentalarm.ui.dialog;
 
-import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -61,13 +60,6 @@ public class RegularLectureDialog extends DialogFragment {
             oldDocent = "";
             oldColor = Color.BLUE;
         }
-    }
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        setRetainInstance(true);
-        return super.onCreateDialog(savedInstanceState);
     }
 
     @Override

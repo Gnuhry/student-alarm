@@ -124,6 +124,8 @@ public class ImportDialog extends Dialog {
             } else if (((RadioButton) findViewById(R.id.rBtnNone)).isChecked()) {
                 Log.d(LOG, "none");
                 preferences.edit().putInt(PreferenceKeys.MODE, Import.ImportFunction.NONE).apply();
+                preferences.edit().putString(PreferenceKeys.IMPORT_TIME, PreferenceKeys.DEFAULT_IMPORT_TIME).apply();
+                preferences.edit().putBoolean(PreferenceKeys.AUTO_IMPORT, false).apply();
                 this.cancel();
             } else if (((RadioButton) findViewById(R.id.rBtnPhone)).isChecked()) {
                 Log.d(LOG, "phone");
