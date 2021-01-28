@@ -17,7 +17,7 @@
         android:theme="@style/Theme.Studentalarm"
         android:usesCleartextTraffic="true">
         <activity android:name=".MainActivity"
-            android:screenOrientation="portrait">
+            android:configChanges="orientation|screenSize|keyboardHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
