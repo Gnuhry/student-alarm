@@ -16,6 +16,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.studentalarm.EventColor;
+import com.example.studentalarm.MainActivity;
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.Import;
@@ -286,6 +287,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     break;
             }
             AppCompatDelegate.setDefaultNightMode(mode);
+            ((MainActivity) getActivity()).checkLanguage();
             reload();
             return true;
         });
@@ -328,8 +330,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             config.locale = new Locale(newValue.toLowerCase());
         resources.updateConfiguration(config, dm);
         BottomNavigationView bottomNav = activity.findViewById(R.id.bottomNav);
+        int help = bottomNav.getSelectedItemId();
         bottomNav.getMenu().clear();
         bottomNav.inflateMenu(R.menu.bottom_nav_menu);
+        bottomNav.setSelectedItemId(help);
         Toolbar toolbar = activity.findViewById(R.id.my_toolbar);
         toolbar.getMenu().clear();
         toolbar.inflateMenu(R.menu.toolbar);

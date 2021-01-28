@@ -52,9 +52,7 @@ public class MainActivity extends AppCompatActivity {
         }
         AppCompatDelegate.setDefaultNightMode(mode);
 
-        String lan = PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceKeys.LANGUAGE, null);
-        if (lan != null && !lan.equals(PreferenceKeys.defaultLanguage(this)))
-            new SettingsFragment().changeLanguage(lan, this, this);
+        checkLanguage();
     }
 
     @Override
@@ -67,9 +65,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        checkLanguage();
+        super.onConfigurationChanged(newConfig);
+    }
+
+    public void checkLanguage() {
         String lan = PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceKeys.LANGUAGE, null);
         if (lan != null && !lan.equals(PreferenceKeys.defaultLanguage(this)))
             new SettingsFragment().changeLanguage(lan, this, this);
-        super.onConfigurationChanged(newConfig);
     }
 }
