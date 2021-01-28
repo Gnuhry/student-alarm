@@ -19,6 +19,7 @@ This is a student project
 ## android requirements
 - min: sdk 16 (android version jelly bean)
 - recommend: sdk 30 (android version 11)
+- (proven to be working on managed Devices / Android Enterprise)
 
 ## installation guide
 See this [tutorial webiste](https://www.thecustomdroid.com/how-to-install-apk-on-android/) (external website) to install the apk on your phone
