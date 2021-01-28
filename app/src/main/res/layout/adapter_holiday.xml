@@ -36,6 +36,14 @@
             android:layout_weight="10" />
 
         <ImageView
+            android:id="@+id/imVDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/delete"
+            android:contentDescription="@string/delete" />
+
+        <ImageView
             android:id="@+id/imVEdit"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
