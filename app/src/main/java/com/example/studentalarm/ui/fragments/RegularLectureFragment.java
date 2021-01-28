@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,7 +33,7 @@ import static com.example.studentalarm.save.PreferenceKeys.getLocale;
 
 public class RegularLectureFragment extends Fragment {
     private static final String LOG = "RegularLectureFragment";
-    @NonNull
+    @Nullable
     private final PersonalFragment fragment;
     private RegularLectureSchedule regularLectureSchedule;
     private RegularLectureAdapter regularLectureAdapter;
@@ -40,6 +41,10 @@ public class RegularLectureFragment extends Fragment {
     private WeekView weekView;
     private RecyclerView rv;
     private boolean changes = false;
+
+    public RegularLectureFragment() {
+        this.fragment = null;
+    }
 
     public RegularLectureFragment(@NonNull PersonalFragment fragment) {
         this.fragment = fragment;
@@ -68,7 +73,7 @@ public class RegularLectureFragment extends Fragment {
         return regularLectureSchedule;
     }
 
-    @NonNull
+    @Nullable
     public PersonalFragment getFragmentParent() {
         return fragment;
     }
