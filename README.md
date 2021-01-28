@@ -8,8 +8,8 @@ This is a student project
 - automatic alarm for the first event of the day
 - personalize alarm settings
 - weekly and event list display to show all your events
-- imports for ICS (iCalendar) files from phone or web and for DHBW Mannheim courses
-- auto import posibility for ICS (iCalendar) files from web and for DHBW Mannheim courses
+- imports for ics (iCalendar) files from phone or web and for DHBW Mannheim courses
+- auto import posibility for ics (iCalendar) files from web and for DHBW Mannheim courses
 - create your own events and a regular lecture schedule
 - add holidays for alarm breaks or choose an event until the alarm is silent
 - export events to ics file
@@ -19,7 +19,7 @@ This is a student project
 ## android requirements
 - min: sdk 16 (android version jelly bean)
 - recommend: sdk 30 (android version 11)
-- (proven to be working on managed Devices / Android Enterprise)
+- (proven to be working on managed devices / android enterprise)
 
 ## installation guide
 See this [tutorial webiste](https://www.thecustomdroid.com/how-to-install-apk-on-android/) (external website) to install the apk on your phone
