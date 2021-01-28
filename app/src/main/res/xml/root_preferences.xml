@@ -12,12 +12,9 @@
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/snooze_duration" />
-        <ListPreference
-            android:entries="@array/ringtone"
-            android:entryValues="@array/ringtone"
+        <Preference
             android:key="RINGTONE"
-            android:title="@string/ringtone"
-            app:useSimpleSummaryProvider="true" />
+            android:title="@string/ringtone" />
         <SwitchPreference
             android:defaultValue="false"
             android:enabled="false"

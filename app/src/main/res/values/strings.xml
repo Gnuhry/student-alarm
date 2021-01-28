@@ -145,6 +145,8 @@
     <string name="chose_last_lecture_with_no_alarm">Chose the last lecture where no alarm is wanted</string>
     <string name="please_check_accuracy_of_the_alarm">Please check accuracy of the alarm</string>
     <string name="alarm_shutdown_change">alarm shutdown change</string>
+    <string name="custom">custom</string>
+    <string name="not_a_song_file">Not a song file</string>
 
 
 </resources>

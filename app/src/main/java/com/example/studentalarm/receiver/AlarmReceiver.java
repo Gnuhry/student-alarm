@@ -89,7 +89,14 @@ public class AlarmReceiver extends BroadcastReceiver {
      * @return ringtone to play
      */
     private MediaPlayer getMediaPlayer(@NonNull Context context) {
-        switch (PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.RINGTONE, PreferenceKeys.DEFAULT_RINGTONE)) {
+        String ringtone = PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.RINGTONE, PreferenceKeys.DEFAULT_RINGTONE);
+        if (ringtone.startsWith("|")) {
+            MediaPlayer mediaPlayer = MediaPlayer.create(context, Uri.parse(ringtone.substring(1)));
+            if (mediaPlayer != null)
+                return mediaPlayer;
+            PreferenceManager.getDefaultSharedPreferences(context).edit().putString(PreferenceKeys.RINGTONE, PreferenceKeys.DEFAULT_RINGTONE).apply();
+        }
+        switch (ringtone) {
             case "gentle":
                 return MediaPlayer.create(context.getApplicationContext(), R.raw.alarm_gentle);
             case "DEFAULT":

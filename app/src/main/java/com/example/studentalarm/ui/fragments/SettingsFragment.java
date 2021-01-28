@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.media.MediaPlayer;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,6 +26,7 @@ import com.example.studentalarm.ui.dialog.DeleteLectureDialog;
 import com.example.studentalarm.ui.dialog.ExportDialog;
 import com.example.studentalarm.ui.dialog.ImportColorDialog;
 import com.example.studentalarm.ui.dialog.ImportDialog;
+import com.example.studentalarm.ui.dialog.RingtoneDialog;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -69,12 +68,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Preference importPref = findPreference(PreferenceKeys.IMPORT),
                 importColorPref = findPreference(PreferenceKeys.IMPORT_COLOR),
                 eventDeleteAll = findPreference(PreferenceKeys.EVENT_DELETE_ALL),
+                ringtone = findPreference(PreferenceKeys.RINGTONE),
                 export = findPreference(PreferenceKeys.EXPORT),
                 reset = findPreference(PreferenceKeys.RESET);
         EditTextPreference snooze = findPreference(PreferenceKeys.SNOOZE),
                 importTime = findPreference(PreferenceKeys.IMPORT_TIME);
         ListPreference language = findPreference(PreferenceKeys.LANGUAGE),
-                ringtone = findPreference(PreferenceKeys.RINGTONE),
                 theme = findPreference(PreferenceKeys.THEME);
 
         if (alarmOn == null ||
@@ -154,19 +153,21 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         ringtone.setEnabled(bool2);
-        ringtone.setOnPreferenceChangeListener((preference, newValue) -> {
-            Log.i(LOG, "alarm ringtone change to " + newValue);
-            if (getContext() != null) {
-                switch ((String) newValue) {
-                    case "gentle":
-                        MediaPlayer.create(getContext().getApplicationContext(), R.raw.alarm_gentle).start();
-                    case "DEFAULT":
-                    default:
-                        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                        MediaPlayer.create(getContext().getApplicationContext(), alarmSound).start();
-                }
-            }
+        ringtone.setOnPreferenceClickListener(preference -> {
+            RingtoneDialog dialog = new RingtoneDialog(getContext(), getActivity());
+            dialog.setOnDismissListener(dialogInterface -> {
+                dialog.cancel();
+                reload();
+            });
+            dialog.show();
             return true;
+        });
+        ringtone.setSummaryProvider(preference -> {
+            SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
+            String ringtoneHelp = preferences.getString(PreferenceKeys.RINGTONE, PreferenceKeys.DEFAULT_RINGTONE);
+            if (ringtoneHelp.startsWith("|")) {
+                return new StringBuilder(getString(R.string.custom)).append(" ").append(Uri.parse(ringtoneHelp.substring(1)).getLastPathSegment());
+            } else return ringtoneHelp;
         });
 
         importPref.setSummaryProvider(preference -> {
@@ -342,6 +343,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      */
     public void reload() {
         if (getActivity() == null) return;
+        Log.d(LOG, "reload");
         NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_);
         if (navHostFragment != null)
             navHostFragment.getNavController().navigate(R.id.settingsFragment_);
