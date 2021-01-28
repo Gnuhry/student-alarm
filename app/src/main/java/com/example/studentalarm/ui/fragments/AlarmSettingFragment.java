@@ -19,7 +19,6 @@ import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.adapter.HolidayAdapter;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;

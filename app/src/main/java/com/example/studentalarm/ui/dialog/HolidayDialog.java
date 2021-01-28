@@ -1,6 +1,5 @@
 package com.example.studentalarm.ui.dialog;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
