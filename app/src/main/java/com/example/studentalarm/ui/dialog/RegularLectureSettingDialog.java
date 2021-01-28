@@ -42,13 +42,6 @@ public class RegularLectureSettingDialog extends DialogFragment {
         this.context = context;
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        setRetainInstance(true);
-        return super.onCreateDialog(savedInstanceState);
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

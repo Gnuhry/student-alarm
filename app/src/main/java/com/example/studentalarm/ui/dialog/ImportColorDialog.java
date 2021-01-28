@@ -40,13 +40,6 @@ public class ImportColorDialog extends DialogFragment {
         this.settingsFragment = settingsFragment;
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        setRetainInstance(true);
-        return super.onCreateDialog(savedInstanceState);
-    }
-
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         settingsFragment.reload();

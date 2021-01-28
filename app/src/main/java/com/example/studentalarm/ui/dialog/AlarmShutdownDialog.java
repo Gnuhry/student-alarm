@@ -61,11 +61,4 @@ public class AlarmShutdownDialog extends DialogFragment {
         alarmFragment.stopLoad();// from Progress Show
         return view;
     }
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        setRetainInstance(true);
-        return super.onCreateDialog(savedInstanceState);
-    }
 }
