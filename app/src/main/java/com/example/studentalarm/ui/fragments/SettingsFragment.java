@@ -300,9 +300,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     .setMessage(R.string.do_you_want_to_reset_this_application)
                     .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
                         Log.i(LOG, "reset - positive");
-                        String lan = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(PreferenceKeys.LANGUAGE, PreferenceKeys.DEFAULT_LANGUAGE), lan2 = PreferenceKeys.reset(getContext());
-                        if (!lan2.equals(lan) && getActivity() != null)
-                            changeLanguage(lan2, getContext(), getActivity());
+                        changeLanguage(PreferenceKeys.reset(getContext()), getContext(), getActivity());
                         removeAllEventsLecture();
                         RegularLectureSchedule.clearSave(getContext());
                         Hours.clearHours(getContext());
