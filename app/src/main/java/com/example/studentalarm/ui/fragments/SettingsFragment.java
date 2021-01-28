@@ -322,11 +322,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Resources resources = context.getResources();
         DisplayMetrics dm = resources.getDisplayMetrics();
         Configuration config = resources.getConfiguration();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
             config.setLocale(new Locale(newValue.toLowerCase()));
-        } else {
+        else
             config.locale = new Locale(newValue.toLowerCase());
-        }
         resources.updateConfiguration(config, dm);
         BottomNavigationView bottomNav = activity.findViewById(R.id.bottomNav);
         bottomNav.getMenu().clear();

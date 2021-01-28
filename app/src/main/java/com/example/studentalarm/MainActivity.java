@@ -3,6 +3,7 @@ package com.example.studentalarm;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -12,6 +13,7 @@ import com.example.studentalarm.ui.dialog.ImportDialog;
 import com.example.studentalarm.ui.fragments.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -61,5 +63,13 @@ public class MainActivity extends AppCompatActivity {
             ImportDialog.setResultIntent(data, this);
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        String lan = PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceKeys.LANGUAGE, null);
+        if (lan != null && !lan.equals(PreferenceKeys.defaultLanguage(this)))
+            new SettingsFragment().changeLanguage(lan, this, this);
+        super.onConfigurationChanged(newConfig);
     }
 }
