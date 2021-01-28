@@ -1,7 +1,6 @@
 package com.example.studentalarm.ui.dialog;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -65,13 +64,6 @@ public class EventDialog extends DialogFragment {
         this.schedule = schedule;
         if (data != null)
             Log.d(LOG, "data: " + data.toString());
-    }
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        setRetainInstance(true);
-        return super.onCreateDialog(savedInstanceState);
     }
 
 

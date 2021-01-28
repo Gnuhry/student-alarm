@@ -16,6 +16,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.studentalarm.EventColor;
+import com.example.studentalarm.MainActivity;
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.Import;
@@ -286,6 +287,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     break;
             }
             AppCompatDelegate.setDefaultNightMode(mode);
+            ((MainActivity) getActivity()).checkLanguage();
             reload();
             return true;
         });
@@ -298,9 +300,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     .setMessage(R.string.do_you_want_to_reset_this_application)
                     .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
                         Log.i(LOG, "reset - positive");
-                        String lan = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(PreferenceKeys.LANGUAGE, PreferenceKeys.DEFAULT_LANGUAGE), lan2 = PreferenceKeys.reset(getContext());
-                        if (!lan2.equals(lan) && getActivity() != null)
-                            changeLanguage(lan2, getContext(), getActivity());
+                        changeLanguage(PreferenceKeys.reset(getContext()), getContext(), getActivity());
                         removeAllEventsLecture();
                         RegularLectureSchedule.clearSave(getContext());
                         Hours.clearHours(getContext());
@@ -322,15 +322,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Resources resources = context.getResources();
         DisplayMetrics dm = resources.getDisplayMetrics();
         Configuration config = resources.getConfiguration();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
             config.setLocale(new Locale(newValue.toLowerCase()));
-        } else {
+        else
             config.locale = new Locale(newValue.toLowerCase());
-        }
         resources.updateConfiguration(config, dm);
         BottomNavigationView bottomNav = activity.findViewById(R.id.bottomNav);
+        int help = bottomNav.getSelectedItemId();
         bottomNav.getMenu().clear();
         bottomNav.inflateMenu(R.menu.bottom_nav_menu);
+        bottomNav.setSelectedItemId(help);
         Toolbar toolbar = activity.findViewById(R.id.my_toolbar);
         toolbar.getMenu().clear();
         toolbar.inflateMenu(R.menu.toolbar);

@@ -1,7 +1,6 @@
 package com.example.studentalarm.ui.dialog;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +14,7 @@ import android.widget.Toast;
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.ui.adapter.SettingsHourAdapter;
+import com.example.studentalarm.ui.fragments.PersonalFragment;
 import com.example.studentalarm.ui.fragments.RegularLectureFragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -40,13 +40,6 @@ public class RegularLectureSettingDialog extends DialogFragment {
         this.fragment = fragment;
         schedule = RegularLectureSchedule.load(context);
         this.context = context;
-    }
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        setRetainInstance(true);
-        return super.onCreateDialog(savedInstanceState);
     }
 
     @Nullable
@@ -84,7 +77,9 @@ public class RegularLectureSettingDialog extends DialogFragment {
             schedule.setDays(spinner.getSelectedItemPosition() + 5);
             schedule.setHours(hour);
             schedule.save(context);
-            fragment.getFragmentParent().openFragment(fragment.getFragmentParent().getRegularFragment());
+            PersonalFragment personalFragment = fragment.getFragmentParent();
+            if (personalFragment != null)
+                personalFragment.openFragment(fragment.getFragmentParent().getRegularFragment());
             this.dismiss();
         });
         return view;

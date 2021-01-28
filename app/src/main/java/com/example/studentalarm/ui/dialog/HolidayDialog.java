@@ -1,6 +1,5 @@
 package com.example.studentalarm.ui.dialog;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -56,13 +55,6 @@ public class HolidayDialog extends DialogFragment {
         this.adapter = adapter;
         this.schedule = schedule;
         this.index = index;
-    }
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        setRetainInstance(true);
-        return super.onCreateDialog(savedInstanceState);
     }
 
     @Nullable
