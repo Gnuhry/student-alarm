@@ -134,7 +134,7 @@ public class LectureFragment extends Fragment {
      * @param res      res to display
      */
     private static void setAnimation(@NonNull Activity activity, @NonNull MenuItem item, int res) {
-        if (activity == null || !(res == R.drawable.hourglass_bottom || res == R.drawable.hourglass_top))
+        if (!(res == R.drawable.hourglass_bottom || res == R.drawable.hourglass_top))
             return;
         activity.findViewById(R.id.my_toolbar).post(() -> item.setIcon(res));
         try {

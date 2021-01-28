@@ -1,6 +1,5 @@
 package com.example.studentalarm.ui.dialog;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -24,7 +23,6 @@ import com.example.studentalarm.ui.fragments.SettingsFragment;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 public class ImportColorDialog extends DialogFragment {
