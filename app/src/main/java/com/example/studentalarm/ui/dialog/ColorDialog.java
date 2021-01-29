@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.example.studentalarm.EventColor;
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.LectureSchedule;
-import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.fragments.SettingsFragment;
 
 import java.util.List;
@@ -34,6 +33,7 @@ public class ColorDialog extends DialogFragment {
     private static final String LOG = "ImportColorDialog";
     private final SettingsFragment settingsFragment;
     private final int colorPreference;
+    private String preferenceKey;
     private CallColorDialog callColorDialog;
     private RadioGroup radioGroupColours;
 
@@ -44,9 +44,11 @@ public class ColorDialog extends DialogFragment {
     }
 
 
-    public ColorDialog(SettingsFragment settingsFragment) {
+    public ColorDialog(@NonNull SettingsFragment settingsFragment, @NonNull String preferenceKey, int pDefault) {
         this.settingsFragment = settingsFragment;
-        colorPreference = getContext() == null ? PreferenceKeys.DEFAULT_IMPORT_EVENT_COLOR : PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.IMPORT_COLOR, PreferenceKeys.DEFAULT_IMPORT_EVENT_COLOR);
+        this.preferenceKey = preferenceKey;
+
+        colorPreference = getContext() == null ? pDefault : PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(preferenceKey, pDefault);
     }
 
     @Override
@@ -140,7 +142,7 @@ public class ColorDialog extends DialogFragment {
             }
             if (settingsFragment == null) callColorDialog.setColorHelp((int) checkedColor);
             else {
-                PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putInt(PreferenceKeys.IMPORT_COLOR, (int) checkedColor).apply();
+                PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putInt(preferenceKey, (int) checkedColor).apply();
                 LectureSchedule.load(getContext()).changeImportedColor((int) checkedColor).save(getContext());
             }
             this.dismiss();

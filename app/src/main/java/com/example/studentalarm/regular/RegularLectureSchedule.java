@@ -1,7 +1,6 @@
 package com.example.studentalarm.regular;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.widget.Toast;
 

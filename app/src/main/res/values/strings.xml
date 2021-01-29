@@ -153,6 +153,9 @@
     <string name="hex_color_eg_304534">hex color eg. #304534</string>
     <string name="not_a_hey_code">Not a hex code</string>
     <string name="choose_color">Choose color</string>
+    <string name="flash_light">Flash light</string>
+    <string name="vibration">Vibration</string>
+    <string name="flash_light_color">Flash light color</string>
 
 
 </resources>

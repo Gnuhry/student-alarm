@@ -6,7 +6,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -72,9 +72,12 @@ public class AlarmReceiver extends BroadcastReceiver {
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
-            channel.enableLights(true);
-            channel.setLightColor(Color.RED); //TODO extra setting
-            channel.enableVibration(true);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            boolean flashLight = preferences.getBoolean(PreferenceKeys.FLASH_LIGHT, false);
+            channel.enableLights(flashLight);
+            if (flashLight)
+                channel.setLightColor(preferences.getInt(PreferenceKeys.FLASH_LIGHT_COLOR, PreferenceKeys.DEFAULT_FLASH_LIGHT_COLOR));
+            channel.enableVibration(preferences.getBoolean(PreferenceKeys.VIBRATION, false));
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
             notificationManager.notify(NOTIFICATION_ID, builder.build());

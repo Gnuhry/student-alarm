@@ -136,6 +136,10 @@
     <string name="no_color_selected">Keine Farbe ausgewählt</string>
     <string name="hex_color_eg_304534">hex Farbe z.B. #304534</string>
     <string name="not_a_hey_code">Kein hex Code</string>
+    <string name="choose_color">Farbe aussuchen</string>
+    <string name="flash_light">Alarmlicht aufleuchten</string>
+    <string name="vibration">Vibration</string>
+    <string name="flash_light_color">Alarmlicht Farbe</string>
 
 
 

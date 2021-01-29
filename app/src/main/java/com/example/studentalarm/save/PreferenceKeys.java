@@ -42,6 +42,9 @@ public class PreferenceKeys {
             EXPORT = "EXPORT",
             RESET = "RESET",
             THEME = "THEME",
+            VIBRATION = "VIBRATION",
+            FLASH_LIGHT = "FLASH_LIGHT",
+            FLASH_LIGHT_COLOR = "FLASH_LIGHT_COLOR",
 
     DEFAULT_RINGTONE = "Default",
             DEFAULT_LANGUAGE = "EN",
@@ -51,7 +54,8 @@ public class PreferenceKeys {
     public static final int
             DEFAULT_EVENT_COLOR = Color.RED,
             DEFAULT_IMPORT_EVENT_COLOR = Color.BLUE,
-            DEFAULT_REGULAR_EVENT_COLOR = Color.GREEN;
+            DEFAULT_REGULAR_EVENT_COLOR = Color.GREEN,
+            DEFAULT_FLASH_LIGHT_COLOR = Color.BLUE;
 
     /**
      * Reset the settings
@@ -86,6 +90,8 @@ public class PreferenceKeys {
             preferences.edit().putString(PreferenceKeys.IMPORT_TIME, DEFAULT_IMPORT_TIME).apply();
         if (preferences.getInt(PreferenceKeys.IMPORT_COLOR, -1) == -1)
             preferences.edit().putInt(PreferenceKeys.IMPORT_COLOR, PreferenceKeys.DEFAULT_IMPORT_EVENT_COLOR).apply();
+        if (preferences.getInt(PreferenceKeys.FLASH_LIGHT_COLOR, -1) == -1)
+            preferences.edit().putInt(PreferenceKeys.FLASH_LIGHT_COLOR, PreferenceKeys.DEFAULT_FLASH_LIGHT_COLOR).apply();
         if (preferences.getLong(PreferenceKeys.ALARM_SHUTDOWN, -1) == -1)
             preferences.edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
         return erg;

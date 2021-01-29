@@ -17,6 +17,17 @@
             android:title="@string/ringtone" />
         <SwitchPreference
             android:defaultValue="false"
+            android:key="VIBRATION"
+            android:title="@string/vibration" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="FLASH_LIGHT"
+            android:title="@string/flash_light" />
+        <Preference
+            android:key="FLASH_LIGHT_COLOR"
+            app:title="@string/flash_light_color" />
+        <SwitchPreference
+            android:defaultValue="false"
             android:enabled="false"
             android:key="ALARM_CHANGE"
             android:title="@string/change_alarm_if_lecture_is_changing" />
