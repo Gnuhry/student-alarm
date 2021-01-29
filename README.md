@@ -8,8 +8,8 @@ This is a student project
 - automatic alarm for the first event of the day
 - personalize alarm settings
 - weekly and event list display to show all your events
-- imports for ics (iCalendar) files from phone or web and for DHBW Mannheim courses
-- auto import posibility for ics (iCalendar) files from web and for DHBW Mannheim courses
+- imports for ics (iCalendar) files from phone or web and for university "DHBW Mannheim" courses
+- auto import posibility for ics (iCalendar) files from web and for university "DHBW Mannheim" courses
 - create your own events and a regular lecture schedule
 - add holidays for alarm breaks or choose an event until the alarm is silent
 - export events to ics file
