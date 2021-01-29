@@ -32,6 +32,7 @@ You can get the latest apk from the [release tab](https://github.com/Gnuhry/stud
 - earlier alarm option if high traffic volume, or train is canceld and you have to get the earlier one (including maps and train APIs)
 - option to have more than one regular lecture schedule, which switch each week
 - import of regular lecture schedule
+- repeatable events
 - other imports sources
 - more code efficiency 
 
