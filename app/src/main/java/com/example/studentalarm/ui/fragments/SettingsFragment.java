@@ -22,9 +22,9 @@ import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.regular.Hours;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
+import com.example.studentalarm.ui.dialog.ColorDialog;
 import com.example.studentalarm.ui.dialog.DeleteLectureDialog;
 import com.example.studentalarm.ui.dialog.ExportDialog;
-import com.example.studentalarm.ui.dialog.ColorDialog;
 import com.example.studentalarm.ui.dialog.ImportDialog;
 import com.example.studentalarm.ui.dialog.RingtoneDialog;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -97,6 +97,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 flashLight == null ||
                 export == null)
             return;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            vibration.setVisible(false);
+            flashLight.setVisible(false);
+            flashLightColor.setVisible(false);
+        }
 
         alarmOn.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.i(LOG, "alarm on change to " + newValue);
@@ -188,6 +193,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             return true;
         });
 
+        flashLightColor.setEnabled(flashLight.isChecked());
         flashLightColor.setSummaryProvider(preference -> {
             if (getContext() == null) return "";
             SharedPreferences preferences = getPreferenceManager().getSharedPreferences();

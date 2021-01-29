@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.studentalarm.EventColor;
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.LectureSchedule;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.fragments.SettingsFragment;
 
 import java.util.List;
@@ -74,7 +75,7 @@ public class ColorDialog extends DialogFragment {
 
         if (getContext() == null) return view;
 
-        if (settingsFragment == null)
+        if (settingsFragment == null || preferenceKey.equals(PreferenceKeys.FLASH_LIGHT_COLOR))
             ((TextView) view.findViewById(R.id.txVColorTitle)).setText(R.string.choose_color);
 
         boolean isCustomColor = true;
