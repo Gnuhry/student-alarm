@@ -1,6 +1,7 @@
 package com.example.studentalarm.ui.dialog;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,6 +20,7 @@ import com.example.studentalarm.EventColor;
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.LectureSchedule;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.fragments.ReloadLecture;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -38,7 +40,7 @@ import androidx.fragment.app.DialogFragment;
 
 import static com.example.studentalarm.save.PreferenceKeys.getLocale;
 
-public class EventDialog extends DialogFragment {
+public class EventDialog extends DialogFragment implements CallColorDialog {
     private static final String LOG = "EventDialogFragment";
     @Nullable
     private final LectureSchedule.Lecture data;
@@ -58,10 +60,10 @@ public class EventDialog extends DialogFragment {
         this.lecture = lecture;
         this.data = data;
         this.schedule = schedule;
-        if (data != null) {
+        colorHelp = data == null ? PreferenceKeys.DEFAULT_EVENT_COLOR : data.getColor();
+        if (data != null)
             Log.d(LOG, "data: " + data.toString());
-            colorHelp = data.getColor();
-        }
+
     }
 
 
@@ -92,6 +94,7 @@ public class EventDialog extends DialogFragment {
 
         Log.d(LOG, "Context is: " + getContext());
 
+        setColor();
         if (data != null) {
             initData();
             if (!data.isImport()) {
@@ -126,6 +129,7 @@ public class EventDialog extends DialogFragment {
         super.onDestroyView();
     }
 
+    @Override
     public void setColorHelp(int colorHelp) {
         this.colorHelp = colorHelp;
         setColor();
@@ -339,7 +343,7 @@ public class EventDialog extends DialogFragment {
         });
         llColor.setOnClickListener(view -> {
             if (getActivity() != null)
-                new ColorDialog(data, this).show(getActivity().getSupportFragmentManager(), "dialog");
+                new ColorDialog(data == null ? PreferenceKeys.DEFAULT_EVENT_COLOR : data.getColor(), this).show(getActivity().getSupportFragmentManager(), "dialog");
         });
     }
 
@@ -366,16 +370,6 @@ public class EventDialog extends DialogFragment {
         dPEnd.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), (datePicker, i, i1, i2) -> setDateTime(txVEnd, dPEnd, end));
         setDateTime(txVBegin, dPBegin, begin);
         setDateTime(txVEnd, dPEnd, end);
-        setColor();
-    }
-
-    private void setColor() {
-        if (getContext() == null) return;
-        List<EventColor> colors = EventColor.possibleColors(getContext());
-        int index = colors.indexOf(new EventColor(data == null ? colorHelp : data.getColor()));
-        if (index == -1)
-            color.setText(getString(R.string.custom));
-        else color.setText(colors.get(index).getName());
     }
 
     /**
@@ -563,6 +557,18 @@ public class EventDialog extends DialogFragment {
         String help = formatDate(calendar.getTime());
         textView.setText(String.format("%s   %s", help, editText.getText().toString()));
         textView.setTag(help.length());
+    }
+
+    /**
+     * sets color views
+     */
+    private void setColor() {
+        if (getContext() == null) return;
+        List<EventColor> colors = EventColor.possibleColors(getContext());
+        int index = colors.indexOf(new EventColor(data == null ? colorHelp : data.getColor()));
+        if (index == -1)
+            color.setText(getString(R.string.custom));
+        else color.setText(colors.get(index).getName());
     }
 
 }

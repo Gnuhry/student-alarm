@@ -273,7 +273,7 @@ public class LectureSchedule {
 //                            }
 //                        } else
                         if (start != null && end != null) {
-                            importLecture.add(new Lecture(true, start, end).setName(ev.SUMMARY).setLocation(ev.LOCATION).setAllDayEvent((TIME_FORMAT.format(start).equals("00:00:00:00") || TIME_FORMAT.format(start).equals("0:00:00:00")) && (TIME_FORMAT.format(end).equals("00:00:00:00") || TIME_FORMAT.format(end).equals("0:00:00:00"))).setColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR, Color.BLUE)));
+                            importLecture.add(new Lecture(true, start, end).setName(ev.SUMMARY).setLocation(ev.LOCATION).setAllDayEvent((TIME_FORMAT.format(start).equals("00:00:00:00") || TIME_FORMAT.format(start).equals("0:00:00:00")) && (TIME_FORMAT.format(end).equals("00:00:00:00") || TIME_FORMAT.format(end).equals("0:00:00:00"))).setColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR, PreferenceKeys.DEFAULT_IMPORT_EVENT_COLOR)));
                         }
                     }
                 } catch (ParseException e) {
@@ -659,7 +659,7 @@ public class LectureSchedule {
         private String docent, location, name;
         @NonNull
         private Date start, end; //UTC
-        private int color = Color.RED;
+        private int color = PreferenceKeys.DEFAULT_EVENT_COLOR;
         private boolean isAllDayEvent;
 
         /**

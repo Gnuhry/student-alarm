@@ -73,7 +73,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
             channel.enableLights(true);
-            channel.setLightColor(Color.RED);
+            channel.setLightColor(Color.RED); //TODO extra setting
             channel.enableVibration(true);
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);

@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.studentalarm.R;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.save.SaveKeys;
 import com.example.studentalarm.save.SaveRegularLectureSchedule;
 
@@ -236,7 +237,7 @@ public class RegularLectureSchedule {
         private String name, docent;
         @NonNull
         private List<String> rooms;
-        private int color = Color.RED, activeRoomId;
+        private int color = PreferenceKeys.DEFAULT_REGULAR_EVENT_COLOR, activeRoomId;
 
         public RegularLecture(String name) {
             id = counter++;

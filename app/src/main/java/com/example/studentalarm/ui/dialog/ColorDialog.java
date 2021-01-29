@@ -26,7 +26,6 @@ import com.example.studentalarm.ui.fragments.SettingsFragment;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.PreferenceManager;
 
@@ -35,21 +34,19 @@ public class ColorDialog extends DialogFragment {
     private static final String LOG = "ImportColorDialog";
     private final SettingsFragment settingsFragment;
     private final int colorPreference;
-    private LectureSchedule.Lecture lecture;
-    private EventDialog eventDialog;
+    private CallColorDialog callColorDialog;
     private RadioGroup radioGroupColours;
 
-    public ColorDialog(@Nullable LectureSchedule.Lecture lecture, @NonNull EventDialog eventDialog) {
+    public ColorDialog(int color, @NonNull CallColorDialog callColorDialog) {
         settingsFragment = null;
-        this.eventDialog = eventDialog;
-        this.lecture = lecture;
-        colorPreference = lecture == null ? Color.RED : lecture.getColor(); //TODO standart color
+        this.callColorDialog = callColorDialog;
+        colorPreference = color; //TODO standart color
     }
 
 
     public ColorDialog(SettingsFragment settingsFragment) {
         this.settingsFragment = settingsFragment;
-        colorPreference = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.IMPORT_COLOR, 0);
+        colorPreference = getContext() == null ? PreferenceKeys.DEFAULT_IMPORT_EVENT_COLOR : PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.IMPORT_COLOR, PreferenceKeys.DEFAULT_IMPORT_EVENT_COLOR);
     }
 
     @Override
@@ -141,7 +138,7 @@ public class ColorDialog extends DialogFragment {
                 ((EditText) view.findViewById(R.id.edTHex)).setError(getString(R.string.not_a_hey_code));
                 return;
             }
-            if (settingsFragment == null) eventDialog.setColorHelp((int) checkedColor);
+            if (settingsFragment == null) callColorDialog.setColorHelp((int) checkedColor);
             else {
                 PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putInt(PreferenceKeys.IMPORT_COLOR, (int) checkedColor).apply();
                 LectureSchedule.load(getContext()).changeImportedColor((int) checkedColor).save(getContext());
