@@ -154,6 +154,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         ringtone.setEnabled(bool2);
         ringtone.setOnPreferenceClickListener(preference -> {
+            if (getContext() == null) return false;
             RingtoneDialog dialog = new RingtoneDialog(getContext(), getActivity());
             dialog.setOnDismissListener(dialogInterface -> {
                 dialog.cancel();

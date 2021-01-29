@@ -76,10 +76,11 @@ public class RingtoneDialog extends Dialog {
 
                 activity.startActivityForResult(intent, REQUEST_CODE);
             }
+            else
+                Toast.makeText(context, activity.getString(R.string.not_supported_in_your_android_version), Toast.LENGTH_LONG).show();
         });
 
         rg.setOnCheckedChangeListener((radioGroup, i) -> {
-            boolean played = false;
             if (mediaPlayer != null)
                 mediaPlayer.stop();
             String text = ((RadioButton) radioGroup.findViewById(radioGroup.getCheckedRadioButtonId())).getText().toString();
@@ -89,16 +90,15 @@ public class RingtoneDialog extends Dialog {
             if (selectedRingtoneHelp.startsWith("|"))
                 customHelp += " " + Uri.parse(selectedRingtone.substring(1)).getLastPathSegment();
             ((RadioButton) rg.getChildAt(rg.getChildCount() - 1)).setText(customHelp);
-            if (!played)
-                switch (text.toUpperCase()) {
-                    case "GENTLE":
-                        mediaPlayer = MediaPlayer.create(getContext().getApplicationContext(), R.raw.alarm_gentle);
-                        break;
-                    case "DEFAULT":
-                        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                        mediaPlayer = MediaPlayer.create(getContext().getApplicationContext(), alarmSound);
-                        break;
-                }
+            switch (text.toUpperCase()) {
+                case "GENTLE":
+                    mediaPlayer = MediaPlayer.create(getContext().getApplicationContext(), R.raw.alarm_gentle);
+                    break;
+                case "DEFAULT":
+                    Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                    mediaPlayer = MediaPlayer.create(getContext().getApplicationContext(), alarmSound);
+                    break;
+            }
             if (mediaPlayer != null) {
                 mediaPlayer.setOnPreparedListener(MediaPlayer::start);
             }

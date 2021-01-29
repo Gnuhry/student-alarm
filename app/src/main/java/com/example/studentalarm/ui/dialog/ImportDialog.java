@@ -329,6 +329,8 @@ public class ImportDialog extends Dialog {
 
             activity.startActivityForResult(intent, REQUEST_CODE);
         }
+        else
+            Toast.makeText(getContext(), getContext().getString(R.string.not_supported_in_your_android_version), Toast.LENGTH_LONG).show();
     }
 
     /**
