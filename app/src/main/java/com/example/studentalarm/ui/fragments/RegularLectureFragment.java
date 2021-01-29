@@ -199,7 +199,8 @@ public class RegularLectureFragment extends Fragment {
                 iterator.remove();
 
         }
-        //TODO save? delete all elements outside of the scope?
+        if (getContext() != null)
+            regularLectureSchedule.save(getContext());
         adapter.submitList(regularLectureSchedule.getRegularLectures());
     }
 

@@ -40,7 +40,7 @@ public class ColorDialog extends DialogFragment {
     public ColorDialog(int color, @NonNull CallColorDialog callColorDialog) {
         settingsFragment = null;
         this.callColorDialog = callColorDialog;
-        colorPreference = color; //TODO standart color
+        colorPreference = color;
     }
 
 
