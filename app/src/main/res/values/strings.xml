@@ -148,6 +148,11 @@
     <string name="custom">custom</string>
     <string name="not_a_song_file">Not a song file</string>
     <string name="not_supported_in_your_android_version">Not supported in your android version</string>
+    <string name="no_color_selected">No color selected</string>
+    <string name="hashTag" translatable="false">#</string>
+    <string name="hex_color_eg_304534">hex color eg. #304534</string>
+    <string name="not_a_hey_code">Not a hex code</string>
+    <string name="choose_color">Choose color</string>
 
 
 </resources>

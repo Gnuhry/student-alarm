@@ -24,7 +24,7 @@ import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.dialog.DeleteLectureDialog;
 import com.example.studentalarm.ui.dialog.ExportDialog;
-import com.example.studentalarm.ui.dialog.ImportColorDialog;
+import com.example.studentalarm.ui.dialog.ColorDialog;
 import com.example.studentalarm.ui.dialog.ImportDialog;
 import com.example.studentalarm.ui.dialog.RingtoneDialog;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -197,18 +197,14 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
             List<EventColor> colors = EventColor.possibleColors(getContext());
             int index = colors.indexOf(new EventColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR, 0)));
-            Log.d(LOG, "Index Of Color " + index);
             if (index == -1)
-                return null;
+                return getString(R.string.custom);
             EventColor color = colors.get(index);
-            Log.d(LOG, "Name of Color " + getResources().getString(color.getName()));
-            return getResources().getString(color.getName());
-            //return getResources().getString(preferences.getInt(PreferenceKeys.IMPORT_COLOR,R.string.error));//Uses String ID to use String ini XML
+            return getString(color.getName());
         });
         importColorPref.setOnPreferenceClickListener(preference -> {
-            SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
             if (getContext() != null && getActivity() != null)
-                new ImportColorDialog(preferences, this).show(getActivity().getSupportFragmentManager(), "dialog");
+                new ColorDialog(this).show(getActivity().getSupportFragmentManager(), "dialog");
             return true;
         });
 
