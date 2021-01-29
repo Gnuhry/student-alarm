@@ -70,14 +70,10 @@ public class ImportColorDialog extends DialogFragment {
             if (Build.VERSION.SDK_INT >= 21) {
                 ColorStateList colorStateList = new ColorStateList(
                         new int[][]{
-
                                 new int[]{-android.R.attr.state_enabled},
                                 new int[]{android.R.attr.state_enabled}
                         },
-                        new int[]{
-                                Color.BLACK
-                                , color.getColor()
-                        }
+                        new int[]{Color.BLACK, color.getColor()}
                 );
                 radioButton.setButtonTintList(colorStateList);
                 radioButton.invalidate();
