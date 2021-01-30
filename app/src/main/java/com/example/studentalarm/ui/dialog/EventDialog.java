@@ -1,7 +1,6 @@
 package com.example.studentalarm.ui.dialog;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;

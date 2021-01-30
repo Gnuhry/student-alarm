@@ -22,9 +22,9 @@ import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.regular.Hours;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
+import com.example.studentalarm.ui.dialog.ColorDialog;
 import com.example.studentalarm.ui.dialog.DeleteLectureDialog;
 import com.example.studentalarm.ui.dialog.ExportDialog;
-import com.example.studentalarm.ui.dialog.ColorDialog;
 import com.example.studentalarm.ui.dialog.ImportDialog;
 import com.example.studentalarm.ui.dialog.RingtoneDialog;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -64,12 +64,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         SwitchPreference alarmOn = findPreference(PreferenceKeys.ALARM_ON),
                 alarmPhone = findPreference(PreferenceKeys.ALARM_PHONE),
                 alarmChange = findPreference(PreferenceKeys.ALARM_CHANGE),
-                autoImport = findPreference(PreferenceKeys.AUTO_IMPORT);
+                autoImport = findPreference(PreferenceKeys.AUTO_IMPORT),
+                vibration = findPreference(PreferenceKeys.VIBRATION),
+                flashLight = findPreference(PreferenceKeys.FLASH_LIGHT);
         Preference importPref = findPreference(PreferenceKeys.IMPORT),
                 importColorPref = findPreference(PreferenceKeys.IMPORT_COLOR),
                 eventDeleteAll = findPreference(PreferenceKeys.EVENT_DELETE_ALL),
                 ringtone = findPreference(PreferenceKeys.RINGTONE),
                 export = findPreference(PreferenceKeys.EXPORT),
+                flashLightColor = findPreference(PreferenceKeys.FLASH_LIGHT_COLOR),
                 reset = findPreference(PreferenceKeys.RESET);
         EditTextPreference snooze = findPreference(PreferenceKeys.SNOOZE),
                 importTime = findPreference(PreferenceKeys.IMPORT_TIME);
@@ -89,8 +92,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 ringtone == null ||
                 language == null ||
                 theme == null ||
+                vibration == null ||
+                flashLightColor == null ||
+                flashLight == null ||
                 export == null)
             return;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            vibration.setVisible(false);
+            flashLight.setVisible(false);
+            flashLightColor.setVisible(false);
+        }
 
         alarmOn.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.i(LOG, "alarm on change to " + newValue);
@@ -112,6 +123,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             alarmChange.setEnabled(bool3);
             snooze.setEnabled(bool3);
             ringtone.setEnabled(bool3);
+            vibration.setEnabled(bool3);
+            flashLight.setEnabled(bool3);
             return true;
         });
 
@@ -135,6 +148,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 alarmChange.setEnabled(true);
                 snooze.setEnabled(true);
                 ringtone.setEnabled(true);
+                flashLight.setEnabled(true);
+                vibration.setEnabled(true);
                 if (getContext() == null) return false;
                 PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putBoolean(PreferenceKeys.ALARM_PHONE, (Boolean) newValue).apply();
                 AlarmManager.updateNextAlarm(getContext());
@@ -171,6 +186,30 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             } else return ringtoneHelp;
         });
 
+        vibration.setEnabled(bool2);
+        flashLight.setEnabled(bool2);
+        flashLight.setOnPreferenceChangeListener((preference, newValue) -> {
+            flashLightColor.setEnabled((boolean) newValue);
+            return true;
+        });
+
+        flashLightColor.setEnabled(flashLight.isChecked());
+        flashLightColor.setSummaryProvider(preference -> {
+            if (getContext() == null) return "";
+            SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
+            List<EventColor> colors = EventColor.possibleColors(getContext());
+            int index = colors.indexOf(new EventColor(preferences.getInt(PreferenceKeys.FLASH_LIGHT_COLOR, 0)));
+            if (index == -1)
+                return getString(R.string.custom);
+            EventColor color = colors.get(index);
+            return getString(color.getName());
+        });
+        flashLightColor.setOnPreferenceClickListener(preference -> {
+            if (getContext() != null && getActivity() != null)
+                new ColorDialog(this, PreferenceKeys.FLASH_LIGHT_COLOR, PreferenceKeys.DEFAULT_FLASH_LIGHT_COLOR).show(getActivity().getSupportFragmentManager(), "dialog");
+            return true;
+        });
+
         importPref.setSummaryProvider(preference -> {
             SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
             int mode = preferences.getInt(PreferenceKeys.MODE, Import.ImportFunction.NONE);
@@ -204,7 +243,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
         importColorPref.setOnPreferenceClickListener(preference -> {
             if (getContext() != null && getActivity() != null)
-                new ColorDialog(this).show(getActivity().getSupportFragmentManager(), "dialog");
+                new ColorDialog(this, PreferenceKeys.IMPORT_COLOR, PreferenceKeys.DEFAULT_IMPORT_EVENT_COLOR).show(getActivity().getSupportFragmentManager(), "dialog");
             return true;
         });
 
