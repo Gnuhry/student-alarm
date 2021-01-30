@@ -8,15 +8,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.studentalarm.EventColor;
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.RegularLectureSchedule;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.adapter.RoomAdapter;
 import com.example.studentalarm.ui.fragments.RegularLectureFragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -29,22 +28,22 @@ import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class RegularLectureDialog extends DialogFragment {
+public class RegularLectureDialog extends DialogFragment implements CallColorDialog {
     private static final String LOG = "RegularLectureDialog";
     @Nullable
     private final RegularLectureSchedule data;
     private final int index, oldColor;
     @NonNull
     private final RegularLectureFragment fragment;
-    private List<EventColor> colors;
     private final String oldTitle, oldDocent;
 
+    private LinearLayout llColor;
     private EditText title, docent;
     private RoomAdapter adapter;
     private RecyclerView recyclerView;
-    private TextView add, cancel, delete;
-    private Spinner spinner;
+    private TextView add, cancel, delete, color;
     private boolean cancelDirect = true;
+    private int colorHelp;
 
     public RegularLectureDialog(@Nullable RegularLectureSchedule data, int index, @NonNull RegularLectureFragment fragment) {
         this.fragment = fragment;
@@ -54,11 +53,11 @@ public class RegularLectureDialog extends DialogFragment {
             RegularLectureSchedule.RegularLecture lecture = data.getLectures().get(index);
             oldTitle = lecture.getName();
             oldDocent = lecture.getDocent();
-            oldColor = lecture.getColor();
+            colorHelp = oldColor = lecture.getColor();
         } else {
             oldTitle = "";
             oldDocent = "";
-            oldColor = Color.BLUE;
+            colorHelp = oldColor = PreferenceKeys.DEFAULT_REGULAR_EVENT_COLOR;
         }
     }
 
@@ -74,10 +73,10 @@ public class RegularLectureDialog extends DialogFragment {
         add = view.findViewById(R.id.txVAdd);
         cancel = view.findViewById(R.id.txVCancel);
         delete = view.findViewById(R.id.txVDelete);
-        spinner = view.findViewById(R.id.spColor);
+        color = view.findViewById(R.id.txVColor);
+        llColor = view.findViewById(R.id.llColor);
 
         Log.d(LOG, "Context is: " + getContext());
-        colors = EventColor.possibleColors(getContext());
 
         init();
         if (data != null && index >= 0 && index < data.getLectures().size())
@@ -96,11 +95,20 @@ public class RegularLectureDialog extends DialogFragment {
         super.onDestroyView();
     }
 
+
+    @Override
+    public void setColorHelp(int colorHelp) {
+        this.colorHelp = colorHelp;
+        checkCancelDirect();
+        setColor();
+    }
+
     /**
      * init all views
      */
     private void init() {
         Log.i(LOG, "Init");
+        setColor();
         add.setOnClickListener(view -> {
             if (getContext() == null) return;
 
@@ -115,7 +123,7 @@ public class RegularLectureDialog extends DialogFragment {
                 fragment.setChanges(true);
                 data.addLecture(new RegularLectureSchedule.RegularLecture(title.getText().toString())
                         .setDocent(docent.getText().toString())
-                        .setColor(((EventColor) spinner.getSelectedItem()).getColor())
+                        .setColor(colorHelp)
                         .setAllRooms(adapter.getAllRooms()));
             } else if (data != null) {
                 Log.i(LOG, "Update Lecture");
@@ -123,7 +131,7 @@ public class RegularLectureDialog extends DialogFragment {
                 data.getLectures().get(index)
                         .setName(title.getText().toString())
                         .setDocent(docent.getText().toString())
-                        .setColor(((EventColor) spinner.getSelectedItem()).getColor())
+                        .setColor(colorHelp)
                         .setAllRooms(adapter.getAllRooms());
             }
             this.dismiss();
@@ -159,10 +167,6 @@ public class RegularLectureDialog extends DialogFragment {
                         .setCancelable(true)
                         .show();
         });
-        ArrayAdapter<EventColor> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item);
-        adapter.addAll(colors);
-        spinner.setAdapter(adapter);
-        spinner.setSelection(colors.indexOf(new EventColor(Color.BLUE)));
 
         title.addTextChangedListener(new TextWatcher() {
             @Override
@@ -192,16 +196,9 @@ public class RegularLectureDialog extends DialogFragment {
                 checkCancelDirect();
             }
         });
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                checkCancelDirect();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
+        llColor.setOnClickListener(view -> {
+            if (getActivity() != null & data != null)
+                new ColorDialog(colorHelp, this).show(getActivity().getSupportFragmentManager(), "dialog");
         });
     }
 
@@ -227,7 +224,6 @@ public class RegularLectureDialog extends DialogFragment {
         RegularLectureSchedule.RegularLecture lecture = data.getLectures().get(index);
         title.setText(lecture.getName());
         docent.setText(lecture.getDocent());
-        spinner.setSelection(colors.indexOf(new EventColor(lecture.getColor())));
         delete.setVisibility(View.VISIBLE);
     }
 
@@ -235,8 +231,20 @@ public class RegularLectureDialog extends DialogFragment {
      * set cancel direct, if data is the same
      */
     private void checkCancelDirect() {
-        cancelDirect = ((EventColor) spinner.getSelectedItem()).getColor() == oldColor && docent.getText().toString().equals(oldDocent) && title.getText().toString().equals(oldTitle);
+        cancelDirect = colorHelp == oldColor && docent.getText().toString().equals(oldDocent) && title.getText().toString().equals(oldTitle);
     }
 
+
+    /**
+     * sets color views
+     */
+    private void setColor() {
+        if (getContext() == null) return;
+        List<EventColor> colors = EventColor.possibleColors(getContext());
+        int index = colors.indexOf(new EventColor(colorHelp));
+        if (index == -1)
+            color.setText(getString(R.string.custom));
+        else color.setText(colors.get(index).getName());
+    }
 }
 

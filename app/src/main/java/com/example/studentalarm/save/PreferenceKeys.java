@@ -48,6 +48,11 @@ public class PreferenceKeys {
             DEFAULT_SNOOZE = "5",
             DEFAULT_IMPORT_TIME = "19:00";
 
+    public static final int
+            DEFAULT_EVENT_COLOR = Color.RED,
+            DEFAULT_IMPORT_EVENT_COLOR = Color.BLUE,
+            DEFAULT_REGULAR_EVENT_COLOR = Color.GREEN;
+
     /**
      * Reset the settings
      *
@@ -80,7 +85,7 @@ public class PreferenceKeys {
         if (preferences.getString(PreferenceKeys.IMPORT_TIME, null) == null)
             preferences.edit().putString(PreferenceKeys.IMPORT_TIME, DEFAULT_IMPORT_TIME).apply();
         if (preferences.getInt(PreferenceKeys.IMPORT_COLOR, -1) == -1)
-            preferences.edit().putInt(PreferenceKeys.IMPORT_COLOR, Color.RED).apply();//red als default Colour
+            preferences.edit().putInt(PreferenceKeys.IMPORT_COLOR, PreferenceKeys.DEFAULT_IMPORT_EVENT_COLOR).apply();
         if (preferences.getLong(PreferenceKeys.ALARM_SHUTDOWN, -1) == -1)
             preferences.edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
         return erg;

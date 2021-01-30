@@ -133,6 +133,10 @@
     <string name="custom">eigener</string>
     <string name="not_a_song_file">Keine Musik Datei</string>
     <string name="not_supported_in_your_android_version">Keine Unterstzüng für ihre Android Version</string>
+    <string name="no_color_selected">Keine Farbe ausgewählt</string>
+    <string name="hex_color_eg_304534">hex Farbe z.B. #304534</string>
+    <string name="not_a_hey_code">Kein hex Code</string>
+
 
 
 

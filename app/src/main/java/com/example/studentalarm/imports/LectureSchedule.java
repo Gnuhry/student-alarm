@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.util.Log;
 
-import com.example.studentalarm.EventColor;
 import com.example.studentalarm.MainActivity;
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
@@ -240,8 +239,6 @@ public class LectureSchedule {
         importLecture.clear();
         List<ICS.vEvent> list = calendar.getVEventList();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        List<EventColor> colors = EventColor.possibleColors(context);
-        EventColor color = colors.get(colors.indexOf(new EventColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR, 0))));
         if (list != null) {
 //            RegularLectureSchedule regularLectureSchedule = RegularLectureSchedule.load(context);
             for (ICS.vEvent ev : list) {
@@ -276,7 +273,7 @@ public class LectureSchedule {
 //                            }
 //                        } else
                         if (start != null && end != null) {
-                            importLecture.add(new Lecture(true, start, end).setName(ev.SUMMARY).setLocation(ev.LOCATION).setAllDayEvent((TIME_FORMAT.format(start).equals("00:00:00:00") || TIME_FORMAT.format(start).equals("0:00:00:00")) && (TIME_FORMAT.format(end).equals("00:00:00:00") || TIME_FORMAT.format(end).equals("0:00:00:00"))).setColor(color.getColor()));
+                            importLecture.add(new Lecture(true, start, end).setName(ev.SUMMARY).setLocation(ev.LOCATION).setAllDayEvent((TIME_FORMAT.format(start).equals("00:00:00:00") || TIME_FORMAT.format(start).equals("0:00:00:00")) && (TIME_FORMAT.format(end).equals("00:00:00:00") || TIME_FORMAT.format(end).equals("0:00:00:00"))).setColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR, PreferenceKeys.DEFAULT_IMPORT_EVENT_COLOR)));
                         }
                     }
                 } catch (ParseException e) {
@@ -662,7 +659,7 @@ public class LectureSchedule {
         private String docent, location, name;
         @NonNull
         private Date start, end; //UTC
-        private int color = Color.RED;
+        private int color = PreferenceKeys.DEFAULT_EVENT_COLOR;
         private boolean isAllDayEvent;
 
         /**
