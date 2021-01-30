@@ -10,6 +10,7 @@ import android.util.Log;
 import com.example.studentalarm.receiver.NetworkReceiver;
 import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.dialog.ImportDialog;
+import com.example.studentalarm.ui.dialog.RingtoneDialog;
 import com.example.studentalarm.ui.fragments.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -59,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == ImportDialog.REQUEST_CODE && resultCode == Activity.RESULT_OK)
             ImportDialog.setResultIntent(data, this);
+        if (requestCode == RingtoneDialog.REQUEST_CODE && resultCode == Activity.RESULT_OK)
+            RingtoneDialog.setResultIntent(data, this);
 
         super.onActivityResult(requestCode, resultCode, data);
     }

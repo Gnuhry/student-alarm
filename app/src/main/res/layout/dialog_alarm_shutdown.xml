@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="@string/chose_last_lecture_with_no_alarm" />
+        android:text="@string/choose_last_lecture_where_no_alarm_is_wanted" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rVLectures"
@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="@string/no_alarm_shutdown" />
+        android:text="@string/do_not_shutdown_the_alarm" />
 </LinearLayout>
 
 

@@ -88,7 +88,7 @@ public class HolidayDialog extends DialogFragment {
             });
             calendarView.setMinDate(lecture.getStart().getTime());
         });
-        view.findViewById(R.id.imVSave).setOnClickListener(view1 -> {
+        view.findViewById(R.id.txVSave).setOnClickListener(view1 -> {
             if (lecture.getStart().after(lecture.getEnd())) {
                 until.setError(getString(R.string.end_must_start_after_begin));
                 return;
@@ -116,23 +116,6 @@ public class HolidayDialog extends DialogFragment {
                         .show();
             }
         });
-        if (!create) {
-            view.findViewById(R.id.imVDelete).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.imVDelete).setOnClickListener(view1 -> {
-                if (getContext() != null)
-                    new MaterialAlertDialogBuilder(getContext())
-                            .setTitle(R.string.delete)
-                            .setMessage(R.string.do_you_want_to_delete_this_events)
-                            .setPositiveButton(R.string.delete, (dialogInterface, i) -> {
-                                if (old_lecture != null)
-                                    LectureSchedule.load(getContext()).removeHoliday(old_lecture).save(context);
-                                this.dismiss();
-                            })
-                            .setNegativeButton(R.string.cancel, (dialogInterface, i) -> this.dismiss())
-                            .setCancelable(true)
-                            .show();
-            });
-        }
 
         setTextBox();
         Calendar calendar = Calendar.getInstance();

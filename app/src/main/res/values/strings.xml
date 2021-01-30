@@ -141,10 +141,13 @@
     <string name="no_lecture_in_the_bottom_bar_selected">No Lecture in the bottom bar selected</string>
     <string name="missing_hour_settings">Missing hour settings (top right corner)</string>
     <string name="temporary_alarm_shutdown">Shut down alarm until…</string>
-    <string name="no_alarm_shutdown">don\'t shutdown the alarm</string>
-    <string name="chose_last_lecture_with_no_alarm">Chose the last lecture where no alarm is wanted</string>
+    <string name="do_not_shutdown_the_alarm">don\'t shutdown the alarm</string>
+    <string name="choose_last_lecture_where_no_alarm_is_wanted">Choose the last lecture where no alarm is wanted</string>
     <string name="please_check_accuracy_of_the_alarm">Please check accuracy of the alarm</string>
     <string name="alarm_shutdown_change">alarm shutdown change</string>
+    <string name="custom">custom</string>
+    <string name="not_a_song_file">Not a song file</string>
+    <string name="not_supported_in_your_android_version">Not supported in your android version</string>
 
 
 </resources>
