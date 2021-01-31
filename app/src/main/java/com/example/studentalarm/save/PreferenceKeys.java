@@ -45,11 +45,16 @@ public class PreferenceKeys {
             VIBRATION = "VIBRATION",
             FLASH_LIGHT = "FLASH_LIGHT",
             FLASH_LIGHT_COLOR = "FLASH_LIGHT_COLOR",
+            ZIPCODE="ZIPCODE",
+            WAKE_WEATHER="WAKE_WEATHER",
+            WAKE_WEATHER_TIME="WAKE_WEATHER_TIME",
 
     DEFAULT_RINGTONE = "Default",
             DEFAULT_LANGUAGE = "EN",
             DEFAULT_SNOOZE = "5",
-            DEFAULT_IMPORT_TIME = "19:00";
+            DEFAULT_IMPORT_TIME = "19:00",
+            DEFAULT_WAKE_WEATHER_TIME="10",
+            DEFAULT_ZIPCODE="11011";
 
     public static final int
             DEFAULT_EVENT_COLOR = Color.RED,
@@ -94,6 +99,14 @@ public class PreferenceKeys {
             preferences.edit().putInt(PreferenceKeys.FLASH_LIGHT_COLOR, PreferenceKeys.DEFAULT_FLASH_LIGHT_COLOR).apply();
         if (preferences.getLong(PreferenceKeys.ALARM_SHUTDOWN, -1) == -1)
             preferences.edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
+        if (!preferences.getBoolean(PreferenceKeys.WAKE_WEATHER, false))
+            preferences.edit().putBoolean(PreferenceKeys.WAKE_WEATHER, false).apply();
+        if (preferences.getString(PreferenceKeys.WAKE_WEATHER_TIME, null) == null)
+            preferences.edit().putString(PreferenceKeys.WAKE_WEATHER_TIME, PreferenceKeys.DEFAULT_WAKE_WEATHER_TIME).apply();
+        if (preferences.getString(PreferenceKeys.ZIPCODE, null) == null)
+            preferences.edit().putString(PreferenceKeys.ZIPCODE, PreferenceKeys.DEFAULT_ZIPCODE).apply();
+
+
         return erg;
     }
 

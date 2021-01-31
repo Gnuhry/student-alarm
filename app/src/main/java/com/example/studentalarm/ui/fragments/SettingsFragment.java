@@ -8,9 +8,12 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.InputType;
+import android.text.Spanned;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.Filter;
 import android.widget.Toast;
 
 import com.example.studentalarm.EventColor;
@@ -34,6 +37,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.prefs.Preferences;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -73,9 +77,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 ringtone = findPreference(PreferenceKeys.RINGTONE),
                 export = findPreference(PreferenceKeys.EXPORT),
                 flashLightColor = findPreference(PreferenceKeys.FLASH_LIGHT_COLOR),
-                reset = findPreference(PreferenceKeys.RESET);
+                reset = findPreference(PreferenceKeys.RESET),
+                wakeWeather = findPreference(PreferenceKeys.WAKE_WEATHER);
         EditTextPreference snooze = findPreference(PreferenceKeys.SNOOZE),
-                importTime = findPreference(PreferenceKeys.IMPORT_TIME);
+                importTime = findPreference(PreferenceKeys.IMPORT_TIME),
+                wakeWeatherTime = findPreference(PreferenceKeys.WAKE_WEATHER_TIME),
+                zipcode= findPreference(PreferenceKeys.ZIPCODE);
         ListPreference language = findPreference(PreferenceKeys.LANGUAGE),
                 theme = findPreference(PreferenceKeys.THEME);
 
@@ -95,7 +102,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 vibration == null ||
                 flashLightColor == null ||
                 flashLight == null ||
-                export == null)
+                export == null ||
+                wakeWeather == null||
+                wakeWeatherTime == null||
+                zipcode == null)
             return;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             vibration.setVisible(false);
@@ -125,6 +135,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             ringtone.setEnabled(bool3);
             vibration.setEnabled(bool3);
             flashLight.setEnabled(bool3);
+            wakeWeather.setEnabled(bool3);
             return true;
         });
 
@@ -209,6 +220,72 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 new ColorDialog(this, PreferenceKeys.FLASH_LIGHT_COLOR, PreferenceKeys.DEFAULT_FLASH_LIGHT_COLOR).show(getActivity().getSupportFragmentManager(), "dialog");
             return true;
         });
+
+        wakeWeather.setEnabled(bool2);
+        wakeWeather.setSummaryProvider(preference -> {
+            if (getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.WAKE_WEATHER,false)){
+                return getString(R.string.enabled);
+            }else{
+                return getString(R.string.disabled);
+            }
+        });
+        wakeWeather.setOnPreferenceClickListener(preference -> {
+            Log.i(LOG, "wakeWeather");
+            if (getContext() == null || getActivity() == null) return false;
+            new MaterialAlertDialogBuilder(getContext())
+                    .setTitle(R.string.BAD_WEATHER_ALARM)
+                    .setMessage(R.string.WEAKE_UP_EARLIER_WEATHER)
+                    .setPositiveButton(R.string.enable, (dialogInterface, i) -> {
+                        Log.i(LOG, "wakeWeather - enable");
+                        getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.WAKE_WEATHER, true).apply();
+                        wakeWeather.setSummaryProvider(preference2 -> {return getString(R.string.enabled);});
+                        wakeWeatherTime.setEnabled(false);
+                        zipcode.setEnabled(false);
+                        reload();
+                    })
+                    .setNegativeButton(R.string.disable, (dialogInterface, i) -> {
+                        Log.i(LOG, "wakeWeather - disable");
+                        getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.WAKE_WEATHER, false).apply();
+                        wakeWeather.setSummaryProvider(preference2 -> {return getString(R.string.disabled);});
+                        wakeWeatherTime.setEnabled(false);
+                        zipcode.setEnabled(false);
+                        reload();
+                    })
+                    .setCancelable(true)
+                    .show();
+            return true;
+        });
+
+        wakeWeatherTime.setEnabled(getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.WAKE_WEATHER,false));
+        wakeWeatherTime.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
+        wakeWeatherTime.setSummaryProvider(preference -> getString(R.string._min, preference.getSharedPreferences().getString(PreferenceKeys.WAKE_WEATHER_TIME, getString(R.string.error))));
+        wakeWeatherTime.setOnPreferenceChangeListener((preference, newValue) -> {
+            Log.i(LOG, "wakeWeatherTime set to " + newValue);
+            return true;
+        });
+        zipcode.setEnabled(getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.WAKE_WEATHER,false));
+        zipcode.setOnBindEditTextListener(editText -> {editText.setInputType(InputType.TYPE_CLASS_NUMBER); editText.setFilters(new InputFilter[]{
+        new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                try{
+                    int input = Integer. parseInt (dest.toString() + source.toString()) ;
+                    if (input >= 0 && input <= 99999)
+                        return null;
+                }catch (NumberFormatException e) {
+                    e.printStackTrace() ;
+                }
+                return "" ;
+            }
+        }
+        });});
+                //InputFilter.LengthFilter[]{new InputFilter.LengthFilter(5)});});
+        zipcode.setSummaryProvider(preference -> preference.getSharedPreferences().getString(PreferenceKeys.ZIPCODE, getString(R.string.error)));
+        zipcode.setOnPreferenceChangeListener((preference, newValue) -> {
+            Log.i(LOG, "wakeWeatherTime set to " + newValue);
+            return true;
+        });
+
 
         importPref.setSummaryProvider(preference -> {
             SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
