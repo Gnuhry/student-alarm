@@ -88,7 +88,8 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/hex_color_eg_304534"
                 android:importantForAutofill="no"
-                android:inputType="number" />
+                android:inputType="number"
+                android:maxLength="8" />
 
             <View
                 android:id="@+id/viewColor"
