@@ -44,7 +44,7 @@ public class Hours {
     @Nullable
     public Date getFromAsDate() {
         try {
-            return new SimpleDateFormat("HH:mm", Locale.getDefault()).parse(from);
+            return getFormatter().parse(from);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -54,7 +54,7 @@ public class Hours {
     @Nullable
     public Date getUntilAsDate() {
         try {
-            return new SimpleDateFormat("HH:mm", Locale.getDefault()).parse(until);
+            return getFormatter().parse(until);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -71,6 +71,10 @@ public class Hours {
     public Hours setUntil(String until) {
         this.until = until;
         return this;
+    }
+
+    public static SimpleDateFormat getFormatter(){
+        return new SimpleDateFormat("HH:mm", Locale.getDefault());
     }
 
     /**

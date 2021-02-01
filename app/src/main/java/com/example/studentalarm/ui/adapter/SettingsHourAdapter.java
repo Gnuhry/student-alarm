@@ -20,9 +20,11 @@ import com.example.studentalarm.regular.Hours;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -59,6 +61,15 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
 
     public SettingsHourAdapter(@NonNull Context context, @NonNull Activity activity) {
         hours = Hours.load(context);
+        SimpleDateFormat format = Hours.getFormatter();
+        for (Hours hour : hours) {
+            Date date = hour.getFromAsDate();
+            if (date != null)
+                hour.setFrom(format.format(new Date(date.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET))));
+            date = hour.getUntilAsDate();
+            if (date != null)
+                hour.setUntil(format.format(new Date(date.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET))));
+        }
         while (hours.size() < 6)
             hours.add(new Hours(hours.size() + 1));
         this.context = context;
@@ -147,6 +158,15 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
                 return -1;
             } else
                 holders.get(f).from.setError(null);
+        }
+        SimpleDateFormat format = Hours.getFormatter();
+        for (Hours hour : hours) {
+            Date date = hour.getFromAsDate();
+            if (date != null)
+                hour.setFrom(format.format(new Date(date.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET))));
+            date = hour.getUntilAsDate();
+            if (date != null)
+                hour.setUntil(format.format(new Date(date.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET))));
         }
         Hours.save(context, hours);
         return hours.size();
