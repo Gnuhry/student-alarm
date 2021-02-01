@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.studentalarm.R;
+import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.ui.dialog.HolidayDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -73,6 +74,7 @@ public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.ViewHold
                     .setPositiveButton(R.string.delete, (dialogInterface, i) -> {
                         LectureSchedule.load(context).removeHoliday(schedule.getHolidays().get(((int) holder.llHolidays.getTag()))).save(context);
                         reloadAdapter();
+                        AlarmManager.updateNextAlarm(context);
                     })
                     .setNegativeButton(R.string.cancel, null)
                     .setCancelable(true)
