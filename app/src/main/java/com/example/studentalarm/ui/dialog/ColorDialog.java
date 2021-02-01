@@ -1,5 +1,6 @@
 package com.example.studentalarm.ui.dialog;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -45,11 +46,11 @@ public class ColorDialog extends DialogFragment {
     }
 
 
-    public ColorDialog(@NonNull SettingsFragment settingsFragment, @NonNull String preferenceKey, int pDefault) {
+    public ColorDialog(@NonNull SettingsFragment settingsFragment, @NonNull String preferenceKey, @NonNull Context context, int pDefault) {
         this.settingsFragment = settingsFragment;
         this.preferenceKey = preferenceKey;
 
-        colorPreference = getContext() == null ? pDefault : PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(preferenceKey, pDefault);
+        colorPreference = PreferenceManager.getDefaultSharedPreferences(context).getInt(preferenceKey, pDefault);
     }
 
     @Override

@@ -206,7 +206,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
         flashLightColor.setOnPreferenceClickListener(preference -> {
             if (getContext() != null && getActivity() != null)
-                new ColorDialog(this, PreferenceKeys.FLASH_LIGHT_COLOR, PreferenceKeys.DEFAULT_FLASH_LIGHT_COLOR).show(getActivity().getSupportFragmentManager(), "dialog");
+                new ColorDialog(this, PreferenceKeys.FLASH_LIGHT_COLOR, getContext(), PreferenceKeys.DEFAULT_FLASH_LIGHT_COLOR).show(getActivity().getSupportFragmentManager(), "dialog");
             return true;
         });
 
@@ -243,7 +243,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
         importColorPref.setOnPreferenceClickListener(preference -> {
             if (getContext() != null && getActivity() != null)
-                new ColorDialog(this, PreferenceKeys.IMPORT_COLOR, PreferenceKeys.DEFAULT_IMPORT_EVENT_COLOR).show(getActivity().getSupportFragmentManager(), "dialog");
+                new ColorDialog(this, PreferenceKeys.IMPORT_COLOR, getContext(), PreferenceKeys.DEFAULT_IMPORT_EVENT_COLOR).show(getActivity().getSupportFragmentManager(), "dialog");
             return true;
         });
 
