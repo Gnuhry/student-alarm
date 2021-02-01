@@ -35,7 +35,8 @@
             android:ems="5"
             android:gravity="end"
             android:hint="@string/hh_mm"
-            android:inputType="time"
+            android:inputType="phone"
+            android:digits="1234567890:"
             android:maxLength="5" />
 
         <TextView
@@ -52,7 +53,8 @@
             android:ems="5"
             android:gravity="end"
             android:hint="@string/hh_mm"
-            android:inputType="time"
+            android:inputType="phone"
+            android:digits="1234567890:"
             android:maxLength="5" />
 
     </LinearLayout>
