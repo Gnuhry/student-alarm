@@ -56,10 +56,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:importantForAutofill="no"
                     android:ems="10"
                     android:hint="@string/address"
-                    android:inputType="textPersonName" />
+                    android:importantForAutofill="no"
+                    android:inputType="textPersonName"
+                    android:selectAllOnFocus="true" />
 
                 <Button
                     android:id="@+id/btnCheckLink"

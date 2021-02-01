@@ -37,6 +37,7 @@
             android:hint="@string/hh_mm"
             android:inputType="phone"
             android:digits="1234567890:"
+            android:selectAllOnFocus="true"
             android:maxLength="5" />
 
         <TextView
@@ -54,6 +55,7 @@
             android:gravity="end"
             android:hint="@string/hh_mm"
             android:inputType="phone"
+            android:selectAllOnFocus="true"
             android:digits="1234567890:"
             android:maxLength="5" />
 

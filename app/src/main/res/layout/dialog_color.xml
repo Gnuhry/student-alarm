@@ -89,7 +89,8 @@
                 android:hint="@string/hex_color_eg_304534"
                 android:importantForAutofill="no"
                 android:inputType="number"
-                android:maxLength="8" />
+                android:maxLength="8"
+                android:selectAllOnFocus="true" />
 
             <View
                 android:id="@+id/viewColor"
