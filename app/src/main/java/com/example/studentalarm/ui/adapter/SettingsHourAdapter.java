@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.studentalarm.Formatter;
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.Hours;
 
@@ -24,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
@@ -62,7 +62,7 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
 
     public SettingsHourAdapter(@NonNull Context context, @NonNull Activity activity) {
         hours = Hours.load(context);
-        SimpleDateFormat format = Hours.getFormatter();
+        SimpleDateFormat format = Formatter.timeFormatter();
         for (Hours hour : hours) {
             Date date = hour.getFromAsDate();
             if (date != null)
@@ -196,7 +196,7 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
             } else
                 holders.get(f).from.setError(null);
         }
-        SimpleDateFormat format = Hours.getFormatter();
+        SimpleDateFormat format = Formatter.timeFormatter();
         for (Hours hour : hours) {
             Date date = hour.getFromAsDate();
             if (date != null)
@@ -211,7 +211,7 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
 
 
     private void initTimeEditTextBeforeAfter(@NonNull EditText before, @Nullable EditText until) {
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        SimpleDateFormat format = Formatter.timeFormatter();
         try {
             Date beforeDate = format.parse(before.getText().toString());
             if (until != null && beforeDate != null && !beforeDate.before(format.parse(until.getText().toString())))

@@ -8,6 +8,7 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.studentalarm.Formatter;
 import com.example.studentalarm.regular.Hours;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 
@@ -41,7 +42,7 @@ public class Export {
         Log.d(LOG, "Start");
         try {
             List<ICS.vEvent> erg = new ArrayList<>();
-            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd-HHmmssSS", Locale.getDefault());
+            SimpleDateFormat format = Formatter.dateFormatter();
             for (LectureSchedule.Lecture lecture : list) {
                 ICS.vEvent event = new ICS.vEvent();
                 event.SUMMARY = lecture.getName();
@@ -139,7 +140,7 @@ public class Export {
 
         File file = new File(documentsPath.getAbsolutePath() +
                 File.separator +
-                new SimpleDateFormat("yyyyMMddHHmmssSS", Locale.getDefault()).format(Calendar.getInstance().getTime())
+                Formatter.dateFormatter().format(Calendar.getInstance().getTime())
                 + "_output.ics");
         if (!file.exists() && !file.createNewFile()) return null;
         OutputStream fo = new FileOutputStream(file);

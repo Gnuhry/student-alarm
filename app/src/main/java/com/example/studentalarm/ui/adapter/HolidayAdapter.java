@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.studentalarm.Formatter;
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.LectureSchedule;
@@ -65,7 +66,7 @@ public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.ViewHold
             holder.add.setVisibility(View.GONE);
             holder.llHolidays.setVisibility(View.VISIBLE);
             holder.llHolidays.setTag(position);
-            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+            SimpleDateFormat format = Formatter.dayFormatter();
             holder.holiday.setText(String.format("%s - %s", format.format(schedule.getHolidays().get(((int) holder.llHolidays.getTag())).getStart()), format.format(schedule.getHolidays().get(((int) holder.llHolidays.getTag())).getEnd())));
             holder.edit.setOnClickListener(view -> new HolidayDialog(schedule, context, this, ((int) holder.llHolidays.getTag())).show(activity.getSupportFragmentManager(), "dialog"));
             holder.delete.setOnClickListener(view -> new MaterialAlertDialogBuilder(context)

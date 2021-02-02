@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.util.Log;
 
+import com.example.studentalarm.Formatter;
 import com.example.studentalarm.MainActivity;
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
@@ -42,7 +43,7 @@ import androidx.preference.PreferenceManager;
 
 public class LectureSchedule {
     @NonNull
-    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN), TIME_FORMAT = new SimpleDateFormat("HH:mm:ss:SS", Locale.GERMAN);
+    private static final SimpleDateFormat FORMAT = Formatter.dayFormatter(), TIME_FORMAT = new SimpleDateFormat("HH:mm:ss:SS", Locale.GERMAN);
     private static final Calendar regular_from = Calendar.getInstance(), regular_until = Calendar.getInstance();
     @NonNull
     private final List<Lecture> lecture, importLecture, holidays;

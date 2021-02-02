@@ -75,8 +75,12 @@ public class AlarmReceiver extends BroadcastReceiver {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             boolean flashLight = preferences.getBoolean(PreferenceKeys.FLASH_LIGHT, false);
             channel.enableLights(flashLight);
-            if (flashLight)
+            if (flashLight) {
                 channel.setLightColor(preferences.getInt(PreferenceKeys.FLASH_LIGHT_COLOR, PreferenceKeys.DEFAULT_FLASH_LIGHT_COLOR));
+                builder.setLights(preferences.getInt(PreferenceKeys.FLASH_LIGHT_COLOR, PreferenceKeys.DEFAULT_FLASH_LIGHT_COLOR), 3000, 3000);
+            }
+            if (preferences.getBoolean(PreferenceKeys.VIBRATION, false))
+                builder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000});
             channel.enableVibration(preferences.getBoolean(PreferenceKeys.VIBRATION, false));
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);

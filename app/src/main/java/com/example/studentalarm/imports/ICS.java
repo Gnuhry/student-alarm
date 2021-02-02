@@ -2,6 +2,8 @@ package com.example.studentalarm.imports;
 
 import android.util.Log;
 
+import com.example.studentalarm.Formatter;
+
 import org.dmfs.rfc5545.DateTime;
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException;
 import org.dmfs.rfc5545.recur.RecurrenceRule;
@@ -90,7 +92,7 @@ public class ICS {
      */
     @Nullable
     public static Date stringToDate(@NonNull String string) throws ParseException {
-        return new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault()).parse(string.replace("T", "-"));
+        return Formatter.dateFormatter().parse(string.replace("T", "-"));
     }
 
     /**
@@ -212,7 +214,7 @@ public class ICS {
             Log.d(LOG, "Add " + hour + " hour and " + minute + " min");
             calendar.add(Calendar.HOUR_OF_DAY, -hour);
             calendar.add(Calendar.MINUTE, -minute);
-            String erg = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault()).format(calendar.getTime());
+            String erg =Formatter.dateFormatter().format(calendar.getTime());
             Log.d(LOG, "date after add timezone: " + erg);
             return erg;
         }

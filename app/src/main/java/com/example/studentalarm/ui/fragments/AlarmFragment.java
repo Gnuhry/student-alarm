@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.studentalarm.Formatter;
 import com.example.studentalarm.R;
 import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
@@ -16,10 +17,8 @@ import com.example.studentalarm.ui.dialog.AlarmShutdownDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
@@ -177,7 +176,7 @@ public class AlarmFragment extends Fragment {
                     txVTimer.setText(R.string.zero_time);
                 }
             }.start();
-            ((TextView) view.findViewById(R.id.txVAlarm)).setText(getContext().getString(R.string.alarm_at, new SimpleDateFormat("HH:mm", Locale.GERMAN).format(time)));
+            ((TextView) view.findViewById(R.id.txVAlarm)).setText(getContext().getString(R.string.alarm_at, Formatter.timeFormatter().format(time)));
             ((TextView) view.findViewById(R.id.textView4)).setText(R.string.next_alarm_in);
         } else {
             ((TextView) view.findViewById(R.id.txVAlarm)).setText(null);

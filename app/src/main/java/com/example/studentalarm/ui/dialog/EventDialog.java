@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.studentalarm.EventColor;
+import com.example.studentalarm.Formatter;
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.LectureSchedule;
@@ -510,8 +511,7 @@ public class EventDialog extends DialogFragment implements CallColorDialog {
      */
     @NonNull
     private String formatTime(@NonNull Date date) {
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        return format.format(date);
+        return Formatter.timeFormatter().format(date);
     }
 
     /**
@@ -529,7 +529,7 @@ public class EventDialog extends DialogFragment implements CallColorDialog {
             Date date = dateformat.parse(string.substring(4, pos));
             if (date != null)
                 calendar.setTime(date);
-            date = new SimpleDateFormat("HH:mm", Locale.getDefault()).parse(string.substring(pos + 3));
+            date = Formatter.timeFormatter().parse(string.substring(pos + 3));
             if (date != null)
                 calendar1.setTime(date);
             calendar.set(Calendar.HOUR_OF_DAY, calendar1.get(Calendar.HOUR_OF_DAY));
