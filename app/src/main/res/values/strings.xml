@@ -156,6 +156,7 @@
     <string name="flash_light">Flash light</string>
     <string name="vibration">Vibration</string>
     <string name="flash_light_color">Flash light color</string>
+    <string name="stop_snooze">stop snooze</string>
 
 
 </resources>

@@ -1,5 +1,6 @@
 package com.example.studentalarm.receiver;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
+import com.example.studentalarm.MainActivity;
 import com.example.studentalarm.R;
 import com.example.studentalarm.save.PreferenceKeys;
 
@@ -22,6 +24,7 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
 import static android.app.Notification.EXTRA_NOTIFICATION_ID;
+import static com.example.studentalarm.MainActivity.ALARM_BROADCAST;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
@@ -62,15 +65,20 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setSmallIcon(R.drawable.alarm)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(context.getString(R.string.alarm))
-//                .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK), 0))
+                .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0))
                 .addAction(R.drawable.alarm, context.getString(R.string.snooze), PendingIntent.getBroadcast(context, 0, snoozeIntent, 0))
                 .addAction(R.drawable.alarm, context.getString(R.string.alarm_off), PendingIntent.getBroadcast(context, 0, alarmOffIntent, 0))
-                .setPriority(NotificationCompat.PRIORITY_HIGH);
+                .setFullScreenIntent(PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0), true)
+                .setAutoCancel(false)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setPriority(NotificationCompat.PRIORITY_MAX);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            builder.setCategory(Notification.CATEGORY_ALARM);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = context.getString(R.string.alarm);
             String description = context.getString(R.string.alarm);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_HIGH);
             channel.setDescription(description);
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             boolean flashLight = preferences.getBoolean(PreferenceKeys.FLASH_LIGHT, false);
@@ -81,12 +89,15 @@ public class AlarmReceiver extends BroadcastReceiver {
             }
             if (preferences.getBoolean(PreferenceKeys.VIBRATION, false))
                 builder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000});
+            builder.setOngoing(true);
             channel.enableVibration(preferences.getBoolean(PreferenceKeys.VIBRATION, false));
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
             notificationManager.notify(NOTIFICATION_ID, builder.build());
         } else
             NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build());
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PreferenceKeys.ALARM_MODE, 1).apply();
+        context.sendBroadcast(new Intent(ALARM_BROADCAST));
     }
 
     /**

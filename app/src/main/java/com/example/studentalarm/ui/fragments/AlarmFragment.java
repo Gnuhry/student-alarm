@@ -11,7 +11,10 @@ import android.widget.TextView;
 
 import com.example.studentalarm.Formatter;
 import com.example.studentalarm.R;
+import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.LectureSchedule;
+import com.example.studentalarm.receiver.AlarmOffReceiver;
+import com.example.studentalarm.receiver.SnoozeReceiver;
 import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.dialog.AlarmShutdownDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -46,14 +49,38 @@ public class AlarmFragment extends Fragment {
         Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.fragment_alarm, container, false);
         if (getContext() == null) return view;
+        setAlarmViews(view);
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) <= Calendar.getInstance().getTime().getTime())
             PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
+
+        view.findViewById(R.id.btnSnooze).setOnClickListener(view1 -> {
+            new SnoozeReceiver().onReceive(getContext(), null);
+            reload();
+        });
+        view.findViewById(R.id.btnAlarmOff).setOnClickListener(view1 -> {
+            new AlarmOffReceiver().onReceive(getContext(), null);
+            reload();
+        });
+        view.findViewById(R.id.btnStopSnooze).setOnClickListener(view1 -> {
+            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putInt(PreferenceKeys.ALARM_MODE, 0).apply();
+            AlarmManager.updateNextAlarm(getContext());
+            reload();
+        });
+
         checkNotification();
         this.view = view;
         setTimer(view);
         showAlarmShutdown(view);
 
         return view;
+    }
+
+    public void setAlarmViews(View view) {
+        if (getContext() == null) return;
+        int alarmId = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.ALARM_MODE, -1);
+        view.findViewById(R.id.llNormal).setVisibility(alarmId == 1 ? View.GONE : View.VISIBLE);
+        view.findViewById(R.id.llAlarm).setVisibility(alarmId == 1 ? View.VISIBLE : View.GONE);
+        view.findViewById(R.id.btnStopSnooze).setVisibility(alarmId == 2 ? View.VISIBLE : View.GONE);
     }
 
     /**
@@ -73,7 +100,7 @@ public class AlarmFragment extends Fragment {
         super.onResume();
         if (getContext() != null && PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_TIME, 0) <= Calendar.getInstance().getTime().getTime())
             PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
-        showAlarmShutdown(view);
+        reload();
     }
 
     /**
@@ -85,6 +112,7 @@ public class AlarmFragment extends Fragment {
             timer.cancel();
         setTimer(view);
         showAlarmShutdown(view);
+        setAlarmViews(view);
     }
 
     public void stopLoad() {
