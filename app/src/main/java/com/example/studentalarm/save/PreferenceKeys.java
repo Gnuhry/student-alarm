@@ -95,8 +95,8 @@ public class PreferenceKeys {
             preferences.edit().putInt(PreferenceKeys.FLASH_LIGHT_COLOR, PreferenceKeys.DEFAULT_FLASH_LIGHT_COLOR).apply();
         if (preferences.getLong(PreferenceKeys.ALARM_SHUTDOWN, -1) == -1)
             preferences.edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
-        if (preferences.getLong(PreferenceKeys.ALARM_MODE, -1) == -1)
-            preferences.edit().putLong(PreferenceKeys.ALARM_MODE, 0).apply();
+        if (preferences.getInt(PreferenceKeys.ALARM_MODE, -1) == -1)
+            preferences.edit().putInt(PreferenceKeys.ALARM_MODE, 0).apply();
         return erg;
     }
 

@@ -77,7 +77,7 @@ public class AlarmFragment extends Fragment {
 
     public void setAlarmViews(View view) {
         if (getContext() == null) return;
-        int alarmId = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.ALARM_MODE, -1);
+        int alarmId = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.ALARM_MODE, 0);
         view.findViewById(R.id.llNormal).setVisibility(alarmId == 1 ? View.GONE : View.VISIBLE);
         view.findViewById(R.id.llAlarm).setVisibility(alarmId == 1 ? View.VISIBLE : View.GONE);
         view.findViewById(R.id.btnStopSnooze).setVisibility(alarmId == 2 ? View.VISIBLE : View.GONE);
