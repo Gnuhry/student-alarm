@@ -20,7 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,7 +41,7 @@ public class Export {
         Log.d(LOG, "Start");
         try {
             List<ICS.vEvent> erg = new ArrayList<>();
-            SimpleDateFormat format = Formatter.dateFormatter();
+            SimpleDateFormat format = Formatter.dateFormatterWithMilli();
             for (LectureSchedule.Lecture lecture : list) {
                 ICS.vEvent event = new ICS.vEvent();
                 event.SUMMARY = lecture.getName();
@@ -140,7 +139,7 @@ public class Export {
 
         File file = new File(documentsPath.getAbsolutePath() +
                 File.separator +
-                Formatter.dateFormatter().format(Calendar.getInstance().getTime())
+                Formatter.dateFormatterWithMilli().format(Calendar.getInstance().getTime())
                 + "_output.ics");
         if (!file.exists() && !file.createNewFile()) return null;
         OutputStream fo = new FileOutputStream(file);
