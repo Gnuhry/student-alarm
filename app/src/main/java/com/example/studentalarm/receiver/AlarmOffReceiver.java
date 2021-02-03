@@ -17,11 +17,16 @@ public class AlarmOffReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(@NonNull Context context, Intent intent) {
         Log.d("ALARM", "OFF");
-        AlarmManager.setNextAlarm(context);
-        NotificationManagerCompat.from(context).cancel(AlarmReceiver.NOTIFICATION_ID);
-        if (AlarmReceiver.mp != null) {
-            AlarmReceiver.mp.stop();
-            AlarmReceiver.mp.release();
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AlarmManager.setNextAlarm(context);
+                NotificationManagerCompat.from(context).cancel(AlarmReceiver.NOTIFICATION_ID);
+                if (AlarmReceiver.mp != null) {
+                    AlarmReceiver.mp.stop();
+                    AlarmReceiver.mp.release();
+                }
+            }
+        }).start();
     }
 }

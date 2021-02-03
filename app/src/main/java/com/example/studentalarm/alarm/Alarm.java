@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.provider.AlarmClock;
 import android.util.Log;
 import android.widget.Toast;
@@ -31,7 +32,12 @@ public class Alarm {
         if (Calendar.getInstance().before(time)) {
             ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class), 0));
             PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_TIME, time.getTimeInMillis()).apply();
-            Toast.makeText(context, R.string.alarm_is_set, Toast.LENGTH_SHORT).show();
+            Handler mainHandler = new Handler(context.getMainLooper());
+            Runnable myRunnable = new Runnable() {
+                @Override
+                public void run() {Toast.makeText(context, R.string.alarm_is_set, Toast.LENGTH_SHORT).show();} // This is your code
+            };
+            mainHandler.post(myRunnable);
             Log.d(LOG, "Set alarm to " + time.getTimeInMillis());
         } else {
             Log.e(LOG, "Wrong Date is set for alarm. Date is before current date");

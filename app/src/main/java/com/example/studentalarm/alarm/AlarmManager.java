@@ -6,12 +6,15 @@ import android.util.Log;
 
 import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
+import com.example.studentalarm.weather.BadWeatherCheck;
 
 import java.util.Calendar;
 import java.util.Date;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
+
+import org.json.JSONException;
 
 public class AlarmManager {
 
@@ -29,8 +32,20 @@ public class AlarmManager {
         if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.ALARM_ON, false)) {
             Log.d(LOG, "alarm on");
             LectureSchedule.Lecture first = LectureSchedule.load(context).getNextLecture(context);
-            if (first != null)
-                setAlarm(first.getStartWithDefaultTimeZone(), context);
+            if (first != null) {
+                Date date = first.getStartWithDefaultTimeZone();
+                try {
+                    Log.d(LOG, "Bad Weather Check");
+                    if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.WAKE_WEATHER,true) && new BadWeatherCheck(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.ZIPCODE,"11011")).isTheWeatherBad(first.getStartWithDefaultTimeZone())) {
+                        Log.d(LOG, "Bad Weather");
+                        date.setTime(date.getTime() - 60000 * Long.parseLong(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.WAKE_WEATHER_TIME,"10")));
+                    }
+                    setAlarm(date, context);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    setAlarm(date, context);
+                }
+            }
         }
     }
 
@@ -54,7 +69,12 @@ public class AlarmManager {
         after = preferences.getInt(PreferenceKeys.AFTER, 0);
         alarmPhone = preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false);
         cancelNextAlarm(context);
-        setNextAlarm(context);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AlarmManager.setNextAlarm(context);
+            }
+        }).start();
     }
 
     /**
@@ -66,7 +86,12 @@ public class AlarmManager {
         Log.d(LOG, "update alarm after auto import");
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (!preferences.getBoolean(PreferenceKeys.ALARM_CHANGE, false)) return;
-        setNextAlarm(context);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AlarmManager.setNextAlarm(context);
+            }
+        }).start();
     }
 
     /**

@@ -121,7 +121,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     return false;
                 }
                 getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.ALARM_ON, (Boolean) newValue).apply();
-                AlarmManager.setNextAlarm(getContext());
+                Context context = getContext();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        AlarmManager.setNextAlarm(context);
+                    }
+                }).start();
             } else {
                 getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.ALARM_ON, (Boolean) newValue).apply();
                 if (getContext() != null)
@@ -264,22 +270,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             return true;
         });
         zipcode.setEnabled(getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.WAKE_WEATHER,false));
-        zipcode.setOnBindEditTextListener(editText -> {editText.setInputType(InputType.TYPE_CLASS_NUMBER); editText.setFilters(new InputFilter[]{
-        new InputFilter() {
-            @Override
-            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                try{
-                    int input = Integer. parseInt (dest.toString() + source.toString()) ;
-                    if (input >= 0 && input <= 99999)
-                        return null;
-                }catch (NumberFormatException e) {
-                    e.printStackTrace() ;
-                }
-                return "" ;
-            }
-        }
-        });});
-                //InputFilter.LengthFilter[]{new InputFilter.LengthFilter(5)});});
+        zipcode.setOnBindEditTextListener(editText -> {editText.setInputType(InputType.TYPE_CLASS_NUMBER); editText.setFilters(new InputFilter.LengthFilter[]{new InputFilter.LengthFilter(5)});});
         zipcode.setSummaryProvider(preference -> preference.getSharedPreferences().getString(PreferenceKeys.ZIPCODE, getString(R.string.error)));
         zipcode.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.i(LOG, "wakeWeatherTime set to " + newValue);

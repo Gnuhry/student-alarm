@@ -23,7 +23,12 @@ public class BootReceiver extends BroadcastReceiver {
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
             if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.AUTO_IMPORT, false))
                 Import.setTimer(context);
-            AlarmManager.setNextAlarm(context);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    AlarmManager.setNextAlarm(context);
+                }
+            }).start();
         }
     }
 }
