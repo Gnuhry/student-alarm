@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.studentalarm.Formatter;
@@ -37,7 +38,6 @@ public class AlarmFragment extends Fragment {
     private View view;
     @Nullable
     private ProgressDialog progress;
-    private List<LectureSchedule.Lecture> lectureSchedule;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -49,7 +49,6 @@ public class AlarmFragment extends Fragment {
         Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.fragment_alarm, container, false);
         if (getContext() == null) return view;
-        setAlarmViews(view);
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) <= Calendar.getInstance().getTime().getTime())
             PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
 
@@ -67,10 +66,8 @@ public class AlarmFragment extends Fragment {
             reload();
         });
 
-        checkNotification();
         this.view = view;
-        setTimer(view);
-        showAlarmShutdown(view);
+        reload();
 
         return view;
     }
@@ -93,6 +90,7 @@ public class AlarmFragment extends Fragment {
         super.onDestroyView();
         if (timer != null)
             timer.cancel();
+        stopLoad();
     }
 
     @Override
@@ -110,6 +108,7 @@ public class AlarmFragment extends Fragment {
         Log.d(LOG, "reload");
         if (timer != null)
             timer.cancel();
+        checkNotification();
         setTimer(view);
         showAlarmShutdown(view);
         setAlarmViews(view);
@@ -126,47 +125,49 @@ public class AlarmFragment extends Fragment {
      * @param view needs View
      */
     private void showAlarmShutdown(@NonNull View view) {
-        Log.d(LOG, "GetContext: " + getContext());
         if (getContext() == null) return;
         Log.i(LOG, "check / show Button");
-        Log.d(LOG, "ALARM_ON: " + PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_ON, false));
-        Log.d(LOG, "ALARM_PHONE: " + PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_PHONE, true));
+        TextView alarmShutdownUntil = view.findViewById(R.id.txtAlarmShutdownUntil),
+                textView4 = view.findViewById(R.id.textView4);
+        Button alarmShutdown = view.findViewById(R.id.btnTmpAlarmShutdown);
 
-        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_ON, false)) {
-            if (!PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_PHONE, true)) {
-                Log.d(LOG, "Button VISIBLE");
-                progress = new ProgressDialog(getContext());
-                progress.setTitle(getContext().getString(R.string.loading));
-                progress.setMessage(getContext().getString(R.string.wait_while_loading));
-                progress.setCancelable(false);
-                progress.show();
-                lectureSchedule = LectureSchedule.load(getContext()).getAllLecturesFromNowWithoutHoliday(getContext());
-                if (lectureSchedule.size() > 0) {
-                    view.findViewById(R.id.btnTmpAlarmShutdown).setVisibility(View.VISIBLE);
-                    view.findViewById(R.id.btnTmpAlarmShutdown).setOnClickListener(view1 -> {
+        if (!PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_ON, false)) {
+            Log.d(LOG, "no alarm at all");
+            textView4.setText(R.string.no_alarms);
+            return;
+        }
+        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_PHONE, true)) {
+            Log.d(LOG, "Alarm on phone message");
+            textView4.setText(R.string.alarm_in_phone);
+            return;
+        }
+        Log.d(LOG, "Button VISIBLE");
+        progress = new ProgressDialog(getContext());
+        progress.setTitle(getContext().getString(R.string.loading));
+        progress.setMessage(getContext().getString(R.string.wait_while_loading));
+        progress.setCancelable(false);
+        new Thread(() -> {
+            alarmShutdownUntil.post(() -> progress.show());
+            List<LectureSchedule.Lecture> lectureSchedule = LectureSchedule.load(getContext()).getAllLecturesFromNowWithoutHoliday(getContext());
+            if (lectureSchedule.size() > 0) {
+                alarmShutdown.post(() -> {
+                    alarmShutdown.setVisibility(View.VISIBLE);
+                    alarmShutdown.setOnClickListener(view1 -> {
                         if (getActivity() == null) return;
                         Log.i(LOG, "Button pressed");
                         progress.show(); // in AlarmShutdownDialog dismissed
                         new AlarmShutdownDialog(this, lectureSchedule).show(getActivity().getSupportFragmentManager(), "dialog");
                     });
-                }
-                progress.dismiss();
-                if (getContext() != null && PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) != 0) {
-                    Log.d(LOG, "Text VISIBLE");
-                    ((TextView) view.findViewById(R.id.txtAlarmShutdownUntil)).setText(new Date(PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0)).toString());
-                    view.findViewById(R.id.txtAlarmShutdownUntil).setVisibility(View.VISIBLE);
-                } else
-                    view.findViewById(R.id.txtAlarmShutdownUntil).setVisibility(View.GONE);
-            } else if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PreferenceKeys.ALARM_PHONE, true)) {
-                Log.d(LOG, "Alarm on phone message");
-                ((TextView) view.findViewById(R.id.textView4)).setText(R.string.alarm_in_phone);
+                });
             }
-        } else {
-            Log.d(LOG, "no alarm at all");
-            ((TextView) view.findViewById(R.id.textView4)).setText(R.string.no_alarms);
-        }
+            alarmShutdownUntil.post(() -> progress.dismiss());
+        }).start();
 
+        long date = PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0);
+        alarmShutdownUntil.setText(date != 0 ? new Date(date).toString() : null);
+        alarmShutdownUntil.setVisibility(date != 0 ? View.VISIBLE : View.GONE);
     }
+
 
     /**
      * Set the timer to show when the alarm is going to trigger
