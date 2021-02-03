@@ -209,7 +209,11 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
         return hours.size();
     }
 
-
+    /**
+     * init the edit time box
+     * @param before editBox for from time
+     * @param until editBox for until time
+     */
     private void initTimeEditTextBeforeAfter(@NonNull EditText before, @Nullable EditText until) {
         SimpleDateFormat format = Formatter.timeFormatter();
         try {

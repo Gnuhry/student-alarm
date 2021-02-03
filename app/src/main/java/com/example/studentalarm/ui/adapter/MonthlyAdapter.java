@@ -98,12 +98,6 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHold
         }
     }
 
-
-    /**
-     * Get the amount of lecture
-     *
-     * @return lecture amount
-     */
     @Override
     public int getItemCount() {
         return lecture.size();

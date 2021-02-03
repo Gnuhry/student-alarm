@@ -9,13 +9,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
 import com.example.studentalarm.MainActivity;
 import com.example.studentalarm.R;
+import com.example.studentalarm.Ringtone;
 import com.example.studentalarm.save.PreferenceKeys;
 
 import androidx.annotation.NonNull;
@@ -72,9 +72,8 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setAutoCancel(false)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setPriority(NotificationCompat.PRIORITY_MAX);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
             builder.setCategory(Notification.CATEGORY_ALARM);
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = context.getString(R.string.alarm);
             String description = context.getString(R.string.alarm);
@@ -114,13 +113,6 @@ public class AlarmReceiver extends BroadcastReceiver {
                 return mediaPlayer;
             PreferenceManager.getDefaultSharedPreferences(context).edit().putString(PreferenceKeys.RINGTONE, PreferenceKeys.DEFAULT_RINGTONE).apply();
         }
-        switch (ringtone) {
-            case "gentle":
-                return MediaPlayer.create(context.getApplicationContext(), R.raw.alarm_gentle);
-            case "DEFAULT":
-            default:
-                Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                return MediaPlayer.create(context.getApplicationContext(), alarmSound);
-        }
+        return Ringtone.getConstantRingtone(ringtone, context, true);
     }
 }

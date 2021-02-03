@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.studentalarm.R;
+import com.example.studentalarm.Ringtone;
 import com.example.studentalarm.save.PreferenceKeys;
 
 import androidx.annotation.NonNull;
@@ -75,8 +75,7 @@ public class RingtoneDialog extends Dialog {
                 intent.setType("audio/*");
 
                 activity.startActivityForResult(intent, REQUEST_CODE);
-            }
-            else
+            } else
                 Toast.makeText(context, activity.getString(R.string.not_supported_in_your_android_version), Toast.LENGTH_LONG).show();
         });
 
@@ -90,15 +89,7 @@ public class RingtoneDialog extends Dialog {
             if (selectedRingtoneHelp.startsWith("|"))
                 customHelp += " " + Uri.parse(selectedRingtone.substring(1)).getLastPathSegment();
             ((RadioButton) rg.getChildAt(rg.getChildCount() - 1)).setText(customHelp);
-            switch (text.toUpperCase()) {
-                case "GENTLE":
-                    mediaPlayer = MediaPlayer.create(getContext().getApplicationContext(), R.raw.alarm_gentle);
-                    break;
-                case "DEFAULT":
-                    Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                    mediaPlayer = MediaPlayer.create(getContext().getApplicationContext(), alarmSound);
-                    break;
-            }
+            mediaPlayer = Ringtone.getConstantRingtone(text, getContext(), false);
             if (mediaPlayer != null) {
                 mediaPlayer.setOnPreparedListener(MediaPlayer::start);
             }
@@ -113,6 +104,14 @@ public class RingtoneDialog extends Dialog {
             dismiss();
         });
 
+    }
+
+    @Override
+    public void cancel() {
+        if (mediaPlayer != null)
+            mediaPlayer.stop();
+        if (!save && ((RadioButton) rg.getChildAt(rg.getChildCount() - 1)).isChecked())
+            PreferenceManager.getDefaultSharedPreferences(context).edit().putString(PreferenceKeys.RINGTONE, ringtoneOld).apply();
     }
 
     /**
@@ -134,13 +133,6 @@ public class RingtoneDialog extends Dialog {
                     Toast.makeText(activity, R.string.not_a_song_file, Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    public void cancel() {
-        if (mediaPlayer != null)
-            mediaPlayer.stop();
-        if (!save && ((RadioButton) rg.getChildAt(rg.getChildCount() - 1)).isChecked())
-            PreferenceManager.getDefaultSharedPreferences(context).edit().putString(PreferenceKeys.RINGTONE, ringtoneOld).apply();
     }
 }
 

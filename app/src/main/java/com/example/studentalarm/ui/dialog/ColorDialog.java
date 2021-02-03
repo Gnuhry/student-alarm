@@ -157,7 +157,13 @@ public class ColorDialog extends DialogFragment {
         return view;
     }
 
-    public void initRadioButtonColor(int color, RadioButton radioButton) {
+    /**
+     * init the radio button color
+     *
+     * @param color       color to set
+     * @param radioButton radio button to set color
+     */
+    private void initRadioButtonColor(int color, RadioButton radioButton) {
         radioButton.setTag(color);
         if (Build.VERSION.SDK_INT >= 21) {
             ColorStateList colorStateList = new ColorStateList(

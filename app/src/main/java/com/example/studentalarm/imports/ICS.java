@@ -63,7 +63,7 @@ public class ICS {
     /**
      * returns all events from the ics file
      *
-     * @return list of iCalendar.events
+     * @return list of iCalendar.events {null} if import has failed
      */
     @Nullable
     public List<vEvent> getVEventList() {
@@ -77,6 +77,10 @@ public class ICS {
         return null;
     }
 
+    /**
+     * check if event is imported
+     * @return {true} if events has imported
+     */
     public boolean isSuccessful() {
         return !vEventList.isEmpty();
     }

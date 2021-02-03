@@ -62,6 +62,33 @@ public class LectureSchedule {
         regular_until.add(Calendar.YEAR, 3);
     }
 
+    public void addLecture(@NonNull Lecture lecture) {
+        this.lecture.add(lecture);
+    }
+
+    public void addHoliday(@NonNull Lecture lecture) {
+        this.holidays.add(lecture);
+    }
+
+    @NonNull
+    public List<Lecture> getLecture() {
+        return lecture;
+    }
+
+    @NonNull
+    public List<Lecture> getImportLecture() {
+        return importLecture;
+    }
+
+    @NonNull
+    public List<Lecture> getHolidays() {
+        return holidays;
+    }
+
+    public static int getPositionScroll() {
+        return positionScroll;
+    }
+
     /**
      * get all lectures from Lecture_Schedule
      *
@@ -135,6 +162,11 @@ public class LectureSchedule {
         return erg;
     }
 
+    /**
+     * get all lectures from Lecture_Schedule without holiday and which is after now
+     *
+     * @return all Lectures
+     */
     @NonNull
     public List<Lecture> getAllLecturesFromNowWithoutHoliday(@NonNull Context context) {
         positionScroll = -1;
@@ -156,25 +188,6 @@ public class LectureSchedule {
         if (positionScroll == -1 && erg.size() > 0)
             positionScroll = erg.size() - 1;
         return erg;
-    }
-
-    @NonNull
-    public List<Lecture> getLecture() {
-        return lecture;
-    }
-
-    @NonNull
-    public List<Lecture> getImportLecture() {
-        return importLecture;
-    }
-
-    @NonNull
-    public List<Lecture> getHolidays() {
-        return holidays;
-    }
-
-    public static int getPositionScroll() {
-        return positionScroll;
     }
 
     /**
@@ -222,12 +235,32 @@ public class LectureSchedule {
         return null;
     }
 
-    public void addLecture(@NonNull Lecture lecture) {
-        this.lecture.add(lecture);
+    /**
+     * remove lecture from lecture or import list
+     *
+     * @param data lecture to remove
+     * @return updated lecture schedule
+     */
+    @NonNull
+    public LectureSchedule removeLecture(@NonNull Lecture data) {
+        int id1 = lecture.indexOf(data), id2 = importLecture.indexOf(data);
+        if (id1 >= 0) lecture.remove(id1);
+        if (id2 >= 0) importLecture.remove(id2);
+        return this;
     }
 
-    public void addHoliday(@NonNull Lecture lecture) {
-        this.holidays.add(lecture);
+    /**
+     * remove holiday
+     *
+     * @param data lecture to remove
+     * @return updated lecture schedule
+     */
+    @NonNull
+    public LectureSchedule removeHoliday(@NonNull Lecture data) {
+        int id1 = holidays.indexOf(data);
+        Log.d("REMOVE HOLIDAY", "Data: " + data.getName() + " ID: " + id1);
+        if (id1 >= 0) holidays.remove(id1);
+        return this;
     }
 
     /**
@@ -285,22 +318,6 @@ public class LectureSchedule {
         return this;
     }
 
-    @NonNull
-    public LectureSchedule removeLecture(@NonNull Lecture data) {
-        int id1 = lecture.indexOf(data), id2 = importLecture.indexOf(data);
-        if (id1 >= 0) lecture.remove(id1);
-        if (id2 >= 0) importLecture.remove(id2);
-        return this;
-    }
-
-    @NonNull
-    public LectureSchedule removeHoliday(@NonNull Lecture data) {
-        int id1 = holidays.indexOf(data);
-        Log.d("REMOVE HOLIDAY", "Data: " + data.getName() + " ID: " + id1);
-        if (id1 >= 0) holidays.remove(id1);
-        return this;
-    }
-
 
     /**
      * change all Imported Colors
@@ -355,7 +372,7 @@ public class LectureSchedule {
     private List<Lecture> getAllLectureWithoutHolidayAndHolidayEvents(@NonNull Context context) {
         List<Lecture> all = new ArrayList<>(), all2 = new ArrayList<>();
         int countShutdownEvents = 0;
-        long penultimateShutdownEvent =0;
+        long penultimateShutdownEvent = 0;
         all.addAll(lecture);
         all.addAll(importLecture);
         all.addAll(getRegularLecture(context));
@@ -382,8 +399,7 @@ public class LectureSchedule {
             Log.d("Lecture Schedule", "Change made last shutdown element disappear");
             PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, penultimateShutdownEvent).apply();
             AlarmManager.updateNextAlarm(context);
-            if (NotificationManagerCompat.from(context).areNotificationsEnabled())
-            {
+            if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
                 int NOTIFICATION_ID = 1234567;
                 String CHANNEL_ID = "1234567";
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)

@@ -84,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
         super.onConfigurationChanged(newConfig);
     }
 
+    /**
+     * check the language is setting right
+     */
     public void checkLanguage() {
         String lan = PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceKeys.LANGUAGE, null);
         if (lan != null && !lan.equals(PreferenceKeys.defaultLanguage(this)))
