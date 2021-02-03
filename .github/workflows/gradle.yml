@@ -30,4 +30,4 @@ jobs:
        GITHUB_TOKEN: ${{ secrets.TOKEN }}
        APP_FOLDER: app
        RELEASE_TITLE: RELEASE 
-       TAG: ${{ github.ref }}  
+       VERSION_NAME : ${{ github.ref }}  
