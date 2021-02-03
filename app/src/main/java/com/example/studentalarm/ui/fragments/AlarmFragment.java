@@ -72,18 +72,6 @@ public class AlarmFragment extends Fragment {
         return view;
     }
 
-    public void setAlarmViews(View view) {
-        if (getContext() == null) return;
-        int alarmId = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.ALARM_MODE, 0);
-        view.findViewById(R.id.llNormal).setVisibility(alarmId == 1 ? View.GONE : View.VISIBLE);
-        view.findViewById(R.id.llAlarm).setVisibility(alarmId == 1 ? View.VISIBLE : View.GONE);
-        view.findViewById(R.id.btnStopSnooze).setVisibility(alarmId == 2 ? View.VISIBLE : View.GONE);
-    }
-
-    /**
-     * !
-     * If change fragment, the countdown can stop
-     */
     @Override
     public void onDestroyView() {
         Log.i(LOG, "Destroyed");
@@ -102,18 +90,36 @@ public class AlarmFragment extends Fragment {
     }
 
     /**
+     * set alarm views like snoozing or stopping alarm
+     * @param view view to display views
+     * @return {true} if other views should be displayed
+     */
+    public boolean setAlarmViews(View view) {
+        if (getContext() == null) return true;
+        int alarmId = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.ALARM_MODE, 0);
+        view.findViewById(R.id.llNormal).setVisibility(alarmId == 1 ? View.GONE : View.VISIBLE);
+        view.findViewById(R.id.llAlarm).setVisibility(alarmId == 1 ? View.VISIBLE : View.GONE);
+        view.findViewById(R.id.btnStopSnooze).setVisibility(alarmId == 2 ? View.VISIBLE : View.GONE);
+        return alarmId != 1;
+    }
+
+    /**
      * reload after temporary alarm cancel action
      */
     public void reload() {
         Log.d(LOG, "reload");
         if (timer != null)
             timer.cancel();
-        checkNotification();
-        setTimer(view);
-        showAlarmShutdown(view);
-        setAlarmViews(view);
+        if (setAlarmViews(view)) {
+            checkNotification();
+            setTimer(view);
+            showAlarmShutdown(view);
+        }
     }
 
+    /**
+     * stop the progress
+     */
     public void stopLoad() {
         if (progress != null)
             progress.dismiss();
