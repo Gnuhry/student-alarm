@@ -29,4 +29,5 @@ jobs:
       env:
        GITHUB_TOKEN: ${{ secrets.TOKEN }}
        APP_FOLDER: app
-       RELEASE_TITLE: New Build
+       RELEASE_TITLE: RELEASE 
+       TAG: ${{ github.ref }}  
