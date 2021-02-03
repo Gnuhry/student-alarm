@@ -306,16 +306,19 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
         public boolean bool;
         public int id;
 
+        @NonNull
         public TagHelp setBool(boolean bool) {
             this.bool = bool;
             return this;
         }
 
+        @NonNull
         public TagHelp setId(int id) {
             this.id = id;
             return this;
         }
 
+        @NonNull
         public static TagHelp build() {
             return new TagHelp();
         }

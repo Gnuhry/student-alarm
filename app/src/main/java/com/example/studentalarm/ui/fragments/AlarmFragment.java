@@ -94,7 +94,7 @@ public class AlarmFragment extends Fragment {
      * @param view view to display views
      * @return {true} if other views should be displayed
      */
-    public boolean setAlarmViews(View view) {
+    public boolean setAlarmViews(@NonNull View view) {
         if (getContext() == null) return true;
         int alarmId = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(PreferenceKeys.ALARM_MODE, 0);
         view.findViewById(R.id.llNormal).setVisibility(alarmId == 1 ? View.GONE : View.VISIBLE);

@@ -19,6 +19,7 @@ import com.example.studentalarm.Ringtone;
 import com.example.studentalarm.save.PreferenceKeys;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
@@ -31,6 +32,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     public static final int NOTIFICATION_ID = 123456;
     @NonNull
     private static final String CHANNEL_ID = "123456";
+    @Nullable
     public static MediaPlayer mp;
 
     /**
@@ -105,6 +107,7 @@ public class AlarmReceiver extends BroadcastReceiver {
      * @param context context of the application
      * @return ringtone to play
      */
+    @Nullable
     private MediaPlayer getMediaPlayer(@NonNull Context context) {
         String ringtone = PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.RINGTONE, PreferenceKeys.DEFAULT_RINGTONE);
         if (ringtone.startsWith("|")) {

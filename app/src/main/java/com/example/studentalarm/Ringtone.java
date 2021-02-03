@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 public class Ringtone {
 
     /**
-     * get media player for constant ringtones
+     * get media player for constant ringtone
      *
      * @param ringtone   ringtone key
      * @param context    context of app

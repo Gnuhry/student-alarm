@@ -24,8 +24,11 @@ import androidx.preference.PreferenceManager;
 public class RingtoneDialog extends Dialog {
 
     public final static int REQUEST_CODE = 3;
+    @Nullable
     private static MediaPlayer mediaPlayer;
+    @NonNull
     private final Activity activity;
+    @NonNull
     private final Context context;
     private final String ringtoneOld;
     private RadioGroup rg;

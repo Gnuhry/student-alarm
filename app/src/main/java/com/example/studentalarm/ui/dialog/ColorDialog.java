@@ -27,12 +27,14 @@ import com.example.studentalarm.ui.fragments.SettingsFragment;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.PreferenceManager;
 
 public class ColorDialog extends DialogFragment {
     @NonNull
     private static final String LOG = "ImportColorDialog";
+    @Nullable
     private final SettingsFragment settingsFragment;
     private final int colorPreference;
     private String preferenceKey;
@@ -119,7 +121,7 @@ public class ColorDialog extends DialogFragment {
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
+            public void afterTextChanged(@NonNull Editable editable) {
                 try {
                     if (editable.length() == 6 || editable.length() == 8) {
                         int color = Color.parseColor("#" + editable.toString());
@@ -163,7 +165,7 @@ public class ColorDialog extends DialogFragment {
      * @param color       color to set
      * @param radioButton radio button to set color
      */
-    private void initRadioButtonColor(int color, RadioButton radioButton) {
+    private void initRadioButtonColor(int color, @NonNull RadioButton radioButton) {
         radioButton.setTag(color);
         if (Build.VERSION.SDK_INT >= 21) {
             ColorStateList colorStateList = new ColorStateList(
