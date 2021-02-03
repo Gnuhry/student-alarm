@@ -50,7 +50,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
         progress = new ProgressDialog(getContext());
         progress.setTitle(getString(R.string.loading));
         progress.setMessage(getString(R.string.wait_while_loading));
-        progress.setCancelable(false);
+        progress.setCancelable(true);
 
         initAppBar(weekview, this.getActivity().findViewById(R.id.my_toolbar));
         initWeekView(weekview);
@@ -70,7 +70,7 @@ public class WeeklyFragment extends Fragment implements ReloadLecture {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (progress != null && progress.isShowing())
+        if (progress != null )
             progress.dismiss();
     }
 

@@ -91,6 +91,4 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
         Log.d("all rooms", lecture.getRooms().size() + "");
         return lecture.getRooms();
     }
-
-
 }

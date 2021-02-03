@@ -82,17 +82,17 @@ public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.ViewHold
         }
     }
 
+    @Override
+    public int getItemCount() {
+        return schedule.getHolidays().size() + 1;
+    }
+
     /**
      * reloading the adapter to display new data
      */
     public void reloadAdapter() {
         this.schedule = LectureSchedule.load(context);
         notifyDataSetChanged();
-    }
-
-    @Override
-    public int getItemCount() {
-        return schedule.getHolidays().size() + 1;
     }
 
 

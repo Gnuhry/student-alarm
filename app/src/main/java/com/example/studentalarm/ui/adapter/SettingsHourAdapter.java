@@ -209,7 +209,11 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
         return hours.size();
     }
 
-
+    /**
+     * init the edit time box
+     * @param before editBox for from time
+     * @param until editBox for until time
+     */
     private void initTimeEditTextBeforeAfter(@NonNull EditText before, @Nullable EditText until) {
         SimpleDateFormat format = Formatter.timeFormatter();
         try {
@@ -302,16 +306,19 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
         public boolean bool;
         public int id;
 
+        @NonNull
         public TagHelp setBool(boolean bool) {
             this.bool = bool;
             return this;
         }
 
+        @NonNull
         public TagHelp setId(int id) {
             this.id = id;
             return this;
         }
 
+        @NonNull
         public static TagHelp build() {
             return new TagHelp();
         }

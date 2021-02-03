@@ -113,9 +113,6 @@ public class EventDialog extends DialogFragment implements CallColorDialog {
         return view;
     }
 
-    /**
-     * Remove dialog.
-     */
     @Override
     public void onDestroyView() {
         Log.i(LOG, "destroy");
