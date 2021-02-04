@@ -8,7 +8,6 @@ import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
@@ -30,7 +29,7 @@ public class AlarmManager {
             Log.d(LOG, "alarm on");
             LectureSchedule.Lecture first = LectureSchedule.load(context).getNextLecture(context);
             if (first != null)
-                setAlarm(first.getStartWithDefaultTimeZone(), context);
+                setAlarm(first.getStartWithDefaultTimeZone().getTime(), context);
         }
     }
 
@@ -85,10 +84,10 @@ public class AlarmManager {
      * @param date    date where the alarm should trigger
      * @param context context of the application
      */
-    private static void setAlarm(@NonNull Date date, @NonNull Context context) {
+    private static void setAlarm(long date, @NonNull Context context) {
         Log.d(LOG, "Set alarm");
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
+        calendar.setTimeInMillis(date);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.BEFORE, 0));
         calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.WAY, 0));

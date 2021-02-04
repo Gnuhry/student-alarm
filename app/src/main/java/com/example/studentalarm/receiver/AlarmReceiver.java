@@ -40,13 +40,16 @@ public class AlarmReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(@NonNull Context context, Intent intent) {
+        WakeLocker.acquire(context);
         Log.d("Alarm Bell", "Alarm just fired");
         mp = getMediaPlayer(context);
-        if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
-            setNotification(context);
+        if (mp != null) {
             mp.setLooping(true);
+            mp.start();
         }
-        mp.start();
+        if (NotificationManagerCompat.from(context).areNotificationsEnabled())
+            setNotification(context);
+        WakeLocker.release();
     }
 
     /**
@@ -119,3 +122,4 @@ public class AlarmReceiver extends BroadcastReceiver {
         return Ringtone.getConstantRingtone(ringtone, context, true);
     }
 }
+
