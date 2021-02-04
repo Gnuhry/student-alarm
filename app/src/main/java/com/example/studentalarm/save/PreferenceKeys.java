@@ -45,6 +45,7 @@ public class PreferenceKeys {
             VIBRATION = "VIBRATION",
             FLASH_LIGHT = "FLASH_LIGHT",
             FLASH_LIGHT_COLOR = "FLASH_LIGHT_COLOR",
+            ALARM_MODE="ALARM_MODE",
             ZIPCODE="ZIPCODE",
             WAKE_WEATHER="WAKE_WEATHER",
             WAKE_WEATHER_TIME="WAKE_WEATHER_TIME",
@@ -108,6 +109,8 @@ public class PreferenceKeys {
             preferences.edit().putString(PreferenceKeys.ZIPCODE, PreferenceKeys.DEFAULT_ZIPCODE).apply();
         if (preferences.getLong(PreferenceKeys.WAKE_WEATHER_CHECK_TIME, -1) == -1)
             preferences.edit().putLong(PreferenceKeys.WAKE_WEATHER_CHECK_TIME, 0).apply();
+        if (preferences.getInt(PreferenceKeys.ALARM_MODE, -1) == -1)
+            preferences.edit().putInt(PreferenceKeys.ALARM_MODE, 0).apply();
 
 
         return erg;

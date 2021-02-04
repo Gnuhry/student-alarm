@@ -1,8 +1,6 @@
 package com.example.studentalarm.alarm;
 
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
@@ -48,16 +46,16 @@ public class AlarmManager {
                             Log.d(LOG, "Bad Weather");
                             date.setTime(date.getTime() - 60000 * Long.parseLong(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.WAKE_WEATHER_TIME, "10")));
                         }
-                        setAlarm(date, context);
+                        setAlarm(date.getTime(), context);
                     }else{
-                        setAlarm(date, context);
+                        setAlarm(date.getTime(), context);
                         checkdate.setTime(date.getTime()+100); //little later that the Alarm will be set and weather will be checked when called (100 ms for safety that no error will occure)
                         ((android.app.AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).set(android.app.AlarmManager.RTC_WAKEUP, checkdate.getTime(), PendingIntent.getBroadcast(context, 0, new Intent(context, SetAlarmLater.class), 0));
                         PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.WAKE_WEATHER_CHECK_TIME, checkdate.getTime()).apply();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    setAlarm(date, context);
+                    setAlarm(date.getTime(), context);
                 }
             }
         }
@@ -124,10 +122,10 @@ public class AlarmManager {
      * @param date    date where the alarm should trigger
      * @param context context of the application
      */
-    private static void setAlarm(@NonNull Date date, @NonNull Context context) {
+    private static void setAlarm(long date, @NonNull Context context) {
         Log.d(LOG, "Set alarm");
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
+        calendar.setTimeInMillis(date);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.BEFORE, 0));
         calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.WAY, 0));

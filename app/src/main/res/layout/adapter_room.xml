@@ -38,12 +38,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="5"
-            android:importantForAutofill="no"
             android:ems="5"
             android:gravity="start"
             android:hint="@string/room"
+            android:importantForAutofill="no"
             android:inputType="text"
-            android:maxLength="5" />
+            android:maxLength="5"
+            android:selectAllOnFocus="true" />
 
         <ImageView
             android:id="@+id/imVDelete"

@@ -1,5 +1,6 @@
 package com.example.studentalarm.ui.dialog;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -26,12 +27,14 @@ import com.example.studentalarm.ui.fragments.SettingsFragment;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.PreferenceManager;
 
 public class ColorDialog extends DialogFragment {
     @NonNull
     private static final String LOG = "ImportColorDialog";
+    @Nullable
     private final SettingsFragment settingsFragment;
     private final int colorPreference;
     private String preferenceKey;
@@ -45,11 +48,11 @@ public class ColorDialog extends DialogFragment {
     }
 
 
-    public ColorDialog(@NonNull SettingsFragment settingsFragment, @NonNull String preferenceKey, int pDefault) {
+    public ColorDialog(@NonNull SettingsFragment settingsFragment, @NonNull String preferenceKey, @NonNull Context context, int pDefault) {
         this.settingsFragment = settingsFragment;
         this.preferenceKey = preferenceKey;
 
-        colorPreference = getContext() == null ? pDefault : PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(preferenceKey, pDefault);
+        colorPreference = PreferenceManager.getDefaultSharedPreferences(context).getInt(preferenceKey, pDefault);
     }
 
     @Override
@@ -118,7 +121,7 @@ public class ColorDialog extends DialogFragment {
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
+            public void afterTextChanged(@NonNull Editable editable) {
                 try {
                     if (editable.length() == 6 || editable.length() == 8) {
                         int color = Color.parseColor("#" + editable.toString());
@@ -156,7 +159,13 @@ public class ColorDialog extends DialogFragment {
         return view;
     }
 
-    public void initRadioButtonColor(int color, RadioButton radioButton) {
+    /**
+     * init the radio button color
+     *
+     * @param color       color to set
+     * @param radioButton radio button to set color
+     */
+    private void initRadioButtonColor(int color, @NonNull RadioButton radioButton) {
         radioButton.setTag(color);
         if (Build.VERSION.SDK_INT >= 21) {
             ColorStateList colorStateList = new ColorStateList(

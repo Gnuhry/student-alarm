@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.studentalarm.R;
+import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.save.SaveKeys;
 import com.example.studentalarm.save.SaveRegularLectureSchedule;
@@ -117,6 +118,7 @@ public class RegularLectureSchedule {
         Log.i(LOG, "save");
         saving(createSave(), context);
         Toast.makeText(context, R.string.save, Toast.LENGTH_SHORT).show();
+        AlarmManager.updateNextAlarm(context);
     }
 
     /**

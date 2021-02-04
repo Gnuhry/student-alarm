@@ -2,18 +2,18 @@ package com.example.studentalarm.imports;
 
 import android.util.Log;
 
+import com.example.studentalarm.Formatter;
+
 import org.dmfs.rfc5545.DateTime;
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException;
 import org.dmfs.rfc5545.recur.RecurrenceRule;
 import org.dmfs.rfc5545.recur.RecurrenceRuleIterator;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -63,7 +63,7 @@ public class ICS {
     /**
      * returns all events from the ics file
      *
-     * @return list of iCalendar.events
+     * @return list of iCalendar.events {null} if import has failed
      */
     @Nullable
     public List<vEvent> getVEventList() {
@@ -77,6 +77,10 @@ public class ICS {
         return null;
     }
 
+    /**
+     * check if event is imported
+     * @return {true} if events has imported
+     */
     public boolean isSuccessful() {
         return !vEventList.isEmpty();
     }
@@ -90,7 +94,7 @@ public class ICS {
      */
     @Nullable
     public static Date stringToDate(@NonNull String string) throws ParseException {
-        return new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault()).parse(string.replace("T", "-"));
+        return Formatter.dateFormatter().parse(string.replace("T", "-"));
     }
 
     /**
@@ -212,7 +216,7 @@ public class ICS {
             Log.d(LOG, "Add " + hour + " hour and " + minute + " min");
             calendar.add(Calendar.HOUR_OF_DAY, -hour);
             calendar.add(Calendar.MINUTE, -minute);
-            String erg = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault()).format(calendar.getTime());
+            String erg =Formatter.dateFormatter().format(calendar.getTime());
             Log.d(LOG, "date after add timezone: " + erg);
             return erg;
         }

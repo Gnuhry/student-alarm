@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
+import com.example.studentalarm.Formatter;
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.LectureSchedule;
@@ -21,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -155,7 +155,7 @@ public class HolidayDialog extends DialogFragment {
      * set the date in the textBox
      */
     private void setTextBox() {
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+        SimpleDateFormat format = Formatter.dayFormatter();
         from.setText(getString(R.string.from_day, format.format(lecture.getStart())));
         until.setText(getString(R.string.until_day, format.format(lecture.getEnd())));
     }

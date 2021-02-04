@@ -156,6 +156,7 @@
     <string name="flash_light">Flash light</string>
     <string name="vibration">Vibration</string>
     <string name="flash_light_color">Flash light color</string>
+    <string name="stop_snooze">stop snooze</string>
 
     <string name="BAD_WEATHER_ALARM">Bad Weather Alarm (Beta)</string>
     <string name="WEAKE_UP_EARLIER_WEATHER">Wake up earlier when the Weather is bad (>10°C feeling temp, rain, or snow) This is a Beta and there is a limit how many requests can come from all app users. When the request fails the Time is automatically added. The Time is added time+30 minute before the alarm should normaly start. Also only German zip codes work. Weather from openweathermap.org</string>

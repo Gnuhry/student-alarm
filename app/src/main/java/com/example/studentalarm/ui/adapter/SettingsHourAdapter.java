@@ -5,6 +5,7 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +15,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.studentalarm.Formatter;
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.Hours;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
+import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -59,6 +62,15 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
 
     public SettingsHourAdapter(@NonNull Context context, @NonNull Activity activity) {
         hours = Hours.load(context);
+        SimpleDateFormat format = Formatter.timeFormatter();
+        for (Hours hour : hours) {
+            Date date = hour.getFromAsDate();
+            if (date != null)
+                hour.setFrom(format.format(new Date(date.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET))));
+            date = hour.getUntilAsDate();
+            if (date != null)
+                hour.setUntil(format.format(new Date(date.getTime() + TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET))));
+        }
         while (hours.size() < 6)
             hours.add(new Hours(hours.size() + 1));
         this.context = context;
@@ -112,13 +124,49 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
             initTimeEditText(holder.from);
             initTimeEditText(holder.until);
             holder.from.setOnKeyListener((view, i, keyEvent) -> {
-                initTimeEditTextBeforeAfter(holder.from, holder.until);
+                int tag = ((TagHelp) view.getTag()).id;
+                initTimeEditTextBeforeAfter(holders.get(tag).from, holders.get(tag).until);
+                if (i == KeyEvent.KEYCODE_ENTER) {
+                    view.clearFocus();
+                    new Thread(() -> {
+                        try {
+                            Thread.sleep(300);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        holder.from.post(() -> {
+                            holders.get(tag).until.requestFocus();
+                            holders.get(tag).until.setCursorVisible(true);
+                        });
+                    }).start();
+                    return true;
+                }
                 return false;
             });
             holder.until.setOnKeyListener((view, i, keyEvent) -> {
-                initTimeEditTextBeforeAfter(holder.from, holder.until);
+                int tag = ((TagHelp) view.getTag()).id;
+                initTimeEditTextBeforeAfter(holders.get(tag).from, holders.get(tag).until);
+                if (i == KeyEvent.KEYCODE_ENTER) {
+                    if (tag + 1 < getItemCount() - 1) {
+                        view.clearFocus();
+                        new Thread(() -> {
+                            try {
+                                Thread.sleep(300);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            holder.from.post(() -> {
+                                holders.get(tag + 1).from.requestFocus();
+                                holders.get(tag + 1).from.setCursorVisible(true);
+                            });
+                        }).start();
+                        return true;
+                    }
+                }
                 return false;
             });
+            holder.from.setTag(TagHelp.build().setId(position).setBool(false));
+            holder.until.setTag(TagHelp.build().setId(position).setBool(false));
         }
     }
 
@@ -148,13 +196,26 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
             } else
                 holders.get(f).from.setError(null);
         }
+        SimpleDateFormat format = Formatter.timeFormatter();
+        for (Hours hour : hours) {
+            Date date = hour.getFromAsDate();
+            if (date != null)
+                hour.setFrom(format.format(new Date(date.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET))));
+            date = hour.getUntilAsDate();
+            if (date != null)
+                hour.setUntil(format.format(new Date(date.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET))));
+        }
         Hours.save(context, hours);
         return hours.size();
     }
 
-
+    /**
+     * init the edit time box
+     * @param before editBox for from time
+     * @param until editBox for until time
+     */
     private void initTimeEditTextBeforeAfter(@NonNull EditText before, @Nullable EditText until) {
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        SimpleDateFormat format = Formatter.timeFormatter();
         try {
             Date beforeDate = format.parse(before.getText().toString());
             if (until != null && beforeDate != null && !beforeDate.before(format.parse(until.getText().toString())))
@@ -182,8 +243,10 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
 
             @Override
             public void afterTextChanged(@NonNull Editable editable) {
-                if (text.getTag() != null && (boolean) text.getTag()) return;
-                text.setTag(true);
+                if (text.getTag() == null) return;
+                TagHelp help = ((TagHelp) text.getTag());
+                if (help == null || help.bool) return;
+                help.setBool(true);
                 String text_ = editable.toString();
                 String without = text_;
                 if (text_.contains(":"))
@@ -214,7 +277,7 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
                         editable.clear();
                         break;
                 }
-                text.setTag(false);
+                help.setBool(false);
             }
 
             private void checkHour(@NonNull Editable editable) {
@@ -237,5 +300,27 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
             imm.hideSoftInputFromWindow(text.getWindowToken(), 0);
             return true;
         });
+    }
+
+    static class TagHelp {
+        public boolean bool;
+        public int id;
+
+        @NonNull
+        public TagHelp setBool(boolean bool) {
+            this.bool = bool;
+            return this;
+        }
+
+        @NonNull
+        public TagHelp setId(int id) {
+            this.id = id;
+            return this;
+        }
+
+        @NonNull
+        public static TagHelp build() {
+            return new TagHelp();
+        }
     }
 }

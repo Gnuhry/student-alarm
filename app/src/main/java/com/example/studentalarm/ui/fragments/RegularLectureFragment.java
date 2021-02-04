@@ -40,7 +40,7 @@ public class RegularLectureFragment extends Fragment {
     private Adapter adapter;
     private WeekView weekView;
     private RecyclerView rv;
-    private boolean changes = false;
+    private boolean changes = false, reset = false;
 
     public RegularLectureFragment() {
         this.fragment = null;
@@ -131,7 +131,10 @@ public class RegularLectureFragment extends Fragment {
                         .setMessage(R.string.do_you_want_to_delete_this_events)
                         .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
                             RegularLectureSchedule.clearSave(getContext());
+                            regularLectureSchedule = new RegularLectureSchedule();
+                            Hours.clearHours(getContext());
                             changes = false;
+                            reset = true;
                             loadRecyclerView();
                         })
                         .setNegativeButton(R.string.no, null)
@@ -199,7 +202,9 @@ public class RegularLectureFragment extends Fragment {
                 iterator.remove();
 
         }
-        if (getContext() != null)
+        if (reset)
+            reset = false;
+        else if (getContext() != null)
             regularLectureSchedule.save(getContext());
         adapter.submitList(regularLectureSchedule.getRegularLectures());
     }

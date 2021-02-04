@@ -84,16 +84,12 @@ public class RegularLectureDialog extends DialogFragment implements CallColorDia
         return view;
     }
 
-    /**
-     * Remove dialog.
-     */
     @Override
     public void onDestroyView() {
         Log.i(LOG, "destroy");
         fragment.loadRecyclerView();
         super.onDestroyView();
     }
-
 
     @Override
     public void setColorHelp(int colorHelp) {

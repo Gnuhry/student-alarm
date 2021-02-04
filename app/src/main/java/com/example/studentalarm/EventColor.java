@@ -50,9 +50,6 @@ public class EventColor {
         return name;
     }
 
-    /**
-     * @return String with the real name string from string XML
-     */
     @NonNull
     @Override
     public String toString() {
