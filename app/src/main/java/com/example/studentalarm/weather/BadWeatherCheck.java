@@ -10,8 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.Calendar;
 import java.util.Date;
 
 import okhttp3.OkHttpClient;
@@ -64,8 +62,14 @@ public class BadWeatherCheck {
                         Log.d(LOG, "JsonObject1" + firstTime);
                         JSONObject secondTime = JSONObjectfromArray(optJSONArray, pos + 1);
                         Log.d(LOG, "JsonObject2" + secondTime);
-                        if (firstTime != null && secondTime == null || firstTime != null && new Date((Integer) firstTime.get("dt")).before(time) && new Date((Integer) secondTime.get("dt")).after(time)) {
-                            return firstTime.optJSONObject("main").optLong("feels_like") < 10 || firstTime.optJSONObject("weather").optLong("id") < 800;
+                        try {
+                            Log.d(LOG, "Timestamp as Date: "+time+" Date1: "+ new Date(firstTime.optLong("dt")*1000)  +" Date2: "+new Date(secondTime.optLong("dt")*1000));
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        Log.d(LOG, "---");
+                        if (firstTime != null && secondTime == null || firstTime != null && new Date(firstTime.optLong("dt")*1000).before(time) && new Date(secondTime.optLong("dt")*1000).after(time)) {
+                            return firstTime.optJSONObject("main").optLong("feels_like") < 10 || firstTime.optJSONObject("weather").optLong("id") < 800; //>800 BadWeather definition: https://openweathermap.org/weather-conditions
                         }
                     }
                 }

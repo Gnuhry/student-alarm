@@ -48,6 +48,7 @@ public class PreferenceKeys {
             ZIPCODE="ZIPCODE",
             WAKE_WEATHER="WAKE_WEATHER",
             WAKE_WEATHER_TIME="WAKE_WEATHER_TIME",
+            WAKE_WEATHER_CHECK_TIME="WAKE_WEATHER_CHECK_TIME",
 
     DEFAULT_RINGTONE = "Default",
             DEFAULT_LANGUAGE = "EN",
@@ -105,6 +106,8 @@ public class PreferenceKeys {
             preferences.edit().putString(PreferenceKeys.WAKE_WEATHER_TIME, PreferenceKeys.DEFAULT_WAKE_WEATHER_TIME).apply();
         if (preferences.getString(PreferenceKeys.ZIPCODE, null) == null)
             preferences.edit().putString(PreferenceKeys.ZIPCODE, PreferenceKeys.DEFAULT_ZIPCODE).apply();
+        if (preferences.getLong(PreferenceKeys.WAKE_WEATHER_CHECK_TIME, -1) == -1)
+            preferences.edit().putLong(PreferenceKeys.WAKE_WEATHER_CHECK_TIME, 0).apply();
 
 
         return erg;

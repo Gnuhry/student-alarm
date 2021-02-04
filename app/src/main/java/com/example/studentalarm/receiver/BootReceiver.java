@@ -1,5 +1,6 @@
 package com.example.studentalarm.receiver;
 
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,9 @@ import com.example.studentalarm.save.PreferenceKeys;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
+
+import java.util.Calendar;
+import java.util.Date;
 
 public class BootReceiver extends BroadcastReceiver {
 
@@ -29,6 +33,11 @@ public class BootReceiver extends BroadcastReceiver {
                     AlarmManager.setNextAlarm(context);
                 }
             }).start();
+            Date wakeWeatherCheckTime = new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.WAKE_WEATHER_CHECK_TIME, 0));
+            if (wakeWeatherCheckTime.before(Calendar.getInstance().getTime())){
+                ((android.app.AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).set(android.app.AlarmManager.RTC_WAKEUP, wakeWeatherCheckTime.getTime(), PendingIntent.getBroadcast(context, 0, new Intent(context, SetAlarmLater.class), 0));
+            }
+            PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.WAKE_WEATHER_CHECK_TIME, 0).apply();
         }
     }
 }

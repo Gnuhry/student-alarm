@@ -247,6 +247,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         wakeWeather.setSummaryProvider(preference2 -> {return getString(R.string.enabled);});
                         wakeWeatherTime.setEnabled(false);
                         zipcode.setEnabled(false);
+                        AlarmManager.updateNextAlarm(getContext());
                         reload();
                     })
                     .setNegativeButton(R.string.disable, (dialogInterface, i) -> {
@@ -255,6 +256,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         wakeWeather.setSummaryProvider(preference2 -> {return getString(R.string.disabled);});
                         wakeWeatherTime.setEnabled(false);
                         zipcode.setEnabled(false);
+                        AlarmManager.updateNextAlarm(getContext());
                         reload();
                     })
                     .setCancelable(true)
@@ -267,6 +269,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         wakeWeatherTime.setSummaryProvider(preference -> getString(R.string._min, preference.getSharedPreferences().getString(PreferenceKeys.WAKE_WEATHER_TIME, getString(R.string.error))));
         wakeWeatherTime.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.i(LOG, "wakeWeatherTime set to " + newValue);
+            AlarmManager.updateNextAlarm(getContext());
             return true;
         });
         zipcode.setEnabled(getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.WAKE_WEATHER,false));
@@ -274,6 +277,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         zipcode.setSummaryProvider(preference -> preference.getSharedPreferences().getString(PreferenceKeys.ZIPCODE, getString(R.string.error)));
         zipcode.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.i(LOG, "wakeWeatherTime set to " + newValue);
+            AlarmManager.updateNextAlarm(getContext());
             return true;
         });
 
