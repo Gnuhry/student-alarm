@@ -13,7 +13,7 @@
     <string name="import_settings">Import Einstellungen</string>
     <string name="import_">Import</string>
     <string name="import_time">Import Uhrzeit</string>
-    <string name="automatic_daily_import">Automatischer täglischer Import</string>
+    <string name="automatic_daily_import">Automatischer täglicher Import</string>
     <string name="address">http://www.</string>
     <string name="string_is_not_a_valid_url">Eingabe ist keine validierte URL</string>
     <string name="delete_all_events">Lösche alle Events</string>
