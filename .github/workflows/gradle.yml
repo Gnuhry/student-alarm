@@ -30,12 +30,15 @@ jobs:
         alias: ${{ secrets.ALIAS }}
         keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
         keyPassword: ${{ secrets.KEY_PASSWORD }}
+        
+    - name: Rename file
+      run: mv ${{steps.signing.outputs.signedReleaseFile}} app/app-release.apk
     
     - name: Releasing using Hub
       uses: gnuhry/action-release-releaseapk@master
       env:
        GITHUB_TOKEN: ${{ secrets.TOKEN }}
        #APP_FOLDER: app
-       FILE: ${{steps.signing.outputs.signedReleaseFile}}
+       FILE: app/app-release.apk
        #RELEASE_TITLE: RELEASE 
        #VERSION_NAME : ${{ github.ref }}  
