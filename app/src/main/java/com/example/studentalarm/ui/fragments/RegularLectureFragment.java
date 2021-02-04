@@ -36,6 +36,7 @@ public class RegularLectureFragment extends Fragment {
     @Nullable
     private final PersonalFragment fragment;
     private RegularLectureSchedule regularLectureSchedule;
+    @Nullable
     private RegularLectureAdapter regularLectureAdapter;
     private Adapter adapter;
     private WeekView weekView;
@@ -218,6 +219,7 @@ public class RegularLectureFragment extends Fragment {
         public void onEventClick(@NonNull RegularLectureSchedule.RegularLecture.RegularLectureTime data) {
             super.onEventClick(data);
             Log.i(LOG, "adapter-eventClick");
+            if (regularLectureAdapter == null) return;
             RegularLectureSchedule.RegularLecture selected = regularLectureAdapter.getSelected();
             if (selected == null) return;
             if (selected.equals(data.lecture))
@@ -252,6 +254,7 @@ public class RegularLectureFragment extends Fragment {
         public void onEmptyViewClick(@NonNull Calendar time) {
             super.onEmptyViewClick(time);
             Log.i(LOG, "adapter-emptyClick");
+            if (regularLectureAdapter == null) return;
             RegularLectureSchedule.RegularLecture selected = regularLectureAdapter.getSelected();
             if (selected == null) {
                 Toast.makeText(getContext(), R.string.no_lecture_in_the_bottom_bar_selected, Toast.LENGTH_LONG).show();
