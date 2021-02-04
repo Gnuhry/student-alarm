@@ -1,5 +1,8 @@
 package com.example.studentalarm.ui.adapter;
 
+import android.app.Activity;
+import android.content.Context;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,14 +13,20 @@ import android.widget.TextView;
 
 import com.example.studentalarm.R;
 import com.example.studentalarm.regular.RegularLectureSchedule;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.dialog.ChangeRoomDialog;
 import com.example.studentalarm.ui.dialog.RegularLectureDialog;
 import com.example.studentalarm.ui.fragments.RegularLectureFragment;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RegularLectureAdapter extends RecyclerView.Adapter<RegularLectureAdapter.ViewHolder> {
@@ -28,6 +37,7 @@ public class RegularLectureAdapter extends RecyclerView.Adapter<RegularLectureAd
     @NonNull
     private final List<RegularLectureSchedule.RegularLecture> regularLecture;
     private final RegularLectureFragment fragment;
+    private final Activity activity;
     @Nullable
     private LinearLayout selected;
     private int selected_id;
@@ -47,10 +57,11 @@ public class RegularLectureAdapter extends RecyclerView.Adapter<RegularLectureAd
         }
     }
 
-    public RegularLectureAdapter(@NonNull RegularLectureSchedule regularLectureSchedule, RegularLectureFragment fragment) {
+    public RegularLectureAdapter(@NonNull RegularLectureSchedule regularLectureSchedule, RegularLectureFragment fragment, Activity activity) {
         this.regularLectureSchedule = regularLectureSchedule;
         regularLecture = regularLectureSchedule.getLectures();
         this.fragment = fragment;
+        this.activity = activity;
     }
 
     @NonNull
@@ -63,6 +74,23 @@ public class RegularLectureAdapter extends RecyclerView.Adapter<RegularLectureAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Log.d(LOG, position + "," + regularLecture.size());
         if (position == regularLecture.size()) {
+            if (PreferenceManager.getDefaultSharedPreferences(activity).getBoolean(PreferenceKeys.APP_FIRST_TIME, true)) {
+                PreferenceManager.getDefaultSharedPreferences(activity).edit().putBoolean(PreferenceKeys.APP_FIRST_TIME, false).apply();
+                new OwnShowcaseView(activity,
+                        new ViewTarget(holder.imageView),
+                        activity.getString(R.string.to_create_lecture_click_on_the_button),
+                        activity.getString(R.string.after_creating_the_lecture_),
+                        view1 -> {
+                            if ((boolean) view1.getTag()) return;
+                            view1.setTag(true);
+                            Toolbar toolbar = activity.findViewById(R.id.my_toolbar);
+                            new OwnShowcaseView(activity,
+                                    new ViewTarget(toolbar.findViewById(toolbar.getMenu().getItem(2).getItemId())),
+                                    activity.getString(R.string.to_set_the_timetable_time_click_on_the_settings_button),
+                                    "",
+                                    null).show();
+                        }).show();
+            }
             holder.linearLayout.setVisibility(View.GONE);
             holder.imageView.setVisibility(View.VISIBLE);
             holder.imageView.setOnClickListener(view -> {
@@ -129,5 +157,48 @@ public class RegularLectureAdapter extends RecyclerView.Adapter<RegularLectureAd
     @Nullable
     public RegularLectureSchedule.RegularLecture getSelected() {
         return selected == null ? null : regularLecture.get(selected_id);
+    }
+}
+
+class OwnShowcaseView extends ShowcaseView {
+
+    private Activity activity;
+
+    public OwnShowcaseView(Context context) {
+        super(context, false);
+    }
+
+    protected OwnShowcaseView(Activity activity, Target target, String title, String subtitle, OnClickListener listener) {
+        super(activity, false);
+        this.activity = activity;
+        this.setOnTouchListener((view, motionEvent) -> {
+            this.hide();
+            if (listener != null)
+                listener.onClick(this);
+            this.performClick();
+            return true;
+        });
+        this.hideButton();
+        this.setStyle(R.style.CustomShowcaseTheme);
+        this.setHideOnTouchOutside(true);
+        this.setTarget(target);
+        this.setContentTitle(title);
+        this.setContentText(subtitle);
+        this.setOnClickListener(listener);
+        this.setTag(false);
+        this.setTitleTextAlignment(Layout.Alignment.ALIGN_CENTER);
+        this.setDetailTextAlignment(Layout.Alignment.ALIGN_CENTER);
+
+    }
+
+    @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
+    @Override
+    public void show() {
+        ((ViewGroup) activity.findViewById(android.R.id.content)).addView(this);
+        super.show();
     }
 }

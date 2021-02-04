@@ -141,7 +141,9 @@
     <string name="vibration">Vibration</string>
     <string name="flash_light_color">Alarmlicht Farbe</string>
     <string name="stop_snooze">Schlummern ausstellen</string>
-
+    <string name="to_create_lecture_click_on_the_button">Um eine Vorlesung erstellen, drücken sie auf den Hinzufügen-Knopf</string>
+    <string name="after_creating_the_lecture_">\n- NAch dem Erstellen der Vorlesung können sie diese auswählen und auf das Gitter verteilen, um einen Stundenplan zu erstellen.\n\n- Wenn sie mehr als einen Raum haben, können sie mit lange halten auf die Vorlesung diese wechseln.\n\n- Um die Vorlesung wieder zu bearbeiten, klicken sie zweimal auf die Vorlesung.</string>
+    <string name="to_set_the_timetable_time_click_on_the_settings_button">Um die Studenzeiten zu setzen, klicken sie auf die Einstellungen</string>
 
 
 

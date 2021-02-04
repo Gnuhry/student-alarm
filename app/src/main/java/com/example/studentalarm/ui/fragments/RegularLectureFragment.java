@@ -109,7 +109,7 @@ public class RegularLectureFragment extends Fragment {
      */
     public void loadRecyclerView() {
         Log.i(LOG, "load recyclerView");
-        regularLectureAdapter = new RegularLectureAdapter(regularLectureSchedule, this);
+        regularLectureAdapter = new RegularLectureAdapter(regularLectureSchedule, this, getActivity());
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rv.setAdapter(regularLectureAdapter);
@@ -125,6 +125,30 @@ public class RegularLectureFragment extends Fragment {
         Toolbar toolbar = getActivity().findViewById(R.id.my_toolbar);
         toolbar.getMenu().getItem(2).setVisible(true);
         toolbar.getMenu().getItem(2).setOnMenuItemClickListener(menuItem -> {
+            if (getContext() == null) return false;
+            if (hasChanges())
+                new MaterialAlertDialogBuilder(getContext())
+                        .setTitle(R.string.dismiss)
+                        .setMessage(R.string.do_you_want_to_dismiss_all_your_changes)
+                        .setPositiveButton(R.string.dismiss, (dialogInterface, i) ->
+                                new RegularLectureSettingDialog(getContext(), getActivity(), this).show(getActivity().getSupportFragmentManager(), "dialog"))
+                        .setNegativeButton(R.string.no, null)
+                        .setCancelable(false)
+                        .show();
+            else
+                new RegularLectureSettingDialog(getContext(), getActivity(), this).show(getActivity().getSupportFragmentManager(), "dialog");
+            return true;
+        });
+        toolbar.getMenu().getItem(3).setVisible(true);
+        toolbar.getMenu().getItem(3).setOnMenuItemClickListener(menuItem -> {
+            if (getContext() != null) {
+                regularLectureSchedule.save(getContext());
+                changes = false;
+            }
+            return true;
+        });
+        toolbar.getMenu().getItem(4).setVisible(true);
+        toolbar.getMenu().getItem(4).setOnMenuItemClickListener(menuItem -> {
             if (getContext() != null) {
                 new MaterialAlertDialogBuilder(getContext())
                         .setTitle(R.string.delete_all_events)
@@ -141,30 +165,6 @@ public class RegularLectureFragment extends Fragment {
                         .setCancelable(true)
                         .show();
             }
-            return true;
-        });
-        toolbar.getMenu().getItem(3).setVisible(true);
-        toolbar.getMenu().getItem(3).setOnMenuItemClickListener(menuItem -> {
-            if (getContext() != null) {
-                regularLectureSchedule.save(getContext());
-                changes = false;
-            }
-            return true;
-        });
-        toolbar.getMenu().getItem(4).setVisible(true);
-        toolbar.getMenu().getItem(4).setOnMenuItemClickListener(menuItem -> {
-            if (getContext() == null) return false;
-            if (hasChanges())
-                new MaterialAlertDialogBuilder(getContext())
-                        .setTitle(R.string.dismiss)
-                        .setMessage(R.string.do_you_want_to_dismiss_all_your_changes)
-                        .setPositiveButton(R.string.dismiss, (dialogInterface, i) ->
-                                new RegularLectureSettingDialog(getContext(), getActivity(), this).show(getActivity().getSupportFragmentManager(), "dialog"))
-                        .setNegativeButton(R.string.no, null)
-                        .setCancelable(false)
-                        .show();
-            else
-                new RegularLectureSettingDialog(getContext(), getActivity(), this).show(getActivity().getSupportFragmentManager(), "dialog");
             return true;
         });
     }
