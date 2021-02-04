@@ -45,7 +45,8 @@ public class PreferenceKeys {
             VIBRATION = "VIBRATION",
             FLASH_LIGHT = "FLASH_LIGHT",
             FLASH_LIGHT_COLOR = "FLASH_LIGHT_COLOR",
-    ALARM_MODE="ALARM_MODE",
+            ALARM_MODE = "ALARM_MODE",
+            APP_FIRST_TIME = "APP_FIRST_TIME",
 
     DEFAULT_RINGTONE = "Default",
             DEFAULT_LANGUAGE = "EN",
