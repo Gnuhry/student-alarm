@@ -164,11 +164,11 @@ class OwnShowcaseView extends ShowcaseView {
 
     private Activity activity;
 
-    public OwnShowcaseView(Context context) {
+    public OwnShowcaseView(@NonNull Context context) {
         super(context, false);
     }
 
-    protected OwnShowcaseView(Activity activity, Target target, String title, String subtitle, @Nullable OnClickListener listener) {
+    protected OwnShowcaseView(@NonNull Activity activity, Target target, String title, String subtitle, @Nullable OnClickListener listener) {
         super(activity, false);
         this.activity = activity;
         this.setOnTouchListener((view, motionEvent) -> {

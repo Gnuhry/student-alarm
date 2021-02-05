@@ -37,6 +37,7 @@ public class BadWeatherCheck {
      * @param time in UTC
      * @return Boolean True if the weather is bad or an error occurred, false if is good
      */
+    @NonNull
     public Boolean isTheWeatherBad(Date time) throws JSONException {
         Log.d(LOG, "Check started");
         Log.d(LOG,"Zipcode: " + zipCode);
@@ -78,7 +79,8 @@ public class BadWeatherCheck {
         return false;
     }
 
-    private JSONObject JSONObjectfromArray(JSONArray jsonArray,int position){
+    @Nullable
+    private JSONObject JSONObjectfromArray(@NonNull JSONArray jsonArray, int position){
         try {
             return jsonArray.getJSONObject(position);
         } catch (JSONException e) {
