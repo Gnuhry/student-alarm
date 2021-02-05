@@ -164,10 +164,9 @@ public class AlarmManager {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.BEFORE, 0));
-        calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.WAY, 0));
-        calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.AFTER, 0));
-
+        Log.d(LOG, "Alarm before subtracting: "+calendar.toString());
+        calendar.add(Calendar.MINUTE, -(preferences.getInt(PreferenceKeys.BEFORE, 0)+preferences.getInt(PreferenceKeys.WAY, 0)+preferences.getInt(PreferenceKeys.AFTER, 0)));
+        Log.d(LOG, "Alarm after subtracting: "+calendar.toString());
         Calendar time2 = Calendar.getInstance();
         time2.add(Calendar.HOUR, -TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
         Log.e("TIME", calendar.toString() + ", " + time2.toString());
@@ -184,5 +183,3 @@ public class AlarmManager {
     }
 
 }
-
-
