@@ -270,6 +270,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         wakeWeatherTime.setSummaryProvider(preference -> getString(R.string._min, preference.getSharedPreferences().getString(PreferenceKeys.WAKE_WEATHER_TIME, getString(R.string.error))));
         wakeWeatherTime.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.i(LOG, "wakeWeatherTime set to " + newValue);
+            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(PreferenceKeys.WAKE_WEATHER_TIME,(String) newValue).apply();
             AlarmManager.updateNextAlarm(getContext());
             return true;
         });
@@ -278,6 +279,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         zipcode.setSummaryProvider(preference -> preference.getSharedPreferences().getString(PreferenceKeys.ZIPCODE, getString(R.string.error)));
         zipcode.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.i(LOG, "wakeWeatherTime set to " + newValue);
+            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(PreferenceKeys.ZIPCODE,(String) newValue).apply();
             AlarmManager.updateNextAlarm(getContext());
             return true;
         });
