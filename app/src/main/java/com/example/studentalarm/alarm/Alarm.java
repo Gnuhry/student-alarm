@@ -29,9 +29,9 @@ public class Alarm {
      * @param context context to show the toast
      */
     public static void setAlarm(@NonNull Calendar time, @NonNull Context context) {
-        Calendar time2=Calendar.getInstance();
+        Calendar time2 = Calendar.getInstance();
         time2.add(Calendar.HOUR, -TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
-        Log.e("TIME", time.toString()+", "+time2.toString());
+        Log.d(LOG, "Check alarm " + time.toString() + ", " + time2.toString());
         if (time2.before(time)) {
             ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class), 0));
             PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_TIME, time.getTimeInMillis()).apply();

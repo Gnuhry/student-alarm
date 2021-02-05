@@ -220,13 +220,10 @@ public class LectureSchedule {
     public Lecture getNextLecture(@NonNull Context context) {
         boolean first = true;
         Lecture tomorrow = new Lecture(false, getDayAddDay(1), new Date()), today = new Lecture(false, getDayAddDay(0), new Date());
-        Log.d("ERROR", today.start.toString());
         for (Lecture l : getAllLectureWithoutHolidayAndHolidayEvents(context))
             if (l.getStart().after(new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, Calendar.getInstance().getTime().getTime())))) {
                 if (l.compareTo(today) >= 0 && first) {
-                    Log.d("ERROR", l.getStartWithDefaultTimeZone().toString());
                     first = false;
-                    Log.d("ERROR", Calendar.getInstance().getTime().toString());
                     if (l.getStartWithDefaultTimeZone().after(Calendar.getInstance().getTime()))
                         return l;
                 } else if (l.compareTo(tomorrow) >= 0)
