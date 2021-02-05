@@ -12,10 +12,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputType;
-import android.text.Spanned;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.widget.Filter;
 import android.widget.Toast;
 
 import com.example.studentalarm.EventColor;
@@ -41,7 +39,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.prefs.Preferences;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;

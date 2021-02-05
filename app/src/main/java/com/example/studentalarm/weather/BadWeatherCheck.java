@@ -20,17 +20,19 @@ import okhttp3.ResponseBody;
 public class BadWeatherCheck {
     private static final String LOG = "BadWeatherCheck";
     int minTemp=10;
-    String zipCode;
+    final String zipCode;
 
     public BadWeatherCheck(String zipCode){
         Log.d(LOG, "Initialised");
         this.zipCode= zipCode;
     }
 
-    public BadWeatherCheck(int minTemp, String zipCode){
-        this.minTemp=minTemp;
-        this.zipCode=zipCode;
-    }
+// --Commented out by Inspection START (05.02.2021 21:41):
+//    public BadWeatherCheck(int minTemp, String zipCode){
+//        this.minTemp=minTemp;
+//        this.zipCode=zipCode;
+//    }
+// --Commented out by Inspection STOP (05.02.2021 21:41)
 
     /**
      * Checks if Weather is bad (matches given criteria) in the given region
@@ -40,7 +42,7 @@ public class BadWeatherCheck {
     @NonNull
     public Boolean isTheWeatherBad(Date time) throws JSONException {
         Log.d(LOG, "Check started");
-        Log.d(LOG,"Zipcode: " + zipCode);
+        Log.d(LOG,"zip code: " + zipCode);
         if (zipCode.length()==5){
             String queryString = "http://api.openweathermap.org/data/2.5/forecast?zip=" + zipCode +
                     ",DE&lang=de&units=metric&appid=12bad8fdc76717005759481358561d3b";
@@ -70,7 +72,7 @@ public class BadWeatherCheck {
                         }
                         Log.d(LOG, "---");
                         if (firstTime != null && secondTime == null || firstTime != null && new Date(firstTime.optLong("dt")*1000).before(time) && new Date(secondTime.optLong("dt")*1000).after(time)) {
-                            return firstTime.optJSONObject("main").optLong("feels_like") < 10 || firstTime.optJSONObject("weather").optLong("id") < 800; //>800 BadWeather definition: https://openweathermap.org/weather-conditions
+                            return firstTime.optJSONObject("main").optLong("feels_like") < minTemp || firstTime.optJSONObject("weather").optLong("id") < 800; //>800 BadWeather definition: https://openweathermap.org/weather-conditions
                         }
                     }
                 }

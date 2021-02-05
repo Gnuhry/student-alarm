@@ -7,15 +7,12 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.example.studentalarm.imports.LectureSchedule;
-import com.example.studentalarm.receiver.AlarmReceiver;
 import com.example.studentalarm.receiver.SetAlarmLater;
 import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.weather.BadWeatherCheck;
 
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
@@ -46,7 +43,7 @@ public class AlarmManager {
                     checkDate.setTime(date.getTime() - (60000 * (30 + Long.parseLong(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.WAKE_WEATHER_TIME, "10")) + (preferences.getInt(PreferenceKeys.BEFORE, 0) + preferences.getInt(PreferenceKeys.WAY, 0) + preferences.getInt(PreferenceKeys.AFTER, 0)))));//+30 min before the Alarm happens in the worst case (Bad Weather) 60000factor second to millisecond
                     if (checkDate.before(Calendar.getInstance().getTime())) {
                         try {
-                            Log.d(LOG, "Bad Weather Check"); //potentially there could be an check if the time remaining to the Alarm is less than timedelta+30 min
+                            Log.d(LOG, "Bad Weather Check"); //potentially there could be an check if the time remaining to the Alarm is less than time delta+30 min
                             if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.WAKE_WEATHER, true) && new BadWeatherCheck(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.ZIPCODE, "11011")).isTheWeatherBad(first.getStart())) {
                                 Log.d(LOG, "Bad Weather");
                                 date.setTime(date.getTime() - 60000 * Long.parseLong(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.WAKE_WEATHER_TIME, "10")));

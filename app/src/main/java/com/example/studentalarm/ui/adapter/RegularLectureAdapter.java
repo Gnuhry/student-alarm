@@ -191,6 +191,7 @@ class OwnShowcaseView extends ShowcaseView {
 
     }
 
+    @SuppressWarnings("EmptyMethod")
     @Override
     public boolean performClick() {
         return super.performClick();

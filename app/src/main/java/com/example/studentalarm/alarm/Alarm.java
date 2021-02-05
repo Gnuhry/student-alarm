@@ -15,7 +15,6 @@ import com.example.studentalarm.receiver.AlarmReceiver;
 import com.example.studentalarm.save.PreferenceKeys;
 
 import java.util.Calendar;
-import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
