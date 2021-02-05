@@ -1,7 +1,9 @@
 package com.example.studentalarm.ui.fragments;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -23,6 +25,7 @@ import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.Import;
 import com.example.studentalarm.imports.LectureSchedule;
+import com.example.studentalarm.receiver.SetAlarmLater;
 import com.example.studentalarm.regular.Hours;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.example.studentalarm.save.PreferenceKeys;
@@ -123,12 +126,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 }
                 getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.ALARM_ON, (Boolean) newValue).apply();
                 Context context = getContext();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        AlarmManager.setNextAlarm(context);
-                    }
-                }).start();
+                new Thread(() -> AlarmManager.setNextAlarm(context)).start();
             } else {
                 getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.ALARM_ON, (Boolean) newValue).apply();
                 if (getContext() != null)
@@ -245,7 +243,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     .setPositiveButton(R.string.enable, (dialogInterface, i) -> {
                         Log.i(LOG, "wakeWeather - enable");
                         getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.WAKE_WEATHER, true).apply();
-                        wakeWeather.setSummaryProvider(preference2 -> {return getString(R.string.enabled);});
+                        wakeWeather.setSummaryProvider(preference2 -> getString(R.string.enabled));
                         wakeWeatherTime.setEnabled(false);
                         zipcode.setEnabled(false);
                         AlarmManager.updateNextAlarm(getContext());
@@ -254,10 +252,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     .setNegativeButton(R.string.disable, (dialogInterface, i) -> {
                         Log.i(LOG, "wakeWeather - disable");
                         getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.WAKE_WEATHER, false).apply();
-                        wakeWeather.setSummaryProvider(preference2 -> {return getString(R.string.disabled);});
+                        wakeWeather.setSummaryProvider(preference2 -> getString(R.string.disabled));
                         wakeWeatherTime.setEnabled(false);
                         zipcode.setEnabled(false);
                         AlarmManager.updateNextAlarm(getContext());
+                        ((android.app.AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(getContext(), 1, new Intent(getContext(), SetAlarmLater.class), 0));
+                        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putLong(PreferenceKeys.WAKE_WEATHER_CHECK_TIME, 0).apply();
                         reload();
                     })
                     .setCancelable(true)

@@ -27,17 +27,17 @@ public class BootReceiver extends BroadcastReceiver {
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
             if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.AUTO_IMPORT, false))
                 Import.setTimer(context);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    AlarmManager.setNextAlarm(context);
+            new Thread(() -> AlarmManager.setNextAlarm(context)).start();
+            if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.WAKE_WEATHER, false))
+            {
+                Date wakeWeatherCheckTime = new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.WAKE_WEATHER_CHECK_TIME, 0));
+                if (wakeWeatherCheckTime.before(Calendar.getInstance().getTime())) {
+                    ((android.app.AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(context, 1, new Intent(context, SetAlarmLater.class), 0));
+                    ((android.app.AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).set(android.app.AlarmManager.RTC_WAKEUP, wakeWeatherCheckTime.getTime(), PendingIntent.getBroadcast(context, 1, new Intent(context, SetAlarmLater.class), 0));
+                } else {
+                    PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.WAKE_WEATHER_CHECK_TIME, 0).apply();
                 }
-            }).start();
-            Date wakeWeatherCheckTime = new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.WAKE_WEATHER_CHECK_TIME, 0));
-            if (wakeWeatherCheckTime.before(Calendar.getInstance().getTime())){
-                ((android.app.AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).set(android.app.AlarmManager.RTC_WAKEUP, wakeWeatherCheckTime.getTime(), PendingIntent.getBroadcast(context, 0, new Intent(context, SetAlarmLater.class), 0));
             }
-            PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.WAKE_WEATHER_CHECK_TIME, 0).apply();
         }
     }
 }

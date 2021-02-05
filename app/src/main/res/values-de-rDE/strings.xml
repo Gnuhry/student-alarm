@@ -142,7 +142,7 @@
     <string name="flash_light_color">Alarmlicht Farbe</string>
     <string name="stop_snooze">Schlummern ausstellen</string>
     <string name="BAD_WEATHER_ALARM">Schlechtwetteralarm (Beta)</string>
-    <string name="WEAKE_UP_EARLIER_WEATHER">Wake up earlier when the Weather is bad (>10°C feeling temp, rain, or snow) This is a Beta and there is a limit how many requests can come from all app users. When the request fails the Time is automatically added. The Time is added time+30 minute before the alarm should normaly start. Also only German zip codes work. Weather from openweathermap.org</string>
+    <string name="WEAKE_UP_EARLIER_WEATHER">Wake up earlier when the Weather is bad (>10°C feeling temp, rain, or snow) This is a Beta and there is a limit how many requests can come from all app users. When the request fails the Time is automatically added. The Time is added only time+30 minute before the alarm should normally start. Otherwise the alarm will start normally. Also only German zip codes work. Weather data from openweathermap.org</string>
     <string name="ZIPCODE">ZIPCode</string>
     <string name="TIME_BEFORE_WHEN_THE_WEATHER_IS_BAD">Früher Wecken wenn Wetter schlecht ist</string>
     <string name="enable">aktivieren</string>

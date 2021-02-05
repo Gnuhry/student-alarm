@@ -20,7 +20,7 @@ import okhttp3.ResponseBody;
 public class BadWeatherCheck {
     private static final String LOG = "BadWeatherCheck";
     int minTemp=10;
-    String zipCode= "11011";
+    String zipCode;
 
     public BadWeatherCheck(String zipCode){
         Log.d(LOG, "Initialised");
@@ -34,7 +34,7 @@ public class BadWeatherCheck {
 
     /**
      * Checks if Weather is bad (matches given criteria) in the given region
-     *
+     * @param time in UTC
      * @return Boolean True if the weather is bad or an error occurred, false if is good
      */
     public Boolean isTheWeatherBad(Date time) throws JSONException {

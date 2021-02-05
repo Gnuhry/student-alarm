@@ -238,6 +238,28 @@ public class LectureSchedule {
     }
 
     /**
+     * get the next day lecture after shutdown date
+     *
+     * @return next lecture
+     */
+
+    @Nullable
+    public Lecture getNextDayLecture(@NonNull Context context) {
+        Lecture tomorrow = new Lecture(false, getDayAddDay(1), new Date());
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, preferences.getInt(PreferenceKeys.BEFORE, 0) + preferences.getInt(PreferenceKeys.WAY, 0) + preferences.getInt(PreferenceKeys.AFTER, 0));
+        Date date = new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, Calendar.getInstance().getTime().getTime()));
+        for (Lecture l : getAllLectureWithoutHolidayAndHolidayEvents(context)) {
+            if (l.getStart().after(date)) {
+                if (l.compareTo(tomorrow) >= 0)
+                    return l;
+            }
+        }
+        return null;
+    }
+
+    /**
      * remove lecture from lecture or import list
      *
      * @param data lecture to remove
