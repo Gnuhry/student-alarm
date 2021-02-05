@@ -34,6 +34,8 @@ public class AlarmReceiver extends BroadcastReceiver {
     private static final String CHANNEL_ID = "123456";
     @Nullable
     public static MediaPlayer mp;
+//    @Nullable
+//    public static android.media.Ringtone r;
 
     /**
      * triggered if it's time to play an alarm
@@ -42,10 +44,32 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(@NonNull Context context, Intent intent) {
         WakeLocker.acquire(context);
         Log.d("Alarm Bell", "Alarm just fired");
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+//            Uri notification;
+//            String ringtone = PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.RINGTONE, PreferenceKeys.DEFAULT_RINGTONE);
+//            switch (ringtone) {
+//                case "GENTLE":
+//                    notification = Uri.parse("android.resource://studentalarm/" + R.raw.alarm_gentle);
+//                    break;
+//                case "DEFAULT":
+//                    notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//                    break;
+//                default:
+//                    notification = Uri.parse(ringtone.substring(1));
+//                    break;
+//            }!
+//            RingtoneManager.setActualDefaultRingtoneUri(
+//                    context.getApplicationContext(), RingtoneManager.TYPE_RINGTONE, notification
+//            );
+//            r =RingtoneManager.getRingtone(context, notification);
+//            r.setLooping(true);
+//            r.play();
+//        } else {
         mp = getMediaPlayer(context);
         if (mp != null) {
             mp.setLooping(true);
             mp.start();
+//            }
         }
         if (NotificationManagerCompat.from(context).areNotificationsEnabled())
             setNotification(context);
@@ -95,6 +119,8 @@ public class AlarmReceiver extends BroadcastReceiver {
                 builder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000});
             builder.setOngoing(true);
             channel.enableVibration(preferences.getBoolean(PreferenceKeys.VIBRATION, false));
+            if (preferences.getBoolean(PreferenceKeys.VIBRATION, false))
+                channel.setVibrationPattern(new long[]{1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000});
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
             notificationManager.notify(NOTIFICATION_ID, builder.build());
@@ -102,6 +128,15 @@ public class AlarmReceiver extends BroadcastReceiver {
             NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build());
         PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PreferenceKeys.ALARM_MODE, 1).apply();
         context.sendBroadcast(new Intent(ALARM_BROADCAST));
+    }
+
+    public static void stopRingtone() {
+//        if (r != null)
+//            r.stop();
+        if (mp != null) {
+            mp.stop();
+            mp.release();
+        }
     }
 
     /**

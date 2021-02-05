@@ -13,7 +13,6 @@ import com.example.studentalarm.receiver.AlarmReceiver;
 import com.example.studentalarm.save.PreferenceKeys;
 
 import java.util.Calendar;
-import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
@@ -29,17 +28,10 @@ public class Alarm {
      * @param context context to show the toast
      */
     public static void setAlarm(@NonNull Calendar time, @NonNull Context context) {
-        Calendar time2 = Calendar.getInstance();
-        time2.add(Calendar.HOUR, -TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
-        Log.d(LOG, "Check alarm " + time.toString() + ", " + time2.toString());
-        if (time2.before(time)) {
-            ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class), 0));
-            PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_TIME, time.getTimeInMillis()).apply();
-            Toast.makeText(context, R.string.alarm_is_set, Toast.LENGTH_SHORT).show();
-            Log.d(LOG, "Set alarm to " + time.getTimeInMillis());
-        } else {
-            Log.e(LOG, "Wrong Date is set for alarm. Date is before current date");
-        }
+        ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class), 0));
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_TIME, time.getTimeInMillis()).apply();
+        Toast.makeText(context, R.string.alarm_is_set, Toast.LENGTH_SHORT).show();
+        Log.d(LOG, "Set alarm to " + time.getTimeInMillis());
     }
 
     /**

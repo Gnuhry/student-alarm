@@ -220,15 +220,20 @@ public class LectureSchedule {
     public Lecture getNextLecture(@NonNull Context context) {
         boolean first = true;
         Lecture tomorrow = new Lecture(false, getDayAddDay(1), new Date()), today = new Lecture(false, getDayAddDay(0), new Date());
-        for (Lecture l : getAllLectureWithoutHolidayAndHolidayEvents(context))
-            if (l.getStart().after(new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, Calendar.getInstance().getTime().getTime())))) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, preferences.getInt(PreferenceKeys.BEFORE, 0) + preferences.getInt(PreferenceKeys.WAY, 0) + preferences.getInt(PreferenceKeys.AFTER, 0));
+        Date date = new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, Calendar.getInstance().getTime().getTime()));
+        for (Lecture l : getAllLectureWithoutHolidayAndHolidayEvents(context)) {
+            if (l.getStart().after(date)) {
                 if (l.compareTo(today) >= 0 && first) {
                     first = false;
-                    if (l.getStartWithDefaultTimeZone().after(Calendar.getInstance().getTime()))
+                    if (l.getStartWithDefaultTimeZone().after(calendar.getTime()))
                         return l;
                 } else if (l.compareTo(tomorrow) >= 0)
                     return l;
             }
+        }
         return null;
     }
 

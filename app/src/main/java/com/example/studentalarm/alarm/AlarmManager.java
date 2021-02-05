@@ -89,14 +89,19 @@ public class AlarmManager {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.BEFORE, 0));
-        calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.WAY, 0));
-        calendar.add(Calendar.MINUTE, -preferences.getInt(PreferenceKeys.AFTER, 0));
-        if (preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false)) {
-            Alarm.setPhoneAlarm(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), context);
+        Log.d(LOG, "Alarm before subtracting: " + calendar.toString());
+        calendar.add(Calendar.MINUTE, -(preferences.getInt(PreferenceKeys.BEFORE, 0) + preferences.getInt(PreferenceKeys.WAY, 0) + preferences.getInt(PreferenceKeys.AFTER, 0)));
+        Log.d(LOG, "Alarm after subtracting: " + calendar.toString());
+        Log.d(LOG, "Check date: " + Calendar.getInstance().getTimeInMillis() + ", " + calendar.getTimeInMillis());
+        if (Calendar.getInstance().getTimeInMillis()<calendar.getTimeInMillis()) {
+            if (preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false)) {
+                Alarm.setPhoneAlarm(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), context);
+            } else {
+                cancelNextAlarm(context);
+                Alarm.setAlarm(calendar, context);
+            }
         } else {
-            cancelNextAlarm(context);
-            Alarm.setAlarm(calendar, context);
+            Log.e(LOG, "Wrong Date is set for alarm. Date is before current date");
         }
     }
 

@@ -28,10 +28,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
         Alarm.setAlarm(calendar, context);
         NotificationManagerCompat.from(context).cancel(AlarmReceiver.NOTIFICATION_ID);
         PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PreferenceKeys.ALARM_MODE, 2).apply();
-        if (AlarmReceiver.mp != null) {
-            AlarmReceiver.mp.stop();
-            AlarmReceiver.mp.release();
-        }
+        AlarmReceiver.stopRingtone();
         context.sendBroadcast(new Intent(ALARM_BROADCAST));
     }
 }
