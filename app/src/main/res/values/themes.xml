@@ -20,4 +20,21 @@
         <item name="android:background">@color/white</item>
         <item name="android:textColor">@color/black</item>
     </style>
+
+    <style name="CustomShowcaseTheme" parent="ShowcaseView.Light">
+        <item name="sv_backgroundColor">#D3D3D3D3</item>
+        <item name="sv_showcaseColor">@color/black</item>
+        <item name="sv_detailTextAppearance">@style/CustomDetailColor</item>
+        <item name="sv_buttonText">Hide</item>
+        <item name="sv_tintButtonColor">false</item>
+        <item name="sv_titleTextAppearance">@style/CustomTitle</item>
+    </style>
+    <style name="CustomTitle" parent="TextAppearance.ShowcaseView.Title">
+        <item name="android:textColor">@color/black</item>
+        <item name="textStyle">bold</item>
+    </style>
+    <style name="CustomDetailColor">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">13sp</item>
+    </style>
 </resources>

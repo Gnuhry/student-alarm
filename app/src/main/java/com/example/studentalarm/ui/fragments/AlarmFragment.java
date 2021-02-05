@@ -91,6 +91,7 @@ public class AlarmFragment extends Fragment {
 
     /**
      * set alarm views like snoozing or stopping alarm
+     *
      * @param view view to display views
      * @return {true} if other views should be displayed
      */
@@ -168,7 +169,7 @@ public class AlarmFragment extends Fragment {
             }
             alarmShutdownUntil.post(() -> progress.dismiss());
         }).start();
-
+        if (getContext() == null) return;
         long date = PreferenceManager.getDefaultSharedPreferences(getContext()).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0);
         alarmShutdownUntil.setText(date != 0 ? new Date(date).toString() : null);
         alarmShutdownUntil.setVisibility(date != 0 ? View.VISIBLE : View.GONE);

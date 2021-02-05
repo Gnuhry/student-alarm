@@ -157,6 +157,9 @@
     <string name="vibration">Vibration</string>
     <string name="flash_light_color">Flash light color</string>
     <string name="stop_snooze">stop snooze</string>
+    <string name="to_create_lecture_click_on_the_button">To create lecture click on the add button</string>
+    <string name="after_creating_the_lecture_">\n- After creating the lecture, you can select the lecture and click on the timetable to create a schedule.\n\n- If you have more than one room, hold long to select the room.\n\n- To edit again, click two times on the schedule.</string>
+    <string name="to_set_the_timetable_time_click_on_the_settings_button">To set the timetable time click on the settings button</string>
 
     <string name="BAD_WEATHER_ALARM">Bad Weather Alarm (Beta)</string>
     <string name="WEAKE_UP_EARLIER_WEATHER">Wake up earlier when the Weather is bad (>10°C feeling temp, rain, or snow) This is a Beta and there is a limit how many requests can come from all app users. When the request fails the Time is automatically added. The Time is added time+30 minute before the alarm should normaly start. Also only German zip codes work. Weather from openweathermap.org</string>
