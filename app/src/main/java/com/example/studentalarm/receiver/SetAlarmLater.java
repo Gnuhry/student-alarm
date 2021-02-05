@@ -6,8 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-
-import static com.example.studentalarm.alarm.AlarmManager.updateNextAlarm;
+import static com.example.studentalarm.alarm.AlarmManager.updateNextAlarmFromSetAlarmLater;
 
 public class SetAlarmLater extends BroadcastReceiver {
 
@@ -16,6 +15,6 @@ public class SetAlarmLater extends BroadcastReceiver {
     @Override
     public void onReceive(@NonNull Context context, Intent intent) {
         Log.d(LOG,"Alarm will be set now");
-        updateNextAlarm(context);
+        updateNextAlarmFromSetAlarmLater(context);
     }
 }
