@@ -87,7 +87,7 @@ public class RegularLectureAdapter extends RecyclerView.Adapter<RegularLectureAd
                             new OwnShowcaseView(activity,
                                     new ViewTarget(toolbar.findViewById(toolbar.getMenu().getItem(2).getItemId())),
                                     activity.getString(R.string.to_set_the_timetable_time_click_on_the_settings_button),
-                                    "",
+                                    activity.getString(R.string.at_least_six_lessons_must_have_a_start_and_end_time),
                                     null).show();
                         }).show();
             }
