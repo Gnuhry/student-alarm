@@ -9,7 +9,7 @@ This is a student project
 - personalize alarm settings
 - weekly and event list display to show all your events
 - imports for ics (iCalendar) files from phone or web and for university "DHBW Mannheim" courses
-- auto import posibility for ics (iCalendar) files from web and for university "DHBW Mannheim" courses
+- auto import possibility for ics (iCalendar) files from web and for university "DHBW Mannheim" courses
 - create your own events and a regular lecture schedule
 - add holidays for alarm breaks or choose an event until the alarm is silent
 - export events to ics file
@@ -22,14 +22,14 @@ This is a student project
 - (proven to be working on managed devices / android enterprise)
 
 ## installation guide
-See this [tutorial webiste](https://www.thecustomdroid.com/how-to-install-apk-on-android/) (external website) to install the apk on your phone
+See this [tutorial website](https://www.thecustomdroid.com/how-to-install-apk-on-android/) (external website) to install the apk on your phone
 
 
 You can get the latest apk from the [release tab](https://github.com/Gnuhry/student-alarm/releases)
 
 ## planned features
 
-- earlier alarm option if high traffic volume, or train is canceld and you have to get the earlier one (including maps and train APIs)
+- earlier alarm option if high traffic volume, or train is canceled and you have to get the earlier one (including maps and train APIs)
 - option to have more than one regular lecture schedule, which switch each week
 - import of regular lecture schedule
 - repeatable events
