@@ -83,7 +83,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         EditTextPreference snooze = findPreference(PreferenceKeys.SNOOZE),
                 importTime = findPreference(PreferenceKeys.IMPORT_TIME),
                 wakeWeatherTime = findPreference(PreferenceKeys.WAKE_WEATHER_TIME),
-                zipcode= findPreference(PreferenceKeys.ZIPCODE);
+                zipCode = findPreference(PreferenceKeys.ZIP_CODE);
         ListPreference language = findPreference(PreferenceKeys.LANGUAGE),
                 theme = findPreference(PreferenceKeys.THEME);
 
@@ -104,9 +104,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 flashLightColor == null ||
                 flashLight == null ||
                 export == null ||
-                wakeWeather == null||
-                wakeWeatherTime == null||
-                zipcode == null)
+                wakeWeather == null ||
+                wakeWeatherTime == null ||
+                zipCode == null)
             return;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             vibration.setVisible(false);
@@ -123,7 +123,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 }
                 getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.ALARM_ON, (Boolean) newValue).apply();
                 Context context = getContext();
-                new Thread(() -> AlarmManager.setNextAlarm(context)).start();
+                AlarmManager.setNextAlarm(context);
             } else {
                 getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.ALARM_ON, (Boolean) newValue).apply();
                 if (getContext() != null)
@@ -224,25 +224,20 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         wakeWeather.setEnabled(bool2);
-        wakeWeather.setSummaryProvider(preference -> {
-            if (getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.WAKE_WEATHER,false)){
-                return getString(R.string.enabled);
-            }else{
-                return getString(R.string.disabled);
-            }
-        });
+        wakeWeather.setSummaryProvider(preference -> getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.WAKE_WEATHER, false) ? getString(R.string.enabled) : getString(R.string.disabled));
         wakeWeather.setOnPreferenceClickListener(preference -> {
             Log.i(LOG, "wakeWeather");
             if (getContext() == null || getActivity() == null) return false;
             new MaterialAlertDialogBuilder(getContext())
-                    .setTitle(R.string.BAD_WEATHER_ALARM)
-                    .setMessage(R.string.WEAKE_UP_EARLIER_WEATHER)
+                    .setTitle(R.string.bad_weather_alarm)
+                    .setMessage(R.string.wake_up_earlier_weather)
                     .setPositiveButton(R.string.enable, (dialogInterface, i) -> {
                         Log.i(LOG, "wakeWeather - enable");
                         getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.WAKE_WEATHER, true).apply();
                         wakeWeather.setSummaryProvider(preference2 -> getString(R.string.enabled));
                         wakeWeatherTime.setEnabled(false);
-                        zipcode.setEnabled(false);
+                        zipCode.setEnabled(false);
+                        if (getContext() == null) return;
                         AlarmManager.updateNextAlarm(getContext());
                         reload();
                     })
@@ -251,7 +246,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.WAKE_WEATHER, false).apply();
                         wakeWeather.setSummaryProvider(preference2 -> getString(R.string.disabled));
                         wakeWeatherTime.setEnabled(false);
-                        zipcode.setEnabled(false);
+                        zipCode.setEnabled(false);
+                        if (getContext() == null) return;
                         AlarmManager.updateNextAlarm(getContext());
                         ((android.app.AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(getContext(), 1, new Intent(getContext(), SetAlarmLater.class), 0));
                         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putLong(PreferenceKeys.WAKE_WEATHER_CHECK_TIME, 0).apply();
@@ -261,22 +257,28 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     .show();
             return true;
         });
+        boolean bool3 = getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.WAKE_WEATHER, false);
 
-        wakeWeatherTime.setEnabled(getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.WAKE_WEATHER,false));
+        wakeWeatherTime.setEnabled(bool3);
         wakeWeatherTime.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
         wakeWeatherTime.setSummaryProvider(preference -> getString(R.string._min, preference.getSharedPreferences().getString(PreferenceKeys.WAKE_WEATHER_TIME, getString(R.string.error))));
         wakeWeatherTime.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.i(LOG, "wakeWeatherTime set to " + newValue);
-            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(PreferenceKeys.WAKE_WEATHER_TIME,(String) newValue).apply();
+            if (getContext() == null) return false;
+            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(PreferenceKeys.WAKE_WEATHER_TIME, (String) newValue).apply();
             AlarmManager.updateNextAlarm(getContext());
             return true;
         });
-        zipcode.setEnabled(getPreferenceManager().getSharedPreferences().getBoolean(PreferenceKeys.WAKE_WEATHER,false));
-        zipcode.setOnBindEditTextListener(editText -> {editText.setInputType(InputType.TYPE_CLASS_NUMBER); editText.setFilters(new InputFilter.LengthFilter[]{new InputFilter.LengthFilter(5)});});
-        zipcode.setSummaryProvider(preference -> preference.getSharedPreferences().getString(PreferenceKeys.ZIPCODE, getString(R.string.error)));
-        zipcode.setOnPreferenceChangeListener((preference, newValue) -> {
+        zipCode.setEnabled(bool3);
+        zipCode.setOnBindEditTextListener(editText -> {
+            editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+            editText.setFilters(new InputFilter.LengthFilter[]{new InputFilter.LengthFilter(5)});
+        });
+        zipCode.setSummaryProvider(preference -> preference.getSharedPreferences().getString(PreferenceKeys.ZIP_CODE, getString(R.string.error)));
+        zipCode.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.i(LOG, "wakeWeatherTime set to " + newValue);
-            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(PreferenceKeys.ZIPCODE,(String) newValue).apply();
+            if (getContext() == null) return false;
+            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(PreferenceKeys.ZIP_CODE, (String) newValue).apply();
             AlarmManager.updateNextAlarm(getContext());
             return true;
         });

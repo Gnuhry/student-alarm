@@ -17,7 +17,7 @@ import java.util.Date;
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
-import org.json.JSONException;
+import static com.example.studentalarm.weather.BadWeatherCheck.DELTA_ALARM_BEFORE;
 
 public class AlarmManager {
 
@@ -34,36 +34,9 @@ public class AlarmManager {
         Log.d(LOG, "set next alarm");
         if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.ALARM_ON, false)) {
             Log.d(LOG, "alarm on");
-            LectureSchedule.Lecture first = LectureSchedule.load(context).getNextLecture(context);
-            if (first != null) {
-                Date date = first.getStartWithDefaultTimeZone();
-                if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.WAKE_WEATHER, false)) {
-                    Date checkDate = new Date(date.getTime());
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                    checkDate.setTime(date.getTime() - (60000 * (30 + Long.parseLong(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.WAKE_WEATHER_TIME, "10")) + (preferences.getInt(PreferenceKeys.BEFORE, 0) + preferences.getInt(PreferenceKeys.WAY, 0) + preferences.getInt(PreferenceKeys.AFTER, 0)))));//+30 min before the Alarm happens in the worst case (Bad Weather) 60000factor second to millisecond
-                    if (checkDate.before(Calendar.getInstance().getTime())) {
-                        try {
-                            Log.d(LOG, "Bad Weather Check"); //potentially there could be an check if the time remaining to the Alarm is less than time delta+30 min
-                            if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.WAKE_WEATHER, true) && new BadWeatherCheck(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.ZIPCODE, "11011")).isTheWeatherBad(first.getStart())) {
-                                Log.d(LOG, "Bad Weather");
-                                date.setTime(date.getTime() - 60000 * Long.parseLong(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.WAKE_WEATHER_TIME, "10")));
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            setAlarm(date.getTime(), context);
-                        }
-                        setAlarm(date.getTime(), context);
-                    } else {
-                        Log.d(LOG, "Bad Weather Check Later");
-                        setAlarm(date.getTime(), context);
-                        ((android.app.AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).cancel(PendingIntent.getBroadcast(context, 1, new Intent(context, SetAlarmLater.class), 0));
-                        ((android.app.AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).set(android.app.AlarmManager.RTC_WAKEUP, checkDate.getTime(), PendingIntent.getBroadcast(context, 1, new Intent(context, SetAlarmLater.class), 0));
-                        PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.WAKE_WEATHER_CHECK_TIME, checkDate.getTime()).apply();
-                    }
-                }else
-                    setAlarm(date.getTime(), context);
-
-            }
+            LectureSchedule.Lecture first = LectureSchedule.load(context).getNextLecture(context, true);
+            if (first != null)
+                new Thread(() -> setAlarm(checkBadWeather(context, first).getTime(), context)).start();
         }
     }
 
@@ -73,44 +46,18 @@ public class AlarmManager {
      * @param context context of the application
      */
     public static void updateNextAlarmFromSetAlarmLater(@NonNull Context context) {
-        Log.d(LOG, "update alarm");
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (!init && before == preferences.getInt(PreferenceKeys.BEFORE, 0) &&
-                way == preferences.getInt(PreferenceKeys.WAY, 0) &&
-                after == preferences.getInt(PreferenceKeys.AFTER, 0) &&
-                alarmPhone == preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false)) {
-            init = false;
-            return;
-        }
-        before = preferences.getInt(PreferenceKeys.BEFORE, 0);
-        way = preferences.getInt(PreferenceKeys.WAY, 0);
-        after = preferences.getInt(PreferenceKeys.AFTER, 0);
-        alarmPhone = preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false);
+        Log.d(LOG, "update alarm from set alarm later");
         cancelNextAlarm(context);
-        new Thread(() -> {
-            Log.d(LOG, "set next alarm");
-            if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.ALARM_ON, false)) {
-                Log.d(LOG, "alarm on");
-                LectureSchedule.Lecture first = LectureSchedule.load(context).getNextLecture(context);
-                if (first != null) {
-                    Date date = first.getStartWithDefaultTimeZone();
-                    try {
-                        Log.d(LOG, "Bad Weather Check");
-                        if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.WAKE_WEATHER, true) && new BadWeatherCheck(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.ZIPCODE, PreferenceKeys.DEFAULT_ZIPCODE)).isTheWeatherBad(first.getStart())) { //isTheWeatherBad needs UTC
-                            Log.d(LOG, "Bad Weather");
-                            date.setTime(date.getTime() - (60000 * (Long.parseLong(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.WAKE_WEATHER_TIME, PreferenceKeys.DEFAULT_WAKE_WEATHER_TIME)) + (preferences.getInt(PreferenceKeys.BEFORE, 0) + preferences.getInt(PreferenceKeys.WAY, 0) + preferences.getInt(PreferenceKeys.AFTER, 0)))));//+30 min before the Alarm happens in the worst case (Bad Weather) 60000factor second to millisecond
-                            Log.i(LOG,date.toString() + " " + PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.WAKE_WEATHER_TIME, PreferenceKeys.DEFAULT_WAKE_WEATHER_TIME));
-                            //date.setTime(date.getTime() - 60000 * Long.parseLong(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.WAKE_WEATHER_TIME, "10")));
-                        }
-                        setAlarm(date.getTime(), context);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        setAlarm(date.getTime(), context);
-                    }
-                }
+        if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.ALARM_ON, false)) {
+            Log.d(LOG, "alarm on");
+            LectureSchedule.Lecture first = LectureSchedule.load(context).getNextLecture(context, true);
+            if (first != null) {
+                Log.d(LOG, "Bad Weather Check");
+                if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.WAKE_WEATHER, true))
+                    new Thread(() -> setAlarm(addBadWeatherTimeIfWeatherIsBad(context, first).getTime(), context));
+                else setAlarm(first.getStartWithDefaultTimeZone().getTime(), context);
             }
-
-        }).start();
+        }
     }
 
 
@@ -134,7 +81,7 @@ public class AlarmManager {
         after = preferences.getInt(PreferenceKeys.AFTER, 0);
         alarmPhone = preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false);
         cancelNextAlarm(context);
-        new Thread(() -> AlarmManager.setNextAlarm(context)).start();
+        AlarmManager.setNextAlarm(context);
     }
 
     /**
@@ -146,7 +93,20 @@ public class AlarmManager {
         Log.d(LOG, "update alarm after auto import");
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (!preferences.getBoolean(PreferenceKeys.ALARM_CHANGE, false)) return;
-        new Thread(() -> AlarmManager.setNextAlarm(context)).start();
+        AlarmManager.setNextAlarm(context);
+    }
+
+    /**
+     * get the sum of before way and after time
+     *
+     * @param context context of app
+     * @return sum of time before event
+     */
+    public static int getSumTimeBefore(@NonNull Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getInt(PreferenceKeys.BEFORE, 0) +
+                preferences.getInt(PreferenceKeys.WAY, 0) +
+                preferences.getInt(PreferenceKeys.AFTER, 0);
     }
 
     /**
@@ -170,25 +130,64 @@ public class AlarmManager {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        Log.d(LOG, "Alarm before subtracting: "+calendar.toString());
-        calendar.add(Calendar.MINUTE, -(preferences.getInt(PreferenceKeys.BEFORE, 0)+preferences.getInt(PreferenceKeys.WAY, 0)+preferences.getInt(PreferenceKeys.AFTER, 0)));
-        Log.d(LOG, "Alarm after subtracting: "+calendar.toString());
-        Calendar time2 = Calendar.getInstance();
-        //time2.add(Calendar.MILLISECOND, -TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET));
-        Log.e("TIME", calendar.toString() + ", " + time2.toString());
-        if (time2.before(calendar)) {
-            if (preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false)) {
+        calendar.add(Calendar.MINUTE, -getSumTimeBefore(context));
+        if (Calendar.getInstance().before(calendar)) {
+            if (preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false))
                 Alarm.setPhoneAlarm(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), context);
-            } else {
+            else {
                 cancelNextAlarm(context);
                 Alarm.setAlarm(calendar, context);
             }
         } else {
             Log.e(LOG, "Wrong Date is set for alarm. Date is before current date");
-            LectureSchedule.Lecture lecture = LectureSchedule.load(context).getNextDayLecture(context);
+            LectureSchedule.Lecture lecture = LectureSchedule.load(context).getNextLecture(context, false);
             if (lecture != null)
-                setAlarm(lecture.getStartWithDefaultTimeZone().getTime(),context);
+                setAlarm(lecture.getStartWithDefaultTimeZone().getTime(), context);
         }
+    }
+
+    /**
+     * check bad wather
+     *
+     * @param context context of app
+     * @param first   lecture to set alarm
+     * @return date to set alarm
+     */
+    private static Date checkBadWeather(@NonNull Context context, LectureSchedule.Lecture first) {
+        Date date = first.getStartWithDefaultTimeZone();
+        if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.WAKE_WEATHER, false)) {
+            Date checkDate = new Date(date.getTime());
+            checkDate.setTime(date.getTime() - (60000 * (DELTA_ALARM_BEFORE +
+                    Long.parseLong(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.WAKE_WEATHER_TIME, PreferenceKeys.DEFAULT_WAKE_WEATHER_TIME)) +
+                    getSumTimeBefore(context))));
+            if (checkDate.before(Calendar.getInstance().getTime())) { //potentially there could be an check if the time remaining to the Alarm is less than time delta+30 min
+                return addBadWeatherTimeIfWeatherIsBad(context, first);
+            } else {
+                Log.d(LOG, "Bad Weather Check Later");
+                android.app.AlarmManager manager = ((android.app.AlarmManager) context.getSystemService(Context.ALARM_SERVICE));
+                PendingIntent intent = PendingIntent.getBroadcast(context, 1, new Intent(context, SetAlarmLater.class), 0);
+                manager.cancel(intent);
+                manager.set(android.app.AlarmManager.RTC_WAKEUP, checkDate.getTime(), intent);
+                PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.WAKE_WEATHER_CHECK_TIME, checkDate.getTime()).apply();
+            }
+        }
+        return date;
+    }
+
+    /**
+     * add bad weather alarm time, if weather is bad
+     *
+     * @param context context of app
+     * @param first   lecture to set alarm
+     * @return date to set alarm
+     */
+    private static Date addBadWeatherTimeIfWeatherIsBad(@NonNull Context context, LectureSchedule.Lecture first) {
+        Date date = first.getStartWithDefaultTimeZone();
+        if (new BadWeatherCheck(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.ZIP_CODE, PreferenceKeys.DEFAULT_ZIP_CODE)).isTheWeatherBad(first.getStart())) {
+            Log.d(LOG, "Bad Weather");
+            date.setTime(date.getTime() - 60000 * Long.parseLong(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.WAKE_WEATHER_TIME, PreferenceKeys.DEFAULT_WAKE_WEATHER_TIME)));
+        }
+        return date;
     }
 
 }
