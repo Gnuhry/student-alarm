@@ -16,10 +16,16 @@ This is a student project
 - dark theme support
 - English and German language support
 
+## important things to know
+- the sound alarm is connected to the **media** volium
+- some features (for example vibration mode or the internal regular lecture tutorial) are only available with newer Android Versions.
+  But the basic functionallity is always given.
+
 ## android requirements
 - min: sdk 16 (android version jelly bean)
 - recommend: sdk 30 (android version 11)
 - (proven to be working on managed devices / android enterprise)
+- oldest device on which the app was tested was running EMUI 5.1.3 (Android 7) with a verry low res display
 
 ## installation guide
 See this [tutorial webiste](https://www.thecustomdroid.com/how-to-install-apk-on-android/) (external website) to install the apk on your phone
@@ -41,3 +47,6 @@ You can get the latest apk from the [release tab](https://github.com/Gnuhry/stud
 - https://github.com/bumptech/glide
 - https://github.com/square/okhttp
 - https://github.com/dmfs/lib-recur
+
+## used apis
+- https://openweathermap.org/ (only used in Beta Mode)
