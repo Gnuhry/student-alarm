@@ -24,7 +24,7 @@ This is a student project
 - min: sdk 16 (android version jelly bean)
 - recommend: sdk 30 (android version 11)
 - (proven to be working on managed devices / android enterprise)
-- oldest real device on which the app was tested was running EMUI 5.1.3 (Android 7) with a verry low res display
+- oldest real device on which the app was tested was running EMUI 5.1.3 (Android 7) with a very low res display
 
 ## installation guide
 See this [tutorial webiste](https://www.thecustomdroid.com/how-to-install-apk-on-android/) (external website) to install the apk on your phone
