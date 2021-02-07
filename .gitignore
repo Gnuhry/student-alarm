@@ -13,6 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+.idea
 app/release/output-metadata.json
 app/release/app-release.apk
 upload-keystroke.jks

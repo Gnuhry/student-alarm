@@ -26,6 +26,9 @@ public class AppWidget extends AppWidgetProvider {
         sWorkerQueue = new Handler(sWorkerThread.getLooper());
     }
 
+    /**
+     * setting the widget remote adapter
+     */
     private static void updateAppWidget(@NonNull Context context, @NonNull AppWidgetManager appWidgetManager,
                                         int appWidgetId) {
 
@@ -44,13 +47,5 @@ public class AppWidget extends AppWidgetProvider {
     public void onUpdate(@NonNull Context context, @NonNull AppWidgetManager appWidgetManager, @NonNull int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds)
             updateAppWidget(context, appWidgetManager, appWidgetId);
-    }
-
-    @Override
-    public void onEnabled(Context context) {
-    }
-
-    @Override
-    public void onDisabled(Context context) {
     }
 }

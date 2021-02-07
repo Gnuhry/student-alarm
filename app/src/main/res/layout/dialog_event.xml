@@ -27,21 +27,20 @@
 
             <Space
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_height="wrap_content"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
                 android:text="@string/event"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
             <Space
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/txVAdd"
@@ -67,15 +66,16 @@
             android:id="@+id/edTTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:importantForAutofill="no"
             android:background="@null"
             android:ems="10"
             android:hint="@string/title"
+            android:importantForAutofill="no"
             android:inputType="textPersonName"
             android:paddingLeft="5dp"
             android:paddingTop="10dp"
             android:paddingRight="5dp"
-            android:paddingBottom="10dp" />
+            android:paddingBottom="10dp"
+            android:selectAllOnFocus="true" />
 
         <View
             android:layout_width="match_parent"
@@ -86,15 +86,16 @@
             android:id="@+id/edTDocent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:importantForAutofill="no"
             android:background="@null"
             android:ems="10"
             android:hint="@string/docent"
+            android:importantForAutofill="no"
             android:inputType="textPersonName"
             android:paddingLeft="5dp"
             android:paddingTop="10dp"
             android:paddingRight="5dp"
-            android:paddingBottom="10dp" />
+            android:paddingBottom="10dp"
+            android:selectAllOnFocus="true" />
 
         <View
             android:layout_width="match_parent"
@@ -105,15 +106,16 @@
             android:id="@+id/edTLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:importantForAutofill="no"
             android:background="@null"
             android:ems="10"
             android:hint="@string/location"
+            android:importantForAutofill="no"
             android:inputType="textPersonName"
             android:paddingLeft="5dp"
             android:paddingTop="10dp"
             android:paddingRight="5dp"
-            android:paddingBottom="10dp" />
+            android:paddingBottom="10dp"
+            android:selectAllOnFocus="true" />
 
         <View
             android:layout_width="match_parent"
@@ -195,12 +197,14 @@
                     android:id="@+id/edTTimeBegin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:importantForAutofill="no"
+                    android:digits="1234567890:"
                     android:ems="5"
-                    android:maxLength="5"
                     android:gravity="end"
                     android:hint="@string/hh_mm"
-                    android:inputType="time" />
+                    android:importantForAutofill="no"
+                    android:inputType="phone"
+                    android:maxLength="5"
+                    android:selectAllOnFocus="true" />
 
             </LinearLayout>
 
@@ -277,18 +281,21 @@
                     android:id="@+id/edTTimeEnd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:importantForAutofill="no"
+                    android:digits="1234567890:"
                     android:ems="5"
-                    android:maxLength="5"
                     android:gravity="end"
                     android:hint="@string/hh_mm"
-                    android:inputType="time" />
+                    android:importantForAutofill="no"
+                    android:inputType="phone"
+                    android:maxLength="5"
+                    android:selectAllOnFocus="true" />
 
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
+            android:id="@+id/llColor"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
@@ -308,10 +315,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
-            <Spinner
-                android:id="@+id/spColor"
+            <TextView
+                android:id="@+id/txVColor"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end" />
 
         </LinearLayout>
 

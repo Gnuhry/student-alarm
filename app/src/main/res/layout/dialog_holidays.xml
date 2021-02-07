@@ -54,22 +54,18 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
-            <ImageView
-                android:id="@+id/imVDelete"
+            <TextView
+                android:id="@+id/txVSave"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:contentDescription="@string/delete"
-                android:src="@drawable/delete"
-                android:visibility="gone" />
-
-            <ImageView
-                android:id="@+id/imVSave"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:contentDescription="@string/save"
-                android:src="@drawable/save" />
+                android:gravity="end"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="@string/save"
+                android:textColor="@android:color/holo_green_dark"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

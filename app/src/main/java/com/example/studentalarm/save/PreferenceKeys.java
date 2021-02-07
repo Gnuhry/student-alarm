@@ -42,11 +42,22 @@ public class PreferenceKeys {
             EXPORT = "EXPORT",
             RESET = "RESET",
             THEME = "THEME",
+            VIBRATION = "VIBRATION",
+            FLASH_LIGHT = "FLASH_LIGHT",
+            FLASH_LIGHT_COLOR = "FLASH_LIGHT_COLOR",
+            ALARM_MODE = "ALARM_MODE",
+            APP_FIRST_TIME = "APP_FIRST_TIME",
 
     DEFAULT_RINGTONE = "Default",
             DEFAULT_LANGUAGE = "EN",
             DEFAULT_SNOOZE = "5",
             DEFAULT_IMPORT_TIME = "19:00";
+
+    public static final int
+            DEFAULT_EVENT_COLOR = Color.RED,
+            DEFAULT_IMPORT_EVENT_COLOR = Color.BLUE,
+            DEFAULT_REGULAR_EVENT_COLOR = Color.GREEN,
+            DEFAULT_FLASH_LIGHT_COLOR = Color.BLUE;
 
     /**
      * Reset the settings
@@ -80,9 +91,13 @@ public class PreferenceKeys {
         if (preferences.getString(PreferenceKeys.IMPORT_TIME, null) == null)
             preferences.edit().putString(PreferenceKeys.IMPORT_TIME, DEFAULT_IMPORT_TIME).apply();
         if (preferences.getInt(PreferenceKeys.IMPORT_COLOR, -1) == -1)
-            preferences.edit().putInt(PreferenceKeys.IMPORT_COLOR, Color.RED).apply();//red als default Colour
+            preferences.edit().putInt(PreferenceKeys.IMPORT_COLOR, PreferenceKeys.DEFAULT_IMPORT_EVENT_COLOR).apply();
+        if (preferences.getInt(PreferenceKeys.FLASH_LIGHT_COLOR, -1) == -1)
+            preferences.edit().putInt(PreferenceKeys.FLASH_LIGHT_COLOR, PreferenceKeys.DEFAULT_FLASH_LIGHT_COLOR).apply();
         if (preferences.getLong(PreferenceKeys.ALARM_SHUTDOWN, -1) == -1)
             preferences.edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
+        if (preferences.getInt(PreferenceKeys.ALARM_MODE, -1) == -1)
+            preferences.edit().putInt(PreferenceKeys.ALARM_MODE, 0).apply();
         return erg;
     }
 

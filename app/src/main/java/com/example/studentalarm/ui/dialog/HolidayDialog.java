@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
+import com.example.studentalarm.Formatter;
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.LectureSchedule;
@@ -21,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -88,7 +88,7 @@ public class HolidayDialog extends DialogFragment {
             });
             calendarView.setMinDate(lecture.getStart().getTime());
         });
-        view.findViewById(R.id.imVSave).setOnClickListener(view1 -> {
+        view.findViewById(R.id.txVSave).setOnClickListener(view1 -> {
             if (lecture.getStart().after(lecture.getEnd())) {
                 until.setError(getString(R.string.end_must_start_after_begin));
                 return;
@@ -116,23 +116,6 @@ public class HolidayDialog extends DialogFragment {
                         .show();
             }
         });
-        if (!create) {
-            view.findViewById(R.id.imVDelete).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.imVDelete).setOnClickListener(view1 -> {
-                if (getContext() != null)
-                    new MaterialAlertDialogBuilder(getContext())
-                            .setTitle(R.string.delete)
-                            .setMessage(R.string.do_you_want_to_delete_this_events)
-                            .setPositiveButton(R.string.delete, (dialogInterface, i) -> {
-                                if (old_lecture != null)
-                                    LectureSchedule.load(getContext()).removeHoliday(old_lecture).save(context);
-                                this.dismiss();
-                            })
-                            .setNegativeButton(R.string.cancel, (dialogInterface, i) -> this.dismiss())
-                            .setCancelable(true)
-                            .show();
-            });
-        }
 
         setTextBox();
         Calendar calendar = Calendar.getInstance();
@@ -172,7 +155,7 @@ public class HolidayDialog extends DialogFragment {
      * set the date in the textBox
      */
     private void setTextBox() {
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+        SimpleDateFormat format = Formatter.dayFormatter();
         from.setText(getString(R.string.from_day, format.format(lecture.getStart())));
         until.setText(getString(R.string.until_day, format.format(lecture.getEnd())));
     }

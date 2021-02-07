@@ -19,6 +19,7 @@ import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.adapter.HolidayAdapter;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class AlarmSettingFragment extends Fragment {
 
     private static final String LOG = "AlarmSettingFragment";
+    @Nullable
     private final PersonalFragment fragment;
     private TextView timeBefore, timeWay, timeAfter;
 
@@ -34,7 +36,7 @@ public class AlarmSettingFragment extends Fragment {
         fragment = null;
     }
 
-    public AlarmSettingFragment(PersonalFragment fragment) {
+    public AlarmSettingFragment(@Nullable PersonalFragment fragment) {
         this.fragment = fragment;
     }
 
@@ -44,16 +46,19 @@ public class AlarmSettingFragment extends Fragment {
         Log.i(LOG, "open");
         View view = inflater.inflate(R.layout.fragment_alarm_setting, container, false);
         if (getContext() == null) return view;
+        timeBefore = view.findViewById(R.id.txVTimeBefore);
+        timeWay = view.findViewById(R.id.txVTimeWay);
+        timeAfter = view.findViewById(R.id.txVTimeAfter);
         view.findViewById(R.id.txVBefore).setOnClickListener(v -> numberDialog(getContext(), getString(R.string.before), PreferenceKeys.BEFORE));
+        timeBefore.setOnClickListener(v -> numberDialog(getContext(), getString(R.string.before), PreferenceKeys.BEFORE));
         view.findViewById(R.id.txtWay).setOnClickListener(v -> numberDialog(getContext(), getString(R.string.way), PreferenceKeys.WAY));
+        timeWay.setOnClickListener(v -> numberDialog(getContext(), getString(R.string.way), PreferenceKeys.WAY));
         view.findViewById(R.id.txtAfter).setOnClickListener(v -> numberDialog(getContext(), getString(R.string.after), PreferenceKeys.AFTER));
+        timeAfter.setOnClickListener(v -> numberDialog(getContext(), getString(R.string.after), PreferenceKeys.AFTER));
         view.findViewById(R.id.btnRegularLecture).setOnClickListener(view1 -> {
             if (fragment != null)
                 fragment.openFragment(fragment.getRegularFragment());
         });
-        timeBefore = view.findViewById(R.id.txVTimeBefore);
-        timeWay = view.findViewById(R.id.txVTimeWay);
-        timeAfter = view.findViewById(R.id.txVTimeAfter);
         if (getContext() != null)
             setTime(getContext());
 

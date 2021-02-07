@@ -1,6 +1,8 @@
 package com.example.studentalarm;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
@@ -10,6 +12,7 @@ import android.util.Log;
 import com.example.studentalarm.receiver.NetworkReceiver;
 import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.dialog.ImportDialog;
+import com.example.studentalarm.ui.dialog.RingtoneDialog;
 import com.example.studentalarm.ui.fragments.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -22,6 +25,7 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.preference.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String ALARM_BROADCAST = "alarmIntent";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +33,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        this.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_);
+                if (navHostFragment != null)
+                    navHostFragment.getNavController().navigate(R.id.alarmFragment_);
+            }
+        }, new IntentFilter(ALARM_BROADCAST));
         this.registerReceiver(new NetworkReceiver(), new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
         this.registerReceiver(new NetworkReceiver(), new IntentFilter("android.net.wifi.WIFI_STATE_CHANGED"));
 
@@ -55,10 +67,13 @@ public class MainActivity extends AppCompatActivity {
         checkLanguage();
     }
 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == ImportDialog.REQUEST_CODE && resultCode == Activity.RESULT_OK)
             ImportDialog.setResultIntent(data, this);
+        if (requestCode == RingtoneDialog.REQUEST_CODE && resultCode == Activity.RESULT_OK)
+            RingtoneDialog.setResultIntent(data, this);
 
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -69,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
         super.onConfigurationChanged(newConfig);
     }
 
+    /**
+     * check the language is setting right
+     */
     public void checkLanguage() {
         String lan = PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceKeys.LANGUAGE, null);
         if (lan != null && !lan.equals(PreferenceKeys.defaultLanguage(this)))

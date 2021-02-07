@@ -13,7 +13,7 @@
     <string name="import_settings">Import Einstellungen</string>
     <string name="import_">Import</string>
     <string name="import_time">Import Uhrzeit</string>
-    <string name="automatic_daily_import">Automatischer täglischer Import</string>
+    <string name="automatic_daily_import">Automatischer täglicher Import</string>
     <string name="address">http://www.</string>
     <string name="string_is_not_a_valid_url">Eingabe ist keine validierte URL</string>
     <string name="delete_all_events">Lösche alle Events</string>
@@ -87,7 +87,7 @@
     <string name="title">Titel</string>
     <string name="docent">Dozent</string>
     <string name="location">Ort</string>
-    <string name="begin">Begin</string>
+    <string name="begin">Beginn</string>
     <string name="end">Ende</string>
     <string name="do_you_want_to_dismiss_all_your_changes">Möchten Sie alle ihre Änderungen verwerfen?</string>
     <string name="dismiss">Verwerfen</string>
@@ -98,7 +98,7 @@
     <string name="yellow">Gelb</string>
     <string name="update">Aktualisieren</string>
     <string name="missing">Fehlt</string>
-    <string name="end_must_start_after_begin">Ende muss nach dem Begin starten</string>
+    <string name="end_must_start_after_begin">Ende muss nach dem Beginn starten</string>
     <string name="wrong">Falsch</string>
     <string name="loading">Laden</string>
     <string name="wait_while_loading">Warten während dem laden…</string>
@@ -126,10 +126,25 @@
     <string name="no_lecture_in_the_bottom_bar_selected">No Lecture in the bottom bar selected</string>
     <string name="missing_hour_settings">Missing hour settings (top right corner)</string>
     <string name="temporary_alarm_shutdown">Den Alarm abschalten bis …</string>
-    <string name="no_alarm_shutdown">Den Alarm nicht abschalten</string>
-    <string name="chose_last_lecture_with_no_alarm">Wählen Sie die letzte Vorlesung zu der es keinen Alarm geben soll</string>
+    <string name="do_not_shutdown_the_alarm">Den Alarm nicht abschalten</string>
+    <string name="choose_last_lecture_where_no_alarm_is_wanted">Wählen Sie die letzte Vorlesung zu der es keinen Alarm geben soll</string>
     <string name="please_check_accuracy_of_the_alarm">Bitte überprüfen Sie den Alarm </string>
     <string name="alarm_shutdown_change">Alarm Statusänderung</string>
+    <string name="custom">benutzerdeffiniert</string>
+    <string name="not_a_song_file">Keine Musik Datei</string>
+    <string name="not_supported_in_your_android_version">Keine Unterstzüng für ihre Android Version</string>
+    <string name="no_color_selected">Keine Farbe ausgewählt</string>
+    <string name="hex_color_eg_304534">hex Farbe z.B. #304534</string>
+    <string name="not_a_hey_code">Kein hex Code</string>
+    <string name="choose_color">Farbe aussuchen</string>
+    <string name="flash_light">Alarmlicht aufleuchten</string>
+    <string name="vibration">Vibration</string>
+    <string name="flash_light_color">Alarmlicht Farbe</string>
+    <string name="stop_snooze">Schlummern ausstellen</string>
+    <string name="to_create_lecture_click_on_the_button">Um eine Vorlesung zu erstellen, drücken sie auf den Hinzufügen-Knopf</string>
+    <string name="after_creating_the_lecture_">\n- Nach dem Erstellen der Vorlesung können sie diese auswählen und auf das Gitter verteilen, um einen Stundenplan zu erstellen.\n\n- Wenn sie mehr als einen Raum haben, können sie mit lange halten auf die Vorlesung diese wechseln.\n\n- Um die Vorlesung wieder zu bearbeiten, klicken sie zweimal auf die Vorlesung.</string>
+    <string name="to_set_the_timetable_time_click_on_the_settings_button">Um die Studenzeiten zu setzen, klicken sie auf die Einstellungen</string>
+    <string name="at_least_six_lessons_must_have_a_start_and_end_time">\n- Mindestens sechs Stunden müssen eine Start- und End- zeit erhalten</string>
 
 
 

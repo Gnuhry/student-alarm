@@ -8,12 +8,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.studentalarm.Formatter;
 import com.example.studentalarm.R;
+import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.ui.dialog.HolidayDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
@@ -29,7 +31,7 @@ public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.ViewHold
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView holiday;
         private final LinearLayout llHolidays;
-        private final ImageView add, edit;
+        private final ImageView add, edit, delete;
 
         public ViewHolder(@NonNull View view) {
             super(view);
@@ -37,6 +39,7 @@ public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.ViewHold
             holiday = view.findViewById(R.id.txVHoliday);
             llHolidays = view.findViewById(R.id.llHoliday);
             edit = view.findViewById(R.id.imVEdit);
+            delete = view.findViewById(R.id.imVDelete);
         }
     }
 
@@ -62,10 +65,26 @@ public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.ViewHold
             holder.add.setVisibility(View.GONE);
             holder.llHolidays.setVisibility(View.VISIBLE);
             holder.llHolidays.setTag(position);
-            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
-            holder.holiday.setText(String.format("%s - %s", format.format(schedule.getHolidays().get(position).getStart()), format.format(schedule.getHolidays().get(position).getEnd())));
+            SimpleDateFormat format = Formatter.dayFormatter();
+            holder.holiday.setText(String.format("%s - %s", format.format(schedule.getHolidays().get(((int) holder.llHolidays.getTag())).getStart()), format.format(schedule.getHolidays().get(((int) holder.llHolidays.getTag())).getEnd())));
             holder.edit.setOnClickListener(view -> new HolidayDialog(schedule, context, this, ((int) holder.llHolidays.getTag())).show(activity.getSupportFragmentManager(), "dialog"));
+            holder.delete.setOnClickListener(view -> new MaterialAlertDialogBuilder(context)
+                    .setTitle(R.string.delete)
+                    .setMessage(R.string.do_you_want_to_delete_this_events)
+                    .setPositiveButton(R.string.delete, (dialogInterface, i) -> {
+                        LectureSchedule.load(context).removeHoliday(schedule.getHolidays().get(((int) holder.llHolidays.getTag()))).save(context);
+                        reloadAdapter();
+                        AlarmManager.updateNextAlarm(context);
+                    })
+                    .setNegativeButton(R.string.cancel, null)
+                    .setCancelable(true)
+                    .show());
         }
+    }
+
+    @Override
+    public int getItemCount() {
+        return schedule.getHolidays().size() + 1;
     }
 
     /**
@@ -74,11 +93,6 @@ public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.ViewHold
     public void reloadAdapter() {
         this.schedule = LectureSchedule.load(context);
         notifyDataSetChanged();
-    }
-
-    @Override
-    public int getItemCount() {
-        return schedule.getHolidays().size() + 1;
     }
 
 

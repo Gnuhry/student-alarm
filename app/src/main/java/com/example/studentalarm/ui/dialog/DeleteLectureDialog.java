@@ -8,6 +8,7 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 
 import com.example.studentalarm.R;
+import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.regular.RegularLectureSchedule;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -58,6 +59,7 @@ public class DeleteLectureDialog extends Dialog {
                             if (chBRegular)
                                 RegularLectureSchedule.clearSave(getContext());
                             schedule.save(getContext());
+                            AlarmManager.updateNextAlarm(getContext());
                             this.cancel();
                         })
                         .setNegativeButton(R.string.cancel, (dialogInterface, i) -> this.cancel())

@@ -56,7 +56,7 @@ public class AlarmShutdownDialog extends DialogFragment {
             PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
             this.dismiss();
         });
-        alarmFragment.stopLoad();// from Progress Show
+        alarmFragment.stopLoad();
         return view;
     }
 }

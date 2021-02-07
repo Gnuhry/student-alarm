@@ -10,7 +10,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.util.Log;
 
-import com.example.studentalarm.EventColor;
+import com.example.studentalarm.Formatter;
 import com.example.studentalarm.MainActivity;
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
@@ -43,7 +43,7 @@ import androidx.preference.PreferenceManager;
 
 public class LectureSchedule {
     @NonNull
-    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN), TIME_FORMAT = new SimpleDateFormat("HH:mm:ss:SS", Locale.GERMAN);
+    private static final SimpleDateFormat FORMAT = Formatter.dayFormatter(), TIME_FORMAT = new SimpleDateFormat("HH:mm:ss:SS", Locale.GERMAN);
     private static final Calendar regular_from = Calendar.getInstance(), regular_until = Calendar.getInstance();
     @NonNull
     private final List<Lecture> lecture, importLecture, holidays;
@@ -60,6 +60,33 @@ public class LectureSchedule {
         regular_until.setTime(Calendar.getInstance().getTime());
         regular_from.add(Calendar.YEAR, -3);
         regular_until.add(Calendar.YEAR, 3);
+    }
+
+    public void addLecture(@NonNull Lecture lecture) {
+        this.lecture.add(lecture);
+    }
+
+    public void addHoliday(@NonNull Lecture lecture) {
+        this.holidays.add(lecture);
+    }
+
+    @NonNull
+    public List<Lecture> getLecture() {
+        return lecture;
+    }
+
+    @NonNull
+    public List<Lecture> getImportLecture() {
+        return importLecture;
+    }
+
+    @NonNull
+    public List<Lecture> getHolidays() {
+        return holidays;
+    }
+
+    public static int getPositionScroll() {
+        return positionScroll;
     }
 
     /**
@@ -135,6 +162,11 @@ public class LectureSchedule {
         return erg;
     }
 
+    /**
+     * get all lectures from Lecture_Schedule without holiday and which is after now
+     *
+     * @return all Lectures
+     */
     @NonNull
     public List<Lecture> getAllLecturesFromNowWithoutHoliday(@NonNull Context context) {
         positionScroll = -1;
@@ -156,25 +188,6 @@ public class LectureSchedule {
         if (positionScroll == -1 && erg.size() > 0)
             positionScroll = erg.size() - 1;
         return erg;
-    }
-
-    @NonNull
-    public List<Lecture> getLecture() {
-        return lecture;
-    }
-
-    @NonNull
-    public List<Lecture> getImportLecture() {
-        return importLecture;
-    }
-
-    @NonNull
-    public List<Lecture> getHolidays() {
-        return holidays;
-    }
-
-    public static int getPositionScroll() {
-        return positionScroll;
     }
 
     /**
@@ -207,27 +220,49 @@ public class LectureSchedule {
     public Lecture getNextLecture(@NonNull Context context) {
         boolean first = true;
         Lecture tomorrow = new Lecture(false, getDayAddDay(1), new Date()), today = new Lecture(false, getDayAddDay(0), new Date());
-        Log.d("ERROR", today.start.toString());
-        for (Lecture l : getAllLectureWithoutHolidayAndHolidayEvents(context))
-            if (l.getStart().after(new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, Calendar.getInstance().getTime().getTime())))) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, preferences.getInt(PreferenceKeys.BEFORE, 0) + preferences.getInt(PreferenceKeys.WAY, 0) + preferences.getInt(PreferenceKeys.AFTER, 0));
+        Date date = new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, Calendar.getInstance().getTime().getTime()));
+        for (Lecture l : getAllLectureWithoutHolidayAndHolidayEvents(context)) {
+            if (l.getStart().after(date)) {
                 if (l.compareTo(today) >= 0 && first) {
-                    Log.d("ERROR", l.getStartWithDefaultTimeZone().toString());
                     first = false;
-                    Log.d("ERROR", Calendar.getInstance().getTime().toString());
-                    if (l.getStartWithDefaultTimeZone().after(Calendar.getInstance().getTime()))
+                    if (l.getStartWithDefaultTimeZone().after(calendar.getTime()))
                         return l;
                 } else if (l.compareTo(tomorrow) >= 0)
                     return l;
             }
+        }
         return null;
     }
 
-    public void addLecture(@NonNull Lecture lecture) {
-        this.lecture.add(lecture);
+    /**
+     * remove lecture from lecture or import list
+     *
+     * @param data lecture to remove
+     * @return updated lecture schedule
+     */
+    @NonNull
+    public LectureSchedule removeLecture(@NonNull Lecture data) {
+        int id1 = lecture.indexOf(data), id2 = importLecture.indexOf(data);
+        if (id1 >= 0) lecture.remove(id1);
+        if (id2 >= 0) importLecture.remove(id2);
+        return this;
     }
 
-    public void addHoliday(@NonNull Lecture lecture) {
-        this.holidays.add(lecture);
+    /**
+     * remove holiday
+     *
+     * @param data lecture to remove
+     * @return updated lecture schedule
+     */
+    @NonNull
+    public LectureSchedule removeHoliday(@NonNull Lecture data) {
+        int id1 = holidays.indexOf(data);
+        Log.d("REMOVE HOLIDAY", "Data: " + data.getName() + " ID: " + id1);
+        if (id1 >= 0) holidays.remove(id1);
+        return this;
     }
 
     /**
@@ -240,8 +275,6 @@ public class LectureSchedule {
         importLecture.clear();
         List<ICS.vEvent> list = calendar.getVEventList();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        List<EventColor> colors = EventColor.possibleColors(context);
-        EventColor color = colors.get(colors.indexOf(new EventColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR, 0))));
         if (list != null) {
 //            RegularLectureSchedule regularLectureSchedule = RegularLectureSchedule.load(context);
             for (ICS.vEvent ev : list) {
@@ -276,7 +309,7 @@ public class LectureSchedule {
 //                            }
 //                        } else
                         if (start != null && end != null) {
-                            importLecture.add(new Lecture(true, start, end).setName(ev.SUMMARY).setLocation(ev.LOCATION).setAllDayEvent((TIME_FORMAT.format(start).equals("00:00:00:00") || TIME_FORMAT.format(start).equals("0:00:00:00")) && (TIME_FORMAT.format(end).equals("00:00:00:00") || TIME_FORMAT.format(end).equals("0:00:00:00"))).setColor(color.getColor()));
+                            importLecture.add(new Lecture(true, start, end).setName(ev.SUMMARY).setLocation(ev.LOCATION).setAllDayEvent((TIME_FORMAT.format(start).equals("00:00:00:00") || TIME_FORMAT.format(start).equals("0:00:00:00")) && (TIME_FORMAT.format(end).equals("00:00:00:00") || TIME_FORMAT.format(end).equals("0:00:00:00"))).setColor(preferences.getInt(PreferenceKeys.IMPORT_COLOR, PreferenceKeys.DEFAULT_IMPORT_EVENT_COLOR)));
                         }
                     }
                 } catch (ParseException e) {
@@ -284,22 +317,6 @@ public class LectureSchedule {
                 }
             }
         }
-        return this;
-    }
-
-    @NonNull
-    public LectureSchedule removeLecture(@NonNull Lecture data) {
-        int id1 = lecture.indexOf(data), id2 = importLecture.indexOf(data);
-        if (id1 >= 0) lecture.remove(id1);
-        if (id2 >= 0) importLecture.remove(id2);
-        return this;
-    }
-
-    @NonNull
-    public LectureSchedule removeHoliday(@NonNull Lecture data) {
-        int id1 = holidays.indexOf(data);
-        Log.d("REMOVE HOLIDAY", "Data: " + data.getName() + " ID: " + id1);
-        if (id1 >= 0) holidays.remove(id1);
         return this;
     }
 
@@ -357,7 +374,7 @@ public class LectureSchedule {
     private List<Lecture> getAllLectureWithoutHolidayAndHolidayEvents(@NonNull Context context) {
         List<Lecture> all = new ArrayList<>(), all2 = new ArrayList<>();
         int countShutdownEvents = 0;
-        long penultimateShutdownEvent =0;
+        long penultimateShutdownEvent = 0;
         all.addAll(lecture);
         all.addAll(importLecture);
         all.addAll(getRegularLecture(context));
@@ -384,8 +401,7 @@ public class LectureSchedule {
             Log.d("Lecture Schedule", "Change made last shutdown element disappear");
             PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, penultimateShutdownEvent).apply();
             AlarmManager.updateNextAlarm(context);
-            if (NotificationManagerCompat.from(context).areNotificationsEnabled())
-            {
+            if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
                 int NOTIFICATION_ID = 1234567;
                 String CHANNEL_ID = "1234567";
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
@@ -662,7 +678,7 @@ public class LectureSchedule {
         private String docent, location, name;
         @NonNull
         private Date start, end; //UTC
-        private int color = Color.RED;
+        private int color = PreferenceKeys.DEFAULT_EVENT_COLOR;
         private boolean isAllDayEvent;
 
         /**

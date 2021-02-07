@@ -3,6 +3,7 @@ package com.example.studentalarm.regular;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.studentalarm.Formatter;
 import com.example.studentalarm.save.SaveHour;
 import com.example.studentalarm.save.SaveKeys;
 
@@ -12,11 +13,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,7 +43,7 @@ public class Hours {
     @Nullable
     public Date getFromAsDate() {
         try {
-            return new SimpleDateFormat("HH:mm", Locale.getDefault()).parse(from);
+            return Formatter.timeFormatter().parse(from);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -54,7 +53,7 @@ public class Hours {
     @Nullable
     public Date getUntilAsDate() {
         try {
-            return new SimpleDateFormat("HH:mm", Locale.getDefault()).parse(until);
+            return Formatter.timeFormatter().parse(until);
         } catch (ParseException e) {
             e.printStackTrace();
         }

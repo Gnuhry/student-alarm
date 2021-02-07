@@ -1,11 +1,12 @@
 package com.example.studentalarm.regular;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.example.studentalarm.R;
+import com.example.studentalarm.alarm.AlarmManager;
+import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.save.SaveKeys;
 import com.example.studentalarm.save.SaveRegularLectureSchedule;
 
@@ -117,6 +118,7 @@ public class RegularLectureSchedule {
         Log.i(LOG, "save");
         saving(createSave(), context);
         Toast.makeText(context, R.string.save, Toast.LENGTH_SHORT).show();
+        AlarmManager.updateNextAlarm(context);
     }
 
     /**
@@ -236,7 +238,7 @@ public class RegularLectureSchedule {
         private String name, docent;
         @NonNull
         private List<String> rooms;
-        private int color = Color.RED, activeRoomId;
+        private int color = PreferenceKeys.DEFAULT_REGULAR_EVENT_COLOR, activeRoomId;
 
         public RegularLecture(String name) {
             id = counter++;

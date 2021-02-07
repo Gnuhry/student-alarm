@@ -36,11 +36,12 @@ public class RegularLectureFragment extends Fragment {
     @Nullable
     private final PersonalFragment fragment;
     private RegularLectureSchedule regularLectureSchedule;
+    @Nullable
     private RegularLectureAdapter regularLectureAdapter;
     private Adapter adapter;
     private WeekView weekView;
     private RecyclerView rv;
-    private boolean changes = false;
+    private boolean changes = false, reset = false;
 
     public RegularLectureFragment() {
         this.fragment = null;
@@ -109,7 +110,7 @@ public class RegularLectureFragment extends Fragment {
      */
     public void loadRecyclerView() {
         Log.i(LOG, "load recyclerView");
-        regularLectureAdapter = new RegularLectureAdapter(regularLectureSchedule, this);
+        regularLectureAdapter = new RegularLectureAdapter(regularLectureSchedule, this, getActivity());
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rv.setAdapter(regularLectureAdapter);
@@ -125,31 +126,6 @@ public class RegularLectureFragment extends Fragment {
         Toolbar toolbar = getActivity().findViewById(R.id.my_toolbar);
         toolbar.getMenu().getItem(2).setVisible(true);
         toolbar.getMenu().getItem(2).setOnMenuItemClickListener(menuItem -> {
-            if (getContext() != null) {
-                new MaterialAlertDialogBuilder(getContext())
-                        .setTitle(R.string.delete_all_events)
-                        .setMessage(R.string.do_you_want_to_delete_this_events)
-                        .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
-                            RegularLectureSchedule.clearSave(getContext());
-                            changes = false;
-                            loadRecyclerView();
-                        })
-                        .setNegativeButton(R.string.no, null)
-                        .setCancelable(true)
-                        .show();
-            }
-            return true;
-        });
-        toolbar.getMenu().getItem(3).setVisible(true);
-        toolbar.getMenu().getItem(3).setOnMenuItemClickListener(menuItem -> {
-            if (getContext() != null) {
-                regularLectureSchedule.save(getContext());
-                changes = false;
-            }
-            return true;
-        });
-        toolbar.getMenu().getItem(4).setVisible(true);
-        toolbar.getMenu().getItem(4).setOnMenuItemClickListener(menuItem -> {
             if (getContext() == null) return false;
             if (hasChanges())
                 new MaterialAlertDialogBuilder(getContext())
@@ -162,6 +138,34 @@ public class RegularLectureFragment extends Fragment {
                         .show();
             else
                 new RegularLectureSettingDialog(getContext(), getActivity(), this).show(getActivity().getSupportFragmentManager(), "dialog");
+            return true;
+        });
+        toolbar.getMenu().getItem(3).setVisible(true);
+        toolbar.getMenu().getItem(3).setOnMenuItemClickListener(menuItem -> {
+            if (getContext() != null) {
+                regularLectureSchedule.save(getContext());
+                changes = false;
+            }
+            return true;
+        });
+        toolbar.getMenu().getItem(4).setVisible(true);
+        toolbar.getMenu().getItem(4).setOnMenuItemClickListener(menuItem -> {
+            if (getContext() != null) {
+                new MaterialAlertDialogBuilder(getContext())
+                        .setTitle(R.string.delete_all_events)
+                        .setMessage(R.string.do_you_want_to_delete_this_events)
+                        .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
+                            RegularLectureSchedule.clearSave(getContext());
+                            regularLectureSchedule = new RegularLectureSchedule();
+                            Hours.clearHours(getContext());
+                            changes = false;
+                            reset = true;
+                            loadRecyclerView();
+                        })
+                        .setNegativeButton(R.string.no, null)
+                        .setCancelable(true)
+                        .show();
+            }
             return true;
         });
     }
@@ -199,7 +203,10 @@ public class RegularLectureFragment extends Fragment {
                 iterator.remove();
 
         }
-        //TODO save? delete all elements outside of the scope?
+        if (reset)
+            reset = false;
+        else if (getContext() != null)
+            regularLectureSchedule.save(getContext());
         adapter.submitList(regularLectureSchedule.getRegularLectures());
     }
 
@@ -212,6 +219,7 @@ public class RegularLectureFragment extends Fragment {
         public void onEventClick(@NonNull RegularLectureSchedule.RegularLecture.RegularLectureTime data) {
             super.onEventClick(data);
             Log.i(LOG, "adapter-eventClick");
+            if (regularLectureAdapter == null) return;
             RegularLectureSchedule.RegularLecture selected = regularLectureAdapter.getSelected();
             if (selected == null) return;
             if (selected.equals(data.lecture))
@@ -246,6 +254,7 @@ public class RegularLectureFragment extends Fragment {
         public void onEmptyViewClick(@NonNull Calendar time) {
             super.onEmptyViewClick(time);
             Log.i(LOG, "adapter-emptyClick");
+            if (regularLectureAdapter == null) return;
             RegularLectureSchedule.RegularLecture selected = regularLectureAdapter.getSelected();
             if (selected == null) {
                 Toast.makeText(getContext(), R.string.no_lecture_in_the_bottom_bar_selected, Toast.LENGTH_LONG).show();
