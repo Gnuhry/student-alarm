@@ -171,17 +171,17 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
                 return true;
             Log.d(LOG, "from - id: " + tag);
             initTimeEditTextBeforeAfter(holders[tag].from, holders[tag].until);
-            if (i == KeyEvent.KEYCODE_ENTER) {
-                if (help.listener) {
-//                    view.clearFocus();
-                    EditText un = holders[tag].until;
-                    ((TagHelp) un.getTag()).setListener(false);
-                    un.requestFocus();
-//                    un.setCursorVisible(true);
-                } else
-                    help.setListener(true);
-                return true;
-            }
+//            if (i == KeyEvent.KEYCODE_ENTER) {
+//                if (help.listener) {
+////                    view.clearFocus();
+//                    EditText un = holders[tag].until;
+//                    ((TagHelp) un.getTag()).setListener(false);
+//                    un.requestFocus();
+////                    un.setCursorVisible(true);
+//                } else
+//                    help.setListener(true);
+//                return true;
+//            }
             return false;
         });
     }
@@ -195,24 +195,24 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
         Log.d(LOG, "setUntilListener ");
         holder.until.setOnKeyListener((view, i, keyEvent) -> {
             TagHelp help = ((TagHelp) holder.until.getTag());
-            int tag = ((TagHelp) holder.until.getTag()).id;
+            int tag = help.id;
             if (tag >= holders.length || tag < 0)
                 return true;
             Log.d(LOG, "until - id: " + tag);
             initTimeEditTextBeforeAfter(holders[tag].from, holders[tag].until);
-            if (i == KeyEvent.KEYCODE_ENTER) {
-                if (tag + 1 < hours.size()) {
-                    if (help.listener) {
-//                        view.clearFocus();
-                        EditText fr = holders[tag + 1].from;
-                        ((TagHelp) fr.getTag()).setListener(false);
-                        fr.requestFocus();
-//                        fr.setCursorVisible(true);
-                    } else
-                        help.setListener(true);
-                    return true;
-                }
-            }
+//            if (i == KeyEvent.KEYCODE_ENTER) {
+//                if (tag + 1 < hours.size()) {
+//                    if (help.listener) {
+////                        view.clearFocus();
+//                        EditText fr = holders[tag + 1].from;
+//                        ((TagHelp) fr.getTag()).setListener(false);
+//                        fr.requestFocus();
+////                        fr.setCursorVisible(true);
+//                    } else
+//                        help.setListener(true);
+//                    return true;
+//                }
+//            }
             return false;
         });
     }
