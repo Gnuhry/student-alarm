@@ -4,7 +4,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.receiver.SetAlarmLater;
@@ -160,7 +162,7 @@ public class AlarmManager {
             checkDate.setTime(date.getTime() - (60000 * (DELTA_ALARM_BEFORE +
                     Long.parseLong(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.WAKE_WEATHER_TIME, PreferenceKeys.DEFAULT_WAKE_WEATHER_TIME)) +
                     getSumTimeBefore(context))));
-            if (checkDate.before(Calendar.getInstance().getTime())) { //potentially there could be an check if the time remaining to the Alarm is less than time delta+30 min
+            if (checkDate.before(Calendar.getInstance().getTime())) { //potentially there could be an instant alarm if the alarm should have happened in the past because of changed weather.
                 return addBadWeatherTimeIfWeatherIsBad(context, first);
             } else {
                 Log.d(LOG, "Bad Weather Check Later");
