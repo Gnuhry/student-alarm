@@ -1,6 +1,7 @@
 package com.example.studentalarm.ui.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -153,9 +154,10 @@ public class AlarmFragment extends Fragment {
         progress.setTitle(getContext().getString(R.string.loading));
         progress.setMessage(getContext().getString(R.string.wait_while_loading));
         progress.setCancelable(false);
+        Context context = getContext();
         new Thread(() -> {
             alarmShutdownUntil.post(() -> progress.show());
-            List<LectureSchedule.Lecture> lectureSchedule = LectureSchedule.load(getContext()).getAllLecturesFromNowWithoutHoliday(getContext());
+            List<LectureSchedule.Lecture> lectureSchedule = LectureSchedule.load(context).getAllLecturesFromNowWithoutHoliday(context);
             if (lectureSchedule.size() > 0) {
                 alarmShutdown.post(() -> {
                     alarmShutdown.setVisibility(View.VISIBLE);
