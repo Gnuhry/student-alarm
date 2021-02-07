@@ -37,6 +37,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -278,6 +279,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         zipCode.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.i(LOG, "wakeWeatherTime set to " + newValue);
             if (getContext() == null) return false;
+            if (((String) newValue).length() < 5 || !Arrays.asList(getResources().getStringArray(R.array.german_zip_codes)).contains(newValue)) return false;
             PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(PreferenceKeys.ZIP_CODE, (String) newValue).apply();
             AlarmManager.updateNextAlarm(getContext());
             return true;
