@@ -46,7 +46,7 @@ public class EventDialog extends DialogFragment implements CallColorDialog {
     private final LectureSchedule.Lecture data;
     private final LectureSchedule schedule;
     private final ReloadLecture lecture;
-    private static boolean working;
+    private static boolean working, hasDoublePoint;
 
     private EditText title, docent, location, begin, end;
     private LinearLayout LBegin, LEnd, llColor;
@@ -405,6 +405,9 @@ public class EventDialog extends DialogFragment implements CallColorDialog {
                 String without = text_;
                 if (text_.contains(":"))
                     without = text_.replace(":", "");
+                else if (hasDoublePoint)
+                    without = text_.length() == 3 ? text_.substring(1, 3) : text_.length() == 4 ? text_.substring(0, 1) + "" + text_.substring(2, 4) : text_;
+
                 switch (without.length()) {
                     case 4:  //XX:XX
                         editable.replace(0, editable.length(), without);
@@ -429,6 +432,7 @@ public class EventDialog extends DialogFragment implements CallColorDialog {
                 }
                 Log.d(LOG, "EditText-after: " + editable.toString());
                 text.setTag(editable.length() >= 5);
+                hasDoublePoint = editable.toString().contains(":");
                 working = false;
             }
 
