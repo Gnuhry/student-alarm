@@ -33,19 +33,19 @@
             android:title="@string/change_alarm_if_lecture_is_changing" />
         <Preference
             android:key="WAKE_WEATHER"
-            app:title="@string/BAD_WEATHER_ALARM" />
+            app:title="@string/bad_weather_alarm" />
         <EditTextPreference
             android:defaultValue="10"
             android:key="WAKE_WEATHER_TIME"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="@string/TIME_BEFORE_WHEN_THE_WEATHER_IS_BAD" />
+            android:title="@string/bad_weather_alarm_earlier_trigger_time" />
         <EditTextPreference
             android:defaultValue="11011"
-            android:key="ZIPCODE"
+            android:key="ZIP_CODE"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="@string/ZIPCODE" />
+            android:title="@string/zip_code" />
         <SwitchPreference
             android:defaultValue="false"
             android:enabled="false"

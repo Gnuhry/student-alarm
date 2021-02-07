@@ -41,10 +41,14 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
+import static com.example.studentalarm.alarm.AlarmManager.getSumTimeBefore;
+
 public class LectureSchedule {
     @NonNull
     private static final SimpleDateFormat FORMAT = Formatter.dayFormatter(), TIME_FORMAT = new SimpleDateFormat("HH:mm:ss:SS", Locale.GERMAN);
     private static final Calendar regular_from = Calendar.getInstance(), regular_until = Calendar.getInstance();
+    private static final int NOTIFICATION_ID = 1234567;
+    private static final String CHANNEL_ID = "1234567";
     @NonNull
     private final List<Lecture> lecture, importLecture, holidays;
     private static int positionScroll = -1;
@@ -217,42 +221,18 @@ public class LectureSchedule {
      */
 
     @Nullable
-    public Lecture getNextLecture(@NonNull Context context) {
-        boolean first = true;
+    public Lecture getNextLecture(@NonNull Context context, boolean includeToday) {
         Lecture tomorrow = new Lecture(false, getDayAddDay(1), new Date()), today = new Lecture(false, getDayAddDay(0), new Date());
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MINUTE, preferences.getInt(PreferenceKeys.BEFORE, 0) + preferences.getInt(PreferenceKeys.WAY, 0) + preferences.getInt(PreferenceKeys.AFTER, 0));
+        calendar.add(Calendar.MINUTE, getSumTimeBefore(context));
         Date date = new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, Calendar.getInstance().getTime().getTime()));
         for (Lecture l : getAllLectureWithoutHolidayAndHolidayEvents(context)) {
             if (l.getStart().after(date)) {
-                if (l.compareTo(today) >= 0 && first) {
-                    first = false;
+                if (includeToday && l.compareTo(today) >= 0) {
+                    includeToday = false;
                     if (l.getStartWithDefaultTimeZone().after(calendar.getTime()))
                         return l;
                 } else if (l.compareTo(tomorrow) >= 0)
-                    return l;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * get the next day lecture after shutdown date
-     *
-     * @return next lecture
-     */
-
-    @Nullable
-    public Lecture getNextDayLecture(@NonNull Context context) {
-        Lecture tomorrow = new Lecture(false, getDayAddDay(1), new Date());
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MINUTE, preferences.getInt(PreferenceKeys.BEFORE, 0) + preferences.getInt(PreferenceKeys.WAY, 0) + preferences.getInt(PreferenceKeys.AFTER, 0));
-        Date date = new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, Calendar.getInstance().getTime().getTime()));
-        for (Lecture l : getAllLectureWithoutHolidayAndHolidayEvents(context)) {
-            if (l.getStart().after(date)) {
-                if (l.compareTo(tomorrow) >= 0)
                     return l;
             }
         }
@@ -419,13 +399,21 @@ public class LectureSchedule {
         }
         if (holidays.size() > 0)
             all.removeAll(all2);
+        setNotificationForChangeAlarm(context, countShutdownEvents, penultimateShutdownEvent);
+        return all;
+    }
+
+    /**
+     * set notification to send user information about alarm changing
+     *
+     * @param context context of app
+     */
+    private void setNotificationForChangeAlarm(@NonNull Context context, int countShutdownEvents, long penultimateShutdownEvent) {
         if (PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, 0) != 0 && countShutdownEvents <= 0) {
             Log.d("Lecture Schedule", "Change made last shutdown element disappear");
             PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, penultimateShutdownEvent).apply();
             AlarmManager.updateNextAlarm(context);
             if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
-                int NOTIFICATION_ID = 1234567;
-                String CHANNEL_ID = "1234567";
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                         .setSmallIcon(R.drawable.alarm)
                         .setContentTitle(context.getString(R.string.alarm_shutdown_change))
@@ -447,10 +435,7 @@ public class LectureSchedule {
                 } else
                     NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build());
             }
-            // Toast.makeText(context, R.string.alarm_shutdown_changed_alarm_is_set_for_next_event, Toast.LENGTH_LONG).show(); Notification is better for Visibility
         }
-
-        return all;
     }
 
     /**

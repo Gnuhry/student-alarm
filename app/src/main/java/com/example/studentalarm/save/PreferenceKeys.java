@@ -46,7 +46,7 @@ public class PreferenceKeys {
             FLASH_LIGHT = "FLASH_LIGHT",
             FLASH_LIGHT_COLOR = "FLASH_LIGHT_COLOR",
             ALARM_MODE="ALARM_MODE",
-            ZIPCODE="ZIPCODE",
+            ZIP_CODE ="ZIP_CODE",
             APP_FIRST_TIME = "APP_FIRST_TIME",
             WAKE_WEATHER="WAKE_WEATHER",
             WAKE_WEATHER_TIME="WAKE_WEATHER_TIME",
@@ -57,7 +57,7 @@ public class PreferenceKeys {
             DEFAULT_SNOOZE = "5",
             DEFAULT_IMPORT_TIME = "19:00",
             DEFAULT_WAKE_WEATHER_TIME="10",
-            DEFAULT_ZIPCODE="11011";
+            DEFAULT_ZIP_CODE ="11011";
 
     public static final int
             DEFAULT_EVENT_COLOR = Color.RED,
@@ -106,8 +106,8 @@ public class PreferenceKeys {
             preferences.edit().putBoolean(PreferenceKeys.WAKE_WEATHER, false).apply();
         if (preferences.getString(PreferenceKeys.WAKE_WEATHER_TIME, null) == null)
             preferences.edit().putString(PreferenceKeys.WAKE_WEATHER_TIME, PreferenceKeys.DEFAULT_WAKE_WEATHER_TIME).apply();
-        if (preferences.getString(PreferenceKeys.ZIPCODE, null) == null)
-            preferences.edit().putString(PreferenceKeys.ZIPCODE, PreferenceKeys.DEFAULT_ZIPCODE).apply();
+        if (preferences.getString(PreferenceKeys.ZIP_CODE, null) == null)
+            preferences.edit().putString(PreferenceKeys.ZIP_CODE, PreferenceKeys.DEFAULT_ZIP_CODE).apply();
         if (preferences.getLong(PreferenceKeys.WAKE_WEATHER_CHECK_TIME, -1) == -1)
             preferences.edit().putLong(PreferenceKeys.WAKE_WEATHER_CHECK_TIME, 0).apply();
         if (preferences.getInt(PreferenceKeys.ALARM_MODE, -1) == -1)

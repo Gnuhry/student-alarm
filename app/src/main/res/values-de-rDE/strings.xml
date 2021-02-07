@@ -141,10 +141,10 @@
     <string name="vibration">Vibration</string>
     <string name="flash_light_color">Alarmlicht Farbe</string>
     <string name="stop_snooze">Schlummern ausstellen</string>
-    <string name="BAD_WEATHER_ALARM">Schlechtwetteralarm (Beta)</string>
-    <string name="WEAKE_UP_EARLIER_WEATHER">Wake up earlier when the Weather is bad (>10°C feeling temp, rain, or snow) This is a Beta and there is a limit how many requests can come from all app users. When the request fails the Time is automatically added. The Time is added only time+30 minute before the alarm should normally start. Otherwise the alarm will start normally. Also only German zip codes work. Weather data from openweathermap.org</string>
-    <string name="ZIPCODE">ZIPCode</string>
-    <string name="TIME_BEFORE_WHEN_THE_WEATHER_IS_BAD">Früher Wecken wenn Wetter schlecht ist</string>
+    <string name="bad_weather_alarm">Schlechtwetteralarm (Beta)</string>
+    <string name="wake_up_earlier_weather">Früher aufstehen, wenn das Wetter schlecht ist (>10°C gefühlte Temperatur, Regen oder SChnee) Das ist eine Beta Funktion und es gibt Limits, wie viele Request alle Benutezr senden können. Wenn der Request fehlschlägt, wird der Schlecht-Wetter-Alarm klingeln. Die Zeit wird nur Eingestellte Schlecht-Wetter-Zeit+30 Minuten bevor der Wecker klingelt umgesetzt. Der Alarm geht nicht los, wenn er gesetzt wird und vor dem Zeitpunkt hätte starten sollen. Beschränkung auf deutsche Postleitzahlen. Wetter Daten von openweathermap.org (nach dem ein Alarm ausgeschaltet wurde, muss man manuell das die Alarmseite neuladen)</string>
+    <string name="zip_code">Postleitzahl</string>
+    <string name="bad_weather_alarm_earlier_trigger_time">Früher wecken wenn Wetter schlecht ist</string>
     <string name="enable">aktivieren</string>
     <string name="disable">deaktivieren</string>
     <string name="enabled">aktiviert</string>

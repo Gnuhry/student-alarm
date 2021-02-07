@@ -30,15 +30,12 @@ public class Alarm {
      * @param context context to show the toast
      */
     public static void setAlarm(@NonNull Calendar time, @NonNull Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
             ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).setExact(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class), 0));
-        }else{
+        else
             ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class), 0));
-        }
         PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_TIME, time.getTimeInMillis()).apply();
-        Handler mainHandler = new Handler(context.getMainLooper());
-        Runnable myRunnable = () -> Toast.makeText(context, R.string.alarm_is_set, Toast.LENGTH_SHORT).show();
-        mainHandler.post(myRunnable);
+        new Handler(context.getMainLooper()).post(() -> Toast.makeText(context, R.string.alarm_is_set, Toast.LENGTH_SHORT).show());
         Log.d(LOG, "Set alarm to " + time.getTimeInMillis());
     }
 

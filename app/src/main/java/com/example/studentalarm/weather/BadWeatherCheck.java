@@ -2,117 +2,82 @@ package com.example.studentalarm.weather;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.Date;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import static com.example.studentalarm.imports.Import.runSynchronous;
 
 public class BadWeatherCheck {
-    private static final String LOG = "BadWeatherCheck";
-    int minTemp=10;
-    final String zipCode;
+    private static final String LOG = "BadWeatherCheck", API_STRING_PART_ONE = "http://api.openweathermap.org/data/2.5/forecast?zip=", API_STRING_PART_TWO = ",DE&lang=de&units=metric&appid=12bad8fdc76717005759481358561d3b";
+    private static final int BAD_WEATHER_CONSTANT = 800;//>800 BadWeather definition: https://openweathermap.org/weather-conditions
+    private static final int minTemp = 10;
+    public static final int DELTA_ALARM_BEFORE = 30;//+30 min before the Alarm happens in the worst case (Bad Weather) 60000factor second to millisecond
+    private final String zipCode;
 
-    public BadWeatherCheck(String zipCode){
+    public BadWeatherCheck(String zipCode) {
         Log.d(LOG, "Initialised");
-        this.zipCode= zipCode;
+        this.zipCode = zipCode;
     }
 
-// --Commented out by Inspection START (05.02.2021 21:41):
 //    public BadWeatherCheck(int minTemp, String zipCode){
 //        this.minTemp=minTemp;
 //        this.zipCode=zipCode;
 //    }
-// --Commented out by Inspection STOP (05.02.2021 21:41)
 
     /**
      * Checks if Weather is bad (matches given criteria) in the given region
+     *
      * @param time in UTC
-     * @return Boolean True if the weather is bad or an error occurred, false if is good
+     * @return Boolean {true} if the weather is bad or an error occurred, {false} if is good
      */
     @NonNull
-    public Boolean isTheWeatherBad(Date time) throws JSONException {
+    public Boolean isTheWeatherBad(Date time) {
         Log.d(LOG, "Check started");
-        Log.d(LOG,"zip code: " + zipCode);
-        if (zipCode.length()==5){
-            String queryString = "http://api.openweathermap.org/data/2.5/forecast?zip=" + zipCode +
-                    ",DE&lang=de&units=metric&appid=12bad8fdc76717005759481358561d3b";
-            Log.i(LOG, "Query: " + queryString);
-            JSONObject weatherJson = null;
+        Log.d(LOG, "zip code: " + zipCode);
+        if (zipCode.length() == 5) { //TODO validating zip code
+            JSONArray optJSONArray;
             try {
-                String apiReturn = runSynchronous(queryString);
-                if (apiReturn != null) {
-                    weatherJson = new JSONObject(apiReturn);
-                } else
+                String apiReturn = runSynchronous(API_STRING_PART_ONE + zipCode + API_STRING_PART_TWO);
+                if (apiReturn != null)
+                    optJSONArray = new JSONObject(apiReturn).optJSONArray("list");
+                else
                     return true;
             } catch (JSONException e) {
                 e.printStackTrace();
+                return true;
             }
-            if (weatherJson != null) {
-                JSONArray optJSONArray = weatherJson.optJSONArray("list");
-                if (optJSONArray != null) {
-                    for (int pos = 0; pos < optJSONArray.length(); pos++) {
-                        JSONObject firstTime = optJSONArray.getJSONObject(pos);
-                        Log.d(LOG, "JsonObject1" + firstTime);
-                        JSONObject secondTime = JSONObjectfromArray(optJSONArray, pos + 1);
-                        Log.d(LOG, "JsonObject2" + secondTime);
-                        try {
-                            Log.d(LOG, "Timestamp as Date: "+time+" Date1: "+ new Date(firstTime.optLong("dt")*1000)  +" Date2: "+new Date(secondTime.optLong("dt")*1000));
-                        }catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        Log.d(LOG, "---");
-                        if (firstTime != null && secondTime == null || firstTime != null && new Date(firstTime.optLong("dt")*1000).before(time) && new Date(secondTime.optLong("dt")*1000).after(time)) {
-                            return firstTime.optJSONObject("main").optLong("feels_like") < minTemp || firstTime.optJSONObject("weather").optLong("id") < 800; //>800 BadWeather definition: https://openweathermap.org/weather-conditions
+            if (optJSONArray != null) {
+                for (int pos = 0; pos < optJSONArray.length(); pos++) {
+                    JSONObject firstTime = JSONObjectFromArray(optJSONArray, pos);
+                    Log.d(LOG, "JsonObject1" + firstTime);
+                    JSONObject secondTime = JSONObjectFromArray(optJSONArray, pos + 1);
+                    Log.d(LOG, "JsonObject2" + secondTime);
+                    if ((firstTime != null && secondTime == null) ||
+                            (firstTime != null && new Date(firstTime.optLong("dt") * 1000).before(time) && new Date(secondTime.optLong("dt") * 1000).after(time))) {
+                        JSONObject main = firstTime.optJSONObject("main"),
+                                weather = firstTime.optJSONObject("weather");
+                        if (main != null & weather != null) {
+                            return main.optLong("feels_like") < minTemp || weather.optLong("id") < BAD_WEATHER_CONSTANT;
                         }
                     }
                 }
             }
         }
-        return false;
+        return true;
     }
 
     @Nullable
-    private JSONObject JSONObjectfromArray(@NonNull JSONArray jsonArray, int position){
+    private static JSONObject JSONObjectFromArray(@NonNull JSONArray jsonArray, int position) {
         try {
             return jsonArray.getJSONObject(position);
         } catch (JSONException e) {
             e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * get file synchronous from the internet
-     *
-     * @param link web link
-     */
-    @Nullable
-    public static String runSynchronous(@NonNull String link) {
-        Log.d(LOG, "runSynchronous: " + link);
-        Request request = new Request.Builder()
-                .url(link)
-                .build();
-
-        try (Response response = new OkHttpClient().newCall(request).execute()) {
-            if (!response.isSuccessful())
-                Log.e("Synchronous", "Unexpected code " + response);
-            ResponseBody body = response.body();
-            if (body != null) {
-                return body.string();
-            } else
-                Log.e("Synchronous", "No body");
-        } catch (IOException e) {
-            Log.e("Synchronous", "failed");
         }
         return null;
     }
