@@ -153,6 +153,7 @@
     <string name="after_creating_the_lecture_">\n- Nach dem Erstellen der Vorlesung können sie diese auswählen und auf das Gitter verteilen, um einen Stundenplan zu erstellen.\n\n- Wenn sie mehr als einen Raum haben, können sie mit lange halten auf die Vorlesung diese wechseln.\n\n- Um die Vorlesung wieder zu bearbeiten, klicken sie zweimal auf die Vorlesung.</string>
     <string name="to_set_the_timetable_time_click_on_the_settings_button">Um die Studenzeiten zu setzen, klicken sie auf die Einstellungen</string>
     <string name="at_least_six_lessons_must_have_a_start_and_end_time">\n- Mindestens sechs Stunden müssen eine Start- und End- zeit erhalten</string>
+    <string name="ignored_for_alarm">Für den Alarm ignorieren</string>
 
 
 

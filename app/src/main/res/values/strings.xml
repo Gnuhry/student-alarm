@@ -170,10 +170,7 @@
     <string name="disable">disable</string>
     <string name="enabled">enabled</string>
     <string name="disabled">disabled</string>
-
-
-
-
+    <string name="ignored_for_alarm">Ignored for alarm</string>
 
 
 </resources>

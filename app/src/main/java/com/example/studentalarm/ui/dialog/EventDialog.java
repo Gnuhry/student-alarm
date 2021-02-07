@@ -35,6 +35,7 @@ import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 
@@ -53,6 +54,7 @@ public class EventDialog extends DialogFragment implements CallColorDialog {
     private ConstraintLayout CBegin, CEnd;
     private DatePicker dPBegin, dPEnd;
     private TextView txVBegin, txVEnd, add, cancel, delete, color;
+    private SwitchCompat ignoredAlarm;
     private boolean create = false, cancelDirect = true;
     private int colorHelp;
 
@@ -91,6 +93,7 @@ public class EventDialog extends DialogFragment implements CallColorDialog {
         cancel = view.findViewById(R.id.txVCancel);
         delete = view.findViewById(R.id.txVDelete);
         color = view.findViewById(R.id.txVColor);
+        ignoredAlarm = view.findViewById(R.id.swIgnoredForAlarm);
 
         Log.d(LOG, "Context is: " + getContext());
 
@@ -101,8 +104,16 @@ public class EventDialog extends DialogFragment implements CallColorDialog {
                 cancelDirect = false;
                 initListener();
                 initDataChangeable();
-            } else
+            } else {
+                if (data.getId() < 0 || data.isAllDayEvent()) {
+                    add.setVisibility(View.INVISIBLE);
+                    ignoredAlarm.setVisibility(View.GONE);
+                }
+
+                initAddListener();
                 disableView();
+                add.setText(getString(R.string.update));
+            }
         } else {
             create = true;
             initListener();
@@ -116,10 +127,10 @@ public class EventDialog extends DialogFragment implements CallColorDialog {
     @Override
     public void onDestroyView() {
         Log.i(LOG, "destroy");
-        if (data != null && data.isImport()) {
-            super.onDestroyView();
-            return;
-        }
+//        if (data != null && data.isImport()) {
+//            super.onDestroyView();
+//            return;
+//        }
         lecture.loadData();
         if (getContext() != null)
             AlarmManager.updateNextAlarm(this.getContext());
@@ -198,113 +209,7 @@ public class EventDialog extends DialogFragment implements CallColorDialog {
         Log.i(LOG, "Init listener");
         initTimeEditText(begin, dPBegin, txVBegin);
         initTimeEditText(end, dPEnd, txVEnd);
-        add.setOnClickListener(view -> {
-            Log.i(LOG, "start checking");
-            if (getContext() == null) return;
-            boolean error = false;
-
-            if (begin.getText().length() <= 3) {
-                Log.i(LOG, "begin missing");
-                begin.setError(getString(R.string.missing));
-                txVBegin.setError(getString(R.string.missing));
-                error = true;
-            } else {
-                begin.setError(null);
-                txVBegin.setError(null);
-            }
-
-            if (end.getText().length() <= 3) {
-                Log.i(LOG, "end missing");
-                end.setError(getString(R.string.missing));
-                txVEnd.setError(getString(R.string.missing));
-                error = true;
-            } else {
-                end.setError(null);
-                txVEnd.setError(null);
-            }
-
-            if (title.getText().toString().isEmpty()) {
-                Log.i(LOG, "title missing");
-                title.setError(getString(R.string.missing));
-                error = true;
-            } else
-                title.setError(null);
-
-            boolean error2 = false;
-            if (txVBegin.getTag() == null) {
-                Log.i(LOG, "begin missing");
-                begin.setError(getString(R.string.missing));
-                txVBegin.setError(getString(R.string.missing));
-                error2 = true;
-            } else {
-                begin.setError(null);
-                txVBegin.setError(null);
-            }
-
-            if (txVEnd.getTag() == null) {
-                Log.i(LOG, "end missing");
-                end.setError(getString(R.string.missing));
-                txVEnd.setError(getString(R.string.missing));
-                error2 = true;
-            } else {
-                end.setError(null);
-                txVEnd.setError(null);
-            }
-
-            if (error2) return; //Catch null Pointer Error
-
-            Date dBegin = convertDate(txVBegin.getText().toString(), (Integer) txVBegin.getTag()),
-                    dEnd = convertDate(txVEnd.getText().toString(), (Integer) txVEnd.getTag());
-            if (dBegin == null) {
-                Log.i(LOG, "begin wrong");
-                begin.setError(getString(R.string.wrong));
-                txVBegin.setError(getString(R.string.wrong));
-                error = true;
-            } else {
-                begin.setError(null);
-                txVBegin.setError(null);
-            }
-
-            if (dEnd == null) {
-                Log.i(LOG, "end wrong");
-                end.setError(getString(R.string.wrong));
-                txVEnd.setError(getString(R.string.wrong));
-                error = true;
-            } else {
-                end.setError(null);
-                txVEnd.setError(null);
-            }
-            if (error) return;
-
-            if (dBegin.after(dEnd)) {
-                Log.i(LOG, "begin start after end");
-                end.setError(getString(R.string.end_must_start_after_begin));
-                txVEnd.setError(getString(R.string.end_must_start_after_begin));
-                return;
-            }
-
-            if (create) {
-                Log.i(LOG, "Create Lecture");
-                schedule.addLecture(new LectureSchedule.Lecture(false,
-                        new Date(dBegin.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)),
-                        new Date(dEnd.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET))).setName(title.getText().toString())
-                        .setDocent(docent.getText().toString())
-                        .setLocation(location.getText().toString())
-                        .setColor(colorHelp));
-            } else {
-                Log.i(LOG, "Update Lecture");
-                List<LectureSchedule.Lecture> help = schedule.getAllLecture(getContext());
-                help.get(help.indexOf(this.data))
-                        .setName(title.getText().toString())
-                        .setDocent(docent.getText().toString())
-                        .setLocation(location.getText().toString())
-                        .setStart(new Date(dBegin.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)))
-                        .setEnd(new Date(dEnd.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)))
-                        .setColor(colorHelp);
-            }
-            schedule.save(getContext());
-            this.dismiss();
-        });
+        initAddListener();
         delete.setOnClickListener(view -> {
             Log.i(LOG, "delete");
             if (getContext() == null) return;
@@ -344,6 +249,122 @@ public class EventDialog extends DialogFragment implements CallColorDialog {
         });
     }
 
+    private void initAddListener() {
+        add.setOnClickListener(view -> {
+            Log.i(LOG, "start checking");
+            if (getContext() == null) return;
+            if (data != null && data.isImport()) {
+                List<LectureSchedule.Lecture> help = schedule.getImportLecture();
+                help.get(help.indexOf(this.data)).setIgnoredForAlarm(ignoredAlarm.isChecked());
+            } else {
+                boolean error = false;
+                if (begin.getText().length() <= 3) {
+                    Log.i(LOG, "begin missing");
+                    begin.setError(getString(R.string.missing));
+                    txVBegin.setError(getString(R.string.missing));
+                    error = true;
+                } else {
+                    begin.setError(null);
+                    txVBegin.setError(null);
+                }
+
+                if (end.getText().length() <= 3) {
+                    Log.i(LOG, "end missing");
+                    end.setError(getString(R.string.missing));
+                    txVEnd.setError(getString(R.string.missing));
+                    error = true;
+                } else {
+                    end.setError(null);
+                    txVEnd.setError(null);
+                }
+
+                if (title.getText().toString().isEmpty()) {
+                    Log.i(LOG, "title missing");
+                    title.setError(getString(R.string.missing));
+                    error = true;
+                } else
+                    title.setError(null);
+
+                boolean error2 = false;
+                if (txVBegin.getTag() == null) {
+                    Log.i(LOG, "begin missing");
+                    begin.setError(getString(R.string.missing));
+                    txVBegin.setError(getString(R.string.missing));
+                    error2 = true;
+                } else {
+                    begin.setError(null);
+                    txVBegin.setError(null);
+                }
+
+                if (txVEnd.getTag() == null) {
+                    Log.i(LOG, "end missing");
+                    end.setError(getString(R.string.missing));
+                    txVEnd.setError(getString(R.string.missing));
+                    error2 = true;
+                } else {
+                    end.setError(null);
+                    txVEnd.setError(null);
+                }
+
+                if (error2) return; //Catch null Pointer Error
+
+                Date dBegin = convertDate(txVBegin.getText().toString(), (Integer) txVBegin.getTag()),
+                        dEnd = convertDate(txVEnd.getText().toString(), (Integer) txVEnd.getTag());
+                if (dBegin == null) {
+                    Log.i(LOG, "begin wrong");
+                    begin.setError(getString(R.string.wrong));
+                    txVBegin.setError(getString(R.string.wrong));
+                    error = true;
+                } else {
+                    begin.setError(null);
+                    txVBegin.setError(null);
+                }
+
+                if (dEnd == null) {
+                    Log.i(LOG, "end wrong");
+                    end.setError(getString(R.string.wrong));
+                    txVEnd.setError(getString(R.string.wrong));
+                    error = true;
+                } else {
+                    end.setError(null);
+                    txVEnd.setError(null);
+                }
+                if (error) return;
+
+                if (dBegin.after(dEnd)) {
+                    Log.i(LOG, "begin start after end");
+                    end.setError(getString(R.string.end_must_start_after_begin));
+                    txVEnd.setError(getString(R.string.end_must_start_after_begin));
+                    return;
+                }
+
+                if (create) {
+                    Log.i(LOG, "Create Lecture");
+                    schedule.addLecture(new LectureSchedule.Lecture(false,
+                            new Date(dBegin.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)),
+                            new Date(dEnd.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET))).setName(title.getText().toString())
+                            .setDocent(docent.getText().toString())
+                            .setLocation(location.getText().toString())
+                            .setColor(colorHelp)
+                            .setIgnoredForAlarm(ignoredAlarm.isChecked()));
+                } else {
+                    Log.i(LOG, "Update Lecture");
+                    List<LectureSchedule.Lecture> help = schedule.getLecture();
+                    help.get(help.indexOf(this.data))
+                            .setName(title.getText().toString())
+                            .setDocent(docent.getText().toString())
+                            .setLocation(location.getText().toString())
+                            .setStart(new Date(dBegin.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)))
+                            .setEnd(new Date(dEnd.getTime() - TimeZone.getDefault().getOffset(Calendar.ZONE_OFFSET)))
+                            .setColor(colorHelp)
+                            .setIgnoredForAlarm(ignoredAlarm.isChecked());
+                }
+            }
+            schedule.save(getContext());
+            this.dismiss();
+        });
+    }
+
     /**
      * set the date in the views
      */
@@ -351,6 +372,8 @@ public class EventDialog extends DialogFragment implements CallColorDialog {
         Log.i(LOG, "init data");
         add.setText(R.string.update);
         if (data == null) return;
+        Log.d("kasbvksadb", data.isIgnoredForAlarm() + "");
+        ignoredAlarm.setChecked(data.isIgnoredForAlarm());
         title.setText(data.getName());
         docent.setText(data.getDocent());
         location.setText(data.getLocation());
@@ -486,7 +509,6 @@ public class EventDialog extends DialogFragment implements CallColorDialog {
         title.setEnabled(false);
         docent.setEnabled(false);
         location.setEnabled(false);
-        add.setVisibility(View.INVISIBLE);
         llColor.setEnabled(false);
     }
 
