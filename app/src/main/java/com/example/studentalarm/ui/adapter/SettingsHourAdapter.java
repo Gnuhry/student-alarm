@@ -21,7 +21,6 @@ import com.example.studentalarm.regular.Hours;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -40,7 +39,7 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
     @NonNull
     private final Activity activity;
     @NonNull
-    private final List<ViewHolder> holders;
+    private ViewHolder[] holders;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView hour;
@@ -75,7 +74,7 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
             hours.add(new Hours(hours.size() + 1));
         this.context = context;
         this.activity = activity;
-        holders = new ArrayList<>();
+        holders = new ViewHolder[hours.size()];
     }
 
     @NonNull
@@ -92,81 +91,44 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
             holder.add.setOnClickListener(view -> {
                 if (hours.size() < 24) {
                     hours.add(new Hours(hours.size() + 1));
-                    for (int f = 0; f < holders.size(); f++)
-                        hours.get((int) holders.get(f).llTime.getTag())
-                                .setFrom(holders.get(f).from.getText().toString())
-                                .setUntil(holders.get(f).until.getText().toString());
-                    holders.clear();
-                    notifyDataSetChanged();
+                    ViewHolder[] help = holders;
+                    holders = new ViewHolder[hours.size()];
+                    System.arraycopy(help, 0, holders, 0, help.length);
+//                    notifyDataSetChanged();
+                    notifyItemRangeChanged(hours.size() - 1, hours.size() + 1);
                 }
             });
             holder.remove.setOnClickListener(view -> {
                 if (hours.size() > 0) {
                     hours.remove(hours.size() - 1);
-                    for (int f = 0; f < holders.size() - 1; f++)
-                        hours.get((int) holders.get(f).llTime.getTag())
-                                .setFrom(holders.get(f).from.getText().toString())
-                                .setUntil(holders.get(f).until.getText().toString());
-                    holders.clear();
-                    notifyDataSetChanged();
+                    ViewHolder[] help = holders;
+                    holders = new ViewHolder[hours.size()];
+                    System.arraycopy(help, 0, holders, 0, hours.size());
+
+//                    notifyDataSetChanged();
+                    notifyItemRangeChanged(hours.size(), hours.size() + 2);
                 }
             });
-            holder.add.setVisibility(hours.size() == 24 ? View.GONE : View.VISIBLE);
-            holder.remove.setVisibility(hours.size() == 6 ? View.GONE : View.VISIBLE);
+            checkAddDeleteButton(holder);
         } else {
             holder.llTime.setVisibility(View.VISIBLE);
-            holder.llTime.setTag(position);
             holder.llAddDelete.setVisibility(View.GONE);
-            holders.add(holder);
-            holder.hour.setText(context.getString(R.string.hour_back, hours.get(position).getId()));
-            holder.from.setText(hours.get(position).getFrom());
-            holder.until.setText(hours.get(position).getUntil());
-            initTimeEditText(holder.from);
-            initTimeEditText(holder.until);
-            holder.from.setOnKeyListener((view, i, keyEvent) -> {
-                int tag = ((TagHelp) view.getTag()).id;
-                initTimeEditTextBeforeAfter(holders.get(tag).from, holders.get(tag).until);
-                if (i == KeyEvent.KEYCODE_ENTER) {
-                    view.clearFocus();
-                    new Thread(() -> {
-                        try {
-                            Thread.sleep(300);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        holder.from.post(() -> {
-                            holders.get(tag).until.requestFocus();
-                            holders.get(tag).until.setCursorVisible(true);
-                        });
-                    }).start();
-                    return true;
-                }
-                return false;
-            });
-            holder.until.setOnKeyListener((view, i, keyEvent) -> {
-                int tag = ((TagHelp) view.getTag()).id;
-                initTimeEditTextBeforeAfter(holders.get(tag).from, holders.get(tag).until);
-                if (i == KeyEvent.KEYCODE_ENTER) {
-                    if (tag + 1 < getItemCount() - 1) {
-                        view.clearFocus();
-                        new Thread(() -> {
-                            try {
-                                Thread.sleep(300);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            holder.from.post(() -> {
-                                holders.get(tag + 1).from.requestFocus();
-                                holders.get(tag + 1).from.setCursorVisible(true);
-                            });
-                        }).start();
-                        return true;
-                    }
-                }
-                return false;
-            });
-            holder.from.setTag(TagHelp.build().setId(position).setBool(false));
-            holder.until.setTag(TagHelp.build().setId(position).setBool(false));
+            Hours hoursHelp = hours.get(position);
+            int index = hoursHelp.getId() - 1;
+            if (holders[position] == null) {
+                Log.d(LOG, "add holder " + position);
+                holders[index] = holder;
+                holder.llTime.setTag(index);
+                holder.from.setTag(TagHelp.build().setId(index).setBool(false));
+                holder.until.setTag(TagHelp.build().setId(index).setBool(false));
+                initTimeEditText(holder.from);
+                initTimeEditText(holder.until);
+                setFromKeyListener(holder);
+                setUntilKeyListener(holder);
+                holder.from.setText(hoursHelp.getFrom());
+                holder.until.setText(hoursHelp.getUntil());
+                holder.hour.setText(context.getString(R.string.hour_back, hoursHelp.getId()));
+            }
         }
     }
 
@@ -175,26 +137,106 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
         return hours.size() + 1;
     }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    /**
+     * check the add and delete button visibility
+     *
+     * @param holder holder of the buttons
+     */
+    public void checkAddDeleteButton(@NonNull ViewHolder holder) {
+        holder.remove.setVisibility(hours.size() == 6 ? View.GONE : View.VISIBLE);
+        holder.add.setVisibility(hours.size() == 24 ? View.GONE : View.VISIBLE);
+    }
+
+    /**
+     * set listener from from editText
+     *
+     * @param holder holder of editText
+     */
+    public void setFromKeyListener(@NonNull ViewHolder holder) {
+        Log.d(LOG, "setFromListener ");
+        holder.from.setOnKeyListener((view, i, keyEvent) -> {
+            TagHelp help = ((TagHelp) holder.from.getTag());
+            int tag = help.id;
+            if (tag >= holders.length || tag < 0)
+                return true;
+            Log.d(LOG, "from - id: " + tag);
+            initTimeEditTextBeforeAfter(holders[tag].from, holders[tag].until);
+//            if (i == KeyEvent.KEYCODE_ENTER) {
+//                if (help.listener) {
+////                    view.clearFocus();
+//                    EditText un = holders[tag].until;
+//                    ((TagHelp) un.getTag()).setListener(false);
+//                    un.requestFocus();
+////                    un.setCursorVisible(true);
+//                } else
+//                    help.setListener(true);
+//                return true;
+//            }
+            return false;
+        });
+    }
+
+    /**
+     * set listener from until editText
+     *
+     * @param holder holder of editText
+     */
+    public void setUntilKeyListener(@NonNull ViewHolder holder) {
+        Log.d(LOG, "setUntilListener ");
+        holder.until.setOnKeyListener((view, i, keyEvent) -> {
+            TagHelp help = ((TagHelp) holder.until.getTag());
+            int tag = help.id;
+            if (tag >= holders.length || tag < 0)
+                return true;
+            Log.d(LOG, "until - id: " + tag);
+            initTimeEditTextBeforeAfter(holders[tag].from, holders[tag].until);
+//            if (i == KeyEvent.KEYCODE_ENTER) {
+//                if (tag + 1 < hours.size()) {
+//                    if (help.listener) {
+////                        view.clearFocus();
+//                        EditText fr = holders[tag + 1].from;
+//                        ((TagHelp) fr.getTag()).setListener(false);
+//                        fr.requestFocus();
+////                        fr.setCursorVisible(true);
+//                    } else
+//                        help.setListener(true);
+//                    return true;
+//                }
+//            }
+            return false;
+        });
+    }
+
     /**
      * save if all inputs are right
      *
      * @return -1 if error else the size of the list
      */
     public int save() {
-        for (int f = 0; f < holders.size(); f++) {
-            if (holders.get(f).from.getText().toString().equals("") || holders.get(f).until.getText().toString().equals(""))
+        for (int f = 0; f < holders.length; f++) {
+            if (holders[f].from.getText().toString().equals("") || holders[f].until.getText().toString().equals(""))
                 return -1;
-            hours.get((int) holders.get(f).llTime.getTag())
-                    .setFrom(holders.get(f).from.getText().toString())
-                    .setUntil(holders.get(f).until.getText().toString());
-            if (holders.get(f).until.getError() != null || holders.get(f).from.getError() != null)
+            hours.get((int) holders[f].llTime.getTag())
+                    .setFrom(holders[f].from.getText().toString())
+                    .setUntil(holders[f].until.getText().toString());
+            if (holders[f].until.getError() != null || holders[f].from.getError() != null)
                 return -1;
-            Date date = hours.get((int) holders.get(f).llTime.getTag()).getFromAsDate();
-            if (f - 1 >= 0 && date != null && date.before(hours.get((int) holders.get(f - 1).llTime.getTag()).getUntilAsDate())) {
-                holders.get(f).from.setError(context.getString(R.string.can_not_start_before_the_hour_before));
+            Date date = hours.get((int) holders[f].llTime.getTag()).getFromAsDate();
+            if (f - 1 >= 0 && date != null && date.before(hours.get((int) holders[f - 1].llTime.getTag()).getUntilAsDate())) {
+                holders[f].from.setError(context.getString(R.string.can_not_start_before_the_hour_before));
                 return -1;
             } else
-                holders.get(f).from.setError(null);
+                holders[f].from.setError(null);
         }
         SimpleDateFormat format = Formatter.timeFormatter();
         for (Hours hour : hours) {
@@ -211,8 +253,9 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
 
     /**
      * init the edit time box
+     *
      * @param before editBox for from time
-     * @param until editBox for until time
+     * @param until  editBox for until time
      */
     private void initTimeEditTextBeforeAfter(@NonNull EditText before, @Nullable EditText until) {
         SimpleDateFormat format = Formatter.timeFormatter();
@@ -303,7 +346,7 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
     }
 
     static class TagHelp {
-        public boolean bool;
+        public boolean bool, listener;
         public int id;
 
         @NonNull
@@ -319,8 +362,14 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
         }
 
         @NonNull
+        public TagHelp setListener(boolean listener) {
+            this.listener = listener;
+            return this;
+        }
+
+        @NonNull
         public static TagHelp build() {
-            return new TagHelp();
+            return new TagHelp().setListener(true);
         }
     }
 }

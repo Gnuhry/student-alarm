@@ -132,7 +132,10 @@ public class AlarmManager {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        Log.d(LOG, "Alarm before subtracting: " + calendar.toString());
         calendar.add(Calendar.MINUTE, -getSumTimeBefore(context));
+        Log.d(LOG, "Alarm after subtracting: " + calendar.toString());
+        Log.d(LOG, "Check date: " + Calendar.getInstance().getTimeInMillis() + ", " + calendar.getTimeInMillis());
         if (Calendar.getInstance().before(calendar)) {
             if (preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false))
                 Alarm.setPhoneAlarm(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), context);

@@ -24,10 +24,7 @@ public class AlarmOffReceiver extends BroadcastReceiver {
         AlarmManager.setNextAlarm(context);
         NotificationManagerCompat.from(context).cancel(AlarmReceiver.NOTIFICATION_ID);
         PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PreferenceKeys.ALARM_MODE, 0).apply();
-        if (AlarmReceiver.mp != null) {
-            AlarmReceiver.mp.stop();
-            AlarmReceiver.mp.release();
-        }
+        AlarmReceiver.stopRingtone();
         context.sendBroadcast(new Intent(ALARM_BROADCAST));
     }
 }

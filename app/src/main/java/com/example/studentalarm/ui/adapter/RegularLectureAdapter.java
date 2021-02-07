@@ -87,7 +87,7 @@ public class RegularLectureAdapter extends RecyclerView.Adapter<RegularLectureAd
                             new OwnShowcaseView(activity,
                                     new ViewTarget(toolbar.findViewById(toolbar.getMenu().getItem(2).getItemId())),
                                     activity.getString(R.string.to_set_the_timetable_time_click_on_the_settings_button),
-                                    "",
+                                    activity.getString(R.string.at_least_six_lessons_must_have_a_start_and_end_time),
                                     null).show();
                         }).show();
             }
@@ -160,46 +160,3 @@ public class RegularLectureAdapter extends RecyclerView.Adapter<RegularLectureAd
     }
 }
 
-class OwnShowcaseView extends ShowcaseView {
-
-    private Activity activity;
-
-    public OwnShowcaseView(@NonNull Context context) {
-        super(context, false);
-    }
-
-    protected OwnShowcaseView(@NonNull Activity activity, Target target, String title, String subtitle, @Nullable OnClickListener listener) {
-        super(activity, false);
-        this.activity = activity;
-        this.setOnTouchListener((view, motionEvent) -> {
-            this.hide();
-            if (listener != null)
-                listener.onClick(this);
-            this.performClick();
-            return true;
-        });
-        this.hideButton();
-        this.setStyle(R.style.CustomShowcaseTheme);
-        this.setHideOnTouchOutside(true);
-        this.setTarget(target);
-        this.setContentTitle(title);
-        this.setContentText(subtitle);
-        this.setOnClickListener(listener);
-        this.setTag(false);
-        this.setTitleTextAlignment(Layout.Alignment.ALIGN_CENTER);
-        this.setDetailTextAlignment(Layout.Alignment.ALIGN_CENTER);
-
-    }
-
-    @SuppressWarnings("EmptyMethod")
-    @Override
-    public boolean performClick() {
-        return super.performClick();
-    }
-
-    @Override
-    public void show() {
-        ((ViewGroup) activity.findViewById(android.R.id.content)).addView(this);
-        super.show();
-    }
-}

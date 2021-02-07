@@ -160,6 +160,7 @@
     <string name="to_create_lecture_click_on_the_button">To create lecture click on the add button</string>
     <string name="after_creating_the_lecture_">\n- After creating the lecture, you can select the lecture and click on the timetable to create a schedule.\n\n- If you have more than one room, hold long to select the room.\n\n- To edit again, click two times on the schedule.</string>
     <string name="to_set_the_timetable_time_click_on_the_settings_button">To set the timetable time click on the settings button</string>
+    <string name="at_least_six_lessons_must_have_a_start_and_end_time">\n- At least six lessons must have a start and end time</string>
 
     <string name="bad_weather_alarm">Bad weather alarm (Beta)</string>
     <string name="wake_up_earlier_weather">Wake up earlier when the weather is bad (>10°C feeling temp, rain, or snow) This is a Beta function and there is a limit how many requests can come from all app users. When the request fails the Time is automatically added. The time is added time+30 minute before the alarm should normally start. The Alarm will not start when it is updated and the current time is after the alarm should go off. Also only German zip codes work. Weather data from openweathermap.org (after an alarm you have to update the alarm fragment manually)</string>

@@ -87,7 +87,7 @@
     <string name="title">Titel</string>
     <string name="docent">Dozent</string>
     <string name="location">Ort</string>
-    <string name="begin">Begin</string>
+    <string name="begin">Beginn</string>
     <string name="end">Ende</string>
     <string name="do_you_want_to_dismiss_all_your_changes">Möchten Sie alle ihre Änderungen verwerfen?</string>
     <string name="dismiss">Verwerfen</string>
@@ -98,7 +98,7 @@
     <string name="yellow">Gelb</string>
     <string name="update">Aktualisieren</string>
     <string name="missing">Fehlt</string>
-    <string name="end_must_start_after_begin">Ende muss nach dem Begin starten</string>
+    <string name="end_must_start_after_begin">Ende muss nach dem Beginn starten</string>
     <string name="wrong">Falsch</string>
     <string name="loading">Laden</string>
     <string name="wait_while_loading">Warten während dem laden…</string>
@@ -152,6 +152,7 @@
     <string name="to_create_lecture_click_on_the_button">Um eine Vorlesung zu erstellen, drücken sie auf den Hinzufügen-Knopf</string>
     <string name="after_creating_the_lecture_">\n- Nach dem Erstellen der Vorlesung können sie diese auswählen und auf das Gitter verteilen, um einen Stundenplan zu erstellen.\n\n- Wenn sie mehr als einen Raum haben, können sie mit lange halten auf die Vorlesung diese wechseln.\n\n- Um die Vorlesung wieder zu bearbeiten, klicken sie zweimal auf die Vorlesung.</string>
     <string name="to_set_the_timetable_time_click_on_the_settings_button">Um die Studenzeiten zu setzen, klicken sie auf die Einstellungen</string>
+    <string name="at_least_six_lessons_must_have_a_start_and_end_time">\n- Mindestens sechs Stunden müssen eine Start- und End- zeit erhalten</string>
 
 
 

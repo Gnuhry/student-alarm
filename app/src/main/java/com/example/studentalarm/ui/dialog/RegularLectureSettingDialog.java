@@ -65,6 +65,7 @@ public class RegularLectureSettingDialog extends DialogFragment {
         RecyclerView rv = view.findViewById(R.id.rVHours);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter.setHasStableIds(true);
         rv.setAdapter(adapter);
 
         view.findViewById(R.id.txVCancel).setOnClickListener(view1 -> cancel());
