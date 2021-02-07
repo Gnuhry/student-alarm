@@ -58,6 +58,7 @@
         <receiver android:name=".receiver.SnoozeReceiver" />
         <receiver android:name=".receiver.ImportReceiver" />
         <receiver android:name=".receiver.NetworkReceiver" />
+        <receiver android:name=".receiver.SetAlarmLater" />
         <receiver
             android:name=".receiver.BootReceiver">
             <intent-filter>

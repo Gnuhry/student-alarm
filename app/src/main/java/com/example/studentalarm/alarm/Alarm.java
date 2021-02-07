@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
 import android.provider.AlarmClock;
 import android.util.Log;
 import android.widget.Toast;
@@ -34,7 +35,7 @@ public class Alarm {
         else
             ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class), 0));
         PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_TIME, time.getTimeInMillis()).apply();
-        Toast.makeText(context, R.string.alarm_is_set, Toast.LENGTH_SHORT).show();
+        new Handler(context.getMainLooper()).post(() -> Toast.makeText(context, R.string.alarm_is_set, Toast.LENGTH_SHORT).show());
         Log.d(LOG, "Set alarm to " + time.getTimeInMillis());
     }
 
