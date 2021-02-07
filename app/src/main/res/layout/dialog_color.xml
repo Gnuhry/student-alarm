@@ -17,42 +17,35 @@
 
             <TextView
                 android:id="@+id/txVCancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="start"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:text="@string/cancel"
                 android:textColor="@android:color/holo_red_dark"
                 android:textSize="18sp" />
 
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
             <TextView
                 android:id="@+id/txVColorTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
                 android:text="@string/chose_import_color"
                 android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/txVSave"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
                 android:gravity="end"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
+
                 android:text="@string/save"
                 android:textColor="@android:color/holo_green_dark"
                 android:textSize="18sp"
@@ -88,7 +81,9 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/hex_color_eg_304534"
                 android:importantForAutofill="no"
-                android:inputType="number" />
+                android:inputType="number"
+                android:maxLength="8"
+                android:selectAllOnFocus="true" />
 
             <View
                 android:id="@+id/viewColor"

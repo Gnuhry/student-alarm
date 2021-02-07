@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
+import static com.example.studentalarm.MainActivity.ALARM_BROADCAST;
+
 public class SnoozeReceiver extends BroadcastReceiver {
     /**
      * triggered if alarm should snooze
@@ -25,9 +27,8 @@ public class SnoozeReceiver extends BroadcastReceiver {
         calendar.add(Calendar.MINUTE, Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.SNOOZE, PreferenceKeys.DEFAULT_SNOOZE)));
         Alarm.setAlarm(calendar, context);
         NotificationManagerCompat.from(context).cancel(AlarmReceiver.NOTIFICATION_ID);
-        if (AlarmReceiver.mp != null) {
-            AlarmReceiver.mp.stop();
-            AlarmReceiver.mp.release();
-        }
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PreferenceKeys.ALARM_MODE, 2).apply();
+        AlarmReceiver.stopRingtone();
+        context.sendBroadcast(new Intent(ALARM_BROADCAST));
     }
 }

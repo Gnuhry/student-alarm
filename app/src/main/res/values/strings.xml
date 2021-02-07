@@ -156,6 +156,11 @@
     <string name="flash_light">Flash light</string>
     <string name="vibration">Vibration</string>
     <string name="flash_light_color">Flash light color</string>
+    <string name="stop_snooze">stop snooze</string>
+    <string name="to_create_lecture_click_on_the_button">To create lecture click on the add button</string>
+    <string name="after_creating_the_lecture_">\n- After creating the lecture, you can select the lecture and click on the timetable to create a schedule.\n\n- If you have more than one room, hold long to select the room.\n\n- To edit again, click two times on the schedule.</string>
+    <string name="to_set_the_timetable_time_click_on_the_settings_button">To set the timetable time click on the settings button</string>
+    <string name="at_least_six_lessons_must_have_a_start_and_end_time">\n- At least six lessons must have a start and end time</string>
 
 
 </resources>

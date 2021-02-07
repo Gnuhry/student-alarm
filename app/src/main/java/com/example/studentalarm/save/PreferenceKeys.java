@@ -45,6 +45,8 @@ public class PreferenceKeys {
             VIBRATION = "VIBRATION",
             FLASH_LIGHT = "FLASH_LIGHT",
             FLASH_LIGHT_COLOR = "FLASH_LIGHT_COLOR",
+            ALARM_MODE = "ALARM_MODE",
+            APP_FIRST_TIME = "APP_FIRST_TIME",
 
     DEFAULT_RINGTONE = "Default",
             DEFAULT_LANGUAGE = "EN",
@@ -94,6 +96,8 @@ public class PreferenceKeys {
             preferences.edit().putInt(PreferenceKeys.FLASH_LIGHT_COLOR, PreferenceKeys.DEFAULT_FLASH_LIGHT_COLOR).apply();
         if (preferences.getLong(PreferenceKeys.ALARM_SHUTDOWN, -1) == -1)
             preferences.edit().putLong(PreferenceKeys.ALARM_SHUTDOWN, 0).apply();
+        if (preferences.getInt(PreferenceKeys.ALARM_MODE, -1) == -1)
+            preferences.edit().putInt(PreferenceKeys.ALARM_MODE, 0).apply();
         return erg;
     }
 

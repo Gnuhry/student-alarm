@@ -13,3 +13,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+.idea
+app/release/output-metadata.json
+app/release/app-release.apk
+upload-keystroke.jks
+some_signing_key.jks.base64.txt

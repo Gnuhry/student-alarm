@@ -14,6 +14,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.studentalarm.EventColor;
+import com.example.studentalarm.Formatter;
 import com.example.studentalarm.MainActivity;
 import com.example.studentalarm.R;
 import com.example.studentalarm.alarm.AlarmManager;
@@ -206,7 +207,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
         flashLightColor.setOnPreferenceClickListener(preference -> {
             if (getContext() != null && getActivity() != null)
-                new ColorDialog(this, PreferenceKeys.FLASH_LIGHT_COLOR, PreferenceKeys.DEFAULT_FLASH_LIGHT_COLOR).show(getActivity().getSupportFragmentManager(), "dialog");
+                new ColorDialog(this, PreferenceKeys.FLASH_LIGHT_COLOR, getContext(), PreferenceKeys.DEFAULT_FLASH_LIGHT_COLOR).show(getActivity().getSupportFragmentManager(), "dialog");
             return true;
         });
 
@@ -243,7 +244,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
         importColorPref.setOnPreferenceClickListener(preference -> {
             if (getContext() != null && getActivity() != null)
-                new ColorDialog(this, PreferenceKeys.IMPORT_COLOR, PreferenceKeys.DEFAULT_IMPORT_EVENT_COLOR).show(getActivity().getSupportFragmentManager(), "dialog");
+                new ColorDialog(this, PreferenceKeys.IMPORT_COLOR, getContext(), PreferenceKeys.DEFAULT_IMPORT_EVENT_COLOR).show(getActivity().getSupportFragmentManager(), "dialog");
             return true;
         });
 
@@ -269,7 +270,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         importTime.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.i(LOG, "import time change to " + newValue);
-            SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.GERMAN);
+            SimpleDateFormat format = Formatter.timeFormatter();
             String value = (String) newValue;
             if (value.length() != 5) {
                 Toast.makeText(getContext(), getString(R.string.wrong_time_format), Toast.LENGTH_SHORT).show();

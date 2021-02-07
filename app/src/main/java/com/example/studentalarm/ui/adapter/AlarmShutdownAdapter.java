@@ -25,6 +25,8 @@ import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.example.studentalarm.ui.adapter.MonthlyAdapter.cutTime;
+
 public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdapter.ViewHolder> {
     private static final String LOG = "AlarmShutdownAdapter";
     private static SimpleDateFormat dayOfWeekName;
@@ -115,23 +117,5 @@ public class AlarmShutdownAdapter extends RecyclerView.Adapter<AlarmShutdownAdap
     @Override
     public int getItemCount() {
         return lecture.size();
-    }
-
-    /**
-     * Format time to am/pm format
-     *
-     * @param time time to format
-     * @return time format to am/pm format
-     */
-    @NonNull
-    public static String cutTime(@NonNull String time) {
-        StringBuilder erg = new StringBuilder();
-        String[] help = time.split(":");
-        erg.append(help[0]).append(":").append(help[1]);
-        if (time.contains("AM"))
-            erg.append(" AM");
-        else if (time.contains("PM"))
-            erg.append(" PM");
-        return erg.toString();
     }
 }

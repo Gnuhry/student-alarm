@@ -19,6 +19,7 @@ import com.example.studentalarm.save.PreferenceKeys;
 import com.example.studentalarm.ui.adapter.HolidayAdapter;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class AlarmSettingFragment extends Fragment {
 
     private static final String LOG = "AlarmSettingFragment";
+    @Nullable
     private final PersonalFragment fragment;
     private TextView timeBefore, timeWay, timeAfter;
 
@@ -34,7 +36,7 @@ public class AlarmSettingFragment extends Fragment {
         fragment = null;
     }
 
-    public AlarmSettingFragment(PersonalFragment fragment) {
+    public AlarmSettingFragment(@Nullable PersonalFragment fragment) {
         this.fragment = fragment;
     }
 

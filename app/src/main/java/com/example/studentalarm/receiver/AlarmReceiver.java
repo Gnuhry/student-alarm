@@ -1,5 +1,6 @@
 package com.example.studentalarm.receiver;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -8,40 +9,71 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
+import com.example.studentalarm.MainActivity;
 import com.example.studentalarm.R;
+import com.example.studentalarm.Ringtone;
 import com.example.studentalarm.save.PreferenceKeys;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
 import static android.app.Notification.EXTRA_NOTIFICATION_ID;
+import static com.example.studentalarm.MainActivity.ALARM_BROADCAST;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
     public static final int NOTIFICATION_ID = 123456;
     @NonNull
     private static final String CHANNEL_ID = "123456";
+    @Nullable
     public static MediaPlayer mp;
+//    @Nullable
+//    public static android.media.Ringtone r;
 
     /**
      * triggered if it's time to play an alarm
      */
     @Override
     public void onReceive(@NonNull Context context, Intent intent) {
+        WakeLocker.acquire(context);
         Log.d("Alarm Bell", "Alarm just fired");
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+//            Uri notification;
+//            String ringtone = PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.RINGTONE, PreferenceKeys.DEFAULT_RINGTONE);
+//            switch (ringtone) {
+//                case "GENTLE":
+//                    notification = Uri.parse("android.resource://studentalarm/" + R.raw.alarm_gentle);
+//                    break;
+//                case "DEFAULT":
+//                    notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//                    break;
+//                default:
+//                    notification = Uri.parse(ringtone.substring(1));
+//                    break;
+//            }!
+//            RingtoneManager.setActualDefaultRingtoneUri(
+//                    context.getApplicationContext(), RingtoneManager.TYPE_RINGTONE, notification
+//            );
+//            r =RingtoneManager.getRingtone(context, notification);
+//            r.setLooping(true);
+//            r.play();
+//        } else {
         mp = getMediaPlayer(context);
-        if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
-            setNotification(context);
+        if (mp != null) {
             mp.setLooping(true);
+            mp.start();
+//            }
         }
-        mp.start();
+        if (NotificationManagerCompat.from(context).areNotificationsEnabled())
+            setNotification(context);
+        WakeLocker.release();
     }
 
     /**
@@ -62,27 +94,49 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setSmallIcon(R.drawable.alarm)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(context.getString(R.string.alarm))
-//                .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK), 0))
+                .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0))
                 .addAction(R.drawable.alarm, context.getString(R.string.snooze), PendingIntent.getBroadcast(context, 0, snoozeIntent, 0))
                 .addAction(R.drawable.alarm, context.getString(R.string.alarm_off), PendingIntent.getBroadcast(context, 0, alarmOffIntent, 0))
-                .setPriority(NotificationCompat.PRIORITY_HIGH);
+                .setFullScreenIntent(PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0), true)
+                .setAutoCancel(false)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setPriority(NotificationCompat.PRIORITY_MAX);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
+            builder.setCategory(Notification.CATEGORY_ALARM);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = context.getString(R.string.alarm);
             String description = context.getString(R.string.alarm);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_HIGH);
             channel.setDescription(description);
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             boolean flashLight = preferences.getBoolean(PreferenceKeys.FLASH_LIGHT, false);
             channel.enableLights(flashLight);
-            if (flashLight)
+            if (flashLight) {
                 channel.setLightColor(preferences.getInt(PreferenceKeys.FLASH_LIGHT_COLOR, PreferenceKeys.DEFAULT_FLASH_LIGHT_COLOR));
+                builder.setLights(preferences.getInt(PreferenceKeys.FLASH_LIGHT_COLOR, PreferenceKeys.DEFAULT_FLASH_LIGHT_COLOR), 3000, 3000);
+            }
+            if (preferences.getBoolean(PreferenceKeys.VIBRATION, false))
+                builder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000});
+            builder.setOngoing(true);
             channel.enableVibration(preferences.getBoolean(PreferenceKeys.VIBRATION, false));
+            if (preferences.getBoolean(PreferenceKeys.VIBRATION, false))
+                channel.setVibrationPattern(new long[]{1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000});
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
             notificationManager.notify(NOTIFICATION_ID, builder.build());
         } else
             NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build());
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PreferenceKeys.ALARM_MODE, 1).apply();
+        context.sendBroadcast(new Intent(ALARM_BROADCAST));
+    }
+
+    public static void stopRingtone() {
+//        if (r != null)
+//            r.stop();
+        if (mp != null) {
+            mp.stop();
+            mp.release();
+        }
     }
 
     /**
@@ -91,6 +145,7 @@ public class AlarmReceiver extends BroadcastReceiver {
      * @param context context of the application
      * @return ringtone to play
      */
+    @Nullable
     private MediaPlayer getMediaPlayer(@NonNull Context context) {
         String ringtone = PreferenceManager.getDefaultSharedPreferences(context).getString(PreferenceKeys.RINGTONE, PreferenceKeys.DEFAULT_RINGTONE);
         if (ringtone.startsWith("|")) {
@@ -99,13 +154,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 return mediaPlayer;
             PreferenceManager.getDefaultSharedPreferences(context).edit().putString(PreferenceKeys.RINGTONE, PreferenceKeys.DEFAULT_RINGTONE).apply();
         }
-        switch (ringtone) {
-            case "gentle":
-                return MediaPlayer.create(context.getApplicationContext(), R.raw.alarm_gentle);
-            case "DEFAULT":
-            default:
-                Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                return MediaPlayer.create(context.getApplicationContext(), alarmSound);
-        }
+        return Ringtone.getConstantRingtone(ringtone, context, true);
     }
 }
+

@@ -24,43 +24,83 @@
                 android:orientation="vertical"
                 android:layout_gravity="center">
 
-                <TextView
-                    android:id="@+id/textView4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="32dp"
-                    android:text="@string/next_alarm_in" />
+                <LinearLayout
+                    android:id="@+id/llNormal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/txVCountdown"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="32dp"
+                        android:text="@string/next_alarm_in" />
 
-                <TextView
-                    android:id="@+id/txVAlarm"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="32dp" />
+                    <TextView
+                        android:id="@+id/txVCountdown"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
 
-                <Button
-                    android:id="@+id/btnTmpAlarmShutdown"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/temporary_alarm_shutdown"
-                    android:visibility="gone" />
+                    <TextView
+                        android:id="@+id/txVAlarm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="32dp" />
 
-                <TextView
-                    android:id="@+id/txtAlarmShutdownUntil"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@string/error"
-                    android:visibility="gone" />
+                    <Button
+                        android:id="@+id/btnStopSnooze"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/stop_snooze"
+                        android:visibility="gone" />
+
+                    <Button
+                        android:id="@+id/btnTmpAlarmShutdown"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/temporary_alarm_shutdown"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/txtAlarmShutdownUntil"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/error"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llAlarm"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <Button
+                        android:id="@+id/btnSnooze"
+                        style="?borderlessButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/snooze" />
+
+                    <Button
+                        android:id="@+id/btnAlarmOff"
+                        style="?borderlessButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/alarm_off" />
+                </LinearLayout>
+
             </LinearLayout>
         </ScrollView>
 

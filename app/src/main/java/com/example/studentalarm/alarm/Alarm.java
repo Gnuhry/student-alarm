@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.provider.AlarmClock;
 import android.util.Log;
 import android.widget.Toast;
@@ -28,14 +29,13 @@ public class Alarm {
      * @param context context to show the toast
      */
     public static void setAlarm(@NonNull Calendar time, @NonNull Context context) {
-        if (Calendar.getInstance().before(time)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).setExact(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class), 0));
+        else
             ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class), 0));
-            PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_TIME, time.getTimeInMillis()).apply();
-            Toast.makeText(context, R.string.alarm_is_set, Toast.LENGTH_SHORT).show();
-            Log.d(LOG, "Set alarm to " + time.getTimeInMillis());
-        } else {
-            Log.e(LOG, "Wrong Date is set for alarm. Date is before current date");
-        }
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PreferenceKeys.ALARM_TIME, time.getTimeInMillis()).apply();
+        Toast.makeText(context, R.string.alarm_is_set, Toast.LENGTH_SHORT).show();
+        Log.d(LOG, "Set alarm to " + time.getTimeInMillis());
     }
 
     /**
