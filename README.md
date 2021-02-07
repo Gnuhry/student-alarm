@@ -41,6 +41,8 @@ You can get the latest apk from the [release tab](https://github.com/Gnuhry/stud
 - other imports sources
 - more code efficiency 
 
+planned feature can also be found on the [board "KanBan"](https://github.com/Gnuhry/student-alarm/projects/1)
+
 ## code dependencies
 - https://github.com/thellmund/Android-Week-View
 - https://github.com/bumptech/glide
