@@ -269,6 +269,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         wakeWeatherTime.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.i(LOG, "wakeWeatherTime set to " + newValue);
             if (getContext() == null) return false;
+            try {
+                if (Integer.parseInt("" + newValue) <= 0)
+                    return false;
+            } catch (NumberFormatException exception) {
+                return false;
+            }
             PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(PreferenceKeys.WAKE_WEATHER_TIME, (String) newValue).apply();
             AlarmManager.updateNextAlarm(getContext());
             return true;

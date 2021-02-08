@@ -61,10 +61,12 @@ public class BadWeatherCheck {
                     if ((firstTime != null && secondTime == null) ||
                             (firstTime != null && new Date(secondTime.optLong("dt") * 1000).after(time))) {
                         JSONObject main = firstTime.optJSONObject("main"),
-                                weather = firstTime.optJSONObject("weather");
-                        if (main != null & weather != null) {
+                                weather = JSONObjectFromArray(firstTime.optJSONArray("weather"),0);
+                        Log.d(LOG, "Found the object: " + main +"  "+weather);
+                        if (main != null && weather != null) {
                             return main.optLong("feels_like") < minTemp || weather.optLong("id") < BAD_WEATHER_CONSTANT;
-                        }
+                        }else
+                            Log.w(LOG, "Found the object but without the correct attributes");
                     }
                 }
             }
