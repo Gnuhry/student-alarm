@@ -171,6 +171,7 @@
     <string name="enabled">enabled</string>
     <string name="disabled">disabled</string>
     <string name="ignored_for_alarm">Ignored for alarm</string>
+    <string name="not_a_valid_german_zip_code">Not a valid german zip code</string>
 
 
 </resources>

@@ -154,7 +154,7 @@
     <string name="to_set_the_timetable_time_click_on_the_settings_button">Um die Studenzeiten zu setzen, klicken sie auf die Einstellungen</string>
     <string name="at_least_six_lessons_must_have_a_start_and_end_time">\n- Mindestens sechs Stunden müssen eine Start- und End- zeit erhalten</string>
     <string name="ignored_for_alarm">Für den Alarm ignorieren</string>
-
+    <string name="not_a_valid_german_zip_code">Postleitzahl existiert nicht in Deutschland</string>
 
 
 </resources>

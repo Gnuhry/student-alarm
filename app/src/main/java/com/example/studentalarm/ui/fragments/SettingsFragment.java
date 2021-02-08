@@ -10,8 +10,10 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
@@ -38,6 +40,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -271,14 +274,33 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             return true;
         });
         zipCode.setEnabled(bool3);
+        List<String> zipCodes = Arrays.asList(getResources().getStringArray(R.array.german_zip_codes));
         zipCode.setOnBindEditTextListener(editText -> {
             editText.setInputType(InputType.TYPE_CLASS_NUMBER);
             editText.setFilters(new InputFilter.LengthFilter[]{new InputFilter.LengthFilter(5)});
+            editText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    editText.setError((editable.toString().length() < 5 || !zipCodes.contains(editable.toString())) ? getString(R.string.not_a_valid_german_zip_code) : null);
+                }
+            });
         });
         zipCode.setSummaryProvider(preference -> preference.getSharedPreferences().getString(PreferenceKeys.ZIP_CODE, getString(R.string.error)));
         zipCode.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.i(LOG, "wakeWeatherTime set to " + newValue);
             if (getContext() == null) return false;
+            if (((String) newValue).length() < 5 || !zipCodes.contains(newValue))
+                return false;
             PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(PreferenceKeys.ZIP_CODE, (String) newValue).apply();
             AlarmManager.updateNextAlarm(getContext());
             return true;
