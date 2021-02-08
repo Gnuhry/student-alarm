@@ -140,6 +140,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/begin"
+                android:textColor="?android:attr/textColorPrimary"
                 android:textSize="18sp" />
 
             <Space
@@ -185,6 +186,7 @@
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:text="@string/time"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -224,6 +226,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/end"
+                android:textColor="?android:attr/textColorPrimary"
                 android:textSize="18sp" />
 
             <Space
@@ -269,6 +272,7 @@
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:text="@string/time"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -308,6 +312,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/color"
+                android:textColor="?android:attr/textColorPrimary"
                 android:textSize="18sp" />
 
             <Space
@@ -323,6 +328,19 @@
                 android:gravity="end" />
 
         </LinearLayout>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swIgnoredForAlarm"
+            style="@style/Widget.AppCompat.TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingTop="10dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="10dp"
+            android:text="@string/ignored_for_alarm"
+            android:textSize="18sp"
+            app:switchTextAppearance="@style/Widget.AppCompat.TextView" />
 
         <TextView
             android:id="@+id/txVDelete"

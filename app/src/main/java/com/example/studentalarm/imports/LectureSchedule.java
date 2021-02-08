@@ -104,7 +104,7 @@ public class LectureSchedule {
         all.addAll(lecture);
         all.addAll(importLecture);
         for (Lecture l : holidays)
-            all.add(new LectureSchedule.Lecture(l.isImport(), l.getStart(), l.getEnd(), -l.getId()).setName(context.getString(R.string.holidays)).setAllDayEvent(true).setColor(l.getColor()));
+            all.add(new LectureSchedule.Lecture(l.isImport(), l.getStart(), l.getEnd(), l.getId()).setName(context.getString(R.string.holidays)).setAllDayEvent(true).setColor(l.getColor()));
         all.addAll(getRegularLecture(context));
         Collections.sort(all);
         return all;
@@ -133,7 +133,7 @@ public class LectureSchedule {
                 end_C.setTimeInMillis(calendar.getTimeInMillis());
                 end_C.set(Calendar.HOUR_OF_DAY, 24);
                 end_C.set(Calendar.MINUTE, 0);
-                all.add(new LectureSchedule.Lecture(l.isImport(), calendar.getTime(), end_C.getTime(), -1).setName(context.getString(R.string.holidays)).setColor(l.getColor()));
+                all.add(new LectureSchedule.Lecture(l.isImport(), calendar.getTime(), end_C.getTime(), l.getId()).setName(context.getString(R.string.holidays)).setColor(l.getColor()));
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
             }
         }
@@ -227,7 +227,7 @@ public class LectureSchedule {
         calendar.add(Calendar.MINUTE, getSumTimeBefore(context));
         Date date = new Date(PreferenceManager.getDefaultSharedPreferences(context).getLong(PreferenceKeys.ALARM_SHUTDOWN, Calendar.getInstance().getTime().getTime()));
         for (Lecture l : getAllLectureWithoutHolidayAndHolidayEvents(context)) {
-            if (l.getStart().after(date)) {
+            if (!l.isIgnoredForAlarm() && l.getStart().after(date)) {
                 if (includeToday && l.compareTo(today) >= 0) {
                     includeToday = false;
                     if (l.getStartWithDefaultTimeZone().after(calendar.getTime()))
@@ -455,7 +455,7 @@ public class LectureSchedule {
             for (Date date : help.get(fragmentLecture.getCalendarDay() - 1)) {
                 Date[] dates = getDateWithTime(date, hour);
                 if (dates != null)
-                    erg.add(new Lecture(true, dates[0], dates[1])
+                    erg.add(new Lecture(true, dates[0], dates[1], true)
                             .setName(fragmentLecture.lecture.getName())
                             .setDocent(fragmentLecture.lecture.getDocent())
                             .setColor(fragmentLecture.lecture.getColor())
@@ -587,6 +587,7 @@ public class LectureSchedule {
             save.id = l.id;
             save.isImport = l.isImport;
             save.isAllDayEvent = l.isAllDayEvent;
+            save.ignoredAlarm = l.ignoredForAlarm;
             saveLecture.saves[0][i] = save;
         }
 
@@ -603,6 +604,7 @@ public class LectureSchedule {
             save.id = l.id;
             save.isImport = l.isImport;
             save.isAllDayEvent = l.isAllDayEvent;
+            save.ignoredAlarm = l.ignoredForAlarm;
             saveLecture.saves[1][i] = save;
         }
 
@@ -614,9 +616,9 @@ public class LectureSchedule {
             save.start = l.start;
             save.end = l.end;
             save.color = l.color;
-            save.id = l.id;
-            save.isImport = l.isImport;
-            save.isAllDayEvent = l.isAllDayEvent;
+//            save.id = l.id;
+//            save.isImport = l.isImport;
+//            save.isAllDayEvent = l.isAllDayEvent;
             saveLecture.saves[2][i] = save;
         }
         return saveLecture;
@@ -659,17 +661,17 @@ public class LectureSchedule {
         for (int i = 0; i < saveLecture.saves[0].length; i++) {
             SaveLecture.Save save = saveLecture.saves[0][i];
             if (save != null && save.name != null)
-                lectureSchedule.lecture.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setLocation(save.location).setDocent(save.docent).setName(save.name).setAllDayEvent(save.isAllDayEvent));
+                lectureSchedule.lecture.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setLocation(save.location).setDocent(save.docent).setName(save.name).setAllDayEvent(save.isAllDayEvent).setIgnoredForAlarm(save.ignoredAlarm));
         }
         for (int i = 0; i < saveLecture.saves[1].length; i++) {
             SaveLecture.Save save = saveLecture.saves[1][i];
             if (save != null && save.name != null)
-                lectureSchedule.importLecture.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setLocation(save.location).setDocent(save.docent).setName(save.name).setAllDayEvent(save.isAllDayEvent));
+                lectureSchedule.importLecture.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setLocation(save.location).setDocent(save.docent).setName(save.name).setAllDayEvent(save.isAllDayEvent).setIgnoredForAlarm(save.ignoredAlarm));
         }
         for (int i = 0; i < saveLecture.saves[2].length; i++) {
             SaveLecture.Save save = saveLecture.saves[2][i];
             if (save != null && save.name != null)
-                lectureSchedule.holidays.add(new Lecture(save.isImport, save.start, save.end, save.id).setColor(save.color).setName(save.name).setAllDayEvent(save.isAllDayEvent));
+                lectureSchedule.holidays.add(new Lecture(true, save.start, save.end, -1).setColor(save.color).setName(save.name).setAllDayEvent(true));
         }
         return lectureSchedule;
     }
@@ -686,7 +688,7 @@ public class LectureSchedule {
         @NonNull
         private Date start, end; //UTC
         private int color = PreferenceKeys.DEFAULT_EVENT_COLOR;
-        private boolean isAllDayEvent;
+        private boolean isAllDayEvent, ignoredForAlarm;
 
         /**
          * @param start UTC Date
@@ -707,6 +709,17 @@ public class LectureSchedule {
             this.start = start;
             this.end = end;
             this.id = id;
+            this.isImport = isImport;
+        }
+
+        /**
+         * @param start UTC Date
+         * @param end   UTC Date
+         */
+        private Lecture(boolean isImport, @NonNull Date start, @NonNull Date end, boolean negativeId) {
+            this.start = start;
+            this.end = end;
+            this.id = negativeId ? -(counter++) : counter;
             this.isImport = isImport;
         }
 
@@ -761,6 +774,10 @@ public class LectureSchedule {
             return isImport;
         }
 
+        public boolean isIgnoredForAlarm() {
+            return ignoredForAlarm;
+        }
+
         public static void setCounter(int counter) {
             Lecture.counter = counter;
         }
@@ -804,6 +821,12 @@ public class LectureSchedule {
         @NonNull
         public Lecture setAllDayEvent(boolean allDayEvent) {
             isAllDayEvent = allDayEvent;
+            return this;
+        }
+
+        @NonNull
+        public Lecture setIgnoredForAlarm(boolean ignoredForAlarm) {
+            this.ignoredForAlarm = ignoredForAlarm;
             return this;
         }
 

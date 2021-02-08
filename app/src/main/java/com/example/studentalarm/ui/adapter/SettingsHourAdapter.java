@@ -171,17 +171,17 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
                 return true;
             Log.d(LOG, "from - id: " + tag);
             initTimeEditTextBeforeAfter(holders[tag].from, holders[tag].until);
-//            if (i == KeyEvent.KEYCODE_ENTER) {
-//                if (help.listener) {
-////                    view.clearFocus();
-//                    EditText un = holders[tag].until;
-//                    ((TagHelp) un.getTag()).setListener(false);
-//                    un.requestFocus();
-////                    un.setCursorVisible(true);
-//                } else
-//                    help.setListener(true);
-//                return true;
-//            }
+            if (i == KeyEvent.KEYCODE_ENTER) {
+                if (help.listener) {
+//                    view.clearFocus();
+                    EditText un = holders[tag].until;
+                    ((TagHelp) un.getTag()).setListener(false);
+                    un.requestFocus();
+//                    un.setCursorVisible(true);
+                } else
+                    help.setListener(true);
+                return true;
+            }
             return false;
         });
     }
@@ -200,19 +200,19 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
                 return true;
             Log.d(LOG, "until - id: " + tag);
             initTimeEditTextBeforeAfter(holders[tag].from, holders[tag].until);
-//            if (i == KeyEvent.KEYCODE_ENTER) {
-//                if (tag + 1 < hours.size()) {
-//                    if (help.listener) {
-////                        view.clearFocus();
-//                        EditText fr = holders[tag + 1].from;
-//                        ((TagHelp) fr.getTag()).setListener(false);
-//                        fr.requestFocus();
-////                        fr.setCursorVisible(true);
-//                    } else
-//                        help.setListener(true);
-//                    return true;
-//                }
-//            }
+            if (i == KeyEvent.KEYCODE_ENTER) {
+                if (tag + 1 < hours.size()) {
+                    if (help.listener) {
+//                        view.clearFocus();
+                        EditText fr = holders[tag + 1].from;
+                        ((TagHelp) fr.getTag()).setListener(false);
+                        fr.requestFocus();
+//                        fr.setCursorVisible(true);
+                    } else
+                        help.setListener(true);
+                    return true;
+                }
+            }
             return false;
         });
     }
@@ -291,9 +291,12 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
                 if (help == null || help.bool) return;
                 help.setBool(true);
                 String text_ = editable.toString();
+                Log.d(LOG, "Text before: " + text_ + ". has doublePoint: " + help.hasDoublePoint);
                 String without = text_;
-                if (text_.contains(":"))
+                if (text_.contains(":")) {
                     without = text_.replace(":", "");
+                } else if (help.hasDoublePoint)
+                    without = text_.length() == 3 ? text_.substring(1, 3) : text_.length() == 4 ? text_.substring(0, 1) + "" + text_.substring(2, 4) : text_;
                 switch (without.length()) {
                     case 4:  //XX:XX
                         editable.replace(0, editable.length(), without);
@@ -320,6 +323,7 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
                         editable.clear();
                         break;
                 }
+                help.setHasDoublePoint(editable.toString().contains(":"));
                 help.setBool(false);
             }
 
@@ -346,7 +350,7 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
     }
 
     static class TagHelp {
-        public boolean bool, listener;
+        public boolean bool, listener, hasDoublePoint;
         public int id;
 
         @NonNull
@@ -368,8 +372,14 @@ public class SettingsHourAdapter extends RecyclerView.Adapter<SettingsHourAdapte
         }
 
         @NonNull
+        public TagHelp setHasDoublePoint(boolean hasDoublePoint) {
+            this.hasDoublePoint = hasDoublePoint;
+            return this;
+        }
+
+        @NonNull
         public static TagHelp build() {
-            return new TagHelp().setListener(true);
+            return new TagHelp().setListener(true).setHasDoublePoint(false);
         }
     }
 }
