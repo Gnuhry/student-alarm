@@ -36,8 +36,9 @@ You can get the latest apk from the [release tab](https://github.com/Gnuhry/stud
 ## planned features
 
 - earlier alarm option if high traffic volume, or train is canceled and you have to get the earlier one (including maps and train APIs)
+- if lecture is canceld, create a new alarm with the perfect bus/train connection
 - option to have more than one regular lecture schedule, which switch each week
-- import of regular lecture schedule
+- import and export of regular lecture schedule
 - repeatable events
 - other imports sources
 - more code efficiency 
