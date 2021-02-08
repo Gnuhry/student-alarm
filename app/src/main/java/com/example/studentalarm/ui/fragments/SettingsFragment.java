@@ -20,6 +20,7 @@ import com.example.studentalarm.EventColor;
 import com.example.studentalarm.Formatter;
 import com.example.studentalarm.MainActivity;
 import com.example.studentalarm.R;
+import com.example.studentalarm.alarm.Alarm;
 import com.example.studentalarm.alarm.AlarmManager;
 import com.example.studentalarm.imports.Import;
 import com.example.studentalarm.imports.LectureSchedule;
@@ -127,7 +128,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             } else {
                 getPreferenceManager().getSharedPreferences().edit().putBoolean(PreferenceKeys.ALARM_ON, (Boolean) newValue).apply();
                 if (getContext() != null)
-                    AlarmManager.cancelNextAlarm(getContext());
+                    Alarm.cancelAlarm(getContext());
             }
             boolean bool3 = (Boolean) newValue;
             alarmPhone.setEnabled(bool3);

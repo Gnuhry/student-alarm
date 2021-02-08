@@ -4,9 +4,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.studentalarm.imports.LectureSchedule;
 import com.example.studentalarm.receiver.SetAlarmLater;
@@ -49,7 +47,7 @@ public class AlarmManager {
      */
     public static void updateNextAlarmFromSetAlarmLater(@NonNull Context context) {
         Log.d(LOG, "update alarm from set alarm later");
-        cancelNextAlarm(context);
+        Alarm.cancelAlarm(context);
         if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferenceKeys.ALARM_ON, false)) {
             Log.d(LOG, "alarm on");
             LectureSchedule.Lecture first = LectureSchedule.load(context).getNextLecture(context, true);
@@ -82,7 +80,6 @@ public class AlarmManager {
         way = preferences.getInt(PreferenceKeys.WAY, 0);
         after = preferences.getInt(PreferenceKeys.AFTER, 0);
         alarmPhone = preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false);
-        cancelNextAlarm(context);
         AlarmManager.setNextAlarm(context);
     }
 
@@ -112,16 +109,6 @@ public class AlarmManager {
     }
 
     /**
-     * Cancel Alarm
-     *
-     * @param context context of the application
-     */
-    public static void cancelNextAlarm(@NonNull Context context) {
-        Log.d(LOG, "cancel alarm");
-        Alarm.cancelAlarm(context);
-    }
-
-    /**
      * Set the alarm at date
      *
      * @param date    date where the alarm should trigger
@@ -140,7 +127,6 @@ public class AlarmManager {
             if (preferences.getBoolean(PreferenceKeys.ALARM_PHONE, false))
                 Alarm.setPhoneAlarm(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), context);
             else {
-                cancelNextAlarm(context);
                 Alarm.setAlarm(calendar, context);
             }
         } else {
