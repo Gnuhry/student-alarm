@@ -15,6 +15,7 @@ This is a student project
 - export events to ics file
 - dark theme support
 - English and German language support
+- earlier alarm if weather is bad (beta) - restricted to german cities
 
 ## important things to know
 - the sound alarm is connected to the **media** volume
@@ -51,4 +52,4 @@ planned feature can also be found on the [board "KanBan"](https://github.com/Gnu
 - https://github.com/amlcurran/ShowcaseView
 
 ## used apis
-- https://openweathermap.org/ (only used in Beta Mode)
+- https://openweathermap.org/ ( used in Weather Beta Mode )
