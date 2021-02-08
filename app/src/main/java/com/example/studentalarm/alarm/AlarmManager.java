@@ -37,6 +37,8 @@ public class AlarmManager {
             LectureSchedule.Lecture first = LectureSchedule.load(context).getNextLecture(context, true);
             if (first != null)
                 new Thread(() -> setAlarm(checkBadWeather(context, first).getTime(), context)).start();
+            else
+                Alarm.cancelAlarm(context);
         }
     }
 
