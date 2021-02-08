@@ -142,7 +142,7 @@
     <string name="flash_light_color">Alarmlicht Farbe</string>
     <string name="stop_snooze">Schlummern ausstellen</string>
     <string name="bad_weather_alarm">Schlechtwetteralarm (Beta)</string>
-    <string name="wake_up_earlier_weather">Früher aufstehen, wenn das Wetter schlecht ist (>10°C gefühlte Temperatur, Regen oder SChnee) Das ist eine Beta Funktion und es gibt Limits, wie viele Request alle Benutezr senden können. Wenn der Request fehlschlägt, wird der Schlecht-Wetter-Alarm klingeln. Die Zeit wird nur Eingestellte Schlecht-Wetter-Zeit+30 Minuten bevor der Wecker klingelt umgesetzt. Der Alarm geht nicht los, wenn er gesetzt wird und vor dem Zeitpunkt hätte starten sollen. Beschränkung auf deutsche Postleitzahlen, wenn diese falsch ist wird mit schlechtem Wetter gerechnet. Wetter Daten von openweathermap.org (nach dem ein Alarm ausgeschaltet wurde, muss man manuell das die Alarmseite neuladen)</string>
+    <string name="wake_up_earlier_weather">(Beta)Früher aufstehen, wenn das Wetter schlecht ist (&gt;10°C gefühlte Temperatur, Regen oder Schnee).\nEs gibt Limits, wie viele Request von allen Benuter insgesamt gesendent werden können.\nWenn der Request fehlschlägt, wird der Schlecht-Wetter-Alarm klingeln.\nDer Schlecht-Wetter-Test wird Schlecht-Wetter-Zeit+30 Minuten bevor der Wecker klingelt umgesetzt.\nDer Alarm geht nicht los, wenn er gesetzt wird und vor dem Zeitpunkt hätte starten sollen.\nBeschränkung auf deutsche Postleitzahlen.\nWetter Daten von openweathermap.org\n(Es gibt einen Fehler, dass die Alarmseite manchmal falsch ist. Neuladen hilft)</string>
     <string name="zip_code">Postleitzahl</string>
     <string name="bad_weather_alarm_earlier_trigger_time">Früher wecken wenn Wetter schlecht ist</string>
     <string name="enable">aktivieren</string>
@@ -153,6 +153,7 @@
     <string name="after_creating_the_lecture_">\n- Nach dem Erstellen der Vorlesung können sie diese auswählen und auf das Gitter verteilen, um einen Stundenplan zu erstellen.\n\n- Wenn sie mehr als einen Raum haben, können sie mit lange halten auf die Vorlesung diese wechseln.\n\n- Um die Vorlesung wieder zu bearbeiten, klicken sie zweimal auf die Vorlesung.</string>
     <string name="to_set_the_timetable_time_click_on_the_settings_button">Um die Studenzeiten zu setzen, klicken sie auf die Einstellungen</string>
     <string name="at_least_six_lessons_must_have_a_start_and_end_time">\n- Mindestens sechs Stunden müssen eine Start- und End- zeit erhalten</string>
+    <string name="ignored_for_alarm">Für den Alarm ignorieren</string>
     <string name="not_a_valid_german_zip_code">Postleitzahl existiert nicht in Deutschland</string>
 
 

@@ -324,6 +324,20 @@
 
         </LinearLayout>
 
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swIgnoredForAlarm"
+            style="@style/Widget.AppCompat.TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingTop="10dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="10dp"
+            android:text="@string/ignored_for_alarm"
+            android:textColor="@android:color/secondary_text_light"
+            android:textSize="18sp"
+            app:switchTextAppearance="@style/Widget.AppCompat.TextView" />
+
         <TextView
             android:id="@+id/txVDelete"
             android:layout_width="match_parent"

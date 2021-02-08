@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="german_zip_codes">
+        <item>11011</item>
         <item>78267</item>
         <item>54298</item>
         <item>52062</item>

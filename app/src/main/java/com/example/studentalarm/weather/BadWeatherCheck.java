@@ -59,7 +59,7 @@ public class BadWeatherCheck {
                     JSONObject secondTime = JSONObjectFromArray(optJSONArray, pos + 1);
                     Log.d(LOG, "JsonObject2" + secondTime);
                     if ((firstTime != null && secondTime == null) ||
-                            (firstTime != null && new Date(firstTime.optLong("dt") * 1000).before(time) && new Date(secondTime.optLong("dt") * 1000).after(time))) {
+                            (firstTime != null && new Date(secondTime.optLong("dt") * 1000).after(time))) {
                         JSONObject main = firstTime.optJSONObject("main"),
                                 weather = firstTime.optJSONObject("weather");
                         if (main != null & weather != null) {
@@ -77,7 +77,8 @@ public class BadWeatherCheck {
         try {
             return jsonArray.getJSONObject(position);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(LOG,"Json object array out of range");
+            //e.printStackTrace();
         }
         return null;
     }

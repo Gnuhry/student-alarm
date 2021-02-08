@@ -163,13 +163,14 @@
     <string name="at_least_six_lessons_must_have_a_start_and_end_time">\n- At least six lessons must have a start and end time</string>
 
     <string name="bad_weather_alarm">Bad weather alarm (Beta)</string>
-    <string name="wake_up_earlier_weather">Wake up earlier when the weather is bad (>10°C feeling temp, rain, or snow) This is a Beta function and there is a limit how many requests can come from all app users. When the request fails the Time is automatically added. The time is added time+30 minute before the alarm should normally start. The Alarm will not start when it is updated and the current time is after the alarm should go off. Also only German zip codes work. When the zip code is wrong it counts as if the Weather is bad. Weather data from openweathermap.org (after an alarm you have to update the alarm fragment manually)</string>
+    <string name="wake_up_earlier_weather">(Beta) Wake up earlier when weather is bad (&gt;10°C feeling temp, rain or snow).\nThere is a limited requests number for all app users combined.\nWhen the request fails the time is automatically added.\nThe weather check normally starts bad weather time+30 minute before the alarm start.\nWhen alarm is updated and should have already triggered this event will have no alarm.\nOnly German zip codes!\n Weather data from openweathermap.org\n(With this Beta version there is sometimes a refresh bug in the alarm fragment. Manually reloading the fragment fixes it)</string>
     <string name="zip_code">zip code</string>
     <string name="bad_weather_alarm_earlier_trigger_time">bad weather alarm earlier trigger time</string>
     <string name="enable">enable</string>
     <string name="disable">disable</string>
     <string name="enabled">enabled</string>
     <string name="disabled">disabled</string>
+    <string name="ignored_for_alarm">Ignore for alarm</string>
     <string name="not_a_valid_german_zip_code">Not a valid german zip code</string>
 
 
