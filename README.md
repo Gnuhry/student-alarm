@@ -54,3 +54,5 @@ planned feature can also be found on the [board "KanBan"](https://github.com/Gnu
 
 ## used apis
 - https://openweathermap.org/ ( used in Weather Beta Mode )
+- https://vorlesungsplan.dhbw-mannheim.de/ical.php
+- https://www.suche-postleitzahl.org/download_files/public/zuordnung_plz_ort.csv
