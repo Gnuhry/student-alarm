@@ -57,7 +57,7 @@ public class PreferenceKeys {
             DEFAULT_SNOOZE = "5",
             DEFAULT_IMPORT_TIME = "19:00",
             DEFAULT_WAKE_WEATHER_TIME="10",
-            DEFAULT_ZIP_CODE ="11011";
+            DEFAULT_ZIP_CODE ="78267";
 
     public static final int
             DEFAULT_EVENT_COLOR = Color.RED,
