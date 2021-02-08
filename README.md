@@ -14,7 +14,7 @@ This is a student project
 - add holidays for alarm breaks or choose an event until the alarm is silent
 - export events to ics file
 - dark theme support
-- English and German language support
+- english and german language support
 - earlier alarm if weather is bad (beta) - restricted to german cities
 
 ## important things to know
