@@ -17,6 +17,9 @@ This is a student project
 - english and german language support
 - earlier alarm if weather is bad (beta) - restricted to german cities
 
+### Import for google calendar
+See https://support.google.com/calendar/answer/37648?hl=en
+
 ## important things to know
 - the sound alarm is connected to the **media** volume
 - some special feature are restricted to newer android versions
